@@ -1,0 +1,461 @@
+---
+title: "Uniform and Normal Error Models"
+format:
+  html:
+    df-print: paged
+editor: visual
+---
+
+## Overview
+
+In this notebook, we build models for data shown in Fig. 1B of XXX using the logical probability framework.
+
+## Setup environment
+
+```{r}
+#| output: false
+# Load necessary libraries
+library(tidyverse)
+library(ggformula)
+
+theme_set(theme_minimal())
+```
+
+## Specify variables
+
+```{r}
+b0_var <- 5:10
+b1_var <- -8:8
+s_var  <- 1:3
+X_var  <- 0:1
+Y_var  <- 0:15
+
+b0_fix <- 10
+b1_fix <- -7
+s_fix  <- 1
+X_fix  <- 1
+Y_fix  <- 3
+```
+
+## No association assumption
+
+### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+### Joint and marginal (data) probability distribution
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = TRUE
+  ) %>%
+  ungroup() %>%
+  # model checking and normalization
+  mutate(
+    p = K / sum(K)
+  ) %>%
+  # marginalize over X and Y
+  group_by(X, Y) %>%
+  summarize(
+    p = sum(p)
+  ) %>% 
+  ungroup()
+
+m
+```
+
+### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M0",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "P(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+## Deterministic linear association: Fixed intercept and slope
+
+### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_fix,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+### Joint and marginal (data) probability distribution
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = (Y == b0 + b1 * X)
+  ) %>%
+  ungroup() %>%
+  # model checking and normalization
+  mutate(
+    p = K / sum(K)
+  ) %>%
+  # marginalize over X and Y
+  group_by(X, Y) %>%
+  summarize(
+    p = sum(p)
+  ) %>% 
+  ungroup()
+
+m
+```
+
+### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M1",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "P(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+
+## Stochastic linear association: fixed slope, intercept, and error spread
+
+### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_fix,
+  s  = s_fix,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+### Joint and marginal (data) probability distribution
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= s
+  ) %>%
+  ungroup() %>%
+  # model checking and normalization
+  mutate(
+    p = K / sum(K)
+  ) %>%
+  # marginalize over X and Y
+  group_by(X, Y) %>%
+  summarize(
+    p = sum(p)
+  ) %>% 
+  ungroup()
+
+m
+```
+
+### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M1",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "P(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+## Stochastic linear association: fixed intercept and slope, variable error spread
+
+### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_fix,
+  s  = s_var,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+### Joint and marginal (data) probability distribution
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= s
+  ) %>%
+  ungroup() %>%
+  # model checking and normalization
+  mutate(
+    p = K / sum(K)
+  ) %>%
+  # marginalize over X and Y
+  group_by(X, Y) %>%
+  summarize(
+    p = sum(p)
+  ) %>% 
+  ungroup()
+
+m
+```
+
+### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M1",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "P(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+## Stochastic linear association: variable intercept, fixed slope and error spread
+
+### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_var,
+  b1 = b1_fix,
+  s  = s_fix,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+### Joint and marginal (data) probability distribution
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= s
+  ) %>%
+  ungroup() %>%
+  # model checking and normalization
+  mutate(
+    p = K / sum(K)
+  ) %>%
+  # marginalize over X and Y
+  group_by(X, Y) %>%
+  summarize(
+    p = sum(p)
+  ) %>% 
+  ungroup()
+
+m
+```
+
+### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M1",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "P(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+## Stochastic linear association: fixed intercept and variable slope, fixed error spread
+
+### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_var,
+  s  = s_fix,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+### Joint and marginal (data) probability distribution
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= s
+  ) %>%
+  ungroup() %>%
+  # model checking and normalization
+  mutate(
+    p = K / sum(K)
+  ) %>%
+  # marginalize over X and Y
+  group_by(X, Y) %>%
+  summarize(
+    p = sum(p)
+  ) %>% 
+  ungroup()
+
+m
+```
+
+### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M1",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "P(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+## Stochastic linear association: variable intercept, slope, and error spread
+
+### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_var,
+  b1 = b1_var,
+  s  = s_var,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+### Joint and marginal (data) probability distribution
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= s
+  ) %>%
+  ungroup() %>%
+  # model checking and normalization
+  mutate(
+    p = K / sum(K)
+  ) %>%
+  # marginalize over X and Y
+  group_by(X, Y) %>%
+  summarize(
+    p = sum(p)
+  ) %>% 
+  ungroup()
+
+m
+```
+
+### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M1",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "P(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```
