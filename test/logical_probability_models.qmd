@@ -1,8 +1,11 @@
 ---
-title: "Uniform and Normal Error Models"
+title: "Logical probability models"
 format:
   html:
+    toc: true
     df-print: paged
+execution:
+  warning: false
 editor: visual
 ---
 
@@ -16,6 +19,7 @@ In this notebook, we build models for data shown in Fig. 1B of XXX using the log
 #| output: false
 # Load necessary libraries
 library(tidyverse)
+library(magrittr)
 library(ggformula)
 
 theme_set(theme_minimal())
@@ -24,9 +28,9 @@ theme_set(theme_minimal())
 ## Specify variables
 
 ```{r}
-b0_var <- 5:10
-b1_var <- -8:8
-s_var  <- 1:3
+b0_var <- 9:11
+b1_var <- -6:-8
+s_var  <- 0:2
 X_var  <- 0:1
 Y_var  <- 0:15
 
@@ -37,7 +41,7 @@ X_fix  <- 1
 Y_fix  <- 3
 ```
 
-## No association assumption
+## No association between X and Y
 
 ### Sample space
 
@@ -60,16 +64,22 @@ m <- ss %>%
   mutate(
     K = TRUE
   ) %>%
-  ungroup() %>%
-  # model checking and normalization
-  mutate(
-    p = K / sum(K)
-  ) %>%
-  # marginalize over X and Y
+  ungroup()
+```
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+
+m
+```
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
   group_by(X, Y) %>%
-  summarize(
-    p = sum(p)
-  ) %>% 
+  summarize(p = sum(p)) %>% 
   ungroup()
 
 m
@@ -87,14 +97,14 @@ gf_tile(
     title = "M0",
     x     = "X (Condition: 0 = Saline, 1 = LPS)",
     y     = "Y (UCP1 Expression Level)",
-    fill  = "P(x, y | K)"
+    fill  = "p(x, y | K)"
   ) %>%
   gf_refine(
     scale_fill_gradient(low = "white", high = "blue"),
     scale_x_continuous(breaks = c(0, 1)))
 ```
 
-## Deterministic linear association: Fixed intercept and slope
+## Deterministic linear association: Fixed intercept and slope, no error
 
 ### Sample space
 
@@ -110,8 +120,6 @@ ss <- expand_grid(
 ss
 ```
 
-### Joint and marginal (data) probability distribution
-
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -119,16 +127,26 @@ m <- ss %>%
   mutate(
     K = (Y == b0 + b1 * X)
   ) %>%
-  ungroup() %>%
-  # model checking and normalization
-  mutate(
-    p = K / sum(K)
-  ) %>%
-  # marginalize over X and Y
+  ungroup()
+
+m
+```
+
+### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
   group_by(X, Y) %>%
-  summarize(
-    p = sum(p)
-  ) %>% 
+  summarize(p = sum(p)) %>% 
   ungroup()
 
 m
@@ -146,13 +164,12 @@ gf_tile(
     title = "M1",
     x     = "X (Condition: 0 = Saline, 1 = LPS)",
     y     = "Y (UCP1 Expression Level)",
-    fill  = "P(x, y | K)"
+    fill  = "p(x, y | K)"
   ) %>%
   gf_refine(
     scale_fill_gradient(low = "white", high = "blue"),
     scale_x_continuous(breaks = c(0, 1)))
 ```
-
 
 ## Stochastic linear association: fixed slope, intercept, and error spread
 
@@ -171,8 +188,6 @@ ss <- expand_grid(
 ss
 ```
 
-### Joint and marginal (data) probability distribution
-
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -180,16 +195,26 @@ m <- ss %>%
   mutate(
     K = abs(Y - (b0 + b1 * X)) <= s
   ) %>%
-  ungroup() %>%
-  # model checking and normalization
-  mutate(
-    p = K / sum(K)
-  ) %>%
-  # marginalize over X and Y
+  ungroup()
+
+m
+```
+
+### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
   group_by(X, Y) %>%
-  summarize(
-    p = sum(p)
-  ) %>% 
+  summarize(p = sum(p)) %>% 
   ungroup()
 
 m
@@ -204,10 +229,10 @@ gf_tile(
   color = "black",
   fill = ~ p) %>%
   gf_labs(
-    title = "M1",
+    title = "M2",
     x     = "X (Condition: 0 = Saline, 1 = LPS)",
     y     = "Y (UCP1 Expression Level)",
-    fill  = "P(x, y | K)"
+    fill  = "p(x, y | K)"
   ) %>%
   gf_refine(
     scale_fill_gradient(low = "white", high = "blue"),
@@ -231,8 +256,6 @@ ss <- expand_grid(
 ss
 ```
 
-### Joint and marginal (data) probability distribution
-
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -240,16 +263,26 @@ m <- ss %>%
   mutate(
     K = abs(Y - (b0 + b1 * X)) <= s
   ) %>%
-  ungroup() %>%
-  # model checking and normalization
-  mutate(
-    p = K / sum(K)
-  ) %>%
-  # marginalize over X and Y
+  ungroup()
+
+m
+```
+
+### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
   group_by(X, Y) %>%
-  summarize(
-    p = sum(p)
-  ) %>% 
+  summarize(p = sum(p)) %>% 
   ungroup()
 
 m
@@ -264,10 +297,10 @@ gf_tile(
   color = "black",
   fill = ~ p) %>%
   gf_labs(
-    title = "M1",
+    title = "M3",
     x     = "X (Condition: 0 = Saline, 1 = LPS)",
     y     = "Y (UCP1 Expression Level)",
-    fill  = "P(x, y | K)"
+    fill  = "p(x, y | K)"
   ) %>%
   gf_refine(
     scale_fill_gradient(low = "white", high = "blue"),
@@ -291,8 +324,6 @@ ss <- expand_grid(
 ss
 ```
 
-### Joint and marginal (data) probability distribution
-
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -300,16 +331,26 @@ m <- ss %>%
   mutate(
     K = abs(Y - (b0 + b1 * X)) <= s
   ) %>%
-  ungroup() %>%
-  # model checking and normalization
-  mutate(
-    p = K / sum(K)
-  ) %>%
-  # marginalize over X and Y
+  ungroup()
+
+m
+```
+
+### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
   group_by(X, Y) %>%
-  summarize(
-    p = sum(p)
-  ) %>% 
+  summarize(p = sum(p)) %>% 
   ungroup()
 
 m
@@ -324,10 +365,77 @@ gf_tile(
   color = "black",
   fill = ~ p) %>%
   gf_labs(
-    title = "M1",
+    title = "M4",
     x     = "X (Condition: 0 = Saline, 1 = LPS)",
     y     = "Y (UCP1 Expression Level)",
-    fill  = "P(x, y | K)"
+    fill  = "p(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+## Stochastic linear association: fixed intercept and variable slope, no error
+
+### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_var,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = (Y == b0 + b1 * X)
+  ) %>%
+  ungroup()
+
+m
+```
+
+### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
+  group_by(X, Y) %>%
+  summarize(p = sum(p)) %>% 
+  ungroup()
+
+m
+```
+
+### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M5",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "p(x, y | K)"
   ) %>%
   gf_refine(
     scale_fill_gradient(low = "white", high = "blue"),
@@ -351,8 +459,6 @@ ss <- expand_grid(
 ss
 ```
 
-### Joint and marginal (data) probability distribution
-
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -360,16 +466,26 @@ m <- ss %>%
   mutate(
     K = abs(Y - (b0 + b1 * X)) <= s
   ) %>%
-  ungroup() %>%
-  # model checking and normalization
-  mutate(
-    p = K / sum(K)
-  ) %>%
-  # marginalize over X and Y
+  ungroup()
+
+m
+```
+
+### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
   group_by(X, Y) %>%
-  summarize(
-    p = sum(p)
-  ) %>% 
+  summarize(p = sum(p)) %>% 
   ungroup()
 
 m
@@ -384,10 +500,10 @@ gf_tile(
   color = "black",
   fill = ~ p) %>%
   gf_labs(
-    title = "M1",
+    title = "M6",
     x     = "X (Condition: 0 = Saline, 1 = LPS)",
     y     = "Y (UCP1 Expression Level)",
-    fill  = "P(x, y | K)"
+    fill  = "p(x, y | K)"
   ) %>%
   gf_refine(
     scale_fill_gradient(low = "white", high = "blue"),
@@ -411,8 +527,6 @@ ss <- expand_grid(
 ss
 ```
 
-### Joint and marginal (data) probability distribution
-
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -420,16 +534,26 @@ m <- ss %>%
   mutate(
     K = abs(Y - (b0 + b1 * X)) <= s
   ) %>%
-  ungroup() %>%
-  # model checking and normalization
-  mutate(
-    p = K / sum(K)
-  ) %>%
-  # marginalize over X and Y
+  ungroup()
+
+m
+```
+
+### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
   group_by(X, Y) %>%
-  summarize(
-    p = sum(p)
-  ) %>% 
+  summarize(p = sum(p)) %>% 
   ungroup()
 
 m
@@ -444,10 +568,10 @@ gf_tile(
   color = "black",
   fill = ~ p) %>%
   gf_labs(
-    title = "M1",
+    title = "M7",
     x     = "X (Condition: 0 = Saline, 1 = LPS)",
     y     = "Y (UCP1 Expression Level)",
-    fill  = "P(x, y | K)"
+    fill  = "p(x, y | K)"
   ) %>%
   gf_refine(
     scale_fill_gradient(low = "white", high = "blue"),
