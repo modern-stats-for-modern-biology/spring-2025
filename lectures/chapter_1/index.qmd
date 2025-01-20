@@ -142,7 +142,7 @@ ls.str()
 ```
 :::
 
-## R: Objects and function calls
+## R: Functions
 
 -   Calling a function instructs the computer to execute the code stored within that function
 
@@ -152,7 +152,16 @@ ls.str()
 
 ::: fragment
 ```{r}
-print("Hello world!")
+#| output-location: default
+message <- "Hello world!"
+```
+:::
+
+&nbsp;
+
+::: fragment
+```{r}
+print(message)
 ```
 :::
 
@@ -160,13 +169,29 @@ print("Hello world!")
 
 ::: fragment
 ```{r}
-"Hello world!"
+message
 ```
 :::
 
-## R: Function calls
+## R: Calling a function
+
+```{r}
+#| eval: false
+#| output-location: default
+help(rnorm) # same as ?rnorm
+```
+
+## X
+
+Exact matching on tags. For each named supplied argument the list of formal arguments is searched for an item whose name matches exactly. It is an error to have the same formal argument match several actuals or vice versa.
+Partial matching on tags. Each remaining named supplied argument is compared to the remaining formal arguments using partial matching. If the name of the supplied argument matches exactly with the first part of a formal argument then the two arguments are considered to be matched. It is an error to have multiple partial matches. Notice that if f <- function(fumble, fooey) fbody, then f(f = 1, fo = 2) is illegal, even though the 2nd actual argument only matches fooey. f(f = 1, fooey = 2) is legal though since the second argument matches exactly and is removed from consideration for partial matching. If the formal arguments contain ... then partial matching is only applied to arguments that precede it.
+Positional matching. Any unmatched formal arguments are bound to unnamed supplied arguments, in order. If there is a ... argument, it will take up the remaining arguments, tagged or not.
+If any arguments remain unmatched an error is declared.
+
 
 arguments, positional, keyword, default
+
+show example of function help
 
 ## R: Function composition
 
@@ -441,13 +466,22 @@ ls()
 ```
 :::
 
+
+## R: Packages
+
+XXX
+
+## R: Scope
+
+XXX
+
 ## R: Help
 
 ::: fragment
 ```{r}
 #| eval: false
 #| output-location: default
-?rm # for help on the `rm` function, same as `help(rm)`
+?mean # for help on the `mean` function, same as `help(mean)` or `help("mean")`
 ```
 :::
 
@@ -457,15 +491,38 @@ ls()
 ```{r}
 #| eval: false
 #| output-location: default
-??rm # to search help for the "rm" string, same as `help.search("rm")`
+??mean # to search help for the "mean" string, same as `help.search("mean")`
 ```
 :::
 
  
 
 ::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+help("mean", package = "mosaic")
+```
+:::
+
+ 
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+help(package = "mosaic")
+```
+:::
+
+::: fragment
 For more help on how to get help go to <https://www.r-project.org/help.html>
 :::
+
+-   [RDocumentation](https://www.rdocumentation.org)
+-   [rdrr.io](https://rdrr.io/)
+-   [Rseek](https://rseek.org/)
+-   [Search R project](https://search.r-project.org/)
 
 ## R: Vectors
 
@@ -816,10 +873,16 @@ df
 ```
 
 -   This data frame is organized in a "tidy" format:
-    -   Each row represents a **observation** (person)
+    -   Each row represents a **observation** (person) [use one dataframe for each type/class of observation unit]
     -   Each column represents a **variable** (name, height, weight)
     -   Each value represents a **measurement** (James, 180, 80)
 -   It's generally good practice to format data frames in a tidy way ("to keep things tidy")
+
+-   Metadata/codebook/samplesheet (details re: unit of observation, description of columns, units of numerical variables, levels of categorical variables, data source, etc.) `?mtcars`
+
+-   Sample vs census
+
+-   The statistical thinker seeks to identify patterns in data, i.e., relationships between variables. But it is not easy to do this by direct examination of a data frame.
 
 ## R: Data frames
 
