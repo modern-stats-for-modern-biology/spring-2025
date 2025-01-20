@@ -93,7 +93,7 @@ message <- "Hello world!"
 ```
 :::
 
--   You can access the value or code stored in an object by using its name
+-   An object can be retrieved from the environment using its name
 
 ::: fragment
 ```{r}
@@ -107,7 +107,7 @@ print(message)
 
 -   Names are case-sensitive
 
--   A valid name must start with a letter (or a dot followed by a letter)
+-   A valid name must start with a letter or a dot
 
 -   If a name is enclosed in back-ticks (\`), there are essentially no restrictions on the characters that can be used, including spaces and special characters
 
@@ -142,18 +142,21 @@ ls.str()
 ```
 :::
 
-## R: Functions
+## R: Functions and function calls
 
--   Calling a function instructs the computer to execute the code stored within that function
+-   Calling a function instructs the computer to execute the code stored in the function
 
--   A function takes zero, one, or more input objects (**arguments**) and returns an output object
+-   A function takes 0, 1, or more input objects (**arguments**) and returns 1 output object
 
--   To call a function, place its arguments (separated by commas and wrapped in parentheses) after its name
+-   To call a function, place its arguments (with or without a name, separated by commas, and wrapped in parentheses) after its name
 
 ::: fragment
 ```{r}
 #| output-location: default
-message <- "Hello world!"
+add_up_two_nums <- function(num1, num2) {
+  out <- num1 + num2
+  return(out)
+}
 ```
 :::
 
@@ -161,11 +164,41 @@ message <- "Hello world!"
 
 ::: fragment
 ```{r}
+add_up_two_nums
+```
+:::
+
+::: fragment
+```{r}
+add_up_two_nums(2, 3)
+```
+:::
+
+::: fragment
+```{r}
+add_up_two_nums(num1 = 2, num2 = 3)
+```
+:::
+
+## R: The `print` function
+
+`print(x, ...)`
+
+-   The `print` function stores code that, when called, sends its first argument (named `x`) to an output device (screen, printer, file, etc.) and returns it invisibly as its output object
+
+```{r}
+#| echo: false
+#| output-location: default
+message <- "Hello world!"
+```
+
+::: fragment
+```{r}
 print(message)
 ```
 :::
 
--   `print` is called by default in R and therefore it can be omitted; it prints its argument and returns it invisibly
+-   The `print` function is called by default in R and therefore it can be omitted
 
 ::: fragment
 ```{r}
@@ -173,87 +206,227 @@ message
 ```
 :::
 
-## R: Calling a function
 
-```{r}
-#| eval: false
-#| output-location: default
-help(rnorm) # same as ?rnorm
+## R: Functions and function calls
+
+```{=html}
+<iframe src="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/Binomial" width="100%" height="100%"></iframe>
 ```
 
-## X
+## R: Functions and function calls
 
-Exact matching on tags. For each named supplied argument the list of formal arguments is searched for an item whose name matches exactly. It is an error to have the same formal argument match several actuals or vice versa.
-Partial matching on tags. Each remaining named supplied argument is compared to the remaining formal arguments using partial matching. If the name of the supplied argument matches exactly with the first part of a formal argument then the two arguments are considered to be matched. It is an error to have multiple partial matches. Notice that if f <- function(fumble, fooey) fbody, then f(f = 1, fo = 2) is illegal, even though the 2nd actual argument only matches fooey. f(f = 1, fooey = 2) is legal though since the second argument matches exactly and is removed from consideration for partial matching. If the formal arguments contain ... then partial matching is only applied to arguments that precede it.
-Positional matching. Any unmatched formal arguments are bound to unnamed supplied arguments, in order. If there is a ... argument, it will take up the remaining arguments, tagged or not.
-If any arguments remain unmatched an error is declared.
+`dbinom(x, size, prob, log = FALSE)`
 
+-   It’s useful to distinguish between the formal arguments of a function, and the arguments supplied when calling a function
 
-arguments, positional, keyword, default
+-   When calling a function, supplied arguments are matched with the formal arguments first by exact name (perfect matching), then by partial name (prefix matching), and finally by position (if unnamed or name does not match)
 
-show example of function help
+-   When calling a function, I'd recommend that you:
+
+    -   Use positional matching only for the first one or two commonly used arguments to enhance readability
+
+    -   Avoid using prefix matching
+
+    -   Supply named arguments after unnamed arguments
+
+-   If a function includes the special "match all the unmatched" `...` argument, any formal argument that follow `...` can only be supplied using its exact name
+
+-   Arguments can have default values, allowing them to be omitted in function calls
+
+-   If arguments without default values remain unmatched, R will throw an error 
+
+## R: Functions and function calls
+
+`dbinom(x, size, prob, log = FALSE)`
+
+::: fragment
+```{r}
+dbinom(x = 3, size = 10, prob = 0.5, log = FALSE)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(x = 3, size = 10, prob = 0.5, log = TRUE)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(x = 3, size = 10, prob = 0.5)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(size = 10, x = 3, prob = 0.5)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(size = 10, 3, TRUE, prob = 0.5)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(3, 10, 0.5)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(10, 3, 0.5)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(3, size = 10, prob = 0.5)
+```
+:::
+
+::: fragment
+```{r}
+a <- 3; b <- 10; c <- 0.5
+
+dbinom(a, size = b, prob = c) # or `dbinom(a, b, c)`
+```
+:::
 
 ## R: Function composition
 
 -   The output of a function can be used as the input of another function; this is called **function composition**
 
--   Imagine you want to compute the population standard deviation using `sqrt()` and `mean()` as building blocks:
+-   Imagine you want to compute the standard deviation, which is the square root of the mean squared deviation
+
+-   `sqrt` and `mean` are built-in functions, `squared` and `deviation` can be defined as:
 
 ::: fragment
 ```{r}
 #| output-location: default
-square <- function(x) x^2
+squared <- function(x) x^2
 deviation <- function(x) x - mean(x)
 ```
 :::
 
--   You either nest the function calls:
+-   You can either nest the function calls:
 
 ::: fragment
 ```{r}
-x <- runif(100)
+d <- c(5, 7, 4, 5, 4, 5, 5, 3, 4, 2) # input data
 
-sqrt(mean(square(deviation(x))))
+sqrt(mean(squared(deviation(d))))
 ```
 :::
 
--   Or you save the intermediate results as variables:
+-   Or you can store the intermediate values as objects to be passed from fn to fn:
 
 ::: fragment
 ```{r}
-out <- deviation(x)
-out <- square(out)
-out <- mean(out)
-out <- sqrt(out)
-out
+dev <- deviation(d)
+squared.dev <- squared(dev)
+mean.squared.dev <- mean(squared.dev)
+std.dev <- sqrt(mean.squared.dev)
+std.dev
 ```
 :::
 
 ## R: Function composition
 
--   Or you use the pipe operator `%>%` (pronounced as “and then”) provided by the `magrittr` package and automatically loaded by tghe `dplyr` package:
+::: nonincremental
+-   Or you can use the pipe operator `%>%` provided by the `magrittr` package and automatically loaded by the `dplyr` package:
+:::
+
+-   `d %>% f()` is equivalent to `f(d)`
 
 ::: fragment
 ```{r}
-x %>%
+d %>%
   deviation() %>%
-  square() %>%
+  squared() %>%
   mean() %>%
   sqrt()
 ```
 :::
 
--   `x %>% f` is equivalent to `x %>% f()` which is equivalent to `f(x)`
+::: fragment
+```{r}
+d %>% deviation %>% squared %>% mean %>% sqrt
+```
+:::
 
--   `x %>% f(y)` is equivalent to `f(x, y)`
-
--   `x %>% f(y, .)` is equivalent to `f(y, x)`
-
--   Since version 4.1.0, R has a native pipe operator `|>` whose behaviour is by and large the same as that of `%>%`, but with [some crucial differences](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe)!
+-   Since version 4.1.0, R has a native pipe operator `|>` whose behaviour is by and large the same as that of `%>%`, but with [some subtle but crucial differences](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe)!
 
 -   The pipe allows you to focus on the high-level composition of functions rather than the low-level flow of data
 
 -   The focus is on what’s being done (the verbs), rather than on what’s being modified (the nouns)
+
+## R: Function composition
+
+```{r}
+dbinom(3, size = 10, prob = 0.5)
+```
+
+::: fragment
+```{r}
+a <- 3; b <- 10; c <- 0.5
+
+dbinom(a, size = b, prob = c)
+```
+:::
+
+::: fragment
+```{r}
+a %>% dbinom(size = b, prob = c)
+```
+:::
+
+
+::: fragment
+```{r}
+dbinom(a, b, c)
+```
+:::
+
+::: fragment
+```{r}
+a %>% dbinom(b, c)
+```
+:::
+
+-   You can use `.` (or `_` if using the native pipe) as a placeholder for the object being piped
+
+::: fragment
+```{r}
+b %>% dbinom(a, size = ., prob = c)
+```
+:::
+
+::: fragment
+```{r}
+b %>% dbinom(a, ., c)
+```
+:::
+
+::: fragment
+```{r}
+b |> dbinom(a, size = _, prob = c)
+```
+:::
+
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+b |> dbinom(a, _, c) # error: pipe placeholder can only be used as a named argument!
+```
+:::
+
+
+
 
 ## R: Operators
 
@@ -332,7 +505,7 @@ x
 
 ::: fragment
 ```{r}
-assign("x", 17.2) # assigns the value `17.2` to the variable `x` and invisibly returns `NULL`
+assign("x", 17.2) # assigns the value `17.2` to the object named `x` and invisibly returns `NULL`
 
 x
 ```
@@ -1437,4 +1610,3 @@ gf_percents(~ species, data = penguins)
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
