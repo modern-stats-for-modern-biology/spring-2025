@@ -25,7 +25,55 @@ library(ggformula)
 theme_set(theme_minimal())
 ```
 
-## Specify variables
+## Urn model
+
+### Specify variables
+
+```{r}
+B_var <- 0:1 # each ball can be blue (1) or white (0)
+D_var <- 1:4
+```
+
+```{r}
+# Generate the sample space
+ss <- expand_grid(
+  B1 = B_var,
+  B2 = B_var,
+  B3 = B_var,
+  B4 = B_var,
+  D  = D_var)
+
+ss
+```
+
+```{r}
+# Add the premises to the sample space
+ss <- ss %>%
+  rowwise() %>%
+  mutate(
+    K = (B1 + B2 + B3 + B4) == 3  # premise: Exactly 3 blue balls
+  ) %>%
+  ungroup()
+
+ss
+```
+
+```{r}
+# Compute the probability of each world
+ss <- ss %>%
+  mutate(p = K / sum(K))  # normalize probabilities for worlds satisfying the premise
+
+ss
+```
+
+```{r}
+ss %>% filter((D == 1 & B1 == 1) | (D == 2 & B2 == 1) | (D == 3 & B3 == 1) | (D == 4 & B4 == 1)) %>% summarize(P = sum(p)) %>% pull(P)
+```
+
+
+## Linear model
+
+### Specify variables
 
 ```{r}
 b0_var <- 9:11
@@ -41,9 +89,9 @@ X_fix  <- 1
 Y_fix  <- 3
 ```
 
-## No association between X and Y
+### No association between X and Y
 
-### Sample space
+#### Sample space
 
 ```{r}
 # Define the sample space with constant spread
@@ -55,7 +103,7 @@ ss <- expand_grid(
 ss
 ```
 
-### Joint and marginal (data) probability distribution
+#### Model specification
 
 ```{r}
 m <- ss %>%
@@ -67,6 +115,8 @@ m <- ss %>%
   ungroup()
 ```
 
+#### Joint probability distribution
+
 ```{r}
 m %<>%
   # calculate p of each possible world given the model assumptions
@@ -74,6 +124,8 @@ m %<>%
 
 m
 ```
+
+#### Marginal (data) probability distribution
 
 ```{r}
 m %<>%
@@ -85,7 +137,7 @@ m %<>%
 m
 ```
 
-### Plot data probability distribution (DGP model)
+#### Plot data probability distribution (DGP model)
 
 ```{r}
 gf_tile(
@@ -104,9 +156,9 @@ gf_tile(
     scale_x_continuous(breaks = c(0, 1)))
 ```
 
-## Deterministic linear association: Fixed intercept and slope, no error
+### Deterministic linear association: Fixed intercept and slope, no error
 
-### Sample space
+#### Sample space
 
 ```{r}
 # Define the sample space with constant spread
@@ -120,6 +172,8 @@ ss <- expand_grid(
 ss
 ```
 
+#### Model specification
+
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -132,7 +186,7 @@ m <- ss %>%
 m
 ```
 
-### Joint probability distribution
+#### Joint probability distribution
 
 ```{r}
 m %<>%
@@ -140,7 +194,7 @@ m %<>%
   mutate(p = K / sum(K))
 ```
 
-### Marginal (data) probability distribution
+#### Marginal (data) probability distribution
 
 ```{r}
 m %<>%
@@ -152,7 +206,7 @@ m %<>%
 m
 ```
 
-### Plot data probability distribution (DGP model)
+#### Plot data probability distribution (DGP model)
 
 ```{r}
 gf_tile(
@@ -171,9 +225,9 @@ gf_tile(
     scale_x_continuous(breaks = c(0, 1)))
 ```
 
-## Stochastic linear association: fixed slope, intercept, and error spread
+### Stochastic linear association: fixed slope, intercept, and error spread
 
-### Sample space
+#### Sample space
 
 ```{r}
 # Define the sample space with constant spread
@@ -188,6 +242,8 @@ ss <- expand_grid(
 ss
 ```
 
+#### Model specification
+
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -200,7 +256,7 @@ m <- ss %>%
 m
 ```
 
-### Joint probability distribution
+#### Joint probability distribution
 
 ```{r}
 m %<>%
@@ -208,7 +264,7 @@ m %<>%
   mutate(p = K / sum(K))
 ```
 
-### Marginal (data) probability distribution
+#### Marginal (data) probability distribution
 
 ```{r}
 m %<>%
@@ -220,7 +276,7 @@ m %<>%
 m
 ```
 
-### Plot data probability distribution (DGP model)
+#### Plot data probability distribution (DGP model)
 
 ```{r}
 gf_tile(
@@ -239,9 +295,9 @@ gf_tile(
     scale_x_continuous(breaks = c(0, 1)))
 ```
 
-## Stochastic linear association: fixed intercept and slope, variable error spread
+### Stochastic linear association: fixed intercept and slope, variable error spread
 
-### Sample space
+#### Sample space
 
 ```{r}
 # Define the sample space with constant spread
@@ -256,6 +312,8 @@ ss <- expand_grid(
 ss
 ```
 
+#### Model specification
+
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -268,7 +326,7 @@ m <- ss %>%
 m
 ```
 
-### Joint probability distribution
+#### Joint probability distribution
 
 ```{r}
 m %<>%
@@ -276,7 +334,7 @@ m %<>%
   mutate(p = K / sum(K))
 ```
 
-### Marginal (data) probability distribution
+#### Marginal (data) probability distribution
 
 ```{r}
 m %<>%
@@ -288,7 +346,7 @@ m %<>%
 m
 ```
 
-### Plot data probability distribution (DGP model)
+#### Plot data probability distribution (DGP model)
 
 ```{r}
 gf_tile(
@@ -307,9 +365,9 @@ gf_tile(
     scale_x_continuous(breaks = c(0, 1)))
 ```
 
-## Stochastic linear association: variable intercept, fixed slope and error spread
+### Stochastic linear association: variable intercept, fixed slope and error spread
 
-### Sample space
+#### Sample space
 
 ```{r}
 # Define the sample space with constant spread
@@ -324,6 +382,8 @@ ss <- expand_grid(
 ss
 ```
 
+#### Model specification
+
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -336,7 +396,7 @@ m <- ss %>%
 m
 ```
 
-### Joint probability distribution
+#### Joint probability distribution
 
 ```{r}
 m %<>%
@@ -344,7 +404,7 @@ m %<>%
   mutate(p = K / sum(K))
 ```
 
-### Marginal (data) probability distribution
+#### Marginal (data) probability distribution
 
 ```{r}
 m %<>%
@@ -356,7 +416,7 @@ m %<>%
 m
 ```
 
-### Plot data probability distribution (DGP model)
+#### Plot data probability distribution (DGP model)
 
 ```{r}
 gf_tile(
@@ -375,9 +435,9 @@ gf_tile(
     scale_x_continuous(breaks = c(0, 1)))
 ```
 
-## Stochastic linear association: fixed intercept and variable slope, no error
+### Stochastic linear association: fixed intercept and variable slope, no error
 
-### Sample space
+#### Sample space
 
 ```{r}
 # Define the sample space with constant spread
@@ -391,6 +451,8 @@ ss <- expand_grid(
 ss
 ```
 
+#### Model specification
+
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -403,7 +465,7 @@ m <- ss %>%
 m
 ```
 
-### Joint probability distribution
+#### Joint probability distribution
 
 ```{r}
 m %<>%
@@ -411,7 +473,7 @@ m %<>%
   mutate(p = K / sum(K))
 ```
 
-### Marginal (data) probability distribution
+#### Marginal (data) probability distribution
 
 ```{r}
 m %<>%
@@ -423,7 +485,7 @@ m %<>%
 m
 ```
 
-### Plot data probability distribution (DGP model)
+#### Plot data probability distribution (DGP model)
 
 ```{r}
 gf_tile(
@@ -442,9 +504,9 @@ gf_tile(
     scale_x_continuous(breaks = c(0, 1)))
 ```
 
-## Stochastic linear association: fixed intercept and variable slope, fixed error spread
+### Stochastic linear association: fixed intercept and variable slope, fixed error spread
 
-### Sample space
+#### Sample space
 
 ```{r}
 # Define the sample space with constant spread
@@ -459,6 +521,8 @@ ss <- expand_grid(
 ss
 ```
 
+#### Model specification
+
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -471,7 +535,7 @@ m <- ss %>%
 m
 ```
 
-### Joint probability distribution
+#### Joint probability distribution
 
 ```{r}
 m %<>%
@@ -479,7 +543,7 @@ m %<>%
   mutate(p = K / sum(K))
 ```
 
-### Marginal (data) probability distribution
+#### Marginal (data) probability distribution
 
 ```{r}
 m %<>%
@@ -491,7 +555,7 @@ m %<>%
 m
 ```
 
-### Plot data probability distribution (DGP model)
+#### Plot data probability distribution (DGP model)
 
 ```{r}
 gf_tile(
@@ -510,9 +574,9 @@ gf_tile(
     scale_x_continuous(breaks = c(0, 1)))
 ```
 
-## Stochastic linear association: variable intercept, slope, and error spread
+### Stochastic linear association: variable intercept, slope, and error spread
 
-### Sample space
+#### Sample space
 
 ```{r}
 # Define the sample space with constant spread
@@ -527,6 +591,8 @@ ss <- expand_grid(
 ss
 ```
 
+#### Model specification
+
 ```{r}
 m <- ss %>%
   # model assumptions/knowledge base/background info/evidence/premises
@@ -539,7 +605,7 @@ m <- ss %>%
 m
 ```
 
-### Joint probability distribution
+#### Joint probability distribution
 
 ```{r}
 m %<>%
@@ -547,7 +613,7 @@ m %<>%
   mutate(p = K / sum(K))
 ```
 
-### Marginal (data) probability distribution
+#### Marginal (data) probability distribution
 
 ```{r}
 m %<>%
@@ -559,7 +625,7 @@ m %<>%
 m
 ```
 
-### Plot data probability distribution (DGP model)
+#### Plot data probability distribution (DGP model)
 
 ```{r}
 gf_tile(

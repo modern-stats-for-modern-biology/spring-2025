@@ -1,6 +1,5 @@
 ---
-title: "Exploring data using R"
-subtitle: "Chapter 1"
+title: "R programming fundamentals"
 date: 2025-01-21
 author: Edoardo \"Dado\" Marcora
 format:
@@ -22,41 +21,55 @@ df-print: paged
 library(coursekata)
 ```
 
-## The challenge of modern biology
+## R: Books
 
--   Biological processes are complex and their output variable
-
-::: {.fragment style="text-align: center"}
-[![](images/human_evolution.jpg){height="180"}](https://medium.com/@alasaarela/ai-has-taken-over-our-cultural-evolution-aec131bd4087)
+::::: columns
+::: column
+[![R for Data Science (2e)](images/r4ds_cover.jpg){height="550"}](https://r4ds.hadley.nz/)
 :::
 
--   This output can be as simple as the expression level of a single gene in a piece of tissue or as complex as a biological organism
--   Biological data are therefore variable and can be extremely complex (e.g., multi-ome data from thousands of single cells in their spatial and temporal contexts)
--   The challenge of modern biology: **Learning about biological systems from variation in complex data**
--   Learning about the real world from variation in data is the main goal of statistics
--   Data viz and summary stats are used to explore and describe variation in data
+::: column
+[![Advanced R (2e)](images/adv-r_cover.jpg){height="550"}](https://adv-r.hadley.nz/)
+:::
+:::::
 
-## Data analysis pipeline/workflow
+## R: Cheatsheets
 
-:::::: columns
-::: {.column .fragment width="30%"}
-![](images/FisherParadigm.png){height="500"}
+### Tidyverse
+
+::: columns
+
+::: column
+
+::: nonincremental
+-   [Data import with `readr`](https://rstudio.github.io/cheatsheets/html/data-import.html)
+-   [Data tidying with `tidyr`](https://rstudio.github.io/cheatsheets/html/tidyr.html)
+-   [Data transformation with `dplyr`](https://rstudio.github.io/cheatsheets/html/data-transformation.html)
+-   [Data visualization with `ggplot2`](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
 :::
 
-::: {.column .fragment width="30%"}
-![](images/data_pipeline.webp){height="500"}
-
-[Leek and Peng (2015)](https://doi.org/10.1038/520612a)
 :::
 
-::: {.column .fragment width="40%"}
-![](images/iterativeparadigm.png){height="500"}
+::: column
 
-[Tukey (1977)](https://search.worldcat.org/title/Exploratory-data-analysis/oclc/3058187)
+![](images/whole-game.png){height="150"}
 
-[Exploratory (EDA) vs confirmatory data analysis (CDA)]{style="font-size: 0.6em"}
 :::
-::::::
+
+:::
+
+### CourseKata
+
+::: nonincremental
+-   [R cheatsheet (XCD)](r-cheatsheet-XCD.pdf)
+:::
+
+### R syntax comparison
+
+::: nonincremental
+-   [Dollar sign vs Formula vs Tidyverse syntax](syntax.pdf)
+:::
+
 
 ## R: Objects and function calls
 
@@ -99,24 +112,40 @@ print(message)
 
 -   A valid name consists of letters, numbers, and the dot or underscore characters
 
--   A valid name must start with a letter or a dot not followed by a number
-
 -   Names are case-sensitive
 
--   If a name is enclosed in back-ticks (**`` ` ``**), there are essentially no restrictions on the characters that can be used, including spaces and special characters
+-   A valid name must start with a letter (or a dot followed by a letter)
+
+-   If a name is enclosed in back-ticks (&grave;), there are essentially no restrictions on the characters that can be used, including spaces and special characters
+
+```{r}
+#| echo: false
+#| output-location: fragment
+rm(list = ls())
+```
 
 ::: fragment
 ```{r}
 #| output-location: default
+`Valid name with spaces and special character!` <- "Hello world!"
+
 valid_name <- 5
 
-VALID_NAME <- "foo" # all upper-case names are usually reserved for user-defined constants
+VALID_NAME <- TRUE # all upper-case names are usually reserved for user-defined constants
 
-valid.name <- TRUE
+valid.name <- NULL
 
-.valid_name <- NULL
+.valid_name <- NA
+```
+:::
 
-`Valid name with spaces and special characters!` <- pi # `pi` is a built-in constant with value 3.142
+&nbsp;
+
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+ls.str()
 ```
 :::
 
@@ -141,6 +170,11 @@ print("Hello world!")
 "Hello world!"
 ```
 :::
+
+## R: Function calls
+
+arguments, positional, keyword, default
+
 
 ## R: Function composition
 
@@ -198,7 +232,7 @@ x %>%
 
 -   `x %>% f(y, .)` is equivalent to `f(y, x)`
 
--   Since version 4.1.0, R has a native pipe operator `|>` whose behaviour is by and large the same as that of `%>%`, but with [some crucial differences](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe)! 
+-   Since version 4.1.0, R has a native pipe operator `|>` whose behaviour is by and large the same as that of `%>%`, but with [some crucial differences](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe)!
 
 -   The pipe allows you to focus on the high-level composition of functions rather than the low-level flow of data
 
@@ -425,7 +459,7 @@ ls()
 ```
 :::
 
-&nbsp;
+ 
 
 ::: fragment
 ```{r}
@@ -435,7 +469,7 @@ ls()
 ```
 :::
 
-&nbsp;
+ 
 
 ::: fragment
 For more help on how to get help go to <https://www.r-project.org/help.html>
@@ -1347,3 +1381,4 @@ gf_percents(~ species, data = penguins)
             -   Causal imputation: Imputation of missing data/knowing a cause means being able to impute unobserved counterfactual outcomes "What if I had done something else?"
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
