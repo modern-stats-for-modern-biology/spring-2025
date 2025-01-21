@@ -21,6 +21,51 @@ df-print: paged
 library(dplyr)
 ```
 
+## The three golden rules of statistics
+
+::: notes
+Stats as a checklist:
+
+1.  Check your data type
+2.  Select inference method
+3.  Calculate required sample statistics
+4.  Lookup critical values
+5.  Report results
+
+No!
+
+Statistics is mathematical modeling under uncertainty
+
+Statistical thinking
+:::
+
+::: nonincremental
+-   Know thy problem
+-   Know thy data
+-   Know thy tools
+:::
+
+&nbsp;
+
+::: fragment
+Source:
+
+{{< video https://youtu.be/be2wuOaglFY height="300" width="400">}}
+:::
+
+## Know thy tools
+
+::: {.text-align-center}
+
+![](images/womans-hands-cut-cake-pink-cream-shutterstock_587660750-35333562.jpg){height="500"}
+:::
+
+## Know thy tools
+
+::: {.text-align-center}
+![](images/gettyimages-157512755-2048x2048.jpg){height="500"}
+:::
+
 ## What is R?
 
 -   R is a *programming language*, i.e., a **language** used to communicate instructions to a computer
@@ -30,8 +75,6 @@ library(dplyr)
 -   *Syntax*: The set of rules that govern how symbols can be combined to form valid statements (e.g., function calls, assignments)
 
 -   *Semantics*: The meaning associated with syntactically valid statements (e.g., what operations a function performs, what value it returns)
-
--   In this course, we will use three languages—**R**, **logic**, and **mathematics**—to illustrate and apply probability theory and statistical inference
 
 ## R: Books
 
@@ -80,7 +123,7 @@ library(dplyr)
 
 -   In R, **everything that exists is an object** and **everything that happens is a function call**
 
--   Some objects (e.g., *vectors*, *lists* and *data frames*) store **data** (a.k.a. values)
+-   Some objects (e.g., *vectors*, *lists* and *data frames*) store **data** (a.k.a. *values*)
 
     -   **Numeric** (**Integer** and **Double**): `5` (5.0), `5L` (5), `17.2`, and `6.38E-4`
 
@@ -96,7 +139,7 @@ library(dplyr)
 
 -   Other objects (*functions*) store **code** (a.k.a. instructions)
 
--   An object is saved in the computer's memory (**environment**) only if given a name
+-   An object is saved in the computer's memory (*environment*) only if given a name
 
 ::: fragment
 ```{r}
@@ -184,13 +227,13 @@ sum_two_nums
 
 ::: fragment
 ```{r}
-sum_two_nums(2, 3)
+sum_two_nums(num1 = 2, num2 = 3)
 ```
 :::
 
 ::: fragment
 ```{r}
-sum_two_nums(num1 = 2, num2 = 3)
+sum_two_nums(2, 3)
 ```
 :::
 
@@ -212,7 +255,7 @@ print(message)
 ```
 :::
 
--   The `print` function is called by default in R and therefore it can be omitted
+-   If a function is not specified, the `print` function is called by default (and thus it can be omitted)
 
 ::: fragment
 ```{r}
@@ -231,7 +274,7 @@ sum_two_nums
 ## R: Functions and function calls
 
 ```{=html}
-<iframe src="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/Binomial" width="100%" height="100%"></iframe>
+<iframe src="https://www.rdocumentation.org/packages/stats/topics/Binomial" width="100%" height="100%"></iframe>
 ```
 
 ## R: Functions and function calls
@@ -244,7 +287,7 @@ sum_two_nums
 
 -   When calling a function, I'd recommend that you:
 
-    -   Use positional matching only for the first one or two commonly used arguments, if it enhances readibility
+    -   Use positional matching only for the first one or two commonly used arguments (if it enhances readibility)
 
     -   Avoid using prefix matching
 
@@ -252,9 +295,9 @@ sum_two_nums
 
 -   If a function includes the special "*match all the unmatched arguments*" `...` argument, any formal argument that follow `...` can only be supplied using its exact name
 
--   Arguments can have default values, allowing them to be omitted in function calls
+-   Arguments can have **default values**, allowing them to be omitted in function calls
 
--   If any argument without a default value remains unmatched, then R throws an error!
+-   R throws an error if any argument without a default value remains unmatched
 
 ## R: Functions and function calls
 
@@ -378,11 +421,12 @@ d %>% deviation %>% squared %>% mean %>% sqrt
 ```
 :::
 
--   Since version 4.1.0, R has a native pipe operator `|>` whose behaviour is by and large the same as that of `%>%`, but with a few [subtle but crucial differences](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe)!
-
 -   The pipe allows you to focus on the high-level composition of functions rather than the low-level flow of data
 
 -   The focus is on what’s being done (the verbs), rather than on what’s being modified (the nouns)
+
+-   Since version 4.1.0, R has a native pipe operator `|>` whose behaviour is by and large the same as that of `%>%`, but with a few [subtle but crucial differences](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe)!
+
 
 ## R: Function composition
 
@@ -426,13 +470,13 @@ b %>% dbinom(a, size = ., prob = c) # same as `dbinom(a, size = b, prob = c)`
 
 ::: fragment
 ```{r}
-b %>% dbinom(a, ., c) # same as `dbinom(a, b, c)`
+b |> dbinom(a, size = _, prob = c) # same as `dbinom(a, size = b, prob = c)`
 ```
 :::
 
 ::: fragment
 ```{r}
-b |> dbinom(a, size = _, prob = c) # same as `dbinom(a, size = b, prob = c)`
+b %>% dbinom(a, ., c) # same as `dbinom(a, b, c)`
 ```
 :::
 
@@ -555,13 +599,152 @@ x
 ```
 :::
 
-## R: Environments
+## R: Flow control
 
-::: nonincremental
--   An environment is a collection of objects (data and functions) stored in the computer’s memory, each with a unique name
+-   The two main ways to control the flow of execution in a program: **choices** and **loops**
+
+-   Choices (e.g., the `if` statement and the `ifelse` and `switch` functions) allow you to run different code depending on the input
+
+-   Loops (e.g., the `for` and `while` statements) allow you to repeatedly run code
+
+## R: Choices
+
+-   The basic form of an `if` statement is as follows:
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+if (condition) true_action
+if (condition) true_action else false_action
+```
 :::
 
--   Objects that you name in your code are stored in the so called **global environment**
+-   Typically the actions are contained within `{}`
+
+::: fragment
+```{r}
+grade <- 80
+
+if (grade > 90) {
+  "A"
+} else if (grade > 80) {
+  "B"
+} else if (grade > 50) {
+  "C"
+} else {
+  "F"
+}
+```
+:::
+
+## R: Choices
+
+::: nonincremental
+-   `if` returns a value that you can assign
+:::
+
+::: fragment
+```{r}
+grade <- 80
+
+passfail <- if (grade <= 50) "fail" else "pass"
+
+passfail
+```
+:::
+
+-   The `ifelse` (or `if_else` from the `dplyr` package) function is closely related to the `if` statement
+
+::: fragment
+```{r}
+passfail <- ifelse(grade <= 50, "fail", "pass")
+
+passfail
+```
+:::
+
+-   The `switch` function is closely related to the `if` statement and the `ifelse` (or `if_else`) function
+
+::: fragment
+```{r}
+operation <- "add"
+
+result <- switch(operation, add = 5 + 3, subtract = 5 - 3)
+
+result
+```
+:::
+
+## R: Loops
+
+-   The basic form of a `for` statement is as follows:
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+for (item in vector) perform_action
+```
+:::
+
+-   Typically the actions are contained within `{}`
+
+::: fragment
+```{r}
+for (i in 1:3) {
+  print(i)
+}
+```
+:::
+
+-   Another example:
+
+::: fragment
+```{r}
+xs <- c(1, 2, 3)
+
+for (x in xs) {
+  xs <- c(xs, x * 2)
+}
+
+xs
+```
+:::
+
+## R: Loops
+
+::: nonincremental
+-   The basic form of a `while` statement is as follows:
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+while(condition) perform_action
+```
+:::
+
+-   Typically the actions are contained within `{}`
+
+::: fragment
+```{r}
+for (i in 1:3) {
+  print(i)
+}
+```
+:::
+
+## R: Environments
+
+-   An **environment** is a collection of objects (data and functions) stored in the computer’s memory, each with a unique name within the environment
+
+-   A **session** refers to the period during which R is running, starting when you launch R and ending when you close it
+
+-   Each R session has a **global environment** where user-defined objects reside, and additional environments are created dynamically (e.g., when loading packages)
+
+-   Objects that you name in your code are stored in the global environment
 
 ```{r}
 #| echo: false
@@ -571,13 +754,13 @@ rm(list = ls())
 
 ::: fragment
 ```{r}
-1969
+666
 ```
 :::
 
 ::: fragment
 ```{r}
-x <- 1969
+x <- 666
 
 x
 ```
@@ -585,17 +768,18 @@ x
 
 ::: fragment
 ```{r}
-y <- (x / 30)
+#| output-location: default
+y <- (x / 6)
 
-y
+z <- (y > 100)
 ```
 :::
 
 ::: fragment
 ```{r}
-z <- (y > 30)
-
-z
+#| echo: false
+#| output-location: default
+ls.str()
 ```
 :::
 
@@ -641,9 +825,7 @@ ls()
 
 ## R: Packages
 
-::: nonincremental
--   A package is a collection of objects (functions and data) and their documentation stored in the computer’s disk
-:::
+-   A **package** is a collection of objects (functions and data) and their documentation stored in the computer’s disk
 
 -   Packages extend the functionality of R (so you don't have to reinvent the wheel!)
 
@@ -703,6 +885,7 @@ search()
 ## R: Packages and environments
 
 ::: nonincremental
+
 `base`
 
 :   Core R functions and utilities
@@ -735,7 +918,7 @@ search()
 ## R: Packages and environments
 
 ::: nonincremental
--   Use the `suppressPackageStartupMessages` function to suppress messages during the loading of a package
+-   Use the `suppressPackageStartupMessages` function to suppress messages that are generated when loading a package
 :::
 
 ::: fragment
@@ -745,7 +928,7 @@ suppressPackageStartupMessages(library(coursekata))
 ```
 :::
 
-&nbsp;
+ 
 
 ::: fragment
 ```{r}
@@ -756,13 +939,12 @@ search()
 ## R: Packages and environments
 
 ::: nonincremental
--   Once loaded, the objects (functions and data) contained in a package are accessible within the homonymous environment
+-   Once loaded, the objects (functions and data) contained in the package are accessible within the homonymous environment in the current session
 :::
 
 -   R searches for objects by name across all available environments in the order they appear in the search list
 
 -   The global environment (`.GlobalEnv`) is always searched first, followed by package environments in the order they were loaded, with the `base` package environment always appearing last
-
 
 ::: fragment
 ```{r}
@@ -785,27 +967,14 @@ conflicts()
 ## R: Packages and environments
 
 ::: nonincremental
--   You can explicitly specify the package using the :: operator to access a function from a particular package, avoiding ambiguity
+-   You can explicitly specify the environment using the :: operator to access an object from a particular package, avoiding ambiguity
 :::
 
 ::: fragment
 ```{r}
-#| output-location: default
-age <- c(25, 33, 35, 38, 48, 55, 55, 55, 56, 64)
-```
-:::
+age <- c(25, 33, 35, 38, 48, 55, 55, 55, 56, 64) # input data
 
-&nbsp;
-
-::: fragment
-```{r}
 mean(age)
-```
-:::
-
-::: fragment
-```{r}
-mosaic::mean(age)
 ```
 :::
 
@@ -817,15 +986,25 @@ mean(~ age)
 
 ::: fragment
 ```{r}
+mosaic::mean(~ age)
+```
+:::
+
+::: fragment
+```{r}
+base::mean(~ age)
+```
+:::
+
+::: fragment
+```{r}
 base::mean(age)
 ```
 :::
 
 ## R: Help
 
-::: nonincremental
--   Use the `?` operator or the `help` function to get the documentation for an object
-:::
+-   Use the `?` operator or the `help` function to get the documentation of an object
 
 ::: fragment
 ```{r}
@@ -843,7 +1022,7 @@ help("mean")
 # help for the `mean` function in the `mosaic` package
 help("mean", package = "mosaic")
 
-# help for all functions and datasets in the `mosaic` package
+# help for all objects (data and functions) in the `mosaic` package
 help(package = "mosaic") 
 
 # all vignettes in the `mosaic` package
@@ -855,10 +1034,6 @@ browseVignettes(package = "mosaic")
 For help on how to get help go to <https://www.r-project.org/help.html>
 :::
 
-::: fragment
-See also:
-:::
-
 -   [RDocumentation](https://www.rdocumentation.org)
 -   [rdrr.io](https://rdrr.io/)
 -   [Rseek](https://rseek.org/)
@@ -866,9 +1041,7 @@ See also:
 
 ## R: Vectors
 
-::: nonincremental
 -   So far we have been working with objects containing a single value, but R can also work with collections of values
-:::
 
 -   In fact, R is designed to make it easy to work with collections of values
 
@@ -886,7 +1059,7 @@ See also:
 
 ## R: Vectors
 
--   Use `c()` (short for combine) to create a vector/longer vectors from shorter ones
+-   Use the `c` function (short for "*combine*") to create a longer vector from shorter ones (order matters)
 
 ::: fragment
 ```{r}
@@ -898,7 +1071,13 @@ numeric_vector
 
 ::: fragment
 ```{r}
-typeof(numeric_vector); length(numeric_vector)
+typeof(numeric_vector)
+```
+:::
+
+::: fragment
+```{r}
+length(numeric_vector)
 ```
 :::
 
@@ -912,7 +1091,13 @@ x
 
 ::: fragment
 ```{r}
-typeof(x); length(x)
+typeof(x)
+```
+:::
+
+::: fragment
+```{r}
+length(x)
 ```
 :::
 
@@ -922,11 +1107,81 @@ identical(13, c(13))
 ```
 :::
 
+## R: Vectors
+
+::: fragment
+```{r}
+numeric_vector <- c(42, 18, 5, 5)
+
+typeof(numeric_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.numeric(numeric_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.double(numeric_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.integer(numeric_vector)
+```
+:::
+
 ::: fragment
 ```{r}
 character_vector <- c("apple", "banana", "orange")
+
+typeof(character_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.character(character_vector)
+```
+:::
+
+::: fragment
+```{r}
 logical_vector <- c(TRUE, FALSE, TRUE, FALSE)
+
+typeof(logical_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.logical(logical_vector)
+```
+:::
+
+## R: Vectors
+
+::: fragment
+```{r}
 empty_vector <- NULL
+
+typeof(empty_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.null(logical_vector)
+```
+:::
+
+::: fragment
+```{r}
+length(empty_vector)
 ```
 :::
 
@@ -960,12 +1215,15 @@ numeric_vector > 5
 ```
 :::
 
--   Learn more about element-wise operations on vectors in the `purr` cheatsheet at <https://rstudio.github.io/cheatsheets/html/purrr.html>
+- The `purrr` package enhances R by providing a complete and consistent set of tools for applying functions to vectors
+
+- To learn more go to <https://purrr.tidyverse.org/>
+
 
 ## R: Subset and pull operators
 
--   **Subset operator**: `[]` select any number of elements from an input vector and return an output vector of the same type containing those elements
--   **Pull operators**: `[[]]` and `$` select a single element from an input vector and return that element, possibly of a different type than the input vector
+-   The **subset operator** `[]` select any number of elements from an input vector and return an output vector of the same type containing those elements
+-   The **pull operators** `[[]]` and `$` select a single element from an input vector and return that element, possibly of a different type than the input vector
 -   Subsetting and pull operators can be combined with assignment to modify selected elements of an input vector
 
 ::: notes
@@ -982,13 +1240,11 @@ There are two additional subsetting operators, which are needed for S4 objects: 
 
 ::::::::::::::::::::: columns
 :::::::::::: {.column width="45%"}
-::: fragment
 ```{r}
 x <- c(2.1, 4.2, 3.3, 5.4)
 
 x
 ```
-:::
 
 ::: fragment
 ```{r}
@@ -1091,15 +1347,16 @@ x[c("C", "A", "A")]
 ## R: Lists
 
 -   Lists can contain values of different types, including atomic vectors and lists
--   Use `list()` to create a list
+-   Use the `list` function to create a list
 
 ::: fragment
 ```{r}
+#| output-location: default
 l <- list(A = "Hello world!", B = 5L, C = c(TRUE, FALSE, TRUE), D = c(2.3, 5.9))
 ```
 :::
 
--   Use `str()` (short for structure) to get a summary of the structure of an object
+-   Use the `str` function (short for "*structure*") to look at the structure of any object, including lists
 
 ::: fragment
 ```{r}
@@ -1197,11 +1454,11 @@ l$D[2]
 -   Data frames are the most common way tabular data (row x column, like an Excel spreadsheet) are stored in R
 -   Data frames are lists of atomic vectors of equal length
 -   Each element of a data frame (an atomic vector) represents a **variable** (column)
--   Use `data.frame()` or `tibble()` (preferred in the `tidyverse`) to create a data frame or tibble, respectively
+-   Use the `data.frame` or `tibble` function (preferred in the `tidyverse`) to create a data frame or tibble, respectively
 
 ::: fragment
 ```{r}
-df <- tibble(name = c("James", "John", "Robert"), height = c(180, 165, 195), weight = c(80, 90, 70))
+df <- tibble(name = c("Mary", "John", "Robert"), height = c(165, 180, 195), weight = c(60, 90, 70), sex = c("F", "M", "M"))
 
 df
 ```
@@ -1214,39 +1471,57 @@ df
 df
 ```
 
--   This data frame is organized in a "tidy" format:
+-   This data frame is organized in a "*tidy*" format:
 
     -   Each row represents a **observation** (person) \[use one dataframe for each type/class of observation unit\]
-    -   Each column represents a **variable** (name, height, weight)
-    -   Each value represents a **measurement** (James, 180, 80)
+    -   Each column represents a **variable** (name, height, weight, sex)
+    -   Each value represents a **measurement** (Mary, 165, 60)
 
--   It's generally good practice to format data frames in a tidy way ("to keep things tidy")
+-   It's generally good practice to format data frames this way ("*to keep things tidy*")
 
+::: notes
 -   Metadata/codebook/samplesheet (details re: unit of observation, description of columns, units of numerical variables, levels of categorical variables, data source, etc.) `?mtcars`
 
 -   Sample vs census
 
 -   The statistical thinker seeks to identify patterns in data, i.e., relationships between variables. But it is not easy to do this by direct examination of a data frame.
+:::
 
 ## R: Data frames
 
--   Use `head()` or `tail()` to look at the first or last six rows/observations of a data frame
-
 ::: fragment
 ```{r}
-dim(penguins); nrow(penguins); ncol(penguins)
+dim(df)
 ```
 :::
 
 ::: fragment
 ```{r}
-length(penguins)
+nrow(df)
 ```
 :::
 
 ::: fragment
 ```{r}
-head(penguins)
+ncol(df)
+```
+:::
+
+::: fragment
+```{r}
+names(df)
+```
+:::
+
+::: fragment
+```{r}
+length(df)
+```
+:::
+
+::: fragment
+```{r}
+head(df) # see also `tail(df)`
 ```
 :::
 
@@ -1257,7 +1532,7 @@ head(penguins)
 df
 ```
 
--   Use `str()` or `glimpse()` to look at the structure of a data frame
+-   Use the `str` or `glimpse` function to look at the structure of a data frame
 
 ::: fragment
 ```{r}
@@ -1385,7 +1660,7 @@ df
 
 -   These verbs combine naturally with `group_by()` which allows you to perform any operation "by group"
 
--   Learn more about these verbs in the `dplyr` cheatsheet at <https://rstudio.github.io/cheatsheets/html/data-transformation.html>
+-   To learn more go to <https://dplyr.tidyverse.org/>
 
 ## R: Data frames (the `dplyr` way)
 
@@ -1592,6 +1867,7 @@ str(treatment)
 ::: fragment
 ```{r}
 #| eval: false
+#| output-location: default
 # read dataset from a file
 df <- read_csv("penguins.csv")
 
@@ -1612,12 +1888,13 @@ df <- df %>% mutate(body_mass_kg = na_if(body_mass_kg, -999)) # tidyverse
 ::: fragment
 ```{r}
 #| eval: false
+#| output-location: default
 # read dataset from a file specifying the code for missing values; `na` argument defaults to `c("", "NA")`
 df <- read_csv("penguins.csv", na = c(-999))
 ```
 :::
 
--   Learn more about reading/writing datasets from/to files in the `readr` cheatsheet at <https://rstudio.github.io/cheatsheets/html/data-import.html>
+-   To learn more go to <https://readr.tidyverse.org/>
 
 ## R: Missing values
 
@@ -1626,6 +1903,7 @@ df <- read_csv("penguins.csv", na = c(-999))
 ::: fragment
 ```{r}
 #| eval: false
+#| output-location: default
 # remove observations/rows that have `NA` in any variable/column
 df <- na.omit(df) # old school
 df <- df %>% drop_na() # tidyverse
@@ -1641,6 +1919,7 @@ df <- df %>% drop_na(sex, body_mass_kg) # tidyverse
 ::: fragment
 ```{r}
 #| eval: false
+#| output-location: default
 # replace `NA` with `0` in the `body_mass_kg` variable/column
 df <- df %>% mutate(body_mass_kg = replace_na(body_mass_kg, 0))
 ```
@@ -1695,7 +1974,7 @@ gf_histogram(~ body_mass_kg, bins = 100, data = penguins)
 
 ## R: Visualizing and summarizing quantitative variables
 
--   Use the `favstats()` function to calculate the "five-number summary" of a quantitative variable
+-   Use the `favstats` function to calculate the "five-number summary" of a quantitative variable
 
 ::: fragment
 ```{r}
