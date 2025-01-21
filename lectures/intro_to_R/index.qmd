@@ -862,9 +862,7 @@ BiocManager::install("limma") # linear models for microarray and omics data
 
 ## R: Packages and environments
 
-::: nonincremental
 -   Use the `library` function to load a package from the computer's disk into memory as an environment, which is then attached to the so called **search list**
-:::
 
 ::: fragment
 ```{r}
@@ -890,7 +888,6 @@ search()
 ## R: Packages and environments
 
 ::: nonincremental
-
 `base`
 
 :   Core R functions and utilities
@@ -923,7 +920,7 @@ search()
 ## R: Packages and environments
 
 ::: nonincremental
--   Use the `suppressPackageStartupMessages` function to suppress messages that are generated when loading a package
+-   Use the `suppressPackageStartupMessages` function to suppress most messages generated during package loading
 :::
 
 ::: fragment
@@ -933,7 +930,7 @@ suppressPackageStartupMessages(library(coursekata))
 ```
 :::
 
- 
+-   Use the `search` function to list the environments available after loading `coursekata`
 
 ::: fragment
 ```{r}
@@ -943,13 +940,13 @@ search()
 
 ## R: Packages and environments
 
-::: nonincremental
--   Once loaded, the objects (functions and data) contained in the package are accessible within the homonymous environment in the current session
-:::
+-   Once loaded, the objects (functions and data) contained in a package are accessible within the homonymous environment in the current session
 
 -   R searches for objects by name across all available environments in the order they appear in the search list
 
--   The global environment (`.GlobalEnv`) is always searched first, followed by package environments in the order they were loaded, with the `base` package environment always appearing last
+-   The global environment (`.GlobalEnv`) is always searched first, followed by the package environments in the reverse order of their loading
+
+-   The `base` environment is always searched last, as it is the first package loaded when an R session starts
 
 ::: fragment
 ```{r}
@@ -1187,6 +1184,38 @@ is.null(logical_vector)
 ::: fragment
 ```{r}
 length(empty_vector)
+```
+:::
+
+## R: Type coercion
+
+::: notes
+Generally, you can test if a vector is of a given type with an is.\*() function: is.logical(), is.integer(), is.double(), and is.character()
+
+For atomic vectors, type is a property of the entire vector: all elements must be the same type. When you attempt to combine different types they will be coerced in a fixed order: character → double → integer → logical. The final type will be the type of the highest type element in the coercion hierarchy. For example, combining a character and a logical will result in two character vectors. Combining a character and a double will result in two double vectors.
+
+Coercion often happens automatically. Most mathematical functions (+, log, abs, etc.) will coerce to numeric. This coercion is particularly useful for logical vectors because TRUE becomes 1 and FALSE becomes 0. This means that you can use a logical vector as an index to a vector. For example, x\[c(TRUE, FALSE, TRUE)\] will return the 1st and 3rd elements of x.
+
+```{r}
+x <- c(FALSE, FALSE, TRUE)
+as.numeric(x)
+#> [1] 0 0 1
+
+# Total number of TRUEs
+sum(x)
+#> [1] 1
+
+# Proportion that are TRUE
+mean(x)
+#> [1] 0.333
+```
+
+Generally, you can deliberately coerce by using an as.\*() function, like as.logical(), as.integer(), as.double(), or as.character(). Failed coercion of strings generates a warning and a missing value:
+
+```{r}
+as.integer(c("1", "1.5", "a"))
+#> Warning: NAs introduced by coercion
+#> [1]  1  1 NA
 ```
 :::
 
@@ -2063,47 +2092,3 @@ gf_percents(~ species, data = penguins)
         -   Causal inference (two perspectives):
             -   Causal prediction: Prediction of intervention/knowing a cause means being able to predict the consequences of an intervention "What if I do this?"
             -   Causal imputation: Imputation of missing data/knowing a cause means being able to impute unobserved counterfactual outcomes "What if I had done something else?"
-
-## R: XXX
-
-::: fragment
-```{r}
-typeof(x)
-```
-:::
-
-::: fragment
-```{r}
-is.numeric(x); is.double(x); is.integer(x); is.character(x); is.logical(x); is.null(x); is.na(x)
-```
-:::
-
-::: notes
-Generally, you can test if a vector is of a given type with an is.\*() function: is.logical(), is.integer(), is.double(), and is.character()
-
-For atomic vectors, type is a property of the entire vector: all elements must be the same type. When you attempt to combine different types they will be coerced in a fixed order: character → double → integer → logical. The final type will be the type of the highest type element in the coercion hierarchy. For example, combining a character and a logical will result in two character vectors. Combining a character and a double will result in two double vectors.
-
-Coercion often happens automatically. Most mathematical functions (+, log, abs, etc.) will coerce to numeric. This coercion is particularly useful for logical vectors because TRUE becomes 1 and FALSE becomes 0. This means that you can use a logical vector as an index to a vector. For example, x\[c(TRUE, FALSE, TRUE)\] will return the 1st and 3rd elements of x.
-
-```{r}
-x <- c(FALSE, FALSE, TRUE)
-as.numeric(x)
-#> [1] 0 0 1
-
-# Total number of TRUEs
-sum(x)
-#> [1] 1
-
-# Proportion that are TRUE
-mean(x)
-#> [1] 0.333
-```
-
-Generally, you can deliberately coerce by using an as.\*() function, like as.logical(), as.integer(), as.double(), or as.character(). Failed coercion of strings generates a warning and a missing value:
-
-```{r}
-as.integer(c("1", "1.5", "a"))
-#> Warning: NAs introduced by coercion
-#> [1]  1  1 NA
-```
-:::
