@@ -18,8 +18,20 @@ df-print: paged
 
 ```{r}
 #| include: false
-library(coursekata)
+library(dplyr)
 ```
+
+## What is R?
+
+-   R is a *programming language*, i.e., a **language** used to communicate instructions to a computer
+
+-   Like all languages, it comprises **syntax** (structure) and **semantics** (meaning)
+
+-   *Syntax*: The set of rules that govern how symbols can be combined to form valid statements (e.g., function calls, assignments)
+
+-   *Semantics*: The meaning associated with syntactically valid statements (e.g., what operations a function performs, what value it returns)
+
+-   In this course, we will use three languages—**R**, **logic**, and **mathematics**—to illustrate and apply probability theory and statistical inference
 
 ## R: Books
 
@@ -97,19 +109,19 @@ message <- "Hello world!"
 
 ::: fragment
 ```{r}
-print(message)
+message
 ```
 :::
 
 ## R: Names
 
--   A valid name consists of letters, numbers, and the dot or underscore characters
+-   A valid name consists of letters, numbers, and `.` or `_` characters
 
 -   Names are case-sensitive
 
--   A valid name must start with a letter or a dot
+-   A valid name must start with a letter or `.`
 
--   If a name is enclosed in back-ticks (\`), there are essentially no restrictions on the characters that can be used, including spaces and special characters
+-   If a name is enclosed in back-ticks, there are essentially no restrictions on the characters that can be used, including spaces and special characters
 
 ```{r}
 #| echo: false
@@ -120,7 +132,7 @@ rm(list = ls())
 ::: fragment
 ```{r}
 #| output-location: default
-`Valid name with spaces and special character!` <- "Hello world!"
+`Valid name with spaces and special character$` <- "Hello world!"
 
 valid_name <- 5
 
@@ -146,37 +158,39 @@ ls.str()
 
 -   Calling a function instructs the computer to execute the code stored in the function
 
--   A function takes 0, 1, or more input objects (**arguments**) and returns 1 output object
+-   A function takes zero, one, or more objects (**arguments**) as input
+
+-   A function returns one object as output
 
 -   To call a function, place its arguments (with or without a name, separated by commas, and wrapped in parentheses) after its name
 
 ::: fragment
 ```{r}
 #| output-location: default
-add_up_two_nums <- function(num1, num2) {
+sum_two_nums <- function(num1, num2) {
   out <- num1 + num2
   return(out)
 }
 ```
 :::
 
-&nbsp;
+ 
 
 ::: fragment
 ```{r}
-add_up_two_nums
+sum_two_nums
 ```
 :::
 
 ::: fragment
 ```{r}
-add_up_two_nums(2, 3)
+sum_two_nums(2, 3)
 ```
 :::
 
 ::: fragment
 ```{r}
-add_up_two_nums(num1 = 2, num2 = 3)
+sum_two_nums(num1 = 2, num2 = 3)
 ```
 :::
 
@@ -184,7 +198,7 @@ add_up_two_nums(num1 = 2, num2 = 3)
 
 `print(x, ...)`
 
--   The `print` function stores code that, when called, sends its first argument (named `x`) to an output device (screen, printer, file, etc.) and returns it invisibly as its output object
+-   The `print` function stores code that, when called, sends its first argument named `x` to an output device (screen, printer, file, etc.) and returns it invisibly
 
 ```{r}
 #| echo: false
@@ -206,6 +220,13 @@ message
 ```
 :::
 
+ 
+
+::: fragment
+```{r}
+sum_two_nums
+```
+:::
 
 ## R: Functions and function calls
 
@@ -217,23 +238,23 @@ message
 
 `dbinom(x, size, prob, log = FALSE)`
 
--   It’s useful to distinguish between the formal arguments of a function, and the arguments supplied when calling a function
+-   It’s useful to distinguish between **formal arguments** (used when defining a function), and **supplied arguments** (used when calling a function)
 
--   When calling a function, supplied arguments are matched with the formal arguments first by exact name (perfect matching), then by partial name (prefix matching), and finally by position (if unnamed or name does not match)
+-   When calling a function, *supplied arguments* are matched with *formal arguments* first by exact name (perfect matching), then by partial name (prefix matching), and finally by position (if unnamed or name does not match)
 
 -   When calling a function, I'd recommend that you:
 
-    -   Use positional matching only for the first one or two commonly used arguments to enhance readability
+    -   Use positional matching only for the first one or two commonly used arguments, if it enhances readibility
 
     -   Avoid using prefix matching
 
     -   Supply named arguments after unnamed arguments
 
--   If a function includes the special "match all the unmatched" `...` argument, any formal argument that follow `...` can only be supplied using its exact name
+-   If a function includes the special "*match all the unmatched arguments*" `...` argument, any formal argument that follow `...` can only be supplied using its exact name
 
 -   Arguments can have default values, allowing them to be omitted in function calls
 
--   If arguments without default values remain unmatched, R will throw an error 
+-   If any argument without a default value remains unmatched, then R throws an error!
 
 ## R: Functions and function calls
 
@@ -259,13 +280,13 @@ dbinom(x = 3, size = 10, prob = 0.5)
 
 ::: fragment
 ```{r}
-dbinom(size = 10, x = 3, prob = 0.5)
+dbinom(size = 10, x = 3, prob = 0.5) # try not to do this!
 ```
 :::
 
 ::: fragment
 ```{r}
-dbinom(size = 10, 3, TRUE, prob = 0.5)
+dbinom(size = 10, 3, TRUE, prob = 0.5) # definitely do not do this!
 ```
 :::
 
@@ -321,7 +342,7 @@ sqrt(mean(squared(deviation(d))))
 ```
 :::
 
--   Or you can store the intermediate values as objects to be passed from fn to fn:
+-   Or you can store intermediate values as objects to be passed from fn to fn:
 
 ::: fragment
 ```{r}
@@ -336,7 +357,7 @@ std.dev
 ## R: Function composition
 
 ::: nonincremental
--   Or you can use the pipe operator `%>%` provided by the `magrittr` package and automatically loaded by the `dplyr` package:
+-   Or you can use the pipe operator `%>%` from the `magrittr` package
 :::
 
 -   `d %>% f()` is equivalent to `f(d)`
@@ -357,7 +378,7 @@ d %>% deviation %>% squared %>% mean %>% sqrt
 ```
 :::
 
--   Since version 4.1.0, R has a native pipe operator `|>` whose behaviour is by and large the same as that of `%>%`, but with [some subtle but crucial differences](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe)!
+-   Since version 4.1.0, R has a native pipe operator `|>` whose behaviour is by and large the same as that of `%>%`, but with a few [subtle but crucial differences](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe)!
 
 -   The pipe allows you to focus on the high-level composition of functions rather than the low-level flow of data
 
@@ -379,10 +400,9 @@ dbinom(a, size = b, prob = c)
 
 ::: fragment
 ```{r}
-a %>% dbinom(size = b, prob = c)
+a %>% dbinom(size = b, prob = c) # same as `dbinom(a, size = b, prob = c)`
 ```
 :::
-
 
 ::: fragment
 ```{r}
@@ -392,7 +412,7 @@ dbinom(a, b, c)
 
 ::: fragment
 ```{r}
-a %>% dbinom(b, c)
+a %>% dbinom(b, c) # same as `dbinom(a, b, c)`
 ```
 :::
 
@@ -400,22 +420,21 @@ a %>% dbinom(b, c)
 
 ::: fragment
 ```{r}
-b %>% dbinom(a, size = ., prob = c)
+b %>% dbinom(a, size = ., prob = c) # same as `dbinom(a, size = b, prob = c)`
 ```
 :::
 
 ::: fragment
 ```{r}
-b %>% dbinom(a, ., c)
+b %>% dbinom(a, ., c) # same as `dbinom(a, b, c)`
 ```
 :::
 
 ::: fragment
 ```{r}
-b |> dbinom(a, size = _, prob = c)
+b |> dbinom(a, size = _, prob = c) # same as `dbinom(a, size = b, prob = c)`
 ```
 :::
-
 
 ::: fragment
 ```{r}
@@ -425,13 +444,10 @@ b |> dbinom(a, _, c) # error: pipe placeholder can only be used as a named argum
 ```
 :::
 
-
-
-
 ## R: Operators
 
 ::::: columns
-::: {.column width="40%"}
+::: {.column width="35%"}
 -   **Arithmetic operators**:
 
     ::: nonincremental
@@ -447,12 +463,12 @@ b |> dbinom(a, _, c) # error: pipe placeholder can only be used as a named argum
 -   **Assignment operators**:
 
     ::: nonincremental
-    -   `<-` (assign)
-    -   `=` (assign)
+    -   `<-` (assignment)
+    -   `=` (assignment)
     :::
 :::
 
-::: {.column width="60%"}
+::: {.column width="65%"}
 -   **Comparison operators**:
 
     ::: nonincremental
@@ -465,18 +481,18 @@ b |> dbinom(a, _, c) # error: pipe placeholder can only be used as a named argum
 -   **Logical operators**:
 
     ::: nonincremental
-    -   `&` or `&&` (logical AND)
-    -   `|` or `||` (logical OR)
+    -   `&` or `&&` (logical AND, element-wise or not)
+    -   `|` or `||` (logical OR, element-wise or not)
     -   `!` (logical NOT)
     :::
 
 -   **Miscellaneous operators**:
 
     ::: nonincremental
-    -   `%in%` (value matching)
+    -   `%in%` (match)
     -   `%>%` or `|>` (pipe)
-    -   `:` (range)
-    -   `?` (help)
+    -   `:` (range) or `::` (package)
+    -   `?` (help) or `??` (search)
     :::
 :::
 :::::
@@ -497,16 +513,24 @@ sum(1, 9)
 
 ::: fragment
 ```{r}
+#| output-location: default
 x <- 17.2
-
-x
 ```
 :::
 
+ 
+
 ::: fragment
 ```{r}
-assign("x", 17.2) # assigns the value `17.2` to the object named `x` and invisibly returns `NULL`
+#| output-location: default
+assign("x", 17.2) # assigns the name `x` to the value `17.2` and invisibly returns `NULL`
+```
+:::
 
+ 
+
+::: fragment
+```{r}
 x
 ```
 :::
@@ -531,13 +555,19 @@ x
 ```
 :::
 
-## R: Environment
+## R: Environments
 
--   An environment can be thought of as a collection of objects (functions, variables etc.)
+::: nonincremental
+-   An environment is a collection of objects (data and functions) stored in the computer’s memory, each with a unique name
+:::
 
--   A new environment is created when we start a new R session
+-   Objects that you name in your code are stored in the so called **global environment**
 
--   Only objects which are assigned a name are stored in the environment
+```{r}
+#| echo: false
+#| output-location: default
+rm(list = ls())
+```
 
 ::: fragment
 ```{r}
@@ -547,7 +577,15 @@ x
 
 ::: fragment
 ```{r}
-y <- 1969
+x <- 1969
+
+x
+```
+:::
+
+::: fragment
+```{r}
+y <- (x / 30)
 
 y
 ```
@@ -555,15 +593,17 @@ y
 
 ::: fragment
 ```{r}
-z <- y / 30
+z <- (y > 30)
 
 z
 ```
 :::
 
-## R: Environment
+## R: Environments
 
--   Use the `ls()` function to list the names of all objects in the environment:
+::: nonincremental
+-   Use the `ls` function to list the names of all objects in an environment
+:::
 
 ::: fragment
 ```{r}
@@ -571,7 +611,7 @@ ls()
 ```
 :::
 
--   Use the `ls.str()` function to list all objects in the default environment:
+-   Use the `ls.str` function to list all objects in an environment
 
 ::: fragment
 ```{r}
@@ -579,57 +619,17 @@ ls.str()
 ```
 :::
 
-## R: Environment
+-   Use the `rm` function to remove one or more objects from an environment
 
 ::: fragment
 ```{r}
-typeof(x)
-```
-:::
-
-::: fragment
-```{r}
-is.numeric(x); is.double(x); is.integer(x); is.character(x); is.logical(x); is.null(x); is.na(x)
-```
-:::
-
-::: notes
-Generally, you can test if a vector is of a given type with an is.\*() function: is.logical(), is.integer(), is.double(), and is.character()
-
-For atomic vectors, type is a property of the entire vector: all elements must be the same type. When you attempt to combine different types they will be coerced in a fixed order: character → double → integer → logical. The final type will be the type of the highest type element in the coercion hierarchy. For example, combining a character and a logical will result in two character vectors. Combining a character and a double will result in two double vectors.
-
-Coercion often happens automatically. Most mathematical functions (+, log, abs, etc.) will coerce to numeric. This coercion is particularly useful for logical vectors because TRUE becomes 1 and FALSE becomes 0. This means that you can use a logical vector as an index to a vector. For example, x\[c(TRUE, FALSE, TRUE)\] will return the 1st and 3rd elements of x.
-
-```{r}
-x <- c(FALSE, FALSE, TRUE)
-as.numeric(x)
-#> [1] 0 0 1
-
-# Total number of TRUEs
-sum(x)
-#> [1] 1
-
-# Proportion that are TRUE
-mean(x)
-#> [1] 0.333
-```
-
-Generally, you can deliberately coerce by using an as.\*() function, like as.logical(), as.integer(), as.double(), or as.character(). Failed coercion of strings generates a warning and a missing value:
-
-```{r}
-as.integer(c("1", "1.5", "a"))
-#> Warning: NAs introduced by coercion
-#> [1]  1  1 NA
-```
-:::
-
-::: fragment
-```{r}
-rm(x, y, z)
+rm(x, y)
 
 ls()
 ```
 :::
+
+-   Use the `rm` and `ls` functions together to remove all objects from an environment
 
 ::: fragment
 ```{r}
@@ -639,57 +639,224 @@ ls()
 ```
 :::
 
-
 ## R: Packages
 
-XXX
+::: nonincremental
+-   A package is a collection of objects (functions and data) and their documentation stored in the computer’s disk
+:::
 
-## R: Scope
+-   Packages extend the functionality of R (so you don't have to reinvent the wheel!)
 
-XXX
+-   Use the built-in `install.packages` function to download and install one or more packages from the [CRAN](https://cran.r-project.org/) online repository or from local files
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+install.packages("BiocManager")
+```
+:::
+
+-   Use the `install` function from the `BiocManager` package to install one or more packages from CRAN, [Bioconductor](https://bioconductor.org/), and other online repositories (e.g., [GitHub](https://github.com/))
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+BiocManager::install("limma") # linear models for microarray and omics data
+```
+:::
+
+-   Use the `installed.packages` function to list all installed packages
+
+-   Use the `remove.packages` function to remove one or more packages
+
+-   Use the `update.packages` or `BiocManager::install` function to update all installed packages
+
+## R: Packages and environments
+
+::: nonincremental
+-   Use the `library` function to load a package from the computer's disk into memory as an environment, which is then attached to the so called **search list**
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+library(limma) # or `library("limma")`
+```
+:::
+
+```{r}
+#| include: false
+detach("package:dplyr")
+detach(".env")
+```
+
+-   Use the `search` function to list all available environments
+
+::: fragment
+```{r}
+search()
+```
+:::
+
+## R: Packages and environments
+
+::: nonincremental
+`base`
+
+:   Core R functions and utilities
+
+`stats`
+
+:   Functions for statistical modeling and analysis
+
+`utils`
+
+:   Utility functions for data manipulation and information retrieval
+
+`graphics`
+
+:   Basic functions for creating visualizations and plots
+
+`grDevices`
+
+:   Functions for handling graphical devices and output
+
+`methods`
+
+:   Support for object-oriented programming and method dispatch
+
+`datasets`
+
+:   Example datasets that can be used for testing and learning
+:::
+
+## R: Packages and environments
+
+::: nonincremental
+-   Use the `suppressPackageStartupMessages` function to suppress messages during the loading of a package
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+suppressPackageStartupMessages(library(coursekata))
+```
+:::
+
+&nbsp;
+
+::: fragment
+```{r}
+search()
+```
+:::
+
+## R: Packages and environments
+
+::: nonincremental
+-   Once loaded, the objects (functions and data) contained in a package are accessible within the homonymous environment
+:::
+
+-   R searches for objects by name across all available environments in the order they appear in the search list
+
+-   The global environment (`.GlobalEnv`) is always searched first, followed by package environments in the order they were loaded, with the `base` package environment always appearing last
+
+
+::: fragment
+```{r}
+search()
+```
+:::
+
+## R: Packages and environments
+
+::: nonincremental
+-   Use the `conflicts` function to check for conflicts between loaded packages
+:::
+
+::: fragment
+```{r}
+conflicts()
+```
+:::
+
+## R: Packages and environments
+
+::: nonincremental
+-   You can explicitly specify the package using the :: operator to access a function from a particular package, avoiding ambiguity
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+age <- c(25, 33, 35, 38, 48, 55, 55, 55, 56, 64)
+```
+:::
+
+&nbsp;
+
+::: fragment
+```{r}
+mean(age)
+```
+:::
+
+::: fragment
+```{r}
+mosaic::mean(age)
+```
+:::
+
+::: fragment
+```{r}
+mean(~ age)
+```
+:::
+
+::: fragment
+```{r}
+base::mean(age)
+```
+:::
 
 ## R: Help
 
-::: fragment
-```{r}
-#| eval: false
-#| output-location: default
-?mean # for help on the `mean` function, same as `help(mean)` or `help("mean")`
-```
+::: nonincremental
+-   Use the `?` operator or the `help` function to get the documentation for an object
 :::
 
- 
-
 ::: fragment
 ```{r}
 #| eval: false
 #| output-location: default
-??mean # to search help for the "mean" string, same as `help.search("mean")`
-```
-:::
+# help for the `mean` function
+?mean
 
- 
+# same as
+help(mean)
 
-::: fragment
-```{r}
-#| eval: false
-#| output-location: default
+# same as
+help("mean")
+
+# help for the `mean` function in the `mosaic` package
 help("mean", package = "mosaic")
-```
-:::
 
- 
+# help for all functions and datasets in the `mosaic` package
+help(package = "mosaic") 
 
-::: fragment
-```{r}
-#| eval: false
-#| output-location: default
-help(package = "mosaic")
+# all vignettes in the `mosaic` package
+browseVignettes(package = "mosaic") 
 ```
 :::
 
 ::: fragment
-For more help on how to get help go to <https://www.r-project.org/help.html>
+For help on how to get help go to <https://www.r-project.org/help.html>
+:::
+
+::: fragment
+See also:
 :::
 
 -   [RDocumentation](https://www.rdocumentation.org)
@@ -699,7 +866,9 @@ For more help on how to get help go to <https://www.r-project.org/help.html>
 
 ## R: Vectors
 
+::: nonincremental
 -   So far we have been working with objects containing a single value, but R can also work with collections of values
+:::
 
 -   In fact, R is designed to make it easy to work with collections of values
 
@@ -1046,9 +1215,11 @@ df
 ```
 
 -   This data frame is organized in a "tidy" format:
-    -   Each row represents a **observation** (person) [use one dataframe for each type/class of observation unit]
+
+    -   Each row represents a **observation** (person) \[use one dataframe for each type/class of observation unit\]
     -   Each column represents a **variable** (name, height, weight)
     -   Each value represents a **measurement** (James, 180, 80)
+
 -   It's generally good practice to format data frames in a tidy way ("to keep things tidy")
 
 -   Metadata/codebook/samplesheet (details re: unit of observation, description of columns, units of numerical variables, levels of categorical variables, data source, etc.) `?mtcars`
@@ -1610,3 +1781,46 @@ gf_percents(~ species, data = penguins)
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
+## R: XXX
+
+::: fragment
+```{r}
+typeof(x)
+```
+:::
+
+::: fragment
+```{r}
+is.numeric(x); is.double(x); is.integer(x); is.character(x); is.logical(x); is.null(x); is.na(x)
+```
+:::
+
+::: notes
+Generally, you can test if a vector is of a given type with an is.\*() function: is.logical(), is.integer(), is.double(), and is.character()
+
+For atomic vectors, type is a property of the entire vector: all elements must be the same type. When you attempt to combine different types they will be coerced in a fixed order: character → double → integer → logical. The final type will be the type of the highest type element in the coercion hierarchy. For example, combining a character and a logical will result in two character vectors. Combining a character and a double will result in two double vectors.
+
+Coercion often happens automatically. Most mathematical functions (+, log, abs, etc.) will coerce to numeric. This coercion is particularly useful for logical vectors because TRUE becomes 1 and FALSE becomes 0. This means that you can use a logical vector as an index to a vector. For example, x\[c(TRUE, FALSE, TRUE)\] will return the 1st and 3rd elements of x.
+
+```{r}
+x <- c(FALSE, FALSE, TRUE)
+as.numeric(x)
+#> [1] 0 0 1
+
+# Total number of TRUEs
+sum(x)
+#> [1] 1
+
+# Proportion that are TRUE
+mean(x)
+#> [1] 0.333
+```
+
+Generally, you can deliberately coerce by using an as.\*() function, like as.logical(), as.integer(), as.double(), or as.character(). Failed coercion of strings generates a warning and a missing value:
+
+```{r}
+as.integer(c("1", "1.5", "a"))
+#> Warning: NAs introduced by coercion
+#> [1]  1  1 NA
+```
+:::
