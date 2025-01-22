@@ -731,7 +731,7 @@ for (i in 1:3) {
 
 -   A **session** refers to the period during which R is running, starting when R is launched and ending when R is closed
 
--   Each R session has a **global environment** where user-defined objects reside; additional environments are created dynamically (e.g., when loading packages)
+-   Each session has a **global environment** where user-defined objects reside; additional environments are created dynamically (e.g., when loading a package)
 
 -   Objects that you name in your code are stored in the global environment (`.GlobalEnv`)
 
@@ -814,7 +814,7 @@ ls()
 
 ## R: Packages
 
--   A **package** is a collection of objects (functions and data) and their documentation stored as local files in the computer’s disk
+-   A **package** is a collection of objects (functions and data) and their documentation stored as local files on the computer’s disk
 
 -   Packages extend the functionality of R, so you don't have to reinvent the wheel!
 
@@ -856,13 +856,13 @@ BiocManager::install("limma") # linear models for microarray and omics data
 ![](images/packages.jpg){height="440"}
 :::
 
--   As of today, CRAN and Bioconductor feature [21,939](https://www.r-pkg.org/) and [2,289](https://www.bioconductor.org/packages/release/BiocViews.html) R packages, respectively!
+-   As of today, CRAN and Bioconductor feature [21,939](https://www.r-pkg.org/) and [2,289](https://www.bioconductor.org/packages/release/BiocViews.html) packages, respectively!
 
--   Search for R packages using [CRAN](https://cloud.r-project.org/web/views/) and [Bioconductor](https://www.bioconductor.org/packages/release/BiocViews.html) "*task views*", as well as [rdrr.io](https://rdrr.io/) and [Rdocumentation](https://www.rdocumentation.org/) 
+-   Browse for packages using [CRAN](https://cloud.r-project.org/web/views/) and [Bioconductor](https://www.bioconductor.org/packages/release/BiocViews.html) "*task views*", or search for packages using [rdrr.io](https://rdrr.io/) and [Rdocumentation](https://www.rdocumentation.org/)
 
 ## R: Packages and environments
 
--   Use the `library` function to load a package from the computer's disk into memory as an environment, which is then attached to the so called **search list**
+-   Use the `library` function to load a package from the computer's disk into memory as an environment, which is then added/attached to the so called **search list**
 
 ::: fragment
 ```{r}
@@ -877,7 +877,7 @@ detach("package:dplyr")
 detach(".env")
 ```
 
--   Use the `search` function to list all available environments
+-   Use the `search` function to list all the environments in the search list
 
 ::: fragment
 ```{r}
@@ -888,6 +888,7 @@ search()
 ## R: Packages and environments
 
 ::: nonincremental
+
 `base`
 
 :   Core R functions and utilities
@@ -930,7 +931,7 @@ suppressPackageStartupMessages(library(coursekata))
 ```
 :::
 
--   Use the `search` function to list the environments available after loading `coursekata`
+-   Use the `search` function to list all the environments in the search list
 
 ::: fragment
 ```{r}
@@ -940,13 +941,13 @@ search()
 
 ## R: Packages and environments
 
--   Once loaded, the objects (functions and data) contained in a package are accessible within the homonymous environment in the current session
+-   Once loaded, the objects (functions and data) contained in the package are accessible from the homonymous environment in the current session
 
--   R searches for objects by name across all available environments in the order they appear in the search list
+-   R searches for objects by name across all environments in the current session, in the order they appear on the search list
 
 -   The global environment (`.GlobalEnv`) is always searched first, followed by the package environments in the reverse order of their loading
 
--   The `base` environment is always searched last, as it is the first package loaded when an R session starts
+-   The `base` environment is always searched last, as it is the first package loaded when a session starts
 
 ::: fragment
 ```{r}
@@ -957,7 +958,7 @@ search()
 ## R: Packages and environments
 
 ::: nonincremental
--   Use the `conflicts` function to check for conflicts between loaded packages
+-   Use the `conflicts` function to check for name conflicts across all environments
 :::
 
 ::: fragment
@@ -969,7 +970,7 @@ conflicts()
 ## R: Packages and environments
 
 ::: nonincremental
--   You can explicitly specify the environment using the :: operator to access an object from a particular package, avoiding ambiguity
+-   You can explicitly specify the environment using the :: operator to access an object by name without ambiguity
 :::
 
 ::: fragment
@@ -1032,14 +1033,23 @@ browseVignettes(package = "mosaic")
 ```
 :::
 
-::: fragment
-For help on how to get help go to <https://www.r-project.org/help.html>
-:::
+-   For help on how to get help go to <https://www.r-project.org/help.html>
 
+-   See also:
+
+::: columns
+
+::: column
 -   [RDocumentation](https://www.rdocumentation.org)
 -   [rdrr.io](https://rdrr.io/)
+:::
+
+::: column
 -   [Rseek](https://rseek.org/)
 -   [Search R project](https://search.r-project.org/)
+:::
+
+:::
 
 ## R: Vectors
 
@@ -1061,13 +1071,19 @@ For help on how to get help go to <https://www.r-project.org/help.html>
 
 ## R: Vectors
 
--   Use the `c` function (short for "*combine*") to create a longer vector from shorter ones (order matters)
+-   Use the `c` function (short for "*combine*") to create a longer vector from shorter ones
 
 ::: fragment
 ```{r}
 numeric_vector <- c(42, 18, 5, 5) # NOT the same as `c(18, 5, 42, 5)`
 
 numeric_vector
+```
+:::
+
+::: fragment
+```{r}
+class(numeric_vector)
 ```
 :::
 
@@ -1255,8 +1271,8 @@ numeric_vector > 5
 
 ## R: Subset and pull operators
 
--   The **subset operator** `[]` select any number of elements from an input vector and return an output vector of the same type containing those elements
--   The **pull operators** `[[]]` and `$` select a single element from an input vector and return that element, possibly of a different type than the input vector
+-   The **subset operator** `[]` selects any number of elements from the input vector and returns an output vector of the same type containing those elements
+-   The **pull operators** `[[]]` and `$` selects a single element from the input vector and returns that element, possibly of a different type than the input vector
 -   Subsetting and pull operators can be combined with assignment to modify selected elements of an input vector
 
 ::: notes
@@ -1271,8 +1287,8 @@ There are two additional subsetting operators, which are needed for S4 objects: 
 
 ## R: Subset and pull operators
 
-:::::::::::::::::::: columns
-::::::::::: {.column width="45%"}
+::: columns
+::: {.column width="45%"}
 ```{r}
 x <- c(2.1, 4.2, 3.3, 5.4)
 
@@ -1326,9 +1342,9 @@ x[c(2, 2, 4)]
 x[-c(3, 1)]
 ```
 :::
-:::::::::::
+:::
 
-:::::::::: {.column width="55%"}
+::: {.column width="55%"}
 ::: fragment
 ```{r}
 x[c(TRUE, TRUE, FALSE, FALSE)]
@@ -1374,12 +1390,12 @@ names(x)
 x[c("C", "A", "A")]
 ```
 :::
-::::::::::
-::::::::::::::::::::
+:::
+:::
 
 ## R: Lists
 
--   Lists can contain values of different types, including atomic vectors and lists
+-   Lists are vectors that can contain values of different types
 -   Use the `list` function to create a list
 
 ::: fragment
@@ -1424,10 +1440,10 @@ names(l)
 ## R: Lists
 
 -   Subset and pull operators work with lists the same way they work with atomic vectors
--   `[` subset and return a list; `[[` and `$` pull and return an element from a list
+-   `[]` subsets and returns a list; `[[]]` and `$` pulls and returns an element from the list
 
-::::::::::::: columns
-:::::: {.column width="50%"}
+::: columns
+::: {.column width="50%"}
 ::: fragment
 ```{r}
 l
@@ -1445,9 +1461,9 @@ l[c(3, 1)]
 l[c(FALSE, TRUE, FALSE, TRUE)]
 ```
 :::
-::::::
+:::
 
-:::::::: {.column width="50%"}
+::: {.column width="50%"}
 ::: fragment
 ```{r}
 l[c("B", "D")]
@@ -1479,15 +1495,15 @@ l$D # same as `l[["D"]]`
 l$D[2]
 ```
 :::
-::::::::
-:::::::::::::
+:::
+:::
 
 ## R: Data frames
 
--   Data frames are the most common way tabular data (row x column, like an Excel spreadsheet) are stored in R
+-   Data frames are the most common way tabular data (i.e., "*row x column*" data, like an Excel spreadsheet) are stored in R
 -   Data frames are lists of atomic vectors of equal length
 -   Each element of a data frame (an atomic vector) represents a **variable** (column)
--   Use the `data.frame` or `tibble` function (preferred in the `tidyverse`) to create a data frame or tibble, respectively
+-   Use the `data.frame` or `tibble` function to create a data frame or tibble, respectively
 
 ::: fragment
 ```{r}
@@ -1504,13 +1520,17 @@ df
 df
 ```
 
--   This data frame is organized in a "*tidy*" format:
+-   This data frame is "*tidy*":
 
-    -   Each row represents a **observation** (person) \[use one dataframe for each type/class of observation unit\]
+    -   Each row represents a **observation** (person; it is good practice to use one dataframe for each type/class of observation unit)
     -   Each column represents a **variable** (name, height, weight, sex)
     -   Each value represents a **measurement** (Mary, 165, 60)
 
--   It's generally good practice to format data frames this way ("*to keep things tidy*")
+-   It's generally good practice to "*keep things tidy*":
+
+    -   Use this long format for better data manipulation, visualization, and modeling
+    
+    -   Tidy data frames are easier to work with using tools from the [`tidyverse`](https://www.tidyverse.org/)
 
 ::: notes
 -   Metadata/codebook/samplesheet (details re: unit of observation, description of columns, units of numerical variables, levels of categorical variables, data source, etc.) `?mtcars`
@@ -1672,7 +1692,7 @@ df
 
 ::: fragment
 ```{r}
-df$bmi <- df$weight / (df$height / 100)^2 # add a new column with values calculated from other columns
+df$bmi <- (df$weight / (df$height / 100)^2) # add a new column with values calculated from other columns
 
 df
 ```
@@ -1680,18 +1700,16 @@ df
 
 ## R: Data frames (the `dplyr` way)
 
--   `dplyr` is a package that provides a set of functions for data manipulation
+-   `dplyr` is a package with functions (a.k.a. "*verbs*") that form a consistent grammar of data transformation:
 
--   `dplyr` is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:
+    -   `select` selects variables/columns based on their names
+    -   `pull` pulls a variable/column based on its name
+    -   `filter` selects observations/rows based on their values
+    -   `mutate` adds new variables/columns that are functions of existing variables/columns
+    -   `arrange` changes the ordering of the observations/rows
+    -   `summarize` reduces multiple values down to a single value
 
-    -   `select()` select variables/columns based on their names
-    -   `pull()` pull a variable/column based on its name
-    -   `filter()` select observations/rows based on their values
-    -   `mutate()` adds new variables/columns that are functions of existing variables/columns
-    -   `arrange()` changes the ordering of the observations/rows
-    -   `summarise()` (or `summarize()`) reduces multiple values down to a single value
-
--   These verbs combine naturally with `group_by()` which allows you to perform any operation "by group"
+-   These verbs can be combined with the `group_by` function to perform operations "*by group*"
 
 -   To learn more go to <https://dplyr.tidyverse.org/>
 
@@ -1745,7 +1763,7 @@ df %>% arrange(weight) # sort by `bmi`; use `df %>% arrange(desc(weight))` to so
 
 ## R: Data frames (the `dplyr` way)
 
--   `dplyr` verbs can be combined using the pipe operator to perform to perform complex data manipulations
+-   `dplyr` verbs can be combined using the pipe operator to perform complex data transformations
 
 ::: fragment
 ```{r}
