@@ -344,8 +344,13 @@ dbinom(3, size = 10, prob = 0.5)
 
 ::: fragment
 ```{r}
+#| output-location: default
 a <- 3; b <- 10; c <- 0.5
+```
+:::
 
+::: fragment
+```{r}
 dbinom(a, size = b, prob = c) # or `dbinom(a, b, c)`
 ```
 :::
@@ -370,8 +375,13 @@ deviation <- function(x) x - mean(x)
 
 ::: fragment
 ```{r}
+#| output-location: default
 d <- c(5, 7, 4, 5, 4, 5, 5, 3, 4, 2) # input data
+```
+:::
 
+::: fragment
+```{r}
 sqrt(mean(squared(deviation(d))))
 ```
 :::
@@ -426,8 +436,13 @@ dbinom(3, size = 10, prob = 0.5)
 
 ::: fragment
 ```{r}
+#| output-location: default
 a <- 3; b <- 10; c <- 0.5
+```
+:::
 
+::: fragment
+```{r}
 dbinom(a, size = b, prob = c)
 ```
 :::
@@ -546,24 +561,16 @@ sum(1, 9)
 
 ::: fragment
 ```{r}
-#| output-location: default
 x <- 17.2
+
+x
 ```
 :::
 
- 
-
 ::: fragment
 ```{r}
-#| output-location: default
 assign("x", 17.2) # assigns the name `x` to the value `17.2` and invisibly returns `NULL`
-```
-:::
 
- 
-
-::: fragment
-```{r}
 x
 ```
 :::
@@ -970,13 +977,18 @@ conflicts()
 ## R: Packages and environments
 
 ::: nonincremental
--   You can explicitly specify the environment using the :: operator to access an object by name without ambiguity
+-   You can explicitly specify the environment using the `::` operator to access an object by name without ambiguity
 :::
 
 ::: fragment
 ```{r}
+#| output-location: default
 age <- c(25, 33, 35, 38, 48, 55, 55, 55, 56, 64) # input data
+```
+:::
 
+::: fragment
+```{r}
 mean(age)
 ```
 :::
@@ -984,6 +996,12 @@ mean(age)
 ::: fragment
 ```{r}
 mean(~ age)
+```
+:::
+
+::: fragment
+```{r}
+environment(mean) # to find out which environment the `mean` function belongs to
 ```
 :::
 
@@ -1002,6 +1020,12 @@ base::mean(~ age)
 ::: fragment
 ```{r}
 base::mean(age)
+```
+:::
+
+::: fragment
+```{r}
+find("mean") # to find out which environments have a `mean` object and their lookup order
 ```
 :::
 
@@ -1159,7 +1183,7 @@ is.character(character_vector)
 
 ::: fragment
 ```{r}
-logical_vector <- c(TRUE, FALSE, TRUE, FALSE)
+logical_vector <- c(TRUE, FALSE, TRUE, TRUE)
 
 typeof(logical_vector)
 ```
@@ -1209,11 +1233,11 @@ is.na(NA)
 
 -   **Type coercion** refers to the automatic or manual conversion of values from one type to another
 
--   When you combine elements of different types into an atomic vector, they are coerced in this order: `character` → `double` → `integer` → `logical`
+-   When you combine elements of different types into an atomic vector, they are automatically coerced in this order: `character` → `double` → `integer` → `logical`
 
 ::: fragment
 ```{r}
-c("FOO", 17.2, 5L, TRUE)
+c("ABC", 17.2, 5L, TRUE)
 ```
 :::
 
@@ -1231,34 +1255,40 @@ c(5L, TRUE)
 
 ## R: Type coercion
 
--   Most mathematical operators and functions (`+`, `-`, `*`, `sum`, `mean`, `min`, `max`, etc.) will automatically coerce logical values to numeric values: `TRUE` becomes `1` and `FALSE` becomes `0`
+-   Most mathematical operators and functions (`+`, `-`, `*`, `sum`, `mean`, etc.) will automatically coerce logical values to numeric values: `TRUE` becomes `1` and `FALSE` becomes `0`
 
 ::: fragment
 ```{r}
-as.integer(c(TRUE, TRUE, TRUE, FALSE))
+logical_vector
 ```
 :::
 
 ::: fragment
 ```{r}
-sum(c(TRUE, TRUE, TRUE, FALSE))
+as.integer(logical_vector)
 ```
 :::
 
 ::: fragment
 ```{r}
-mean(c(TRUE, TRUE, TRUE, FALSE))
+sum(logical_vector) # count of true elements
+```
+:::
+
+::: fragment
+```{r}
+mean(logical_vector) # proportion of true elements
 ```
 :::
 
  
 
 ::: fragment
-| Logic (R) | Arithmetic (R) | Probability (math) |
-|----|----|----|
-| `!A` | `1 - A` | $P(\text{not-}A) = 1 - P(A)$ |
-| `A & B` | `A * B` | $P(A \text{ and } B) = P(A) \cdot P(B)$ |
-| `A | B` | `A + B - (A * B)` | $P(A \text{ or } B) = P(A) + P(B) - P(A) \cdot P(B)$ |
+| Logic   | Arithmetic      | Probability                                   |
+|---------|-----------------|-----------------------------------------------|
+| `!A`    | `1 - A`         | $P(\lnot A) = 1 - P(A)$                       |
+| `A & B` | `A * B`         | $P(A \land B) = P(A) \cdot P(B)$              |
+| `A | B` | `A + B - A * B` | $P(A \lor B) = P(A) + P(B) - P(A) \cdot P(B)$ |
 :::
 
 ::: notes
@@ -1275,60 +1305,160 @@ $A \Leftrightarrow B$ is arithmetically equivalent to `1 - (A - B)^2 = A * B + (
 
 -   Use the `as.character`, `as.numeric`, `as.double`, `as.integer`, `as.logical`, and `as.null` functions for manual coercion
 
-``` r
-as.numeric("17.2")  # Converts to 123 (numeric)
-as.character(17.2)  # Converts to "123" (character)
-as.logical(0)      # Converts to FALSE
-```
+-   The use of these functions is preferable to relying on automatic coercion, but beware of manual coercion behavior!
 
--   Be cautious of coercion errors!
+-   Everything can be coerced to character or null:
 
-``` r
-as.numeric("FOO")
-# Warning: NAs introduced by coercion
-```
-
--   Factors in R store categorical data and may require conversion before numerical operations.
-
-``` r
-f <- factor(c("low", "medium", "high"))
-as.character(f)  # Converts to "low" "medium" "high"
-as.numeric(f)    # Converts to underlying integer levels
-```
-
--   Understand automatic coercion behavior when mixing types.
-
--   Use explicit coercion functions to avoid unexpected results.
-
--   Handle factors carefully to avoid unintended numerical interpretations.
-
-::: notes
-Generally, you can test if a vector is of a given type with an is.\*() function: is.logical(), is.integer(), is.double(), and is.character()
-
-For atomic vectors, type is a property of the entire vector: all elements must be the same type. When you attempt to combine different types they will be coerced in a fixed order: character → double → integer → logical. The final type will be the type of the highest type element in the coercion hierarchy. For example, combining a character and a logical will result in two character vectors. Combining a character and a double will result in two double vectors.
-
-Coercion often happens automatically. Most mathematical functions (+, log, abs, etc.) will coerce to numeric. This coercion is particularly useful for logical vectors because TRUE becomes 1 and FALSE becomes 0. This means that you can use a logical vector as an index to a vector. For example, x\[c(TRUE, FALSE, TRUE)\] will return the 1st and 3rd elements of x.
-
+::: fragment
 ```{r}
-x <- c(FALSE, FALSE, TRUE)
-as.numeric(x)
-#> [1] 0 0 1
-
-# Total number of TRUEs
-sum(x)
-#> [1] 1
-
-# Proportion that are TRUE
-mean(x)
-#> [1] 0.333
+as.null(17.2)
 ```
+:::
 
-Generally, you can deliberately coerce by using an as.\*() function, like as.logical(), as.integer(), as.double(), or as.character(). Failed coercion of strings generates a warning and a missing value:
-
+::: fragment
 ```{r}
-as.integer(c("1", "1.5", "a"))
-#> Warning: NAs introduced by coercion
-#> [1]  1  1 NA
+as.character(17.2)
+```
+:::
+
+::: fragment
+```{r}
+as.character(TRUE)
+```
+:::
+
+::: fragment
+```{r}
+as.character(NULL)
+```
+:::
+
+::: fragment
+```{r}
+character() # or `character(0)` also returns an empty character vector
+```
+:::
+
+::: fragment
+```{r}
+character(10) # returns a character vector with 10 empty strings
+```
+:::
+
+## R: Type coercion
+
+-   Not everything can be coerced to numeric:
+
+::: fragment
+```{r}
+as.numeric("17.2") # unless a string represents a valid numeric value, it is coerced to `NA`
+```
+:::
+
+::: fragment
+```{r}
+as.double("17.2")
+```
+:::
+
+::: fragment
+```{r}
+as.integer("17.2")
+```
+:::
+
+::: fragment
+```{r}
+as.numeric("100,000,000") # same as `as.numeric("ABC")`
+```
+:::
+
+::: fragment
+```{r}
+#| warning: true
+as.numeric("TRUE") # same as `as.numeric("ABC")`
+```
+:::
+
+::: fragment
+```{r}
+as.numeric("")
+```
+:::
+
+::: fragment
+```{r}
+as.numeric(NULL)
+```
+:::
+
+::: fragment
+```{r}
+numeric() # or `numeric(0)` also returns an empty numeric vector
+```
+:::
+
+::: fragment
+```{r}
+numeric(10) # returns a numeric vector with 10 zeros
+```
+:::
+
+## R: Type coercion
+
+-   Not everything can be coerced to logical:
+
+::: fragment
+```{r}
+as.logical(17.2) # any non-zero numeric value is coerced to `TRUE`; zero is coerced to `FALSE`
+```
+:::
+
+::: fragment
+```{r}
+as.logical(-17.2)
+```
+:::
+
+::: fragment
+```{r}
+as.logical(0)
+```
+:::
+
+::: fragment
+```{r}
+as.logical("0") # any string other than "TRUE" or "FALSE" is coerced to `NA`
+```
+:::
+
+::: fragment
+```{r}
+as.logical("ABC")
+```
+:::
+
+::: fragment
+```{r}
+as.logical("TRUE")
+```
+:::
+
+::: fragment
+```{r}
+as.logical(NULL)
+```
+:::
+
+::: fragment
+```{r}
+logical() # or `logical(0)` also returns an empty logical vector
+```
+:::
+
+::: fragment
+```{r}
+logical(10) # returns a logical vector with 10 `FALSE` values
 ```
 :::
 
