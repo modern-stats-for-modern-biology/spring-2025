@@ -1037,8 +1037,7 @@ browseVignettes(package = "mosaic")
 
 -   See also:
 
-::: columns
-
+::::: columns
 ::: column
 -   [RDocumentation](https://www.rdocumentation.org)
 -   [rdrr.io](https://rdrr.io/)
@@ -1048,22 +1047,19 @@ browseVignettes(package = "mosaic")
 -   [Rseek](https://rseek.org/)
 -   [Search R project](https://search.r-project.org/)
 :::
-
-:::
+:::::
 
 ## R: Vectors
 
--   So far we have been working with objects containing a single value, but R can also work with collections of values
-
--   In fact, R is designed to make it easy to work with collections of values
+-   So far we have been working with objects containing a single value, but R is designed to make it easy to work with collections of values
 
 -   **Vectors** are the most basic data objects in R; they store (ordered) collections of values
 
 -   Vectors come in two flavors: **atomic vectors** and **lists**
 
--   **Atomic vectors** (often simply referred to as "vectors") are *homogeneous vectors*, i.e., all the values they contain (**elements**) must be of the same type
+-   They differ in terms of their elements’ types: for atomic vectors, all elements must have the same type; for lists, elements can have different types
 
--   **Lists** are *heterogeneous vectors*, i.e., the elements they contain can be of different types
+-   While technically not a vector, `NULL` often serves the role of a generic zero-length vector
 
 ::: {.fragment style="text-align: center"}
 ![](images/mermaid-diagram-2024-01-08-213557.svg){height="200"}
@@ -1081,11 +1077,7 @@ numeric_vector
 ```
 :::
 
-::: fragment
-```{r}
-class(numeric_vector)
-```
-:::
+-   Use the `typeof` and `length` function to determine the type and length of a vector, respectively
 
 ::: fragment
 ```{r}
@@ -1103,12 +1095,6 @@ length(numeric_vector)
 ```{r}
 x <- 13
 
-x
-```
-:::
-
-::: fragment
-```{r}
 typeof(x)
 ```
 :::
@@ -1153,6 +1139,8 @@ is.integer(numeric_vector)
 ```
 :::
 
+ 
+
 ::: fragment
 ```{r}
 character_vector <- c("apple", "banana", "orange")
@@ -1166,6 +1154,8 @@ typeof(character_vector)
 is.character(character_vector)
 ```
 :::
+
+## R: Vectors
 
 ::: fragment
 ```{r}
@@ -1181,7 +1171,7 @@ is.logical(logical_vector)
 ```
 :::
 
-## R: Vectors
+ 
 
 ::: fragment
 ```{r}
@@ -1193,17 +1183,124 @@ typeof(empty_vector)
 
 ::: fragment
 ```{r}
-is.null(logical_vector)
+length(empty_vector)
 ```
 :::
 
 ::: fragment
 ```{r}
-length(empty_vector)
+is.null(empty_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.null(NA)
+```
+:::
+
+::: fragment
+```{r}
+is.na(NA)
 ```
 :::
 
 ## R: Type coercion
+
+-   **Type coercion** refers to the automatic or manual conversion of values from one type to another
+
+-   When you combine elements of different types into an atomic vector, they are coerced in this order: `character` → `double` → `integer` → `logical`
+
+::: fragment
+```{r}
+c("FOO", 17.2, 5L, TRUE)
+```
+:::
+
+::: fragment
+```{r}
+c(17.2, 5L, TRUE)
+```
+:::
+
+::: fragment
+```{r}
+c(5L, TRUE)
+```
+:::
+
+## R: Type coercion
+
+-   Most mathematical operators and functions (`+`, `-`, `*`, `sum`, `mean`, `min`, `max`, etc.) will automatically coerce logical values to numeric values: `TRUE` becomes `1` and `FALSE` becomes `0`
+
+::: fragment
+```{r}
+as.integer(c(TRUE, TRUE, TRUE, FALSE))
+```
+:::
+
+::: fragment
+```{r}
+sum(c(TRUE, TRUE, TRUE, FALSE))
+```
+:::
+
+::: fragment
+```{r}
+mean(c(TRUE, TRUE, TRUE, FALSE))
+```
+:::
+
+ 
+
+::: fragment
+| Logic (R) | Arithmetic (R) | Probability (math) |
+|----|----|----|
+| `!A` | `1 - A` | $P(\text{not-}A) = 1 - P(A)$ |
+| `A & B` | `A * B` | $P(A \text{ and } B) = P(A) \cdot P(B)$ |
+| `A | B` | `A + B - (A * B)` | $P(A \text{ or } B) = P(A) + P(B) - P(A) \cdot P(B)$ |
+:::
+
+::: notes
+$A \Rightarrow B \quad$ is logically equivalent to $\quad \neg A \lor B$
+
+$A \Rightarrow B \quad$ is arithmetically equivalent to `1 - A + A * B`
+
+$A \Leftrightarrow B$ is logically equivalent to $(A \land B) \lor (\neg A \land \neg B)$
+
+$A \Leftrightarrow B$ is arithmetically equivalent to `1 - (A - B)^2 = A * B + (1 - A) * (1 - B)`
+:::
+
+## R: Type coercion
+
+-   Use the `as.character`, `as.numeric`, `as.double`, `as.integer`, `as.logical`, and `as.null` functions for manual coercion
+
+``` r
+as.numeric("17.2")  # Converts to 123 (numeric)
+as.character(17.2)  # Converts to "123" (character)
+as.logical(0)      # Converts to FALSE
+```
+
+-   Be cautious of coercion errors!
+
+``` r
+as.numeric("FOO")
+# Warning: NAs introduced by coercion
+```
+
+-   Factors in R store categorical data and may require conversion before numerical operations.
+
+``` r
+f <- factor(c("low", "medium", "high"))
+as.character(f)  # Converts to "low" "medium" "high"
+as.numeric(f)    # Converts to underlying integer levels
+```
+
+-   Understand automatic coercion behavior when mixing types.
+
+-   Use explicit coercion functions to avoid unexpected results.
+
+-   Handle factors carefully to avoid unintended numerical interpretations.
 
 ::: notes
 Generally, you can test if a vector is of a given type with an is.\*() function: is.logical(), is.integer(), is.double(), and is.character()
@@ -1287,8 +1384,8 @@ There are two additional subsetting operators, which are needed for S4 objects: 
 
 ## R: Subset and pull operators
 
-::: columns
-::: {.column width="45%"}
+:::::::::::::::::::: columns
+::::::::::: {.column width="45%"}
 ```{r}
 x <- c(2.1, 4.2, 3.3, 5.4)
 
@@ -1342,9 +1439,9 @@ x[c(2, 2, 4)]
 x[-c(3, 1)]
 ```
 :::
-:::
+:::::::::::
 
-::: {.column width="55%"}
+:::::::::: {.column width="55%"}
 ::: fragment
 ```{r}
 x[c(TRUE, TRUE, FALSE, FALSE)]
@@ -1390,8 +1487,8 @@ names(x)
 x[c("C", "A", "A")]
 ```
 :::
-:::
-:::
+::::::::::
+::::::::::::::::::::
 
 ## R: Lists
 
@@ -1442,8 +1539,8 @@ names(l)
 -   Subset and pull operators work with lists the same way they work with atomic vectors
 -   `[]` subsets and returns a list; `[[]]` and `$` pulls and returns an element from the list
 
-::: columns
-::: {.column width="50%"}
+::::::::::::: columns
+:::::: {.column width="50%"}
 ::: fragment
 ```{r}
 l
@@ -1461,9 +1558,9 @@ l[c(3, 1)]
 l[c(FALSE, TRUE, FALSE, TRUE)]
 ```
 :::
-:::
+::::::
 
-::: {.column width="50%"}
+:::::::: {.column width="50%"}
 ::: fragment
 ```{r}
 l[c("B", "D")]
@@ -1495,8 +1592,8 @@ l$D # same as `l[["D"]]`
 l$D[2]
 ```
 :::
-:::
-:::
+::::::::
+:::::::::::::
 
 ## R: Data frames
 
@@ -1529,7 +1626,7 @@ df
 -   It's generally good practice to "*keep things tidy*":
 
     -   Use this long format for better data manipulation, visualization, and modeling
-    
+
     -   Tidy data frames are easier to work with using tools from the [`tidyverse`](https://www.tidyverse.org/)
 
 ::: notes
