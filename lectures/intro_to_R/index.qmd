@@ -1757,15 +1757,15 @@ df
 
 -   This data frame is "*tidy*":
 
-    -   Each row represents a **observation** (person; it is good practice to use one dataframe for each type/class of observation unit)
-    -   Each column represents a **variable** (name, height, weight, sex)
-    -   Each value represents a **measurement** (Mary, 165, 60)
+    -   Each row represents a **observation** (*person*); it's generally good practice to use one data frame for each *type* of observation unit!
+    -   Each column represents a **variable** (`name`, `height`, `weight`, `sex`)
+    -   Each value represents a **measurement** (`"Mary"`, `165`, `60`, `"F"`)
 
 -   It's generally good practice to "*keep things tidy*":
 
     -   Use this long format for better data manipulation, visualization, and modeling
 
-    -   Tidy data frames are easier to work with using tools from the [`tidyverse`](https://www.tidyverse.org/)
+    -   Tidy data frames are easier to work with when using tools from the [`tidyverse`](https://www.tidyverse.org/)
 
 ::: notes
 -   Metadata/codebook/samplesheet (details re: unit of observation, description of columns, units of numerical variables, levels of categorical variables, data source, etc.) `?mtcars`
@@ -1843,38 +1843,13 @@ df
 
 ::: fragment
 ```{r}
-df[1] # select column 1; same as `df["name"]`
+df[1] # select 1st column
 ```
 :::
 
 ::: fragment
 ```{r}
-df[c(3, 1)] # select columns 3 and 1; same as `df[c("weight", "name")]`
-```
-:::
-
-## R: Data frames
-
-```{r}
-#| echo: false
-df
-```
-
-::: fragment
-```{r}
-df[["height"]] # pull out the `height` column
-```
-:::
-
-::: fragment
-```{r}
-df$height # pull out the `height` column
-```
-:::
-
-::: fragment
-```{r}
-df$height[2] # pull out the second value of the `height` column
+df["name"] # select `name` column
 ```
 :::
 
@@ -1887,13 +1862,45 @@ df
 
 ::: fragment
 ```{r}
-df[3, 1] # select row 3, column 1
+df[-1] # remove 1st column
 ```
 :::
 
 ::: fragment
 ```{r}
-df[c(3, 1), c(1, 2)] # select rows 3 and 1, columns 1 and 2
+df[c(FALSE, TRUE, TRUE, TRUE)] # remove 1st column (select 2nd, 3rd and 4th column)
+```
+:::
+
+
+## R: Data frames
+
+```{r}
+#| echo: false
+df
+```
+
+::: fragment
+```{r}
+df[["height"]] # pull `height` column  
+```
+:::
+
+::: fragment
+```{r}
+df$height      # pull `height` column
+```
+:::
+
+::: fragment
+```{r}
+df$height[2]   # select second value of `height` column 
+```
+:::
+
+::: fragment
+```{r}
+df$height > 170
 ```
 :::
 
@@ -1906,7 +1913,63 @@ df
 
 ::: fragment
 ```{r}
-df[df$weight > 80, ] # select rows where `weight > 80`, keep all columns
+df[3, 1] # select 3rd row and 1st column
+```
+:::
+
+::: fragment
+```{r}
+df[3, ] # select 3rd row and keep all columns
+```
+:::
+
+::: fragment
+```{r}
+df[, 1] # select 1st column and keep all rows
+```
+:::
+
+## R: Data frames
+
+```{r}
+#| echo: false
+df
+```
+
+::: fragment
+```{r}
+df[c(2, 1), ] # select 2nd and 1st row and keep all columns
+```
+:::
+
+::: fragment
+```{r}
+df[, c("sex", "name")] # select `sex` and `name` column and keep all rows
+```
+:::
+
+## R: Data frames
+
+```{r}
+#| echo: false
+df
+```
+
+::: fragment
+```{r}
+df[c(FALSE, TRUE, TRUE), ] # select 2nd and 3rd row and keep all columns
+```
+:::
+
+::: fragment
+```{r}
+df$height > 170
+```
+:::
+
+::: fragment
+```{r}
+df[df$height > 170, ] # select rows where `height > 170`, keep all columns
 ```
 :::
 
@@ -1937,11 +2000,11 @@ df
 
 -   `dplyr` is a package with functions (a.k.a. "*verbs*") that form a consistent grammar of data transformation:
 
-    -   `select` selects variables/columns based on their names
-    -   `pull` pulls a variable/column based on its name
-    -   `filter` selects observations/rows based on their values
-    -   `mutate` adds new variables/columns that are functions of existing variables/columns
-    -   `arrange` changes the ordering of the observations/rows
+    -   `select` selects columns/variables based on their names
+    -   `pull` pulls a column/variable based on its name
+    -   `filter` selects rows/observations based on their values
+    -   `mutate` adds new columns/variables that are functions of existing columns/variables
+    -   `arrange` changes the ordering of the rows/observations
     -   `summarize` reduces multiple values down to a single value
 
 -   These verbs can be combined with the `group_by` function to perform operations "*by group*"
@@ -1970,7 +2033,7 @@ df %>% pull(height) # pull out the `height` column
 
 ::: fragment
 ```{r}
-df %>% filter(weight > 80) # select rows where `weight > 80`, keep all columns
+df %>% filter(height > 170) # select rows where `weight > 80`, keep all columns
 ```
 :::
 
@@ -1983,16 +2046,18 @@ df
 
 ::: fragment
 ```{r}
-df %>% mutate(
+df <- df %>% mutate(
   nationality = c("British", "American", "Australian"),  # add a new column
   bmi = weight / (height / 100)^2 # add a new column with values calculated from other columns
 )
+
+df
 ```
 :::
 
 ::: fragment
 ```{r}
-df %>% arrange(weight) # sort by `bmi`; use `df %>% arrange(desc(weight))` to sort in descending order
+df %>% arrange(bmi) # sort by `bmi`; use `df %>% arrange(desc(bmi))` to sort in descending order
 ```
 :::
 
@@ -2038,7 +2103,7 @@ df %>%
     -   $f : \Omega \rightarrow \mathbb{R}$
     -   It represents a measurable property of each element of the sample space
 
-## Data types/measurement levels
+## Variable types and measurement levels
 
 -   **Qualitative** vs **quantitative** (discrete and continuous)
 -   **Categorical** (nominal and ordinal) vs **numeric** (interval and ratio)
@@ -2046,11 +2111,11 @@ df %>%
     -   **Ordinal**: the data can be categorized and ranked
     -   **Interval**: the data can be categorized and ranked, equal spacing
     -   **Ratio**: the data can be categorized and ranked, equal spacing, true zero
--   The CK book uses the terms **categorical** and **quantitative** variables
+-   CourseKata uses the terms **categorical** and **quantitative** variables
     -   Values assigned to categorical variables represent categories
     -   Values assigned to quantitative variables represent quantities
 
-## Data types/measurement levels
+## Variable types and measurement levels
 
 |                     | Nominal | Ordinal | Interval | Ratio |
 |---------------------|---------|---------|----------|-------|
@@ -2068,10 +2133,11 @@ df %>%
 <https://matthewrenze.com/articles/the-four-subtypes-of-data-in-data-science/>
 :::
 
-## Data types/measurement levels
+## Variable types and measurement levels
+
+-   Most categorical variables in R contains `Character` or `factor` values
 
 -   Most quantitative variables in R contains `Numeric` (`Integer` or `Double`) values
--   Most categorical variables in R contains `Character` or `factor` values
 
 ::: fragment
 ```{r}
@@ -2100,8 +2166,11 @@ df
 ## R: Factors and levels
 
 -   `factor` is a special data type for categorical variables
+
 -   A `factor` variable is stored as a vector of `Integer` values
+
 -   Each `Integer` value corresponds to a level, a `Character` value that represents a category and it is used when displaying a categorical variable
+
 -   The levels are ordered alphabetically by default, but they can be ordered in any way
 
 ::: fragment
@@ -2120,52 +2189,39 @@ levels(treatment)
 
 ::: fragment
 ```{r}
-as.integer(treatment) # coercing a factor to numeric returns the internal integer representation of factor levels
+as.integer(treatment) # coercing a factor to integer returns the vector of `Integer` values used to store the factor
 ```
 :::
 
-::: fragment
-```{r}
-treatment <- factor(c("placebo", "drug1"))
+-   The `forcats` package enhances R by providing a complete and consistent set of tools for working with categorical variables/factors
 
-str(treatment)
-```
-:::
-
-::: fragment
-```{r}
-treatment <- factor(c("placebo", "drug1"), levels = c("placebo", "drug1", "drug2"))
-
-str(treatment)
-```
-:::
+-   To learn more go to <https://forcats.tidyverse.org/>
 
 ## R: Data structures
 
 ![](images/mermaid-diagram-2024-01-09-105427.png){style="text-align: center"}
 
-## R: Missing values
+## R: Missing data
 
--   Sometimes (in fact, usually) there are missing values in a dataset
+-   Handling missing data is an essential step in data analysis
+
 -   R represents missing data with the value `NA` (not available or unknown)
+
 -   If a dataset code missing values in some other way (e.g., -999), recode them as `NA`
 
 ::: fragment
 ```{r}
 #| eval: false
 #| output-location: default
-# read dataset from a file
-df <- read_csv("penguins.csv")
-
-# and recode missing values, for example:
+df <- read_csv("penguins.csv") # read dataset from a file
 
 # replace -999 with `NA` in the `body_mass_kg` variable/column
 
-df$body_mass_kg[df$body_mass_kg == -999] <- NA # old school
+df$body_mass_kg[df$body_mass_kg == -999] <- NA # dollar sign syntax
 
 # or
 
-df <- df %>% mutate(body_mass_kg = na_if(body_mass_kg, -999)) # tidyverse
+df <- df %>% mutate(body_mass_kg = na_if(body_mass_kg, -999)) # tidyverse syntax
 ```
 :::
 
@@ -2176,13 +2232,14 @@ df <- df %>% mutate(body_mass_kg = na_if(body_mass_kg, -999)) # tidyverse
 #| eval: false
 #| output-location: default
 # read dataset from a file specifying the code for missing values; `na` argument defaults to `c("", "NA")`
+
 df <- read_csv("penguins.csv", na = c(-999))
 ```
 :::
 
 -   To learn more go to <https://readr.tidyverse.org/>
 
-## R: Missing values
+## R: Missing data
 
 -   You must be careful when removing observations with missing values
 
@@ -2190,11 +2247,16 @@ df <- read_csv("penguins.csv", na = c(-999))
 ```{r}
 #| eval: false
 #| output-location: default
-# remove observations/rows that have `NA` in any variable/column
-df <- na.omit(df) # old school
+# remove rows/observations that have `NA` in any column/variable
+
+df <- na.omit(df)      # dollar sign syntax
+
+# or
+
 df <- df %>% drop_na() # tidyverse
 
-# remove observations/rows that have `NA` in the `sex` and `body_mass_kg` variable/column
+# remove rows/observations that have `NA` in the `sex` and `body_mass_kg` column/variable
+
 df <- df %>% drop_na(sex, body_mass_kg) # tidyverse
 ```
 :::
@@ -2207,6 +2269,7 @@ df <- df %>% drop_na(sex, body_mass_kg) # tidyverse
 #| eval: false
 #| output-location: default
 # replace `NA` with `0` in the `body_mass_kg` variable/column
+
 df <- df %>% mutate(body_mass_kg = replace_na(body_mass_kg, 0))
 ```
 :::
