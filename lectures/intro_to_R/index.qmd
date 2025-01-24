@@ -1999,12 +1999,12 @@ df
 
 -   `dplyr` is a package with functions (a.k.a. "*verbs*") that form a consistent grammar of data transformation:
 
-    -   `select` selects columns/variables based on their names
-    -   `pull` pulls a column/variable based on its name
-    -   `filter` selects rows/observations based on their values
-    -   `mutate` adds new columns/variables that are functions of existing columns/variables
-    -   `arrange` changes the ordering of the rows/observations
-    -   `summarize` reduces multiple values down to a single value
+    -   `select` function selects columns/variables based on their names
+    -   `pull` function pulls a column/variable based on its name
+    -   `filter` function selects rows/observations based on their values
+    -   `mutate` function adds new columns/variables that are functions of existing columns/variables
+    -   `arrange` function changes the ordering of the rows/observations
+    -   `summarize` function reduces multiple values down to a single value
 
 -   These verbs can be combined with the `group_by` function to perform operations "*by group*"
 
@@ -2014,7 +2014,8 @@ df
 
 ```{r}
 #| echo: false
-df <- df %>% select(name, height, weight)
+#| output-location: default
+df <- df %>% select(name, height, weight, sex)
 df
 ```
 
@@ -2067,6 +2068,8 @@ df %>% arrange(bmi) # sort by `bmi`; use `df %>% arrange(desc(bmi))` to sort in 
 ::: fragment
 ```{r}
 #| echo: false
+#| output-location: default
+df <- df %>% select(name, height, weight, sex)
 df
 ```
 :::
