@@ -803,7 +803,7 @@ ls.str()
 
 ::: fragment
 ```{r}
-rm(x, y)
+rm(x)
 
 ls()
 ```
@@ -818,6 +818,22 @@ rm(list = ls())
 ls()
 ```
 :::
+
+## R: Packages
+
+::: text-align-center
+![](images/iphone_app_store.jpg){height="550"}
+:::
+
+## R: Packages
+
+::: text-align-center
+![](images/packages.jpg){height="440"}
+:::
+
+-   As of today, CRAN and Bioconductor feature [21,939](https://www.r-pkg.org/) and [2,289](https://www.bioconductor.org/packages/release/BiocViews.html) packages, respectively. There are also almost 100K R packages on [GitHub](https://www.github.com/)!
+
+-   Browse for packages by topic using [CRAN](https://cloud.r-project.org/web/views/) and [Bioconductor](https://www.bioconductor.org/packages/release/BiocViews.html) "*task views*", or search for packages using [rdrr.io](https://rdrr.io/) and [Rdocumentation](https://www.rdocumentation.org/)
 
 ## R: Packages
 
@@ -851,21 +867,13 @@ BiocManager::install("limma") # linear models for microarray and omics data
 
 -   Use the `update.packages` or `BiocManager::install` function to update all installed packages
 
-## R: Packages
-
-::: text-align-center
-![](images/iphone_app_store.jpg){height="550"}
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+BiocManager::install() # update all installed packages
+```
 :::
-
-## R: Packages
-
-::: text-align-center
-![](images/packages.jpg){height="440"}
-:::
-
--   As of today, CRAN and Bioconductor feature [21,939](https://www.r-pkg.org/) and [2,289](https://www.bioconductor.org/packages/release/BiocViews.html) packages, respectively!
-
--   Browse for packages using [CRAN](https://cloud.r-project.org/web/views/) and [Bioconductor](https://www.bioconductor.org/packages/release/BiocViews.html) "*task views*", or search for packages using [rdrr.io](https://rdrr.io/) and [Rdocumentation](https://www.rdocumentation.org/)
 
 ## R: Packages and environments
 
@@ -2230,6 +2238,22 @@ df <- df %>% mutate(body_mass_kg = replace_na(body_mass_kg, 0))
 ::: {.fragment style="text-align: center"}
 ![](images/r_graphs_gallery.jpg){width="280"}
 :::
+
+## R: Formula syntax
+
+![](images/clipboard-3890767592.png)
+
+```{r}
+#| eval: false
+#| output-location: default
+goal(~ x, data = mydata)
+
+goal(x ~ 1, data = mydata)
+
+goal(y ~ x, data = mydata)
+
+goal(y ~ x | z, data = mydata)
+```
 
 ## R: Visualizing and summarizing quantitative variables
 
