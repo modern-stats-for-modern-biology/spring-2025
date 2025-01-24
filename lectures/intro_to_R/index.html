@@ -480,7 +480,7 @@ valid.name :  NULL</code></pre>
 <li class="fragment"><p>Avoid using prefix matching</p></li>
 <li class="fragment"><p>Supply named arguments after unnamed arguments</p></li>
 </ul></li>
-<li class="fragment"><p>If a function includes the special “<em>match all the unmatched arguments</em>” <code>...</code> argument, any formal argument that follow <code>...</code> can only be supplied using its exact name</p></li>
+<li class="fragment"><p>The special “<em>match all the unmatched arguments</em>” <code>...</code> argument allows functions to accept any number of arguments, including unnamed and duplicate named ones</p></li>
 <li class="fragment"><p>Arguments can have <strong>default values</strong>, allowing them to be omitted in function calls</p></li>
 <li class="fragment"><p>R throws an error if any argument without a default value remains unmatched</p></li>
 </ul>
@@ -2593,9 +2593,9 @@ $D
 <h2>R: Data frames</h2>
 <ul>
 <li class="fragment">Data frames are the most common way tabular data (i.e., “<em>row x column</em>” data, like an Excel spreadsheet) are stored in R</li>
-<li class="fragment">Data frames are lists of atomic vectors of equal length</li>
-<li class="fragment">Each element of a data frame (an atomic vector) represents a <strong>variable</strong> (column)</li>
-<li class="fragment">Use the <code>data.frame</code> or <code>tibble</code> function to create a data frame or tibble, respectively</li>
+<li class="fragment">Data frames are lists of vectors (usually atomic vectors, but also lists) of equal length</li>
+<li class="fragment">Each element of a data frame (an atomic vector or list) represents a <strong>variable</strong> (column)</li>
+<li class="fragment">Use the <code>data.frame</code> or <code>tibble::tibble</code> functions to create a data frame or tibble, respectively</li>
 </ul>
 <div class="fragment">
 <div class="cell">
@@ -2735,7 +2735,7 @@ $D
 </div>
 </div>
 <ul>
-<li class="fragment">Use the <code>str</code> or <code>glimpse</code> function to look at the structure of a data frame</li>
+<li class="fragment">Use the <code>str</code>, <code>dplyr::glimpse</code>, <code>skimr::skim</code>, or other functions to look at the structure of a data frame</li>
 </ul>
 <div class="fragment">
 <div class="cell">
@@ -2847,7 +2847,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 </div>
 </section>
-<section id="r-data-frames-6" class="slide level2">
+<section id="r-data-frames-6" class="slide level2 scrollable">
 <h2>R: Data frames</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -2899,7 +2899,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 </div>
 </section>
-<section id="r-data-frames-7" class="slide level2">
+<section id="r-data-frames-7" class="slide level2 scrollable">
 <h2>R: Data frames</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -2953,7 +2953,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 </div>
 </section>
-<section id="r-data-frames-8" class="slide level2">
+<section id="r-data-frames-8" class="slide level2 scrollable">
 <h2>R: Data frames</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -2993,7 +2993,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 </div>
 </section>
-<section id="r-data-frames-9" class="slide level2">
+<section id="r-data-frames-9" class="slide level2 scrollable">
 <h2>R: Data frames</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -3043,7 +3043,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 </div>
 </section>
-<section id="r-data-frames-10" class="slide level2">
+<section id="r-data-frames-10" class="slide level2 scrollable">
 <h2>R: Data frames</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -3103,7 +3103,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 <li class="fragment"><p>To learn more go to <a href="https://dplyr.tidyverse.org/" class="uri">https://dplyr.tidyverse.org/</a></p></li>
 </ul>
 </section>
-<section id="r-data-frames-the-dplyr-way-1" class="slide level2">
+<section id="r-data-frames-the-dplyr-way-1" class="slide level2 scrollable">
 <h2>R: Data frames (the <code>dplyr</code> way)</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -3153,7 +3153,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 </div>
 </section>
-<section id="r-data-frames-the-dplyr-way-2" class="slide level2">
+<section id="r-data-frames-the-dplyr-way-2" class="slide level2 scrollable">
 <h2>R: Data frames (the <code>dplyr</code> way)</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -3198,7 +3198,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 </div>
 </section>
-<section id="r-data-frames-the-dplyr-way-3" class="slide level2">
+<section id="r-data-frames-the-dplyr-way-3" class="slide level2 scrollable">
 <h2>R: Data frames (the <code>dplyr</code> way)</h2>
 <ul>
 <li class="fragment"><code>dplyr</code> verbs can be combined using the pipe operator to perform complex data transformations</li>
@@ -3236,6 +3236,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 </div>
 </section>
+
 
 <section id="variable-types-and-measurement-levels" class="slide level2">
 <h2>Variable types and measurement levels</h2>
@@ -3366,13 +3367,13 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb352"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb352-1"><a href=""></a>df<span class="sc">$</span>nationality <span class="ot">&lt;-</span> <span class="fu">factor</span>(df<span class="sc">$</span>nationality)</span>
-<span id="cb352-2"><a href=""></a></span>
-<span id="cb352-3"><a href=""></a><span class="co"># or</span></span>
-<span id="cb352-4"><a href=""></a></span>
-<span id="cb352-5"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">nationality =</span> <span class="fu">factor</span>(nationality))</span>
-<span id="cb352-6"><a href=""></a></span>
-<span id="cb352-7"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb356"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb356-1"><a href=""></a>df<span class="sc">$</span>nationality <span class="ot">&lt;-</span> <span class="fu">factor</span>(df<span class="sc">$</span>nationality)</span>
+<span id="cb356-2"><a href=""></a></span>
+<span id="cb356-3"><a href=""></a><span class="co"># or</span></span>
+<span id="cb356-4"><a href=""></a></span>
+<span id="cb356-5"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">nationality =</span> <span class="fu">factor</span>(nationality))</span>
+<span id="cb356-6"><a href=""></a></span>
+<span id="cb356-7"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -3395,9 +3396,9 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb353"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb353-1"><a href=""></a>treatment <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"placebo"</span>, <span class="st">"placebo"</span>, <span class="st">"drug1"</span>, <span class="st">"placebo"</span>, <span class="st">"drug1"</span>, <span class="st">"drug2"</span>))</span>
-<span id="cb353-2"><a href=""></a></span>
-<span id="cb353-3"><a href=""></a><span class="fu">str</span>(treatment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb357"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb357-1"><a href=""></a>treatment <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"placebo"</span>, <span class="st">"placebo"</span>, <span class="st">"drug1"</span>, <span class="st">"placebo"</span>, <span class="st">"drug1"</span>, <span class="st">"drug2"</span>))</span>
+<span id="cb357-2"><a href=""></a></span>
+<span id="cb357-3"><a href=""></a><span class="fu">str</span>(treatment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
@@ -3407,7 +3408,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb355"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb355-1"><a href=""></a><span class="fu">levels</span>(treatment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb359"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb359-1"><a href=""></a><span class="fu">levels</span>(treatment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
@@ -3417,7 +3418,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb357"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb357-1"><a href=""></a><span class="fu">as.integer</span>(treatment) <span class="co"># coercing a factor to integer returns the vector of `Integer` values used to store the factor</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb361"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb361-1"><a href=""></a><span class="fu">as.integer</span>(treatment) <span class="co"># coercing a factor to integer returns the vector of `Integer` values used to store the factor</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
@@ -3443,27 +3444,25 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb359"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb359-1"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"penguins.csv"</span>) <span class="co"># read dataset from a file</span></span>
-<span id="cb359-2"><a href=""></a></span>
-<span id="cb359-3"><a href=""></a><span class="co"># replace -999 with `NA` in the `body_mass_kg` variable/column</span></span>
-<span id="cb359-4"><a href=""></a></span>
-<span id="cb359-5"><a href=""></a>df<span class="sc">$</span>body_mass_kg[df<span class="sc">$</span>body_mass_kg <span class="sc">==</span> <span class="sc">-</span><span class="dv">999</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co"># dollar sign syntax</span></span>
-<span id="cb359-6"><a href=""></a></span>
-<span id="cb359-7"><a href=""></a><span class="co"># or</span></span>
-<span id="cb359-8"><a href=""></a></span>
-<span id="cb359-9"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">body_mass_kg =</span> <span class="fu">na_if</span>(body_mass_kg, <span class="sc">-</span><span class="dv">999</span>)) <span class="co"># tidyverse syntax</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<p>&nbsp;</p>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb360"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb360-1"><a href=""></a><span class="co"># read dataset from a file specifying the code for missing values; `na` argument defaults to `c("", "NA")`</span></span>
-<span id="cb360-2"><a href=""></a></span>
-<span id="cb360-3"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"penguins.csv"</span>, <span class="at">na =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">999</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb363"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb363-1"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"penguins.csv"</span>) <span class="co"># read dataset from a file</span></span>
+<span id="cb363-2"><a href=""></a></span>
+<span id="cb363-3"><a href=""></a><span class="co"># replace -999 with `NA` in the `body_mass_kg` variable/column</span></span>
+<span id="cb363-4"><a href=""></a></span>
+<span id="cb363-5"><a href=""></a>df<span class="sc">$</span>body_mass_kg[df<span class="sc">$</span>body_mass_kg <span class="sc">==</span> <span class="sc">-</span><span class="dv">999</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co"># dollar sign syntax</span></span>
+<span id="cb363-6"><a href=""></a></span>
+<span id="cb363-7"><a href=""></a><span class="co"># or</span></span>
+<span id="cb363-8"><a href=""></a></span>
+<span id="cb363-9"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">body_mass_kg =</span> <span class="fu">na_if</span>(body_mass_kg, <span class="sc">-</span><span class="dv">999</span>)) <span class="co"># tidyverse syntax</span></span>
+<span id="cb363-10"><a href=""></a></span>
+<span id="cb363-11"><a href=""></a><span class="co"># or read dataset from a file specifying the code for missing values; `na` argument defaults to `c("", "NA")`</span></span>
+<span id="cb363-12"><a href=""></a></span>
+<span id="cb363-13"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"penguins.csv"</span>, <span class="at">na =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">999</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
-<li class="fragment">To learn more go to <a href="https://readr.tidyverse.org/" class="uri">https://readr.tidyverse.org/</a></li>
+<li class="fragment"><p>The <code>readr</code> and <code>readxl</code> packages enhance R by providing functions for working with with delimited text files (e.g., CSV, TSV) and Excel spreadsheets (XLSX, XLS), respectively</p></li>
+<li class="fragment"><p>See also the <code>read.*</code> functions of the <code>base</code> package</p></li>
+<li class="fragment"><p>To learn more go to <a href="https://readr.tidyverse.org/" class="uri">https://readr.tidyverse.org/</a> and <a href="https://readxl.tidyverse.org/" class="uri">https://readxl.tidyverse.org/</a></p></li>
 </ul>
 </section>
 <section id="r-missing-data-1" class="slide level2">
@@ -3473,17 +3472,17 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb361"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb361-1"><a href=""></a><span class="co"># remove rows/observations that have `NA` in any column/variable</span></span>
-<span id="cb361-2"><a href=""></a></span>
-<span id="cb361-3"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df)      <span class="co"># dollar sign syntax</span></span>
-<span id="cb361-4"><a href=""></a></span>
-<span id="cb361-5"><a href=""></a><span class="co"># or</span></span>
-<span id="cb361-6"><a href=""></a></span>
-<span id="cb361-7"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>() <span class="co"># tidyverse</span></span>
-<span id="cb361-8"><a href=""></a></span>
-<span id="cb361-9"><a href=""></a><span class="co"># remove rows/observations that have `NA` in the `sex` and `body_mass_kg` column/variable</span></span>
-<span id="cb361-10"><a href=""></a></span>
-<span id="cb361-11"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>(sex, body_mass_kg) <span class="co"># tidyverse</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb364"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb364-1"><a href=""></a><span class="co"># remove rows/observations that have `NA` in any column/variable</span></span>
+<span id="cb364-2"><a href=""></a></span>
+<span id="cb364-3"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df)      <span class="co"># dollar sign syntax</span></span>
+<span id="cb364-4"><a href=""></a></span>
+<span id="cb364-5"><a href=""></a><span class="co"># or</span></span>
+<span id="cb364-6"><a href=""></a></span>
+<span id="cb364-7"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>() <span class="co"># tidyverse</span></span>
+<span id="cb364-8"><a href=""></a></span>
+<span id="cb364-9"><a href=""></a><span class="co"># remove rows/observations that have `NA` in the `sex` and `body_mass_kg` column/variable</span></span>
+<span id="cb364-10"><a href=""></a></span>
+<span id="cb364-11"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>(sex, body_mass_kg) <span class="co"># tidyverse</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -3492,9 +3491,9 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb362"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb362-1"><a href=""></a><span class="co"># replace `NA` with `0` in the `body_mass_kg` variable/column</span></span>
-<span id="cb362-2"><a href=""></a></span>
-<span id="cb362-3"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">body_mass_kg =</span> <span class="fu">replace_na</span>(body_mass_kg, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb365"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb365-1"><a href=""></a><span class="co"># replace `NA` with `0` in the `body_mass_kg` variable/column</span></span>
+<span id="cb365-2"><a href=""></a></span>
+<span id="cb365-3"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">body_mass_kg =</span> <span class="fu">replace_na</span>(body_mass_kg, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
@@ -3531,13 +3530,13 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 <h2>R: Formula syntax</h2>
 
 <img data-src="images/clipboard-3890767592.png" class="r-stretch"><div class="cell">
-<div class="sourceCode cell-code" id="cb363"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb363-1"><a href=""></a><span class="fu">goal</span>(<span class="sc">~</span> x, <span class="at">data =</span> mydata)</span>
-<span id="cb363-2"><a href=""></a></span>
-<span id="cb363-3"><a href=""></a><span class="fu">goal</span>(x <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> mydata)</span>
-<span id="cb363-4"><a href=""></a></span>
-<span id="cb363-5"><a href=""></a><span class="fu">goal</span>(y <span class="sc">~</span> x, <span class="at">data =</span> mydata)</span>
-<span id="cb363-6"><a href=""></a></span>
-<span id="cb363-7"><a href=""></a><span class="fu">goal</span>(y <span class="sc">~</span> x <span class="sc">|</span> z, <span class="at">data =</span> mydata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb366"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb366-1"><a href=""></a><span class="fu">goal</span>(<span class="sc">~</span> x, <span class="at">data =</span> mydata)</span>
+<span id="cb366-2"><a href=""></a></span>
+<span id="cb366-3"><a href=""></a><span class="fu">goal</span>(x <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> mydata)</span>
+<span id="cb366-4"><a href=""></a></span>
+<span id="cb366-5"><a href=""></a><span class="fu">goal</span>(y <span class="sc">~</span> x, <span class="at">data =</span> mydata)</span>
+<span id="cb366-6"><a href=""></a></span>
+<span id="cb366-7"><a href=""></a><span class="fu">goal</span>(y <span class="sc">~</span> x <span class="sc">|</span> z, <span class="at">data =</span> mydata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="r-visualizing-and-summarizing-quantitative-variables" class="slide level2">
@@ -3547,13 +3546,13 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb364"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb364-1"><a href=""></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> body_mass_kg, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb367"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb367-1"><a href=""></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> body_mass_kg, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-224-1.png" width="576"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-227-1.png" width="576"></p>
 </figure>
 </div>
 </div>
@@ -3568,13 +3567,13 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb365"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb365-1"><a href=""></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> body_mass_kg, <span class="at">bins =</span> <span class="dv">100</span>, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb368"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb368-1"><a href=""></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> body_mass_kg, <span class="at">bins =</span> <span class="dv">100</span>, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-225-1.png" width="576"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-228-1.png" width="576"></p>
 </figure>
 </div>
 </div>
@@ -3588,7 +3587,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb366"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb366-1"><a href=""></a><span class="fu">favstats</span>(<span class="sc">~</span> body_mass_kg, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb369"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb369-1"><a href=""></a><span class="fu">favstats</span>(<span class="sc">~</span> body_mass_kg, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -3605,13 +3604,13 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 <h2>R: Visualizing and summarizing quantitative variables</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb367"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb367-1"><a href=""></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> body_mass_kg, <span class="at">data =</span> penguins) <span class="sc">%&gt;%</span> <span class="fu">gf_boxplot</span>(<span class="at">width =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb370"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb370-1"><a href=""></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> body_mass_kg, <span class="at">data =</span> penguins) <span class="sc">%&gt;%</span> <span class="fu">gf_boxplot</span>(<span class="at">width =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-227-1.png" width="576"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-230-1.png" width="576"></p>
 </figure>
 </div>
 </div>
@@ -3630,7 +3629,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 <h2>R: Visualizing and summarizing categorical variables</h2>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb368"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb368-1"><a href=""></a><span class="fu">levels</span>(penguins<span class="sc">$</span>species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb371"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb371-1"><a href=""></a><span class="fu">levels</span>(penguins<span class="sc">$</span>species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
@@ -3640,13 +3639,13 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb370"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb370-1"><a href=""></a><span class="fu">gf_bar</span>(<span class="sc">~</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb373"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb373-1"><a href=""></a><span class="fu">gf_bar</span>(<span class="sc">~</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-229-1.png" width="576"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-232-1.png" width="576"></p>
 </figure>
 </div>
 </div>
@@ -3658,26 +3657,26 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell" data-fragment="false">
-<div class="sourceCode cell-code" id="cb371"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb371-1"><a href=""></a><span class="fu">gf_bar</span>(<span class="sc">~</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb374"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb374-1"><a href=""></a><span class="fu">gf_bar</span>(<span class="sc">~</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment" data-fragment="false">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-230-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-233-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell" data-fig.eight="4" data-fragment="false">
-<div class="sourceCode cell-code" id="cb372"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb372-1"><a href=""></a><span class="fu">gf_props</span>(<span class="sc">~</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb375"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb375-1"><a href=""></a><span class="fu">gf_props</span>(<span class="sc">~</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment" data-fig.eight="4" data-fragment="false">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-231-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-234-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -3689,26 +3688,26 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell" data-fragment="false">
-<div class="sourceCode cell-code" id="cb373"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb373-1"><a href=""></a><span class="fu">gf_bar</span>(<span class="sc">~</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb376"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb376-1"><a href=""></a><span class="fu">gf_bar</span>(<span class="sc">~</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment" data-fragment="false">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-232-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-235-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell" data-fig.eight="4" data-fragment="false">
-<div class="sourceCode cell-code" id="cb374"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb374-1"><a href=""></a><span class="fu">gf_percents</span>(<span class="sc">~</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb377"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb377-1"><a href=""></a><span class="fu">gf_percents</span>(<span class="sc">~</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment" data-fig.eight="4" data-fragment="false">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-233-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-236-1.png" width="960"></p>
 </figure>
 </div>
 </div>

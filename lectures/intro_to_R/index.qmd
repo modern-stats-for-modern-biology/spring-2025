@@ -284,7 +284,7 @@ message
 
     -   Supply named arguments after unnamed arguments
 
--   If a function includes the special "*match all the unmatched arguments*" `...` argument, any formal argument that follow `...` can only be supplied using its exact name
+-   The special "*match all the unmatched arguments*" `...` argument allows functions to accept any number of arguments, including unnamed and duplicate named ones
 
 -   Arguments can have **default values**, allowing them to be omitted in function calls
 
@@ -1736,9 +1736,9 @@ l$D[2]
 ## R: Data frames
 
 -   Data frames are the most common way tabular data (i.e., "*row x column*" data, like an Excel spreadsheet) are stored in R
--   Data frames are lists of atomic vectors of equal length
--   Each element of a data frame (an atomic vector) represents a **variable** (column)
--   Use the `data.frame` or `tibble` function to create a data frame or tibble, respectively
+-   Data frames are lists of vectors (usually atomic vectors, but also lists) of equal length
+-   Each element of a data frame (an atomic vector or list) represents a **variable** (column)
+-   Use the `data.frame` or `tibble::tibble` functions to create a data frame or tibble, respectively
 
 ::: fragment
 ```{r}
@@ -1820,7 +1820,7 @@ head(df) # see also `tail(df)`
 df
 ```
 
--   Use the `str` or `glimpse` function to look at the structure of a data frame
+-   Use the `str`, `dplyr::glimpse`, `skimr::skim`, or other functions to look at the structure of a data frame
 
 ::: fragment
 ```{r}
@@ -1872,8 +1872,7 @@ df[c(FALSE, TRUE, TRUE, TRUE)] # remove 1st column (select 2nd, 3rd and 4th colu
 ```
 :::
 
-
-## R: Data frames
+## R: Data frames {.scrollable}
 
 ```{r}
 #| echo: false
@@ -1904,7 +1903,7 @@ df$height > 170
 ```
 :::
 
-## R: Data frames
+## R: Data frames {.scrollable}
 
 ```{r}
 #| echo: false
@@ -1929,7 +1928,7 @@ df[, 1] # select 1st column and keep all rows
 ```
 :::
 
-## R: Data frames
+## R: Data frames {.scrollable}
 
 ```{r}
 #| echo: false
@@ -1948,7 +1947,7 @@ df[, c("sex", "name")] # select `sex` and `name` column and keep all rows
 ```
 :::
 
-## R: Data frames
+## R: Data frames {.scrollable}
 
 ```{r}
 #| echo: false
@@ -1973,7 +1972,7 @@ df[df$height > 170, ] # select rows where `height > 170`, keep all columns
 ```
 :::
 
-## R: Data frames
+## R: Data frames {.scrollable}
 
 ```{r}
 #| echo: false
@@ -2011,7 +2010,7 @@ df
 
 -   To learn more go to <https://dplyr.tidyverse.org/>
 
-## R: Data frames (the `dplyr` way)
+## R: Data frames (the `dplyr` way) {.scrollable}
 
 ```{r}
 #| echo: false
@@ -2037,7 +2036,7 @@ df %>% filter(height > 170) # select rows where `weight > 80`, keep all columns
 ```
 :::
 
-## R: Data frames (the `dplyr` way)
+## R: Data frames (the `dplyr` way) {.scrollable}
 
 ```{r}
 #| echo: false
@@ -2061,7 +2060,7 @@ df %>% arrange(bmi) # sort by `bmi`; use `df %>% arrange(desc(bmi))` to sort in 
 ```
 :::
 
-## R: Data frames (the `dplyr` way)
+## R: Data frames (the `dplyr` way) {.scrollable}
 
 -   `dplyr` verbs can be combined using the pipe operator to perform complex data transformations
 
@@ -2082,6 +2081,42 @@ df %>%
   filter(nationality != "British") %>%
   select(name, nationality, bmi) %>%
   arrange(desc(bmi))
+```
+:::
+
+## R: Names of vector elements {visibility="hidden"}
+
+-   The functions that create atomic vectors and lists (including data frames and tibbles) use the special "*dot-dot-dot*" argument:
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+c(...)
+```
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+list(...)
+```
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+data.frame(..., check.names = TRUE, check.rows = FALSE, fix.empty.names = TRUE, row.names = NULL, stringsAsFactors = FALSE)
+```
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+tibble(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
 ```
 :::
 
@@ -2222,22 +2257,18 @@ df$body_mass_kg[df$body_mass_kg == -999] <- NA # dollar sign syntax
 # or
 
 df <- df %>% mutate(body_mass_kg = na_if(body_mass_kg, -999)) # tidyverse syntax
-```
-:::
 
- 
-
-::: fragment
-```{r}
-#| eval: false
-#| output-location: default
-# read dataset from a file specifying the code for missing values; `na` argument defaults to `c("", "NA")`
+# or read dataset from a file specifying the code for missing values; `na` argument defaults to `c("", "NA")`
 
 df <- read_csv("penguins.csv", na = c(-999))
 ```
 :::
 
--   To learn more go to <https://readr.tidyverse.org/>
+-   The `readr` and `readxl` packages enhance R by providing functions for working with with delimited text files (e.g., CSV, TSV) and Excel spreadsheets (XLSX, XLS), respectively
+
+-   See also the `read.*` functions of the `base` package
+
+-   To learn more go to <https://readr.tidyverse.org/> and <https://readxl.tidyverse.org/>
 
 ## R: Missing data
 
