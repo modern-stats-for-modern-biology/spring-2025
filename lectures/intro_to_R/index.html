@@ -2587,9 +2587,9 @@ $D
 <section id="r-data-frames" class="slide level2">
 <h2>R: Data frames</h2>
 <ul>
-<li class="fragment">Data frames are the most common way tabular data (i.e., “<em>row x column</em>” data, like an Excel spreadsheet) are stored in R</li>
-<li class="fragment">Data frames are lists of vectors (usually atomic vectors, but also lists) of equal length</li>
-<li class="fragment">Each element of a data frame (an atomic vector or list) represents a <strong>variable</strong> (column)</li>
+<li class="fragment">A data frame is essentially a list where each element is a vector of equal length, allowing for the storage of heterogeneous data types in a tabular format</li>
+<li class="fragment">This structure enables each column to contain different types of data (e.g., numeric, character, logical, factor, date, etc.), while ensuring that all columns have the same number of rows</li>
+<li class="fragment">Each element of a data frame (usually an atomic vector, but it can also be a list) represents a <strong>variable</strong> (column)</li>
 <li class="fragment">Use the <code>data.frame</code> or <code>tibble::tibble</code> functions to create a data frame or tibble, respectively</li>
 </ul>
 <div class="fragment">
@@ -3085,7 +3085,7 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 <section id="r-data-frames-the-dplyr-way" class="slide level2">
 <h2>R: Data frames (the <code>dplyr</code> way)</h2>
 <ul>
-<li class="fragment"><p><code>dplyr</code> is a package with functions (a.k.a. “<em>verbs</em>”) that form a consistent grammar of data transformation:</p>
+<li class="fragment"><p><code>dplyr</code> is a package with functions (a.k.a. “<em>verbs</em>”) that form a consistent grammar of data transformation</p>
 <ul>
 <li class="fragment">the <code>select</code> function selects columns/variables based on their names</li>
 <li class="fragment">the <code>pull</code> function pulls a column/variable based on its name</li>
@@ -3094,7 +3094,8 @@ $ sex    &lt;chr&gt; "F", "M", "M"</code></pre>
 <li class="fragment">the <code>arrange</code> function changes the ordering of the rows/observations</li>
 <li class="fragment">the <code>summarize</code> function reduces multiple values down to a single value</li>
 </ul></li>
-<li class="fragment"><p>These verbs can be combined with the <code>group_by</code> function to perform operations “<em>by group</em>”</p></li>
+<li class="fragment"><p>Use the <code>rowwise</code> or <code>group_by</code> function in combination with the <code>mutate</code> or <code>summarize</code> function to perform operations “<em>by row</em>” or “<em>by group</em>”</p></li>
+<li class="fragment"><p>Use the <code>ungroup</code> function to remove these groupings</p></li>
 <li class="fragment"><p>To learn more go to <a href="https://dplyr.tidyverse.org/" class="uri">https://dplyr.tidyverse.org/</a></p></li>
 </ul>
 </section>

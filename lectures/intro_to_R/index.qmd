@@ -1727,9 +1727,9 @@ l$D[2]
 
 ## R: Data frames
 
--   Data frames are the most common way tabular data (i.e., "*row x column*" data, like an Excel spreadsheet) are stored in R
--   Data frames are lists of vectors (usually atomic vectors, but also lists) of equal length
--   Each element of a data frame (an atomic vector or list) represents a **variable** (column)
+-   A data frame is essentially a list where each element is a vector of equal length, allowing for the storage of heterogeneous data types in a tabular format
+-   This structure enables each column to contain different types of data (e.g., numeric, character, logical, factor, date, etc.), while ensuring that all columns have the same number of rows
+-   Each element of a data frame (usually an atomic vector, but it can also be a list) represents a **variable** (column)
 -   Use the `data.frame` or `tibble::tibble` functions to create a data frame or tibble, respectively
 
 ::: fragment
@@ -1989,7 +1989,7 @@ df
 
 ## R: Data frames (the `dplyr` way)
 
--   `dplyr` is a package with functions (a.k.a. "*verbs*") that form a consistent grammar of data transformation:
+-   `dplyr` is a package with functions (a.k.a. "*verbs*") that form a consistent grammar of data transformation
 
     -   the `select` function selects columns/variables based on their names
     -   the `pull` function pulls a column/variable based on its name
@@ -1998,7 +1998,9 @@ df
     -   the `arrange` function changes the ordering of the rows/observations
     -   the `summarize` function reduces multiple values down to a single value
 
--   These verbs can be combined with the `group_by` function to perform operations "*by group*"
+-   Use the `rowwise` or `group_by` function in combination with the `mutate` or `summarize` function to perform operations "*by row*" or "*by group*"
+
+-   Use the `ungroup` function to remove these groupings
 
 -   To learn more go to <https://dplyr.tidyverse.org/>
 
