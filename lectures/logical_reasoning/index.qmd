@@ -1,0 +1,1141 @@
+---
+title: "Logical reasoning"
+date: 2025-02-17
+author: "Edoardo \"Dado\" Marcora"
+format:
+  revealjs:
+    smaller: true
+    incremental: true
+    theme: [default, styles.scss]
+    execute:
+      echo: true
+      eval: true
+      warning: false
+      fragment: true
+    output-location: fragment
+df-print: kable
+---
+
+## Inference
+
+-   Inference is logical reasoning
+
+## Scientific reasoning is inductive reasoning
+
+XXX
+
+## Statistical inference
+
+-   Statistical inference is inductive inference using incomplete data and a model of the data generating process (DGP) as evidence
+
+XXX
+
+[![Dosso Dossi: Allegory of Fortune (left, the god of chance; right, the goddess of luck)](images/dosso_dossi.allegory_of_fortune.png)](https://www.getty.edu/art/collection/object/103RJG)
+
+![Raphael: The School of Athens (left, Plato; right, Aristotle)](images/Sanzio_01_Plato_Aristotle.jpg){fig-alt="https://commons.wikimedia.org/w/index.php?curid=75881"}
+
+## Statistical inference
+
+![](images/Slide1.png)
+
+[Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
+
+## Example data (and frequentist inference)
+
+[**LPS treatment blunts UCP1 expression in subcutaneous adipocytes**]{.orange}
+
+![](images/41467_2020_15483_Fig1_HTML.png)
+
+Values are expressed as mean ± SEM. \*\**p* = 0.004. Statistical test used: two-sided *t*-test.
+
+ 
+
+**Figure 1** from [ASK1 inhibits browning of white adipose tissue in obesity](https://doi.org/10.1038/s41467-020-15483-7)
+
+Lucchini *et al.* (2020) **Nat Commun** 11(1):1642
+
+## Statistical inference
+
+![](images/clipboard-2620420083.png)
+
+## Causal inference
+
+![](images/clipboard-1233462405.png)
+
+## Knowledge-based AI
+
+-   Logic (e.g., propositional logic or first-order logic) is a language used to represent knowledge and to reason (draw conclusions, make inferences) based on this knowledge
+
+-   Logic is used in a knowledge-based AI agent to represent knowledge and to reason (draw conclusions, make inferences) based on this knowledge
+
+-   In deductive logic the goal is to determine whether an argument is valid (the premises entail the conclusion), using some inference algorithm or rules
+
+-   In inductive logic the goal is to determine whether an argument is strong (the premises partially entail the conclusion), using some inference algorithm or rules
+
+## Deductive inference: Propositional logic
+
+-   The goal is to **prove** that a conclusion/hypothesis/query is true given some premises/evidence/knowledge known or assumed to be true
+
+-   $E \models C$
+
+-   $P(C \mid E) = 1$
+
+## Arguments/Rules of deductive inference
+
+Knowledge-based AI capable of logical reasoning
+
+Knowledge engineering
+
+Argument forms as inference rules of propositional logic/deductive inference:
+
+-   *Modus ponens*
+
+-   And elimination rule
+
+-   Unit resolution rule
+
+-   Double negation elimination rule
+
+-   Implication elimination rule
+
+-   Biconditional elimination rule
+
+-   De Morgan's law (1)
+
+-   De Morgan's law (2)
+
+-   Distributive law (1)
+
+-   Distributive law (2)
+
+-   *Modus tollens*
+
+## Propositional logic
+
+XXX
+
+## Propositional symbols/variables
+
+In propositional logic, the terms **propositional symbol** and **propositional variable** are often used interchangeably to denote **atomic propositions**—statements that are either true or false and cannot be broken down into simpler statements. These atomic propositions serve as the foundational building blocks for more complex, compound propositions formed using logical connectives/boolean operators such as AND, OR, and NOT.
+
+## Setup environment
+
+```{r}
+#| output-location: default
+#| output: false
+library(tidyverse)
+library(magrittr)
+library(readxl)
+library(mosaic)
+library(ggformula)
+library(latex2exp)
+library(flexplot)
+library(broom)
+library(easystats)
+library(extraDistr)
+
+theme_set(theme_minimal())
+
+# for bayesian inference
+library(rstanarm)
+library(posterior)
+library(bayesplot)
+```
+
+## Observations
+
+```{r}
+#| include: false
+d.obs <- read_xlsx("41467_2020_15483_MOESM4_ESM.xlsx", sheet = 1, range = "A25:D26", col_names = c("Treatment", "R1", "R2", "R3"))
+```
+
+```{r}
+#| include: false
+d.obs %<>%
+  pivot_longer(cols = -Treatment, names_to = "Replicate", values_to = "UCP1") %>% 
+  mutate(Treatment = fct_relevel(Treatment, "Saline"), UCP1 = UCP1) %>%
+  select(-Replicate)
+```
+
+```{r}
+#| include: false
+d.obs %<>% mutate(X = as.numeric(Treatment) - 1, Y = round(UCP1 * 10, 0)) %>% select(X, Y)
+```
+
+```{r}
+#| include: false
+ss <-
+  expand_grid(
+    X = c(0, 1),
+    Y = seq(0, 15)) %>% 
+  mutate(Ω = paste0("⍵", 1:n())) %>%
+  select(Ω, everything())
+
+ss
+```
+
+```{r}
+#| output-location: default
+d.obs
+```
+
+## Process model
+
+::: nonincremental
+-   Given a process model (a.k.a. *data model*, *generative model*, or *likelihood*):
+:::
+
+$$p(x, y \mid M)$$
+
+## Process model
+
+::: nonincremental
+-   Given a process model (a.k.a. *data model*, *generative model*, or *likelihood*):
+:::
+
+$$p(x, y \mid \theta, M^*)$$
+
+## Process model
+
+::: nonincremental
+-   Given a process model (a.k.a. *data model*, *generative model*, or *likelihood*):
+:::
+
+$$p(x, y \mid \theta)$$
+
+-   Assuming $p(x \mid \theta) = p(x)$:
+
+::: fragment
+$$p(x, y \mid \theta) \propto p(y \mid x, \theta)$$
+:::
+
+-   Assuming the standard linear regression model $M_{L+E_N}$:
+
+::: fragment
+$$Y = \beta_0 + \beta_1 \cdot x + \epsilon \quad \epsilon \sim N(0, \sigma)$$
+:::
+
+-   The regression likelihood $p(y \mid x, \theta)$ is:
+
+::: fragment
+$$p(y \mid x, \beta_0, \beta_1, \sigma, M_{L+E_N})$$
+:::
+
+## Process model
+
+::: nonincremental
+-   Given a process model (a.k.a. *data model*, *generative model*, or *likelihood*):
+
+$$p(x, y \mid \theta)$$
+
+-   Assuming $p(x \mid \theta) = p(x)$:
+
+$$p(x, y \mid \theta) \propto p(y \mid x, \theta)$$
+
+-   Assuming the standard linear regression model $M_{L+E_N}$:
+
+$$Y = \beta_0 + \beta_1 \cdot x + \epsilon \quad \epsilon \sim N(0, \sigma)$$
+
+-   The regression likelihood $p(y \mid x, \theta)$ is:
+:::
+
+$$p(y \mid \mu, \sigma, M_N) \quad \mu = \beta_0 + \beta_1 \cdot x$$
+
+## Standard linear regression likelihood
+
+::: nonincremental
+-   The regression likelihood $p(y \mid x, \theta)$ is:
+:::
+
+$$p(y \mid \mu, \sigma, M_N) \quad \mu = \beta_0 + \beta_1 \cdot x$$
+
+::: fragment
+$$Y \sim N(\mu, \sigma) \quad \mu = \beta_0 + \beta_1 \cdot x$$
+:::
+
+::: fragment
+$$p(y \mid \mu, \sigma, M_N) = \frac{1}{\sigma \sqrt{2\pi}} \cdot e^{-\frac{1}{2} \left( \frac{y - \mu}{\sigma} \right)^2}$$
+:::
+
+::: fragment
+$$p(y \mid x, \beta_0, \beta_1, \sigma, M_{L+E_N}) = \frac{1}{\sigma \sqrt{2\pi}} \cdot e^{-\frac{1}{2} \left( \frac{y - (\beta_0 + \beta_1 \cdot x)}{\sigma} \right)^2}$$
+:::
+
+::: {.text-align-center .fragment}
+`p = dnorm(Y, mean = b0 + b1 * X, sd = sigma)`
+:::
+
+## Standard linear regression model 2: Visualization
+
+$$p(y \mid x, \beta_0 = 10, \beta_1 = -7, \sigma = 1)$$
+
+```{r}
+#| output-location: column
+ss %>%
+  mutate(
+    b0 = 10,
+    b1 = -7,
+    sigma = 1,
+    mu = b0 + b1 * X) %>%
+  mutate(p = ddnorm(Y, mean = mu, sd = sigma)) %>%
+
+  
+
+      
+  gf_tile(Y ~ X, fill = ~ p, color = "black", linewidth = 0.5) %>% gf_labs(title = latex2exp::TeX(r"($p(y \ |\ x, M_{2^*})$)")) %>%
+  gf_text(label = ~ sprintf("%0.4f", p)) %>% gf_refine(scale_fill_continuous(low = "white", high = "blue", limits = c(0, 1)), scale_x_continuous(breaks = seq(0, 1)), scale_y_continuous(breaks = seq(0, 15)))
+```
+
+## Standard linear regression model 2: Sampling
+
+$$p(y \mid x, \beta_0 = 10, \beta_1 = -7, \sigma = 1)$$
+
+```{r}
+#| echo: false
+set.seed(666)
+```
+
+```{r}
+#| output-location: column
+ss %>%
+  mutate(
+    b0 = 10,
+    b1 = -7,
+    sigma = 1,
+    mu = b0 + b1 * X) %>%
+  mutate(p = ddnorm(Y, mean = mu, sd = sigma)) %>%
+  slice_sample(n = 3, by = X, weight_by = p, replace = TRUE) %>%
+
+  
+  
+  
+  gf_jitter(Y ~ factor(X), width = 0.25, height = 0) %>% gf_labs(title = latex2exp::TeX(r"($n = 6$ data points $\left(x_i, y_i\right)$ sampled with replacement from $p(x, y \ |\ M_{2^*})$)"), x = "X") %>% gf_refine(scale_y_continuous(limits = c(0, 15), breaks = seq(0, 15), minor_breaks = NULL))
+```
+
+## Standard linear regression model 2: Sims vs obs
+
+$$p(y \mid x, \beta_0 = 10, \beta_1 = -7, \sigma = 1)$$
+
+```{r}
+#| echo: false
+set.seed(666)
+```
+
+```{r}
+#| output-location: column
+ss %>%
+  mutate(
+    b0 = 10,
+    b1 = -7,
+    sigma = 1,
+    mu = b0 + b1 * X) %>%
+  mutate(p = ddnorm(Y, mean = mu, sd = sigma)) %>%
+  slice_sample(n = 3, by = X, weight_by = p, replace = TRUE) %>%
+
+  
+  
+  
+  gf_jitter(Y ~ factor(X), width = 0.25, height = 0) %>% gf_jitter(Y ~ factor(X), data = d.obs, width = 0.25, height = 0, color = "red") %>% gf_labs(title = latex2exp::TeX(r"($n = 6$ data points $\left(x_i, y_i\right)$ sampled with replacement from $p(y \ |\ x, M_{2^*})$ + observations in red)"), x = "X") %>% gf_refine(scale_y_continuous(limits = c(0, 15), breaks = seq(0, 15), minor_breaks = NULL))
+```
+
+## Process model and statistical inference
+
+::: nonincremental
+-   Given a process model (a.k.a. *data model*, *generative model*, or *likelihood*):
+:::
+
+$$p(x, y \mid \theta)$$
+
+-   The corresponding inference model is:
+
+::: fragment
+$$p(\theta \mid x, y) = \frac{p(\theta) \cdot p(x, y \mid \theta)}{p(x, y)}$$
+:::
+
+-   $p(\theta \mid x, y)$ is called the **posterior distribution**
+
+-   $p(\theta)$ is called the **prior distribution**
+
+-   $p(x, y \mid \theta)$ is called the **likelihood**
+
+-   $p(x, y)$ is a normalizing constant a.k.a. the **marginal likelihood** $= \sum_\theta p(x, y \mid \theta)$
+
+::: fragment
+$$p(\theta \mid x, y) \propto p(\theta) \cdot p(x, y \mid \theta)$$
+:::
+
+## Bayesian inference using the linear model
+
+::: nonincremental
+-   The inference model:
+:::
+
+$$p(\theta \mid x, y) \propto p(\theta) \cdot p(x, y \mid \theta)$$
+
+-   Assuming a standard linear regression model:
+
+::: fragment
+$$p(\beta_0, \beta_1, \sigma \mid x, y) \propto p(\beta_0, \beta_1, \sigma) \cdot p(y \mid x, \beta_0, \beta_1, \sigma)$$
+:::
+
+-   Assuming $p(\beta_0, \beta_1, \sigma) = p(\beta_0) \cdot p(\beta_1) \cdot p(\sigma)$:
+
+::: fragment
+$$p(\beta_0, \beta_1, \sigma \mid x, y) \propto p(\beta_0) \cdot p(\beta_1) \cdot p(\sigma) \cdot p(y \mid x, \beta_0, \beta_1, \sigma)$$
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+prior = d?(b0) * d?(b1) * d?(sigma)
+
+likelihood = dnorm(Y, mean = b0 + b1 * X, sd = sigma)
+
+posterior.unnormalized = prior * likelihood
+
+posterior = posterior.unnormalized / sum(posterior.unnormalized)
+```
+:::
+
+## Prior probability distribution
+
+::: nonincremental
+-   Assuming the prior probability distribution of parameter $\beta_0$ is:
+:::
+
+::: fragment
+$$
+p(\beta_0, \text{min} = 0, \text{max} = 15, M_U) \quad \beta_0 \sim U(\text{min} = 0, \text{max} = 15)
+$$
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+p = dunif(b0, min = 0, max = 15)
+```
+:::
+
+-   Assuming the prior probability distribution of parameter $\beta_1$ is:
+
+::: fragment
+$$
+p(\beta_1, \text{min} = -15, \text{max} = 15, M_U) \quad \beta_1 \sim U(\text{min} = -15, \text{max} = 15)
+$$
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+p = dunif(b1, min = -15, max = 15)
+```
+:::
+
+-   Assuming the prior probability distribution of parameter $\sigma$ is:
+
+::: fragment
+$$
+p(\sigma, \text{min} = 1, \text{max} = 6, M_U) \quad \sigma \sim U(\text{min} = 1, \text{max} = 6)
+$$
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+p = dunif(sigma, min = 1, max = 6)
+```
+:::
+
+## Prior probability distribution
+
+::: nonincremental
+-   The joint prior probability distribution of parameters $\beta_0$, $\beta_1$, and $\sigma$ is:
+:::
+
+$$p(\beta_0, \text{min} = 0, \text{max} = 15, M_U) \cdot p(\beta_1, \text{min} = -15, \text{max} = 15, M_U) \cdot p(\sigma, \text{min} = 1, \text{max} = 6, M_U)$$
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+prior = dunif(b0, min = 0, max = 15) * dunif(b1, min = -15, max = 15) * dunif(sigma, min = 1, max = 6)
+```
+:::
+
+## Sample space
+
+```{r}
+#| output-location: default
+ss <-
+  expand_grid(
+    b0 = seq(0, 15),
+    b1 = seq(-15, 15),
+    sigma = seq(1, 6)) %>% 
+  mutate(Ω = paste0("⍵", 1:n())) %>%
+  select(Ω, everything())
+
+nrow(ss)
+
+head(ss)
+```
+
+## Prior probability distribution
+
+```{r}
+#| output-location: default
+ss %>%
+  rowwise() %>%
+  mutate(
+    prior = ddunif(b0, min = 0, max = 15) * ddunif(b1, min = -15, max = 15) * ddunif(sigma, min = 1, max = 6)) %>%
+  ungroup() %>%
+  head()
+```
+
+## Prior probability distribution
+
+```{r}
+#| output-location: slide
+ss %>%
+  rowwise() %>%
+  mutate(
+    prior = ddunif(b0, min = 0, max = 15) * ddunif(b1, min = -15, max = 15) * ddunif(sigma, min = 1, max = 6)) %>%
+  ungroup() %>%
+  gf_tile(b0 ~ b1 | sigma, fill = ~ prior, color = "black", linewidth = 0.1) %>%
+  gf_refine(scale_fill_continuous(low = "white", high = "blue", limits = c(0, 1)), scale_x_continuous(breaks = seq(-15, 15)), scale_y_continuous(breaks = seq(0, 15)), theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text = element_text(size = 4)))
+```
+
+## Prior probability distribution
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(prior = 1 / n()) %>%
+  head()
+```
+
+## Standard linear regression likelihood
+
+::: nonincremental
+-   Compute likelihood of a single data point for each combination of parameters:
+:::
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(
+    X = 0,
+    Y = 11) %>%
+  rowwise() %>%
+  mutate(
+    mu = b0 + b1 * X,
+    likelihood = ddnorm(Y, mu, sigma)) %>%
+  ungroup() %>%
+  head()
+```
+
+## Standard linear regression likelihood
+
+::: nonincremental
+-   Compute likelihood of a single data point for each combination of parameters:
+:::
+
+```{r}
+#| output-location: slide
+ss %>%
+  mutate(
+    X = 0,
+    Y = 11) %>%
+  rowwise() %>%
+  mutate(
+    mu = b0 + b1 * X,
+    likelihood = ddnorm(Y, mu, sigma)) %>%
+  ungroup() %>%
+  gf_tile(b0 ~ b1 | sigma, fill = ~ likelihood, color = "black", linewidth = 0.1) %>%
+  gf_refine(scale_fill_continuous(low = "white", high = "blue"), scale_x_continuous(breaks = seq(-15, 15)), scale_y_continuous(breaks = seq(0, 15)), theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text = element_text(size = 4))) # auto scale p for better viz
+```
+
+## Standard linear regression likelihood
+
+::: nonincremental
+-   Compute likelihood of a single data point for each combination of parameters:
+:::
+
+```{r}
+#| output-location: slide
+ss %>%
+  mutate(
+    X = 1,
+    Y = 3) %>%
+  rowwise() %>%
+  mutate(
+    mu = b0 + b1 * X,
+    likelihood = ddnorm(Y, mu, sigma)) %>%
+  ungroup() %>%
+  gf_tile(b0 ~ b1 | sigma, fill = ~ likelihood, color = "black", linewidth = 0.1) %>%
+  gf_refine(scale_fill_continuous(low = "white", high = "blue"), scale_x_continuous(breaks = seq(-15, 15)), scale_y_continuous(breaks = seq(0, 15)), theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text = element_text(size = 4))) # auto scale p for better viz
+```
+
+## Standard linear regression likelihood
+
+::: nonincremental
+-   Compute likelihood of multiple data points for each combination of parameter, assuming observations are **independent and identically distributed** (i.i.d.):
+:::
+
+```{r}
+#| output-location: slide
+ss %>%
+  mutate(
+    data = list(d.obs) # add a list column containing d.obs in each row
+  ) %>% 
+  rowwise() %>%
+  mutate(
+    likelihood = {
+      data %>%
+        mutate(
+          mu = b0 + b1 * X,
+          likelihood = ddnorm(Y, mu, sigma)
+        ) %>%
+        pull(likelihood) %>%
+        prod()
+    }
+  ) %>%
+  ungroup() %>%
+  head()
+```
+
+## Standard linear regression likelihood
+
+::: nonincremental
+-   Compute likelihood of multiple data points for each combination of parameter, assuming observations are **independent and identically distributed** (i.i.d.):
+:::
+
+```{r}
+#| output-location: slide
+ss %>%
+  mutate(
+    data = list(d.obs) # add a list column containing d.obs in each row
+  ) %>% 
+  rowwise() %>%
+  mutate(
+    likelihood = {
+      data %>%
+        mutate(
+          mu = b0 + b1 * X,
+          likelihood = ddnorm(Y, mu, sigma)
+        ) %>%
+        pull(likelihood) %>%
+        prod()
+    }
+  ) %>%
+  ungroup() %>%
+  gf_tile(b0 ~ b1 | sigma, fill = ~ likelihood, color = "black", linewidth = 0.1) %>%
+  gf_refine(scale_fill_continuous(low = "white", high = "blue"), scale_x_continuous(breaks = seq(-15, 15)), scale_y_continuous(breaks = seq(0, 15)), theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text = element_text(size = 4))) # auto scale p for better viz
+```
+
+## Posterior probability distribution
+
+::: nonincremental
+-   Compute posterior probability distribution by multiplying prior and likelihood:
+:::
+
+```{r}
+#| output-location: slide
+ss %<>%
+  mutate(
+    data = list(d.obs) # add a list column containing d.obs in each row
+  ) %>%
+  rowwise() %>%
+  mutate(
+    prior = ddunif(b0, min = 0, max = 15) * ddunif(b1, min = -15, max = 15) * ddunif(sigma, min = 1, max = 6),
+    likelihood = {
+      data %>%
+        mutate(
+          mu = b0 + b1 * X,
+          likelihood = ddnorm(Y, mu, sigma)
+        ) %>%
+        pull(likelihood) %>%
+        prod()
+    },
+    posterior.unnormalized = prior * likelihood
+  ) %>%
+  ungroup() %>%
+  mutate(posterior = posterior.unnormalized / sum(posterior.unnormalized))
+
+ss %>%
+  gf_tile(b0 ~ b1 | sigma, fill = ~ posterior, color = "black", linewidth = 0.1) %>%
+  gf_refine(scale_fill_continuous(low = "white", high = "blue"), scale_x_continuous(breaks = seq(-15, 15)), scale_y_continuous(breaks = seq(0, 15)), theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text = element_text(size = 4))) # auto scale p for better viz
+```
+
+## Marginal prior probability distributions
+
+```{r}
+#| output-location: default
+ss %>%
+  pivot_longer(cols = c(b0, b1, sigma), names_to = "parameter", values_to = "value") %>%
+  group_by(parameter, value) %>%
+  summarise(prior = sum(prior), .groups = "drop") %>%
+  gf_line(prior ~ value | parameter, color = ~ parameter) %>%
+  gf_facet_grid(parameter ~ .) %>%
+  gf_lims(x = c(-15, 15), y = c(0, 0.5)) %>%
+  gf_refine(theme(legend.position = "none"))
+```
+
+## Marginal posterior probability distribution
+
+```{r}
+#| output-location: default
+ss %>%
+  pivot_longer(cols = c(b0, b1, sigma), names_to = "parameter", values_to = "value") %>%
+  group_by(parameter, value) %>%
+  summarise(posterior = sum(posterior), .groups = "drop") %>%
+  gf_line(posterior ~ value | parameter, color = ~ parameter) %>%
+  gf_facet_grid(parameter ~ .) %>%
+  gf_lims(x = c(-15, 15), y = c(0, 0.5)) %>%
+  gf_refine(theme(legend.position = "none"))
+```
+
+## Plot prior lines
+
+```{r}
+#| output-location: default
+# sample 1000 parameter combinations/lines from the posterior
+sampled_params <- ss %>% slice_sample(n = 1000, weight_by = prior, replace = TRUE)
+```
+
+ 
+
+```{r}
+#| echo: false
+set.seed(666)
+```
+
+```{r}
+#| output-location: slide
+# generate two data points for each sampled line
+line_data <- sampled_params %>%
+  crossing(X = c(0, 1)) %>%
+  mutate(Y = b0 + b1 * X)
+
+# plot observed data and sampled lines
+gf_line(Y ~ X, group = ~ interaction(b0, b1), data = line_data, 
+          color = "gray", alpha = 0.5) %>%
+  gf_lims(x = c(-0.5, 1.5), y = c(0, 15)) %>%
+  gf_refine(
+    theme(
+      panel.grid.major = element_blank(),  # Remove major gridlines
+      panel.grid.minor = element_blank(),  # Remove minor gridlines
+      panel.background = element_blank(),  # Optional: Remove panel background
+      axis.line = element_line(color = "gray")  # Add axis lines for clarity
+    )
+  )
+```
+
+## Plot posterior lines
+
+```{r}
+#| output-location: default
+# sample 1000 parameter combinations/lines from the posterior
+sampled_params <- ss %>% slice_sample(n = 1000, weight_by = posterior, replace = TRUE)
+```
+
+ 
+
+```{r}
+#| echo: false
+set.seed(666)
+```
+
+```{r}
+#| output-location: slide
+# generate two data points for each sampled line
+line_data <- sampled_params %>%
+  crossing(X = c(0, 1)) %>%
+  mutate(Y = b0 + b1 * X)
+
+# plot observed data and sampled lines
+gf_jitter(Y ~ X, data = d.obs, color = "red", size = 2, width = 0.1) %>%
+  gf_line(Y ~ X, group = ~ interaction(b0, b1), data = line_data, 
+          color = "gray", alpha = 0.5) %>%
+  gf_lims(x = c(-0.5, 1.5), y = c(0, 15)) %>%
+  gf_refine(
+    theme(
+      panel.grid.major = element_blank(),  # Remove major gridlines
+      panel.grid.minor = element_blank(),  # Remove minor gridlines
+      panel.background = element_blank(),  # Optional: Remove panel background
+      axis.line = element_line(color = "gray")  # Add axis lines for clarity
+    )
+  )
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+posterior_draws <- ss %>%
+  slice_sample(n = 1000, weight_by = posterior, replace = TRUE) %>%
+  select(b0, b1, sigma) %>% 
+  as_draws_df()
+
+summarize_draws(posterior_draws)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+describe_posterior(posterior_draws)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+mcmc_hist(posterior_draws, binwidth = 1)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+mcmc_intervals(posterior_draws)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output: false
+stan_glm.fit <- stan_glm(Y ~ X, data = d.obs, family = gaussian())
+```
+
+ 
+
+```{r}
+#| output-location: default
+summary(stan_glm.fit)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+summarize_draws(stan_glm.fit)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+describe_posterior(stan_glm.fit)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+mcmc_hist(stan_glm.fit, binwidth = 1)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+mcmc_intervals(stan_glm.fit)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+rope(stan_glm.fit, parameters = "X") %>% plot()
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+rope(stan_glm.fit, parameters = "X")
+```
+
+## Posterior with uniform priors
+
+```{r}
+#| output-location: slide
+ss %<>%
+  mutate(
+    data = list(d.obs) # add a list column containing d.obs in each row
+  ) %>%
+  rowwise() %>%
+  mutate(
+    prior = ddunif(b0, min = 0, max = 15) * ddunif(b1, min = -15, max = 15) * ddunif(sigma, min = 1, max = 6),
+    likelihood = {
+      data %>%
+        mutate(
+          mu = b0 + b1 * X,
+          likelihood = ddnorm(Y, mu, sigma)
+        ) %>%
+        pull(likelihood) %>%
+        prod()
+    },
+    posterior.unnormalized = prior * likelihood
+  ) %>%
+  ungroup() %>%
+  mutate(posterior = posterior.unnormalized / sum(posterior.unnormalized))
+
+ss %>%
+  gf_tile(b0 ~ b1 | sigma, fill = ~ posterior, color = "black", linewidth = 0.1) %>%
+  gf_refine(scale_fill_continuous(low = "white", high = "blue"), scale_x_continuous(breaks = seq(-15, 15)), scale_y_continuous(breaks = seq(0, 15)), theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text = element_text(size = 4))) # auto scale p for better viz
+```
+
+## Marginal prior probability distributions
+
+```{r}
+#| output-location: default
+ss %>%
+  pivot_longer(cols = c(b0, b1, sigma), names_to = "parameter", values_to = "value") %>%
+  group_by(parameter, value) %>%
+  summarise(prior = sum(prior), .groups = "drop") %>%
+  gf_line(prior ~ value | parameter, color = ~ parameter) %>%
+  gf_facet_grid(parameter ~ .) %>%
+  gf_lims(x = c(-15, 15), y = c(0, 0.5)) %>%
+  gf_refine(theme(legend.position = "none"))
+```
+
+## Marginal posterior probability distribution
+
+```{r}
+#| output-location: default
+ss %>%
+  pivot_longer(cols = c(b0, b1, sigma), names_to = "parameter", values_to = "value") %>%
+  group_by(parameter, value) %>%
+  summarise(posterior = sum(posterior), .groups = "drop") %>%
+  gf_line(posterior ~ value | parameter, color = ~ parameter) %>%
+  gf_facet_grid(parameter ~ .) %>%
+  gf_lims(x = c(-15, 15), y = c(0, 0.5)) %>%
+  gf_refine(theme(legend.position = "none"))
+```
+
+## Posterior with non-uniform priors
+
+```{r}
+#| output-location: slide
+ss %<>%
+  mutate(
+    data = list(d.obs) # add a list column containing d.obs in each row
+  ) %>%
+  rowwise() %>%
+  mutate(
+    prior = ddunif(b0, min = 0, max = 15) * ddnorm(b1, mean = 0, sd = 4) * ddgamma(sigma, shape = 1, scale = 2),
+    likelihood = {
+      data %>%
+        mutate(
+          mu = b0 + b1 * X,
+          likelihood = ddnorm(Y, mu, sigma)
+        ) %>%
+        pull(likelihood) %>%
+        prod()
+    },
+    posterior.unnormalized = prior * likelihood
+  ) %>%
+  ungroup() %>%
+  mutate(posterior = posterior.unnormalized / sum(posterior.unnormalized))
+
+ss %>%
+  gf_tile(b0 ~ b1 | sigma, fill = ~ posterior, color = "black", linewidth = 0.1) %>%
+  gf_refine(scale_fill_continuous(low = "white", high = "blue"), scale_x_continuous(breaks = seq(-15, 15)), scale_y_continuous(breaks = seq(0, 15)), theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text = element_text(size = 4))) # auto scale p for better viz
+```
+
+## Marginal prior probability distributions
+
+```{r}
+#| output-location: default
+ss %>%
+  pivot_longer(cols = c(b0, b1, sigma), names_to = "parameter", values_to = "value") %>%
+  group_by(parameter, value) %>%
+  summarise(prior = sum(prior), .groups = "drop") %>%
+  gf_line(prior ~ value | parameter, color = ~ parameter) %>%
+  gf_facet_grid(parameter ~ .) %>%
+  gf_lims(x = c(-15, 15), y = c(0, 0.5)) %>%
+  gf_refine(theme(legend.position = "none"))
+```
+
+## Marginal posterior probability distribution
+
+```{r}
+#| output-location: default
+ss %>%
+  pivot_longer(cols = c(b0, b1, sigma), names_to = "parameter", values_to = "value") %>%
+  group_by(parameter, value) %>%
+  summarise(posterior = sum(posterior), .groups = "drop") %>%
+  gf_line(posterior ~ value | parameter, color = ~ parameter) %>%
+  gf_facet_grid(parameter ~ .) %>%
+  gf_lims(x = c(-15, 15), y = c(0, 0.5)) %>%
+  gf_refine(theme(legend.position = "none"))
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+posterior_draws <- ss %>%
+  slice_sample(n = 1000, weight_by = posterior, replace = TRUE) %>%
+  select(b0, b1, sigma) %>% 
+  as_draws_df()
+
+summarize_draws(posterior_draws)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+describe_posterior(posterior_draws)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+mcmc_hist(posterior_draws, binwidth = 1)
+```
+
+## Bayesian inference using the linear model
+
+```{r}
+#| output-location: default
+mcmc_intervals(posterior_draws)
+```
+
+## Frequentist inference using the linear model
+
+```{r}
+#| output-location: default
+lm.fit <- lm(Y ~ X, data = d.obs)
+
+summary(lm.fit)
+```
+
+##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
+
+## Frequentist inference using the linear model
+
+```{r}
+#| output-location: slide
+params_df <- broom::tidy(lm.fit, conf.int = TRUE)
+sigma <- summary(lm.fit)$sigma
+n <- nrow(d.obs)
+df <- get_df(lm.fit)
+
+conf.low <- sigma * sqrt(df / qchisq(0.975, df))
+conf.high <- sigma * sqrt(df / qchisq(0.025, df))
+
+sigma_row <- tibble(
+  term = "sigma",
+  estimate = sigma,
+  conf.low = conf.low,
+  conf.high = conf.high
+)
+
+params_df <- bind_rows(params_df, sigma_row)
+
+gf_errorbar(conf.low + conf.high ~ term, data = params_df, width = 0.25) %>%
+  gf_point(estimate ~ term) %>%
+  gf_refine(coord_flip())
+```
+
+## Posterior predictive distribution
+
+```{r}
+#| eval: false
+posterior_predictive <- posterior_draws %>%
+  rowwise() %>%
+  mutate(
+    Y_pred = list(
+      d.obs %>%
+        mutate(
+          Y_sim = b0 + b1 * X + runif(n(), min = -s, max = s)  # predict Y with uniform noise
+          # Y_sim = b0 + b1 * X + rnorm(n(), mean = 0, sd = s)  # predict Y with normal noise
+        )
+    )
+  ) %>%
+  unnest(Y_pred)
+```
+
+```{r}
+#| eval: false
+posterior_summary <- posterior_predictive %>%
+  group_by(X) %>%
+  summarise(
+    Y_mean = mean(Y_sim),
+    Y_lower = quantile(Y_sim, 0.025),
+    Y_upper = quantile(Y_sim, 0.975)
+  )
+
+posterior_summary
+```
+
+```{r}
+#| eval: false
+ggplot() +
+  # Observed data points
+  geom_jitter(data = d.obs, aes(x = X, y = Y), color = "red", width = 0.25) +
+  # Posterior predictive intervals
+  geom_ribbon(
+    data = posterior_summary,
+    aes(x = X, ymin = Y_lower, ymax = Y_upper),
+    fill = "blue", alpha = 0.2
+  ) +
+  # Posterior predictive mean
+  geom_line(data = posterior_summary, aes(x = X, y = Y_mean), color = "blue", size = 1) +
+  labs(title = "Posterior Predictive Distribution",
+       x = "X",
+       y = "Y") +
+  theme_minimal()
+```
+
+```{r}
+#| eval: false
+# Simulate posterior predictive distribution
+posterior_predictive_diff <- posterior_draws %>%
+  rowwise() %>%
+  mutate(
+    # Simulated predictions for X = 0 and X = 1
+    Y_pred_0 = list(b0 + b1 * 0 + runif(1000, min = -s, max = s)),  # For X = 0
+    Y_pred_1 = list(b0 + b1 * 1 + runif(1000, min = -s, max = s))   # For X = 1
+  ) %>%
+  mutate(
+    # Compute the mean difference between X = 1 and X = 0 for each posterior draw
+    diff = mean(unlist(Y_pred_1) - unlist(Y_pred_0))
+  ) %>%
+  ungroup()
+```
+
+```{r}
+#| eval: false
+# Summarize the differences
+summary_diff <- posterior_predictive_diff %>%
+  summarise(
+    point_estimate = mean(diff),           # Posterior mean of the difference
+    lower_ci = quantile(diff, 0.025),      # 2.5% credible interval
+    upper_ci = quantile(diff, 0.975)       # 97.5% credible interval
+  )
+```
+
+```{r}
+#| eval: false
+# Plot the posterior distribution of the difference
+ggplot(posterior_predictive_diff, aes(x = diff)) +
+  geom_density(fill = "blue", alpha = 0.2) +
+  geom_vline(aes(xintercept = summary_diff$point_estimate), color = "red", linetype = "dashed") +
+  geom_vline(aes(xintercept = summary_diff$lower_ci), color = "black", linetype = "dotted") +
+  geom_vline(aes(xintercept = summary_diff$upper_ci), color = "black", linetype = "dotted") +
+  labs(
+    title = "Posterior Predictive Difference (X=1 - X=0) with Uniform Error",
+    x = "Difference",
+    y = "Density"
+  ) +
+  theme_minimal()
+```
