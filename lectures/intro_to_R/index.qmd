@@ -547,6 +547,8 @@ b |> dbinom(a, _, c) # error: pipe placeholder can only be used as a named argum
 
 ## R: Operators
 
+-   Operators are syntactic sugar for function calls
+
 ::: fragment
 ```{r}
 1 + 9
@@ -555,25 +557,37 @@ b |> dbinom(a, _, c) # error: pipe placeholder can only be used as a named argum
 
 ::: fragment
 ```{r}
-sum(1, 9)
+`+`(1, 9)
 ```
 :::
 
 ::: fragment
 ```{r}
-x <- 17.2
+#| output-location: default
+x <- 17.2 # assigns the name `x` to the value `17.2` and invisibly returns `NULL`
+```
+:::
 
+::: fragment
+```{r}
 x
 ```
 :::
 
 ::: fragment
 ```{r}
+#| output-location: default
 assign("x", 17.2) # assigns the name `x` to the value `17.2` and invisibly returns `NULL`
+```
+:::
 
+::: fragment
+```{r}
 x
 ```
 :::
+
+-   Function calls generally do not modify objects directly, unless reassigned
 
 ::: fragment
 ```{r}
@@ -589,8 +603,13 @@ x
 
 ::: fragment
 ```{r}
+#| output-location: default
 x <- round(x)
+```
+:::
 
+::: fragment
+```{r}
 x
 ```
 :::
