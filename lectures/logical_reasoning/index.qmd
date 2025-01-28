@@ -1,5 +1,6 @@
 ---
-title: "Logical reasoning"
+title: Statistical inference
+subtitle: "Logical reasoning"
 date: 2025-02-17
 author: "Edoardo \"Dado\" Marcora"
 format:
@@ -16,35 +17,34 @@ format:
 df-print: kable
 ---
 
-## Inference
+## What is statistical inference?
 
--   Inference is logical reasoning
+Statistical inference is (inductive) logical reasoning:
 
-## Scientific reasoning is inductive reasoning
+$$
+\begin{array}{ll}
+1. & \text{Past observations/data} \\
+2. & \text{Model of the data generating process (DGP)} \\
+\hline
+\therefore & \text{Future observations/predictions}
+\end{array}
+$$
 
-XXX
+that uses incomplete data (e.g., a sample) and a model of the data generating process (DGP) as evidence in support of a hypothesis/claim about the DGP (e.g., random sampling from a population)
 
-## Chance and randomness
+Statistical inference is the process of using inductive reasoning to draw conclusions about a data-generating process (DGP) based on incomplete data (e.g., a sample) and a model of the DGP as evidence.
 
-![Dosso Dossi: Allegory of Fortune (left, the god of chance; right, the goddess of luck)](images/dosso_dossi.allegory_of_fortune.png){fig-alt="https://www.getty.edu/art/collection/object/103RJG" fig-align="center" width="767"}
+## Ancient philosophy: Rationalism vs empiricism
 
--   Nothing is caused by chance\*
+![Raphael: The School of Athens (left, Plato; right, Aristotle)](images/Sanzio_01_Plato_Aristotle.jpg){fig-alt="https://commons.wikimedia.org/w/index.php?curid=75881" fig-align="left" height="550"}
 
--   Random means unknown/unpredictable
-
-## Statistical inference
-
-![Raphael: The School of Athens (left, Plato; right, Aristotle)](images/Sanzio_01_Plato_Aristotle.jpg){fig-alt="https://commons.wikimedia.org/w/index.php?curid=75881" fig-align="center" width="382"}
-
--   Statistical inference is inductive inference using incomplete data and a model of the data generating process (DGP) as evidence
-
-## Statistical inference
+## Modern science: Statistical + causal inference
 
 ![](images/Slide1.png)
 
 [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
 
-## Example data (and frequentist inference)
+## An example of (frequentist) statistical inference
 
 [**LPS treatment blunts UCP1 expression in subcutaneous adipocytes**]{.orange}
 
@@ -66,11 +66,23 @@ Lucchini *et al.* (2020) **Nat Commun** 11(1):1642
 
 ![](images/clipboard-1233462405.png)
 
+
+## Inference
+
+-   Inference is logical reasoning
+
+## Scientific reasoning is inductive reasoning
+
+XXX
+
+
+
+
 ## Arguments
 
--   Premises and a conclusion
+-   An argument consists of one or more premises and a conclusion
 
--   Deductively valid and inductively strong
+-   Deductively valid and inductively strong arguments
 
 -   Argument forms
 
@@ -148,8 +160,6 @@ XXX
 
 -   In inductive logic the goal is to determine whether an argument is strong (the premises partially entail the conclusion), using some inference algorithm or rules
 
-## 
-
 ## Deductive reasoning: Propositional logic
 
 -   The goal is to **prove** that a conclusion/hypothesis/query is true given some premises/evidence/knowledge known or assumed to be true
@@ -188,10 +198,6 @@ Argument forms as inference rules of propositional logic/deductive inference:
 
 -   *Modus tollens*
 
-## Propositional logic
-
-XXX
-
 ## Propositional symbols/variables
 
 In propositional logic, the terms **propositional symbol** and **propositional variable** are often used interchangeably to denote **atomic propositions**—statements that are either true or false and cannot be broken down into simpler statements. These atomic propositions serve as the foundational building blocks for more complex, compound propositions formed using logical connectives/boolean operators such as AND, OR, and NOT.
@@ -200,17 +206,12 @@ In propositional logic, the terms **propositional symbol** and **propositional v
 
 XXX
 
-## Inductive arguments
-
--   
-
 ## Setup environment
 
 ```{r}
 #| output-location: default
 #| output: false
 library(tidyverse)
-library(rlang)
 
 theme_set(theme_minimal())
 ```
@@ -256,8 +257,10 @@ ss %>%
 
 ```{r}
 #| output-location: default
-prob <- function(..., H, p = NULL) {
-  
+library(flextable)
+library(rlang)
+
+P <- function(..., H) {
   # Capture the premises as a list of quosures
   premises <- enquos(...)
   
@@ -274,26 +277,438 @@ prob <- function(..., H, p = NULL) {
   truth_table <- expand.grid(replicate(length(vars), c(TRUE, FALSE), simplify = FALSE))
   colnames(truth_table) <- vars
   
-  # Evaluate each premise within the context of the truth table
+  # Add premises P1, P2, ... to the truth table
   for (i in seq_along(premises)) {
     premise <- premises[[i]]
     truth_table[[paste0("P", i)]] <- eval_tidy(premise, data = truth_table)
   }
   
-  # Determine if all premises are TRUE for each row
+  # Add evidence E to the truth table
   truth_table <- truth_table %>%
-    mutate(E = if_all(starts_with("P"), ~ .x))
+    mutate(E = if_all(starts_with("P"), identity))
   
-  # Evaluate the conclusion within the context of each row
+  # Add hypothesis H to the truth table
   truth_table <- truth_table %>%
     mutate(H = eval_tidy(conclusion, data = truth_table))
   
-  # Assign uniform prior probabilities if none provided
+  # Calculate P(H | E)
+  P <- truth_table %>%
+    summarise(P = mean(H[E])) %>%
+    pull(P)
+  
+  # Create and format a flextable
+  truth_table_formatted <- flextable(truth_table)
+  
+  # Make all cells bold
+  truth_table_formatted <- truth_table_formatted %>%
+    bold(part = "all", bold = TRUE)
+  
+  # Apply conditional formatting
+  for (col in colnames(truth_table)) {
+    # For cells in rows where E is TRUE
+    truth_table_formatted <- truth_table_formatted %>%
+      bg(
+        i = which(truth_table$E == TRUE & truth_table[[col]] == TRUE), 
+        j = col,
+        bg = "darkgreen"
+      ) %>%
+      color(
+        i = which(truth_table$E == TRUE & truth_table[[col]] == TRUE), 
+        j = col,
+        color = "white"
+      ) %>%
+      bg(
+        i = which(truth_table$E == TRUE & truth_table[[col]] == FALSE), 
+        j = col,
+        bg = "darkred"
+      ) %>%
+      color(
+        i = which(truth_table$E == TRUE & truth_table[[col]] == FALSE), 
+        j = col,
+        color = "white"
+      )
+    
+    # For all other cells
+    truth_table_formatted <- truth_table_formatted %>%
+      color(
+        i = which(truth_table$E == FALSE & truth_table[[col]] == TRUE), 
+        j = col,
+        color = "darkgreen"
+      ) %>%
+      color(
+        i = which(truth_table$E == FALSE & truth_table[[col]] == FALSE), 
+        j = col,
+        color = "darkred"
+      )
+  }
+  
+  # Add a footer with the calculated P value, aligned to the right
+  truth_table_formatted <- truth_table_formatted %>%
+    add_footer_row(
+      values = paste("P(H | E) =", round(P, 3)),
+      colwidths = ncol(truth_table)
+    ) %>%
+    align(align = "right", part = "footer")  # Align the footer to the right
+  
+  # Return the formatted flextable with the footer
+  return(truth_table_formatted)
+}
+```
+
+## Deductive arguments
+
+::: {.columns}
+:::: {.column width="50%"}
+### Modus ponens
+$$
+\begin{array}{c}
+A \implies B \\
+A \\
+\hline
+B
+\end{array}
+$$
+::::
+
+:::: {.column width="50%"}
+### Modus tollens
+$$
+\begin{array}{c}
+A \implies B \\
+\neg B \\
+\hline
+\neg A
+\end{array}
+$$
+::::
+:::
+
+::: {.columns}
+:::: {.column width="50%"}
+### Affirming the consequent
+$$
+\begin{array}{c}
+A \implies B \\
+B \\
+\hline
+A
+\end{array}
+$$
+::::
+
+:::: {.column width="50%"}
+### Denying the antecedent
+$$
+\begin{array}{c}
+A \implies B \\
+\neg A \\
+\hline
+\neg B
+\end{array}
+$$
+::::
+:::
+
+
+
+## Modus ponens
+
+Modus ponens is a **valid deductive argument** that affirms the antecedent to conclude the consequent
+
+::: columns
+::: column
+
+$$
+\begin{array}{c}
+A \implies B \\
+A \\
+\hline
+B
+\end{array}
+$$
+
+::: nonincremental
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   It is raining
+
+**Conclusion**
+
+-   The ground is wet
+:::
+
+:::
+
+::: column
+```{r}
+#| output-location: default
+P(
+  P1 = A %=>% B,
+  P2 = A,       
+  H  = B
+)
+```
+:::
+
+:::
+
+## Modus tollens
+
+Modus tollens is a **valid deductive argument** that denies the consequent to conclude the negation of the antecedent
+
+::: columns
+::: column
+
+$$
+\begin{array}{c}
+A \implies B \\
+\neg B \\
+\hline
+\neg A
+\end{array}
+$$
+
+::: nonincremental
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   The ground is not wet
+
+**Conclusion**
+
+-   It is not raining
+:::
+
+:::
+
+::: column
+```{r}
+#| output-location: default
+P(
+  P1 = A %=>% B,
+  P2 = !B,
+  H  = !A
+)
+```
+:::
+
+:::
+
+## Affirming the consequent
+
+Affirming the consequent is an **invalid deductive argument** that affirms the consequent to conclude the antecedent
+
+::: columns
+::: column
+
+$$
+\begin{array}{c}
+A \implies B \\
+B \\
+\hline
+A
+\end{array}
+$$
+
+::: nonincremental
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   The ground is wet
+
+**Conclusion**
+
+-   It is raining
+:::
+
+:::
+
+::: column
+```{r}
+#| output-location: default
+P(
+  P1 = A %=>% B,
+  P2 = B,
+  H  = A
+)
+```
+:::
+
+:::
+
+## Denying the antecedent
+
+Denying the antecedent is an **invalid deductive argument** that denies the antecedent to conclude the negation of the consequent
+
+::: columns
+::: column
+
+$$
+\begin{array}{c}
+A \implies B \\
+\neg A \\
+\hline
+\neg B
+\end{array}
+$$
+
+::: nonincremental
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   It is not raining
+
+**Conclusion**
+
+-   The ground is not wet
+:::
+
+:::
+
+::: column
+```{r}
+#| output-location: default
+P(
+  P1 = A %=>% B,
+  P2 = !A,
+  H  = !B
+)
+```
+:::
+
+:::
+
+## Hypothetical syllogism
+
+Hypothetical syllogism is a **valid deductive argument** that combines two conditional statements to conclude a third conditional statement
+
+::: columns
+::: column
+
+$$
+\begin{array}{c}
+A \implies B \\
+B \implies C \\
+\hline
+A \implies C
+\end{array}
+$$
+
+::: nonincremental
+**Premises**
+
+- If it is raining, then the ground is wet
+
+- If the ground is wet, then the plants grow
+
+**Conclusion**
+
+- If it is raining, then the plants grow.
+:::
+
+:::
+
+::: column
+```{r}
+#| output-location: default
+P(
+  P1 = A %=>% B,
+  P2 = B %=>% C,
+  H  = A %=>% C
+)
+```
+:::
+
+:::
+
+## Proportional syllogism
+
+Proportional syllogism is a **invalid deductive argument** that derives conclusions based on the proportions in a population
+
+::: columns
+::: column
+
+$$
+\begin{array}{c}
+B1 \lor B2 \lor W \\
+\neg((B1 \land B2) \lor (B1 \land W) \lor (B2 \land W)) \\
+\hline
+B1 \lor B2
+\end{array}
+$$
+
+::: nonincremental
+**Premises**
+
+- At least one ball is drawn
+
+- No two balls can be drawn simultaneously
+
+**Conclusion**
+
+- The ball drawn is blue
+:::
+
+:::
+
+::: column
+```{r}
+#| output-location: default
+P(
+  P1 = B1 | B2 | W,                           
+  P2 = !(B1 & B2) & !(B1 & W) & !(B2 & W),    
+  H  = B1 | B2                                
+)
+```
+:::
+:::
+
+## Logical probability function {.hidden}
+
+```{r}
+#| output-location: default
+
+P <- function(..., H, p = NULL) {
+  # capture the premises as a list of quosures
+  premises <- rlang::enquos(...)
+  
+  # capture the conclusion as a quosure
+  conclusion <- rlang::enquo(H)
+  
+  # extract variable names from premises and conclusion
+  vars <- unique(c(
+    unlist(lapply(premises, all.vars)),
+    all.vars(conclusion)
+  ))
+  
+  # generate truth table with all possible combinations of variables
+  truth_table <- expand.grid(replicate(length(vars), c(TRUE, FALSE), simplify = FALSE))
+  colnames(truth_table) <- vars
+  
+  # add premises P1, P2, ... to the truth table
+  for (i in seq_along(premises)) {
+    premise <- premises[[i]]
+    truth_table[[paste0("P", i)]] <- rlang::eval_tidy(premise, data = truth_table)
+  }
+  
+  # add evidence E to the truth table
+  truth_table <- truth_table %>%
+    mutate(E = if_all(starts_with("P"), identity)) # or `rowMeans(pick(starts_with("P"))) == 1`
+  
+  # add hypothesis H to the truth table
+  truth_table <- truth_table %>%
+    mutate(H = rlang::eval_tidy(conclusion, data = truth_table))
+  
+  # add uniform prior distribution if none provided
   if (is.null(p)) {
     truth_table <- truth_table %>%
       mutate(p = 1 / n())
   } else {
-    # Ensure that the provided probability vector matches the truth table rows
     if (length(p) != nrow(truth_table)) {
       stop("Length of probability vector 'p' must match the number of truth table rows.")
     }
@@ -301,131 +716,70 @@ prob <- function(..., H, p = NULL) {
       mutate(p = p)
   }
   
-  # Print truth table
+  # print truth table
   print(truth_table)
   
-  # Calculate probability P = P(H | E)
+  # calculate P(H | E)
   P <- truth_table %>%
-    filter(E) %>%  # Select rows where all premises are TRUE
-    summarise(P = sum(p * H) / sum(p)) %>% # Weighted average of H
+    filter(E) %>%
+    summarise(P = sum(p * H) / sum(p)) %>%
     pull(P)
   
   return(P)
 }
 ```
 
-## Modus ponens
 
-::: nonincremental
-Modus ponens is a **deductive argument** that affirms the antecedent to conclude the consequent
+## Chance does not cause anything!
 
-**Argument Structure:**
+![Dosso Dossi: Allegory of Fortune (left, the god of chance; right, the goddess of luck)](images/dosso_dossi.allegory_of_fortune.png){fig-alt="https://www.getty.edu/art/collection/object/103RJG" fig-align="left" height="550"}
 
--   **Premises:**
+## Chance does not cause anything!
 
-    -   `P1`: If it rains, the ground is wet (`A => B`)
+-   Chance is not an entity; it cannot cause anything
 
-    -   `P2`: It is raining (`A`)
+::: notes
+Chance is not an **agent** that determine an outcome. Instead, it is a **descriptor** of our uncertainty or lack of complete information about the causes that determine an outcome.
 
--   **Conclusion:**
-
-    -   `H`: The ground is wet (`B`)
+Chance is a descriptor of unpredictability — whether due to lack of information or inherent complexity. Therefore, saying “caused by chance” is misleading because it implies an agency that chance does not possess.
 :::
 
-```{r}
-#| output-location: default
-P_modus_ponens <- prob(
-  P1 = A %=>% B,    # P1: If A, then B
-  P2 = A,           # P2: A is true
-  H = B             # H: B is true
-)
-
-paste("Probability (P) of Modus Ponens:", P_modus_ponens)
-```
-
-## Modus tollens
-
-::: nonincremental
-Modus tollens is a **deductive argument** that denies the consequent to conclude the negation of the antecedent
-
-**Argument Structure:**
-
--   **Premises:**
-
-    -   `P1`: If it rains, the ground is wet (`A => B`)
-
-    -   `P2`: The ground is not wet (`¬B`)
-
--   **Conclusion:**
-
-    -   `H`: It did not rain (`¬A`)
+::: notes
+-   Saying that an outcome "happened by chance" is misleading—chance is a description of our uncertainty, not a causal force.
+-   In statistics, probability (or chance) is a mathematical framework used to describe uncertainty, not a physical force that causes events. The frequentist and Bayesian interpretations of probability both acknowledge that “chance” is a model for uncertainty, not a causal mechanism.
 :::
 
-```{r}
-#| output-location: default
-P_modus_tollens <- prob(
-  P1 = A %=>% B,    # P1: If A, then B
-  P2 = !B,          # P2: Not B
-  H = !A            # H: Not A
-)
+-   Randomness does not imply causation; it reflects our lack of knowledge or predictability
 
-paste("Probability (P) of Modus Tollens:", P_modus_tollens)
-```
-
-## Affirming the consequent
-
-::: nonincremental
-Affirming the consequent is an **inductive argument** that affirms the consequent to conclude the antecedent
-
-**Argument Structure:**
-
--   **Premises:**
-
-    -   `P1`: If it rains, the ground is wet (`A => B`)
-
-    -   `P2`: The ground is wet (`B`)
-
--   **Conclusion:**
-
-    -   `H`: It rains (`A`)
+::: notes
+-   When we call something random, we are often acknowledging our inability to fully determine or predict the outcome.
+-   In statistics, randomness often refers to unpredictability due to incomplete information (epistemic uncertainty) or inherent variability in the system (aleatory uncertainty).
 :::
 
-```{r}
-#| output-location: default
-P_affirming_consequent <- prob(
-  P1 = A %=>% B,    # P1: If A, then B
-  P2 = B,          # P2: Not B
-  H = A            # H: Not A
-)
+-   Statements like "caused by chance" are inherently meaningless
 
-paste("Probability (P) of Affirming the consequent:", P_affirming_consequent)
-```
-
-## Denying the antecedent
-
-::: nonincremental
-Denying the antecedent is an **inductive argument** that denies the antecedent to conclude the consequent
-
-**Argument Structure:**
-
--   **Premises:**
-
-    -   `P1`: If it rains, the ground is wet (`A => B`)
-
-    -   `P2`: It does not rain (`!A`)
-
--   **Conclusion:**
-
-    -   `H`: The ground is wet (`B`)
+::: notes
+-   Every observed outcome has underlying causes; randomness simply means these causes are unknown or too complex to track.
+-   Statisticians agree that chance is not a cause in a mechanistic sense. Instead, it’s a descriptor of uncertainty or variability. Causal inference methods (e.g., potential outcomes framework) aim to move beyond probabilistic descriptions to establish causation.
 :::
 
-```{r}
-#| output-location: default
-P_denying_antecedent <- prob(
-  P1 = A %=>% B,    # P1: If A, then B
-  P2 = !A,           # P2: A is true
-  H = B             # H: B is true
-)
+-   Randomness and probability are tools to model uncertainty, not explanations for why things happen
 
-paste("Probability (P) of Denying the antecedent:", P_denying_antecedent)
-```
+::: notes
+-   A fair die does not land on a number "due to chance"—the outcome results from physical forces, but we model it probabilistically due to practical limitations.
+-   Statisticians agree that probability models describe uncertainty rather than explain why specific outcomes occur. Explanation typically requires causal modeling, experimental design, or mechanistic understanding beyond statistical models.
+:::
+
+-   The language we often can anthropomorphize randomness/chance, leading to misconceptions
+
+::: notes
+-   Phrases like "luck" and "chance" suggest an active force, when in reality, they reflect uncertainty in our knowledge.
+:::
+
+-   Understanding randomness requires distinguishing between intrinsic unpredictability and practical limitations in prediction
+
+::: notes
+-   Some systems may be truly unpredictable (e.g., quantum events), while others are just complex (e.g., weather patterns).
+-   Weather forecasting is considered deterministic but practically unpredictable due to chaotic dynamics and measurement limitations.
+-   Statisticians distinguish between aleatory uncertainty (true randomness, as in quantum mechanics) and epistemic uncertainty (resulting from lack of knowledge or measurement precision).
+:::
