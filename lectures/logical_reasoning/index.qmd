@@ -23,10 +23,10 @@ Statistical inference is (inductive) logical reasoning:
 
 $$
 \begin{array}{ll}
-1. & \text{Past observations/data} \\
-2. & \text{Model of the data generating process (DGP)} \\
+1. & \text{Observations/data} \\
+2. & \text{Model assumptions} \\
 \hline
-\therefore & \text{Future observations/predictions}
+\therefore & \text{Model}\ \rightarrow \text{Predictions} \\
 \end{array}
 $$
 
@@ -66,7 +66,6 @@ Lucchini *et al.* (2020) **Nat Commun** 11(1):1642
 
 ![](images/clipboard-1233462405.png)
 
-
 ## Inference
 
 -   Inference is logical reasoning
@@ -74,9 +73,6 @@ Lucchini *et al.* (2020) **Nat Commun** 11(1):1642
 ## Scientific reasoning is inductive reasoning
 
 XXX
-
-
-
 
 ## Arguments
 
@@ -253,113 +249,91 @@ ss %>%
   )
 ```
 
-## Logical probability function {.scrollable}
+## Propositional logic-based AI in 8 lines of R code! {.scrollable}
 
 ```{r}
 #| output-location: default
-library(flextable)
 library(rlang)
+library(flextable)
 
-P <- function(..., H) {
-  # Capture the premises as a list of quosures
+P <- function(..., H, table = TRUE, flex = TRUE) {
+  # capture the premises/evidence as a list of quosures
   premises <- enquos(...)
   
-  # Capture the conclusion as a quosure
+  # capture the conclusion/hypothesis as a quosure
   conclusion <- enquo(H)
   
-  # Extract variable names from premises and conclusion
-  vars <- unique(c(
-    unlist(lapply(premises, all.vars)),
-    all.vars(conclusion)
-  ))
+  # extract variable names
+  vars <- unique(c(unlist(lapply(premises, all.vars)), all.vars(conclusion)))
   
-  # Generate truth table with all possible combinations of variables
+  # build truth table
   truth_table <- expand.grid(replicate(length(vars), c(TRUE, FALSE), simplify = FALSE))
   colnames(truth_table) <- vars
   
-  # Add premises P1, P2, ... to the truth table
+  # evaluate premises in the context of the truth table
   for (i in seq_along(premises)) {
-    premise <- premises[[i]]
-    truth_table[[paste0("P", i)]] <- eval_tidy(premise, data = truth_table)
+    truth_table[[paste0("P", i)]] <- eval_tidy(premises[[i]], data = truth_table)
   }
   
-  # Add evidence E to the truth table
+  # evaluate evidence and conclusion/hypothesis in the context of the truth table
   truth_table <- truth_table %>%
-    mutate(E = if_all(starts_with("P"), identity))
+    mutate(
+      E = if_all(starts_with("P"), identity),
+      H = eval_tidy(conclusion, data = truth_table)
+    )
   
-  # Add hypothesis H to the truth table
-  truth_table <- truth_table %>%
-    mutate(H = eval_tidy(conclusion, data = truth_table))
-  
-  # Calculate P(H | E)
-  P <- truth_table %>%
+  # calculate P(H | E)
+  P_value <- truth_table %>%
     summarise(P = mean(H[E])) %>%
     pull(P)
   
-  # Create and format a flextable
-  truth_table_formatted <- flextable(truth_table)
-  
-  # Make all cells bold
-  truth_table_formatted <- truth_table_formatted %>%
-    bold(part = "all", bold = TRUE)
-  
-  # Apply conditional formatting
-  for (col in colnames(truth_table)) {
-    # For cells in rows where E is TRUE
-    truth_table_formatted <- truth_table_formatted %>%
-      bg(
-        i = which(truth_table$E == TRUE & truth_table[[col]] == TRUE), 
-        j = col,
-        bg = "darkgreen"
-      ) %>%
-      color(
-        i = which(truth_table$E == TRUE & truth_table[[col]] == TRUE), 
-        j = col,
-        color = "white"
-      ) %>%
-      bg(
-        i = which(truth_table$E == TRUE & truth_table[[col]] == FALSE), 
-        j = col,
-        bg = "darkred"
-      ) %>%
-      color(
-        i = which(truth_table$E == TRUE & truth_table[[col]] == FALSE), 
-        j = col,
-        color = "white"
-      )
-    
-    # For all other cells
-    truth_table_formatted <- truth_table_formatted %>%
-      color(
-        i = which(truth_table$E == FALSE & truth_table[[col]] == TRUE), 
-        j = col,
-        color = "darkgreen"
-      ) %>%
-      color(
-        i = which(truth_table$E == FALSE & truth_table[[col]] == FALSE), 
-        j = col,
-        color = "darkred"
-      )
+  # return P value if truth table output is not requested
+  if (!table) {
+    return(P_value)
   }
   
-  # Add a footer with the calculated P value, aligned to the right
+  # return truth table if formatted truth table output is not requested
+  if (!flex) {
+    return(truth_table)
+  }
+  
+  # define colors
+  highlight_color <- "beige"  # Standard HTML color name
+  true_color <- "darkgreen"
+  false_color <- "darkred"
+  
+  # convert the truth table into a flextable
+  truth_table_formatted <- flextable(truth_table) %>%
+    bold(part = "header") %>%  # Bold the header
+    bold(part = "footer") %>%  # Bold the footer
+    bg(i = which(truth_table$E == TRUE), bg = highlight_color, part = "body")  # Highlight E = TRUE rows
+  
+  # apply text colors
+  for (col in colnames(truth_table)) {
+    truth_table_formatted <- truth_table_formatted %>%
+      color(i = which(truth_table[[col]] == TRUE), j = col, color = true_color) %>%
+      color(i = which(truth_table[[col]] == FALSE), j = col, color = false_color)
+  }
+  
+  # add footer with the calculated P(H | E) value
   truth_table_formatted <- truth_table_formatted %>%
     add_footer_row(
-      values = paste("P(H | E) =", round(P, 3)),
+      values = paste("P(H | E) =", round(P_value, 3)),
       colwidths = ncol(truth_table)
     ) %>%
-    align(align = "right", part = "footer")  # Align the footer to the right
-  
-  # Return the formatted flextable with the footer
+    align(align = "right", part = "footer")
+
+  # return formatted truth table
   return(truth_table_formatted)
 }
 ```
 
-## Deductive arguments
+## Deductive arguments {.hidden}
 
-::: {.columns}
-:::: {.column width="50%"}
+::::: columns
+::: {.column width="50%"}
 ### Modus ponens
+
 $$
 \begin{array}{c}
 A \implies B \\
@@ -368,10 +342,11 @@ A \\
 B
 \end{array}
 $$
-::::
+:::
 
-:::: {.column width="50%"}
+::: {.column width="50%"}
 ### Modus tollens
+
 $$
 \begin{array}{c}
 A \implies B \\
@@ -380,12 +355,13 @@ A \implies B \\
 \neg A
 \end{array}
 $$
-::::
 :::
+:::::
 
-::: {.columns}
-:::: {.column width="50%"}
+::::: columns
+::: {.column width="50%"}
 ### Affirming the consequent
+
 $$
 \begin{array}{c}
 A \implies B \\
@@ -394,10 +370,11 @@ B \\
 A
 \end{array}
 $$
-::::
+:::
 
-:::: {.column width="50%"}
+::: {.column width="50%"}
 ### Denying the antecedent
+
 $$
 \begin{array}{c}
 A \implies B \\
@@ -406,28 +383,16 @@ A \implies B \\
 \neg B
 \end{array}
 $$
-::::
 :::
-
-
+:::::
 
 ## Modus ponens
 
-Modus ponens is a **valid deductive argument** that affirms the antecedent to conclude the consequent
+Modus ponens is a **valid deductive argument** that affirms the antecedent to conclude the consequent.
 
-::: columns
-::: column
-
-$$
-\begin{array}{c}
-A \implies B \\
-A \\
-\hline
-B
-\end{array}
-$$
-
-::: nonincremental
+:::::::: columns
+::::: column
+::: {.fragment .nonincremental}
 **Premises**
 
 -   If it is raining, then the ground is wet
@@ -439,9 +404,20 @@ $$
 -   The ground is wet
 :::
 
+::: fragment
+$$
+\begin{array}{ll}
+1. & A \implies B \\
+2. & A \\
+\hline
+\therefore & B
+\end{array}
+$$
 :::
+:::::
 
-::: column
+:::: column
+::: fragment
 ```{r}
 #| output-location: default
 P(
@@ -451,26 +427,16 @@ P(
 )
 ```
 :::
-
-:::
+::::
+::::::::
 
 ## Modus tollens
 
-Modus tollens is a **valid deductive argument** that denies the consequent to conclude the negation of the antecedent
+Modus tollens is a **valid deductive argument** that denies the consequent to conclude the negation of the antecedent.
 
-::: columns
-::: column
-
-$$
-\begin{array}{c}
-A \implies B \\
-\neg B \\
-\hline
-\neg A
-\end{array}
-$$
-
-::: nonincremental
+:::::::: columns
+::::: column
+::: {.fragment .nonincremental}
 **Premises**
 
 -   If it is raining, then the ground is wet
@@ -482,9 +448,20 @@ $$
 -   It is not raining
 :::
 
+::: fragment
+$$
+\begin{array}{ll}
+1. & A \implies B \\
+2. & \neg B \\
+\hline
+\therefore & \neg A
+\end{array}
+$$
 :::
+:::::
 
-::: column
+:::: column
+::: fragment
 ```{r}
 #| output-location: default
 P(
@@ -494,26 +471,16 @@ P(
 )
 ```
 :::
-
-:::
+::::
+::::::::
 
 ## Affirming the consequent
 
-Affirming the consequent is an **invalid deductive argument** that affirms the consequent to conclude the antecedent
+Affirming the consequent is an **invalid deductive argument** that affirms the consequent to conclude the antecedent.
 
-::: columns
-::: column
-
-$$
-\begin{array}{c}
-A \implies B \\
-B \\
-\hline
-A
-\end{array}
-$$
-
-::: nonincremental
+:::::::: columns
+::::: column
+::: {.fragment .nonincremental}
 **Premises**
 
 -   If it is raining, then the ground is wet
@@ -525,9 +492,20 @@ $$
 -   It is raining
 :::
 
+::: fragment
+$$
+\begin{array}{ll}
+1. & A \implies B \\
+2. & B \\
+\hline
+\therefore & A
+\end{array}
+$$
 :::
+:::::
 
-::: column
+:::: column
+::: fragment
 ```{r}
 #| output-location: default
 P(
@@ -537,26 +515,16 @@ P(
 )
 ```
 :::
-
-:::
+::::
+::::::::
 
 ## Denying the antecedent
 
-Denying the antecedent is an **invalid deductive argument** that denies the antecedent to conclude the negation of the consequent
+Denying the antecedent is an **invalid deductive argument** that denies the antecedent to conclude the negation of the consequent.
 
-::: columns
-::: column
-
-$$
-\begin{array}{c}
-A \implies B \\
-\neg A \\
-\hline
-\neg B
-\end{array}
-$$
-
-::: nonincremental
+:::::::: columns
+::::: column
+::: {.fragment .nonincremental}
 **Premises**
 
 -   If it is raining, then the ground is wet
@@ -568,9 +536,20 @@ $$
 -   The ground is not wet
 :::
 
+::: fragment
+$$
+\begin{array}{c}
+1. & A \implies B \\
+2. & \neg A \\
+\hline
+\therefore & \neg B
+\end{array}
+$$
 :::
+:::::
 
-::: column
+:::: column
+::: fragment
 ```{r}
 #| output-location: default
 P(
@@ -580,40 +559,41 @@ P(
 )
 ```
 :::
-
-:::
+::::
+::::::::
 
 ## Hypothetical syllogism
 
-Hypothetical syllogism is a **valid deductive argument** that combines two conditional statements to conclude a third conditional statement
+The hypothetical syllogism is a **valid deductive argument** that combines two conditional statements to conclude a third conditional statement.
 
-::: columns
-::: column
-
-$$
-\begin{array}{c}
-A \implies B \\
-B \implies C \\
-\hline
-A \implies C
-\end{array}
-$$
-
-::: nonincremental
+:::::::: columns
+::::: column
+::: {.fragment .nonincremental}
 **Premises**
 
-- If it is raining, then the ground is wet
+-   If it is raining, then the ground is wet
 
-- If the ground is wet, then the plants grow
+-   If the ground is wet, then the plants grow
 
 **Conclusion**
 
-- If it is raining, then the plants grow.
+-   If it is raining, then the plants grow
 :::
 
+::: fragment
+$$
+\begin{array}{c}
+1. & A \implies B \\
+2. & B \implies C \\
+\hline
+\therefore & A \implies C
+\end{array}
+$$
 :::
+:::::
 
-::: column
+:::: column
+::: fragment
 ```{r}
 #| output-location: default
 P(
@@ -623,50 +603,172 @@ P(
 )
 ```
 :::
-
-:::
+::::
+::::::::
 
 ## Proportional syllogism
 
-Proportional syllogism is a **invalid deductive argument** that derives conclusions based on the proportions in a population
+The proportional syllogism is a logical argument that draws a conclusions based on a proportion.
 
-::: columns
-::: column
-
-$$
-\begin{array}{c}
-B1 \lor B2 \lor W \\
-\neg((B1 \land B2) \lor (B1 \land W) \lor (B2 \land W)) \\
-\hline
-B1 \lor B2
-\end{array}
-$$
-
-::: nonincremental
+:::::::::: columns
+::::::: column
+::: {.fragment .nonincremental}
 **Premises**
 
-- At least one ball is drawn
+-   A bag contains two blue balls and one white ball
 
-- No two balls can be drawn simultaneously
+-   One ball is drawn from the bag
 
 **Conclusion**
 
-- The ball drawn is blue
+-   A blue ball is drawn from the bag
 :::
 
+::: notes
+Propositional symbols/variables:
+
+B1 = "Blue ball 1 is drawn" B2 = "Blue ball 2 is drawn" W = "The white ball is drawn"
+
+The propositional symbols/variables used in the premises define the set of all possible worlds/outcomes (i.e., truth table/logical space/sample space) and the logical structure of the premises/the knowledge represented by the premises restricts this set to the subset in which all premises are true.
+
+The premises logically constrain the possible worlds/outcomes.
+
+By the principle of indifference (logical probability), each possible world/outcome in the truth table is equally likely.
 :::
 
-::: column
+::: notes
+$$
+P(A) = \lim_{n \to \infty} \frac{\text{Number of times } A \text{ occurs in } n \text{ trials}}{n}
+$$ Frequentist probability requires infinite trials and physical mixing because it depends on empirical relative frequencies.
+
+Frequentist probability is undefined for a single-instance event like drawing one ball.
+
+Logical probability is a better framework in this case because it relies on counting possible worlds, not repeated trials.
+
+Frequentist probability cannot actually compute probabilities.
+
+Logical probability actually computes probability—frequentists can only estimate it.
+
+Frequentist probability is useless in one-time events—it requires infinite trials to be strictly valid.
+
+If you want a coherent theory of probability that always applies, you must use logical (Bayesian) probability.
+
+Despite these flaws, frequentist probability persists in practice because: 1. It works well for large-scale empirical data (e.g., coin flips, medical studies). 2. It avoids subjective priors (which some mistakenly see as a flaw in Bayesian probability). 3. Historically, probability theory was developed with physical randomness in mind (games of chance, dice, coins).
+:::
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & B1 \lor B2 \lor W \\
+2. & \neg((B1 \land B2) \lor (B1 \land W) \lor (B2 \land W)) \\
+\hline
+\therefore & B1 \lor B2
+\end{array}
+$$
+:::
+:::::::
+
+:::: column
+::: fragment
 ```{r}
 #| output-location: default
 P(
-  P1 = B1 | B2 | W,                           
-  P2 = !(B1 & B2) & !(B1 & W) & !(B2 & W),    
+  P1 = B1 | B2 | W,                         
+  P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
   H  = B1 | B2                                
 )
 ```
 :::
+::::
+::::::::::
+
+## Statistical syllogism
+
+The statistical syllogism is a logical argument that draws a conclusion about a specific case based on a generalization.
+
+::: {.fragment .nonincremental}
+**Premises**
+
+-   Most birds can fly
+
+-   Pingu is a bird
+
+**Conclusion**
+
+-   Pingu can fly
 :::
+
+::: fragment
+Bayesian reasoning provides a formal framework for the statistical syllogism.
+:::
+
+## Inductive generalization
+
+Inductive generalization (a.k.a. inductive inference) is a logical argument that draws a conclusion about a generalization based on a specific case.
+
+This type of reasoning moves in the opposite direction of the statistical syllogism: it uses specific cases (observations) as evidence to infer a general rule, pattern, or principle.
+
+::: {.fragment .nonincremental}
+**Premises**
+
+-   Pingu is a bird and cannot fly
+
+-   Kiwi is a bird and cannot fly
+
+-   Ostrich is a bird and cannot fly
+
+**Conclusion**
+
+-   Most birds cannot fly
+:::
+
+::: fragment
+Bayesian reasoning provides a formal framework for inductive generalization.
+:::
+
+## Logical probability function {.hidden}
+
+```{r}
+#| output-location: default
+
+# Main function to calculate the proportion
+P <- function(..., H) {
+  # Capture all premises (P1, P2, ...) as quosures
+  premises <- enquos(...)
+  
+  # Combine all premises into a single evidence expression (E)
+  evidence_expr <- reduce(premises, ~ expr((!! .x) & (!! .y)))
+  
+  # Capture the hypothesis as a quosure
+  hypothesis_expr <- enquo(H)
+  
+  # Extract variables from evidence and hypothesis
+  variables <- unique(c(
+    all.vars(evidence_expr),
+    all.vars(hypothesis_expr)
+  ))
+  
+  # Generate set of all possible worlds
+  possible_worlds <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(variables)), variables))
+  
+  # Filter set of all possible worlds where evidence is true and calculate proportion where hypothesis is true
+  possible_worlds %>%
+    mutate(
+      E = !!evidence_expr,
+      H = !!hypothesis_expr
+    ) %>%
+    filter(E) %>%
+    summarize(proportion = mean(H)) %>%
+    pull(proportion)
+}
+
+# Example Usage: Multiple premises as expressions
+P(
+  P1 = B1 | B2 | W,
+  P2 = !(B1 & B2) & !(B1 & W) & !(B2 & W),
+  H = B1 | B2
+)
+```
 
 ## Logical probability function {.hidden}
 
@@ -730,6 +832,7 @@ P <- function(..., H, p = NULL) {
 ```
 
 
+
 ## Chance does not cause anything!
 
 ![Dosso Dossi: Allegory of Fortune (left, the god of chance; right, the goddess of luck)](images/dosso_dossi.allegory_of_fortune.png){fig-alt="https://www.getty.edu/art/collection/object/103RJG" fig-align="left" height="550"}
@@ -783,3 +886,15 @@ Chance is a descriptor of unpredictability — whether due to lack of informatio
 -   Weather forecasting is considered deterministic but practically unpredictable due to chaotic dynamics and measurement limitations.
 -   Statisticians distinguish between aleatory uncertainty (true randomness, as in quantum mechanics) and epistemic uncertainty (resulting from lack of knowledge or measurement precision).
 :::
+
+## Logical vs frequentist probability {.scrollable}
+
+| Feature | **Logical Probability** | **Frequentist Probability** |
+|-----------------|----------------------------|----------------------------|
+| **Definition** | Degree of belief based on available information | Long-run relative frequency in infinite trials |
+| **Can Compute Probability?** | ✅ Yes, by counting possible worlds | ❌ No, requires infinite trials (it can only be estimated) |
+| **Works for Single Events?** | ✅ Yes | ❌ No, must assume hypothetical repetition |
+| **Requires a Physical Process?** | ❌ No, just logic and premises | ✅ Yes, needs repeatable trials |
+| **Respects the Likelihood Principle?** | ✅ Yes | ❌ No, depends on sampling distributions and hypotheticals |
+| **Requires i.i.d. Observations?** | ❌ No, works with dependencies and heterogeneity | ✅ Yes, i.i.d. required by definition, but it can be "relaxed" |
+| **Example: P(drawing blue ball)** | $\frac{2}{3}$, based on the proportion of possible outcomes | Undefined unless an infinite number of trials are conducted |

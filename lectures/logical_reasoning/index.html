@@ -213,10 +213,10 @@ Edoardo “Dado” Marcora
 <p>Statistical inference is (inductive) logical reasoning:</p>
 <p><span class="math display">\[
 \begin{array}{ll}
-1. &amp; \text{Past observations/data} \\
-2. &amp; \text{Model of the data generating process (DGP)} \\
+1. &amp; \text{Observations/data} \\
+2. &amp; \text{Model assumptions} \\
 \hline
-\therefore &amp; \text{Future observations/predictions}
+\therefore &amp; \text{Model}\ \rightarrow \text{Predictions} \\
 \end{array}
 \]</span></p>
 <p>that uses incomplete data (e.g., a sample) and a model of the data generating process (DGP) as evidence in support of a hypothesis/claim about the DGP (e.g., random sampling from a population)</p>
@@ -495,108 +495,85 @@ Edoardo “Dado” Marcora
 </div>
 </div>
 </section>
-<section id="logical-probability-function" class="slide level2 scrollable">
-<h2>Logical probability function</h2>
+<section id="propositional-logic-based-ai-in-8-lines-of-r-code" class="slide level2 scrollable">
+<h2>Propositional logic-based AI in 8 lines of R code!</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">library</span>(flextable)</span>
-<span id="cb5-2"><a href=""></a><span class="fu">library</span>(rlang)</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">library</span>(rlang)</span>
+<span id="cb5-2"><a href=""></a><span class="fu">library</span>(flextable)</span>
 <span id="cb5-3"><a href=""></a></span>
-<span id="cb5-4"><a href=""></a>P <span class="ot">&lt;-</span> <span class="cf">function</span>(..., H) {</span>
-<span id="cb5-5"><a href=""></a>  <span class="co"># Capture the premises as a list of quosures</span></span>
+<span id="cb5-4"><a href=""></a>P <span class="ot">&lt;-</span> <span class="cf">function</span>(..., H, <span class="at">table =</span> <span class="cn">TRUE</span>, <span class="at">flex =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb5-5"><a href=""></a>  <span class="co"># capture the premises/evidence as a list of quosures</span></span>
 <span id="cb5-6"><a href=""></a>  premises <span class="ot">&lt;-</span> <span class="fu">enquos</span>(...)</span>
 <span id="cb5-7"><a href=""></a>  </span>
-<span id="cb5-8"><a href=""></a>  <span class="co"># Capture the conclusion as a quosure</span></span>
+<span id="cb5-8"><a href=""></a>  <span class="co"># capture the conclusion/hypothesis as a quosure</span></span>
 <span id="cb5-9"><a href=""></a>  conclusion <span class="ot">&lt;-</span> <span class="fu">enquo</span>(H)</span>
 <span id="cb5-10"><a href=""></a>  </span>
-<span id="cb5-11"><a href=""></a>  <span class="co"># Extract variable names from premises and conclusion</span></span>
-<span id="cb5-12"><a href=""></a>  vars <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">c</span>(</span>
-<span id="cb5-13"><a href=""></a>    <span class="fu">unlist</span>(<span class="fu">lapply</span>(premises, all.vars)),</span>
-<span id="cb5-14"><a href=""></a>    <span class="fu">all.vars</span>(conclusion)</span>
-<span id="cb5-15"><a href=""></a>  ))</span>
-<span id="cb5-16"><a href=""></a>  </span>
-<span id="cb5-17"><a href=""></a>  <span class="co"># Generate truth table with all possible combinations of variables</span></span>
-<span id="cb5-18"><a href=""></a>  truth_table <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="fu">replicate</span>(<span class="fu">length</span>(vars), <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">simplify =</span> <span class="cn">FALSE</span>))</span>
-<span id="cb5-19"><a href=""></a>  <span class="fu">colnames</span>(truth_table) <span class="ot">&lt;-</span> vars</span>
-<span id="cb5-20"><a href=""></a>  </span>
-<span id="cb5-21"><a href=""></a>  <span class="co"># Add premises P1, P2, ... to the truth table</span></span>
-<span id="cb5-22"><a href=""></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(premises)) {</span>
-<span id="cb5-23"><a href=""></a>    premise <span class="ot">&lt;-</span> premises[[i]]</span>
-<span id="cb5-24"><a href=""></a>    truth_table[[<span class="fu">paste0</span>(<span class="st">"P"</span>, i)]] <span class="ot">&lt;-</span> <span class="fu">eval_tidy</span>(premise, <span class="at">data =</span> truth_table)</span>
-<span id="cb5-25"><a href=""></a>  }</span>
-<span id="cb5-26"><a href=""></a>  </span>
-<span id="cb5-27"><a href=""></a>  <span class="co"># Add evidence E to the truth table</span></span>
-<span id="cb5-28"><a href=""></a>  truth_table <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
-<span id="cb5-29"><a href=""></a>    <span class="fu">mutate</span>(<span class="at">E =</span> <span class="fu">if_all</span>(<span class="fu">starts_with</span>(<span class="st">"P"</span>), identity))</span>
-<span id="cb5-30"><a href=""></a>  </span>
-<span id="cb5-31"><a href=""></a>  <span class="co"># Add hypothesis H to the truth table</span></span>
-<span id="cb5-32"><a href=""></a>  truth_table <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
-<span id="cb5-33"><a href=""></a>    <span class="fu">mutate</span>(<span class="at">H =</span> <span class="fu">eval_tidy</span>(conclusion, <span class="at">data =</span> truth_table))</span>
+<span id="cb5-11"><a href=""></a>  <span class="co"># extract variable names</span></span>
+<span id="cb5-12"><a href=""></a>  vars <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">c</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(premises, all.vars)), <span class="fu">all.vars</span>(conclusion)))</span>
+<span id="cb5-13"><a href=""></a>  </span>
+<span id="cb5-14"><a href=""></a>  <span class="co"># build truth table</span></span>
+<span id="cb5-15"><a href=""></a>  truth_table <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="fu">replicate</span>(<span class="fu">length</span>(vars), <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">simplify =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb5-16"><a href=""></a>  <span class="fu">colnames</span>(truth_table) <span class="ot">&lt;-</span> vars</span>
+<span id="cb5-17"><a href=""></a>  </span>
+<span id="cb5-18"><a href=""></a>  <span class="co"># evaluate premises in the context of the truth table</span></span>
+<span id="cb5-19"><a href=""></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(premises)) {</span>
+<span id="cb5-20"><a href=""></a>    truth_table[[<span class="fu">paste0</span>(<span class="st">"P"</span>, i)]] <span class="ot">&lt;-</span> <span class="fu">eval_tidy</span>(premises[[i]], <span class="at">data =</span> truth_table)</span>
+<span id="cb5-21"><a href=""></a>  }</span>
+<span id="cb5-22"><a href=""></a>  </span>
+<span id="cb5-23"><a href=""></a>  <span class="co"># evaluate evidence and conclusion/hypothesis in the context of the truth table</span></span>
+<span id="cb5-24"><a href=""></a>  truth_table <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
+<span id="cb5-25"><a href=""></a>    <span class="fu">mutate</span>(</span>
+<span id="cb5-26"><a href=""></a>      <span class="at">E =</span> <span class="fu">if_all</span>(<span class="fu">starts_with</span>(<span class="st">"P"</span>), identity),</span>
+<span id="cb5-27"><a href=""></a>      <span class="at">H =</span> <span class="fu">eval_tidy</span>(conclusion, <span class="at">data =</span> truth_table)</span>
+<span id="cb5-28"><a href=""></a>    )</span>
+<span id="cb5-29"><a href=""></a>  </span>
+<span id="cb5-30"><a href=""></a>  <span class="co"># calculate P(H | E)</span></span>
+<span id="cb5-31"><a href=""></a>  P_value <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
+<span id="cb5-32"><a href=""></a>    <span class="fu">summarise</span>(<span class="at">P =</span> <span class="fu">mean</span>(H[E])) <span class="sc">%&gt;%</span></span>
+<span id="cb5-33"><a href=""></a>    <span class="fu">pull</span>(P)</span>
 <span id="cb5-34"><a href=""></a>  </span>
-<span id="cb5-35"><a href=""></a>  <span class="co"># Calculate P(H | E)</span></span>
-<span id="cb5-36"><a href=""></a>  P <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
-<span id="cb5-37"><a href=""></a>    <span class="fu">summarise</span>(<span class="at">P =</span> <span class="fu">mean</span>(H[E])) <span class="sc">%&gt;%</span></span>
-<span id="cb5-38"><a href=""></a>    <span class="fu">pull</span>(P)</span>
+<span id="cb5-35"><a href=""></a>  <span class="co"># return P value if truth table output is not requested</span></span>
+<span id="cb5-36"><a href=""></a>  <span class="cf">if</span> (<span class="sc">!</span>table) {</span>
+<span id="cb5-37"><a href=""></a>    <span class="fu">return</span>(P_value)</span>
+<span id="cb5-38"><a href=""></a>  }</span>
 <span id="cb5-39"><a href=""></a>  </span>
-<span id="cb5-40"><a href=""></a>  <span class="co"># Create and format a flextable</span></span>
-<span id="cb5-41"><a href=""></a>  truth_table_formatted <span class="ot">&lt;-</span> <span class="fu">flextable</span>(truth_table)</span>
-<span id="cb5-42"><a href=""></a>  </span>
-<span id="cb5-43"><a href=""></a>  <span class="co"># Make all cells bold</span></span>
-<span id="cb5-44"><a href=""></a>  truth_table_formatted <span class="ot">&lt;-</span> truth_table_formatted <span class="sc">%&gt;%</span></span>
-<span id="cb5-45"><a href=""></a>    <span class="fu">bold</span>(<span class="at">part =</span> <span class="st">"all"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-46"><a href=""></a>  </span>
-<span id="cb5-47"><a href=""></a>  <span class="co"># Apply conditional formatting</span></span>
-<span id="cb5-48"><a href=""></a>  <span class="cf">for</span> (col <span class="cf">in</span> <span class="fu">colnames</span>(truth_table)) {</span>
-<span id="cb5-49"><a href=""></a>    <span class="co"># For cells in rows where E is TRUE</span></span>
-<span id="cb5-50"><a href=""></a>    truth_table_formatted <span class="ot">&lt;-</span> truth_table_formatted <span class="sc">%&gt;%</span></span>
-<span id="cb5-51"><a href=""></a>      <span class="fu">bg</span>(</span>
-<span id="cb5-52"><a href=""></a>        <span class="at">i =</span> <span class="fu">which</span>(truth_table<span class="sc">$</span>E <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">&amp;</span> truth_table[[col]] <span class="sc">==</span> <span class="cn">TRUE</span>), </span>
-<span id="cb5-53"><a href=""></a>        <span class="at">j =</span> col,</span>
-<span id="cb5-54"><a href=""></a>        <span class="at">bg =</span> <span class="st">"darkgreen"</span></span>
-<span id="cb5-55"><a href=""></a>      ) <span class="sc">%&gt;%</span></span>
-<span id="cb5-56"><a href=""></a>      <span class="fu">color</span>(</span>
-<span id="cb5-57"><a href=""></a>        <span class="at">i =</span> <span class="fu">which</span>(truth_table<span class="sc">$</span>E <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">&amp;</span> truth_table[[col]] <span class="sc">==</span> <span class="cn">TRUE</span>), </span>
-<span id="cb5-58"><a href=""></a>        <span class="at">j =</span> col,</span>
-<span id="cb5-59"><a href=""></a>        <span class="at">color =</span> <span class="st">"white"</span></span>
-<span id="cb5-60"><a href=""></a>      ) <span class="sc">%&gt;%</span></span>
-<span id="cb5-61"><a href=""></a>      <span class="fu">bg</span>(</span>
-<span id="cb5-62"><a href=""></a>        <span class="at">i =</span> <span class="fu">which</span>(truth_table<span class="sc">$</span>E <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">&amp;</span> truth_table[[col]] <span class="sc">==</span> <span class="cn">FALSE</span>), </span>
-<span id="cb5-63"><a href=""></a>        <span class="at">j =</span> col,</span>
-<span id="cb5-64"><a href=""></a>        <span class="at">bg =</span> <span class="st">"darkred"</span></span>
-<span id="cb5-65"><a href=""></a>      ) <span class="sc">%&gt;%</span></span>
-<span id="cb5-66"><a href=""></a>      <span class="fu">color</span>(</span>
-<span id="cb5-67"><a href=""></a>        <span class="at">i =</span> <span class="fu">which</span>(truth_table<span class="sc">$</span>E <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">&amp;</span> truth_table[[col]] <span class="sc">==</span> <span class="cn">FALSE</span>), </span>
-<span id="cb5-68"><a href=""></a>        <span class="at">j =</span> col,</span>
-<span id="cb5-69"><a href=""></a>        <span class="at">color =</span> <span class="st">"white"</span></span>
-<span id="cb5-70"><a href=""></a>      )</span>
-<span id="cb5-71"><a href=""></a>    </span>
-<span id="cb5-72"><a href=""></a>    <span class="co"># For all other cells</span></span>
-<span id="cb5-73"><a href=""></a>    truth_table_formatted <span class="ot">&lt;-</span> truth_table_formatted <span class="sc">%&gt;%</span></span>
-<span id="cb5-74"><a href=""></a>      <span class="fu">color</span>(</span>
-<span id="cb5-75"><a href=""></a>        <span class="at">i =</span> <span class="fu">which</span>(truth_table<span class="sc">$</span>E <span class="sc">==</span> <span class="cn">FALSE</span> <span class="sc">&amp;</span> truth_table[[col]] <span class="sc">==</span> <span class="cn">TRUE</span>), </span>
-<span id="cb5-76"><a href=""></a>        <span class="at">j =</span> col,</span>
-<span id="cb5-77"><a href=""></a>        <span class="at">color =</span> <span class="st">"darkgreen"</span></span>
-<span id="cb5-78"><a href=""></a>      ) <span class="sc">%&gt;%</span></span>
-<span id="cb5-79"><a href=""></a>      <span class="fu">color</span>(</span>
-<span id="cb5-80"><a href=""></a>        <span class="at">i =</span> <span class="fu">which</span>(truth_table<span class="sc">$</span>E <span class="sc">==</span> <span class="cn">FALSE</span> <span class="sc">&amp;</span> truth_table[[col]] <span class="sc">==</span> <span class="cn">FALSE</span>), </span>
-<span id="cb5-81"><a href=""></a>        <span class="at">j =</span> col,</span>
-<span id="cb5-82"><a href=""></a>        <span class="at">color =</span> <span class="st">"darkred"</span></span>
-<span id="cb5-83"><a href=""></a>      )</span>
-<span id="cb5-84"><a href=""></a>  }</span>
-<span id="cb5-85"><a href=""></a>  </span>
-<span id="cb5-86"><a href=""></a>  <span class="co"># Add a footer with the calculated P value, aligned to the right</span></span>
-<span id="cb5-87"><a href=""></a>  truth_table_formatted <span class="ot">&lt;-</span> truth_table_formatted <span class="sc">%&gt;%</span></span>
-<span id="cb5-88"><a href=""></a>    <span class="fu">add_footer_row</span>(</span>
-<span id="cb5-89"><a href=""></a>      <span class="at">values =</span> <span class="fu">paste</span>(<span class="st">"P(H | E) ="</span>, <span class="fu">round</span>(P, <span class="dv">3</span>)),</span>
-<span id="cb5-90"><a href=""></a>      <span class="at">colwidths =</span> <span class="fu">ncol</span>(truth_table)</span>
-<span id="cb5-91"><a href=""></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb5-92"><a href=""></a>    <span class="fu">align</span>(<span class="at">align =</span> <span class="st">"right"</span>, <span class="at">part =</span> <span class="st">"footer"</span>)  <span class="co"># Align the footer to the right</span></span>
-<span id="cb5-93"><a href=""></a>  </span>
-<span id="cb5-94"><a href=""></a>  <span class="co"># Return the formatted flextable with the footer</span></span>
-<span id="cb5-95"><a href=""></a>  <span class="fu">return</span>(truth_table_formatted)</span>
-<span id="cb5-96"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-40"><a href=""></a>  <span class="co"># return truth table if formatted truth table output is not requested</span></span>
+<span id="cb5-41"><a href=""></a>  <span class="cf">if</span> (<span class="sc">!</span>flex) {</span>
+<span id="cb5-42"><a href=""></a>    <span class="fu">return</span>(truth_table)</span>
+<span id="cb5-43"><a href=""></a>  }</span>
+<span id="cb5-44"><a href=""></a>  </span>
+<span id="cb5-45"><a href=""></a>  <span class="co"># define colors</span></span>
+<span id="cb5-46"><a href=""></a>  highlight_color <span class="ot">&lt;-</span> <span class="st">"beige"</span>  <span class="co"># Standard HTML color name</span></span>
+<span id="cb5-47"><a href=""></a>  true_color <span class="ot">&lt;-</span> <span class="st">"darkgreen"</span></span>
+<span id="cb5-48"><a href=""></a>  false_color <span class="ot">&lt;-</span> <span class="st">"darkred"</span></span>
+<span id="cb5-49"><a href=""></a>  </span>
+<span id="cb5-50"><a href=""></a>  <span class="co"># convert the truth table into a flextable</span></span>
+<span id="cb5-51"><a href=""></a>  truth_table_formatted <span class="ot">&lt;-</span> <span class="fu">flextable</span>(truth_table) <span class="sc">%&gt;%</span></span>
+<span id="cb5-52"><a href=""></a>    <span class="fu">bold</span>(<span class="at">part =</span> <span class="st">"header"</span>) <span class="sc">%&gt;%</span>  <span class="co"># Bold the header</span></span>
+<span id="cb5-53"><a href=""></a>    <span class="fu">bold</span>(<span class="at">part =</span> <span class="st">"footer"</span>) <span class="sc">%&gt;%</span>  <span class="co"># Bold the footer</span></span>
+<span id="cb5-54"><a href=""></a>    <span class="fu">bg</span>(<span class="at">i =</span> <span class="fu">which</span>(truth_table<span class="sc">$</span>E <span class="sc">==</span> <span class="cn">TRUE</span>), <span class="at">bg =</span> highlight_color, <span class="at">part =</span> <span class="st">"body"</span>)  <span class="co"># Highlight E = TRUE rows</span></span>
+<span id="cb5-55"><a href=""></a>  </span>
+<span id="cb5-56"><a href=""></a>  <span class="co"># apply text colors</span></span>
+<span id="cb5-57"><a href=""></a>  <span class="cf">for</span> (col <span class="cf">in</span> <span class="fu">colnames</span>(truth_table)) {</span>
+<span id="cb5-58"><a href=""></a>    truth_table_formatted <span class="ot">&lt;-</span> truth_table_formatted <span class="sc">%&gt;%</span></span>
+<span id="cb5-59"><a href=""></a>      <span class="fu">color</span>(<span class="at">i =</span> <span class="fu">which</span>(truth_table[[col]] <span class="sc">==</span> <span class="cn">TRUE</span>), <span class="at">j =</span> col, <span class="at">color =</span> true_color) <span class="sc">%&gt;%</span></span>
+<span id="cb5-60"><a href=""></a>      <span class="fu">color</span>(<span class="at">i =</span> <span class="fu">which</span>(truth_table[[col]] <span class="sc">==</span> <span class="cn">FALSE</span>), <span class="at">j =</span> col, <span class="at">color =</span> false_color)</span>
+<span id="cb5-61"><a href=""></a>  }</span>
+<span id="cb5-62"><a href=""></a>  </span>
+<span id="cb5-63"><a href=""></a>  <span class="co"># add footer with the calculated P(H | E) value</span></span>
+<span id="cb5-64"><a href=""></a>  truth_table_formatted <span class="ot">&lt;-</span> truth_table_formatted <span class="sc">%&gt;%</span></span>
+<span id="cb5-65"><a href=""></a>    <span class="fu">add_footer_row</span>(</span>
+<span id="cb5-66"><a href=""></a>      <span class="at">values =</span> <span class="fu">paste</span>(<span class="st">"P(H | E) ="</span>, <span class="fu">round</span>(P_value, <span class="dv">3</span>)),</span>
+<span id="cb5-67"><a href=""></a>      <span class="at">colwidths =</span> <span class="fu">ncol</span>(truth_table)</span>
+<span id="cb5-68"><a href=""></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-69"><a href=""></a>    <span class="fu">align</span>(<span class="at">align =</span> <span class="st">"right"</span>, <span class="at">part =</span> <span class="st">"footer"</span>)</span>
+<span id="cb5-70"><a href=""></a></span>
+<span id="cb5-71"><a href=""></a>  <span class="co"># return formatted truth table</span></span>
+<span id="cb5-72"><a href=""></a>  <span class="fu">return</span>(truth_table_formatted)</span>
+<span id="cb5-73"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="deductive-arguments" class="slide level2">
+<section id="deductive-arguments" class="slide level2 hidden">
 <h2>Deductive arguments</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -645,18 +622,10 @@ A \implies B \\
 </section>
 <section id="modus-ponens-1" class="slide level2">
 <h2>Modus ponens</h2>
-<p>Modus ponens is a <strong>valid deductive argument</strong> that affirms the antecedent to conclude the consequent</p>
+<p>Modus ponens is a <strong>valid deductive argument</strong> that affirms the antecedent to conclude the consequent.</p>
 <div class="columns">
 <div class="column">
-<p><span class="math display">\[
-\begin{array}{c}
-A \implies B \\
-A \\
-\hline
-B
-\end{array}
-\]</span></p>
-<div>
+<div class="fragment">
 <p><strong>Premises</strong></p>
 <ul>
 <li><p>If it is raining, then the ground is wet</p></li>
@@ -667,7 +636,18 @@ B
 <li>The ground is wet</li>
 </ul>
 </div>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{array}{ll}
+1. &amp; A \implies B \\
+2. &amp; A \\
+\hline
+\therefore &amp; B
+\end{array}
+\]</span></p>
+</div>
 </div><div class="column">
+<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">P</span>(</span>
 <span id="cb6-2"><a href=""></a>  <span class="at">P1 =</span> A <span class="sc">%=&gt;%</span> B,</span>
@@ -675,25 +655,18 @@ B
 <span id="cb6-4"><a href=""></a>  <span class="at">H  =</span> B</span>
 <span id="cb6-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-cecbc690{}.cl-cec809b0{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cec809c4{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-cec809c5{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-cec809c6{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-cec809ce{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cec98268{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-cec9915e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cec9915f{width:0.75in;background-color:rgba(0, 100, 0, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cec99172{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cec99173{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cec9917c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-cecbc690"><thead><tr style="overflow-wrap:break-word;"><th class="cl-cec9915e"><p class="cl-cec98268"><span class="cl-cec809b0">A</span></p></th><th class="cl-cec9915e"><p class="cl-cec98268"><span class="cl-cec809b0">B</span></p></th><th class="cl-cec9915e"><p class="cl-cec98268"><span class="cl-cec809b0">P1</span></p></th><th class="cl-cec9915e"><p class="cl-cec98268"><span class="cl-cec809b0">P2</span></p></th><th class="cl-cec9915e"><p class="cl-cec98268"><span class="cl-cec809b0">E</span></p></th><th class="cl-cec9915e"><p class="cl-cec98268"><span class="cl-cec809b0">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-cec9915f"><p class="cl-cec98268"><span class="cl-cec809c4">TRUE</span></p></td><td class="cl-cec9915f"><p class="cl-cec98268"><span class="cl-cec809c4">TRUE</span></p></td><td class="cl-cec9915f"><p class="cl-cec98268"><span class="cl-cec809c4">TRUE</span></p></td><td class="cl-cec9915f"><p class="cl-cec98268"><span class="cl-cec809c4">TRUE</span></p></td><td class="cl-cec9915f"><p class="cl-cec98268"><span class="cl-cec809c4">TRUE</span></p></td><td class="cl-cec9915f"><p class="cl-cec98268"><span class="cl-cec809c4">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c6">TRUE</span></p></td><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c6">TRUE</span></p></td><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c6">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c6">TRUE</span></p></td><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c6">TRUE</span></p></td><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td><td class="cl-cec99172"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cec99173"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td><td class="cl-cec99173"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td><td class="cl-cec99173"><p class="cl-cec98268"><span class="cl-cec809c6">TRUE</span></p></td><td class="cl-cec99173"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td><td class="cl-cec99173"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td><td class="cl-cec99173"><p class="cl-cec98268"><span class="cl-cec809c5">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-cec9917c"><p class="cl-cec98268"><span class="cl-cec809ce">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-e71099d8{}.cl-e70ca4ae{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e70ca4b8{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e70ca4b9{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e70ca4c2{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e70e1bb8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e70e2914{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e70e2915{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e70e291e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e70e291f{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e70e2920{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e71099d8"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e70e2914"><p class="cl-e70e1bb8"><span class="cl-e70ca4ae">A</span></p></th><th class="cl-e70e2914"><p class="cl-e70e1bb8"><span class="cl-e70ca4ae">B</span></p></th><th class="cl-e70e2914"><p class="cl-e70e1bb8"><span class="cl-e70ca4ae">P1</span></p></th><th class="cl-e70e2914"><p class="cl-e70e1bb8"><span class="cl-e70ca4ae">P2</span></p></th><th class="cl-e70e2914"><p class="cl-e70e1bb8"><span class="cl-e70ca4ae">E</span></p></th><th class="cl-e70e2914"><p class="cl-e70e1bb8"><span class="cl-e70ca4ae">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e70e2915"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td><td class="cl-e70e2915"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td><td class="cl-e70e2915"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td><td class="cl-e70e2915"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td><td class="cl-e70e2915"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td><td class="cl-e70e2915"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td><td class="cl-e70e291e"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e70e291f"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td><td class="cl-e70e291f"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td><td class="cl-e70e291f"><p class="cl-e70e1bb8"><span class="cl-e70ca4b8">TRUE</span></p></td><td class="cl-e70e291f"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td><td class="cl-e70e291f"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td><td class="cl-e70e291f"><p class="cl-e70e1bb8"><span class="cl-e70ca4b9">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-e70e2920"><p class="cl-e70e1bb8"><span class="cl-e70ca4c2">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
+</div>
 </div>
 </div>
 </div></div>
 </section>
 <section id="modus-tollens-1" class="slide level2">
 <h2>Modus tollens</h2>
-<p>Modus tollens is a <strong>valid deductive argument</strong> that denies the consequent to conclude the negation of the antecedent</p>
+<p>Modus tollens is a <strong>valid deductive argument</strong> that denies the consequent to conclude the negation of the antecedent.</p>
 <div class="columns">
 <div class="column">
-<p><span class="math display">\[
-\begin{array}{c}
-A \implies B \\
-\neg B \\
-\hline
-\neg A
-\end{array}
-\]</span></p>
-<div>
+<div class="fragment">
 <p><strong>Premises</strong></p>
 <ul>
 <li><p>If it is raining, then the ground is wet</p></li>
@@ -704,7 +677,18 @@ A \implies B \\
 <li>It is not raining</li>
 </ul>
 </div>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{array}{ll}
+1. &amp; A \implies B \\
+2. &amp; \neg B \\
+\hline
+\therefore &amp; \neg A
+\end{array}
+\]</span></p>
+</div>
 </div><div class="column">
+<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">P</span>(</span>
 <span id="cb7-2"><a href=""></a>  <span class="at">P1 =</span> A <span class="sc">%=&gt;%</span> B,</span>
@@ -712,25 +696,18 @@ A \implies B \\
 <span id="cb7-4"><a href=""></a>  <span class="at">H  =</span> <span class="sc">!</span>A</span>
 <span id="cb7-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-ced63904{}.cl-ced30072{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-ced30073{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-ced3007c{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-ced3007d{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-ced3007e{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-ced4a7d8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-ced4b304{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-ced4b30e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-ced4b30f{width:0.75in;background-color:rgba(139, 0, 0, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-ced4b318{width:0.75in;background-color:rgba(0, 100, 0, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-ced4b319{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-ced63904"><thead><tr style="overflow-wrap:break-word;"><th class="cl-ced4b304"><p class="cl-ced4a7d8"><span class="cl-ced30072">A</span></p></th><th class="cl-ced4b304"><p class="cl-ced4a7d8"><span class="cl-ced30072">B</span></p></th><th class="cl-ced4b304"><p class="cl-ced4a7d8"><span class="cl-ced30072">P1</span></p></th><th class="cl-ced4b304"><p class="cl-ced4a7d8"><span class="cl-ced30072">P2</span></p></th><th class="cl-ced4b304"><p class="cl-ced4a7d8"><span class="cl-ced30072">E</span></p></th><th class="cl-ced4b304"><p class="cl-ced4a7d8"><span class="cl-ced30072">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced30073">TRUE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced30073">TRUE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced30073">TRUE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced3007c">FALSE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced3007c">FALSE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced3007c">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced3007c">FALSE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced30073">TRUE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced30073">TRUE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced3007c">FALSE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced3007c">FALSE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced30073">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced30073">TRUE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced3007c">FALSE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced3007c">FALSE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced30073">TRUE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced3007c">FALSE</span></p></td><td class="cl-ced4b30e"><p class="cl-ced4a7d8"><span class="cl-ced3007c">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-ced4b30f"><p class="cl-ced4a7d8"><span class="cl-ced3007d">FALSE</span></p></td><td class="cl-ced4b30f"><p class="cl-ced4a7d8"><span class="cl-ced3007d">FALSE</span></p></td><td class="cl-ced4b318"><p class="cl-ced4a7d8"><span class="cl-ced3007d">TRUE</span></p></td><td class="cl-ced4b318"><p class="cl-ced4a7d8"><span class="cl-ced3007d">TRUE</span></p></td><td class="cl-ced4b318"><p class="cl-ced4a7d8"><span class="cl-ced3007d">TRUE</span></p></td><td class="cl-ced4b318"><p class="cl-ced4a7d8"><span class="cl-ced3007d">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-ced4b319"><p class="cl-ced4a7d8"><span class="cl-ced3007e">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-e71aabf8{}.cl-e71783e2{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e71783ec{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e71783ed{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e71783f6{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e718a0ce{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e718ae98{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e718ae99{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e718aea2{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e718aea3{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e71aabf8"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e718ae98"><p class="cl-e718a0ce"><span class="cl-e71783e2">A</span></p></th><th class="cl-e718ae98"><p class="cl-e718a0ce"><span class="cl-e71783e2">B</span></p></th><th class="cl-e718ae98"><p class="cl-e718a0ce"><span class="cl-e71783e2">P1</span></p></th><th class="cl-e718ae98"><p class="cl-e718a0ce"><span class="cl-e71783e2">P2</span></p></th><th class="cl-e718ae98"><p class="cl-e718a0ce"><span class="cl-e71783e2">E</span></p></th><th class="cl-e718ae98"><p class="cl-e718a0ce"><span class="cl-e71783e2">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td><td class="cl-e718ae99"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e718aea2"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td><td class="cl-e718aea2"><p class="cl-e718a0ce"><span class="cl-e71783ed">FALSE</span></p></td><td class="cl-e718aea2"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td><td class="cl-e718aea2"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td><td class="cl-e718aea2"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td><td class="cl-e718aea2"><p class="cl-e718a0ce"><span class="cl-e71783ec">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-e718aea3"><p class="cl-e718a0ce"><span class="cl-e71783f6">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
+</div>
 </div>
 </div>
 </div></div>
 </section>
 <section id="affirming-the-consequent-1" class="slide level2">
 <h2>Affirming the consequent</h2>
-<p>Affirming the consequent is an <strong>invalid deductive argument</strong> that affirms the consequent to conclude the antecedent</p>
+<p>Affirming the consequent is an <strong>invalid deductive argument</strong> that affirms the consequent to conclude the antecedent.</p>
 <div class="columns">
 <div class="column">
-<p><span class="math display">\[
-\begin{array}{c}
-A \implies B \\
-B \\
-\hline
-A
-\end{array}
-\]</span></p>
-<div>
+<div class="fragment">
 <p><strong>Premises</strong></p>
 <ul>
 <li><p>If it is raining, then the ground is wet</p></li>
@@ -741,7 +718,18 @@ A
 <li>It is raining</li>
 </ul>
 </div>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{array}{ll}
+1. &amp; A \implies B \\
+2. &amp; B \\
+\hline
+\therefore &amp; A
+\end{array}
+\]</span></p>
+</div>
 </div><div class="column">
+<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">P</span>(</span>
 <span id="cb8-2"><a href=""></a>  <span class="at">P1 =</span> A <span class="sc">%=&gt;%</span> B,</span>
@@ -749,25 +737,18 @@ A
 <span id="cb8-4"><a href=""></a>  <span class="at">H  =</span> A</span>
 <span id="cb8-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-cedfe4a4{}.cl-cedd57b6{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cedd57b7{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-cedd57b8{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-cedd57c0{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-cedd57c1{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cede66b0{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-cede7164{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cede716e{width:0.75in;background-color:rgba(0, 100, 0, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cede716f{width:0.75in;background-color:rgba(139, 0, 0, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cede7170{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cede7171{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cede7178{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-cedfe4a4"><thead><tr style="overflow-wrap:break-word;"><th class="cl-cede7164"><p class="cl-cede66b0"><span class="cl-cedd57b6">A</span></p></th><th class="cl-cede7164"><p class="cl-cede66b0"><span class="cl-cedd57b6">B</span></p></th><th class="cl-cede7164"><p class="cl-cede66b0"><span class="cl-cedd57b6">P1</span></p></th><th class="cl-cede7164"><p class="cl-cede66b0"><span class="cl-cedd57b6">P2</span></p></th><th class="cl-cede7164"><p class="cl-cede66b0"><span class="cl-cedd57b6">E</span></p></th><th class="cl-cede7164"><p class="cl-cede66b0"><span class="cl-cedd57b6">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-cede716e"><p class="cl-cede66b0"><span class="cl-cedd57b7">TRUE</span></p></td><td class="cl-cede716e"><p class="cl-cede66b0"><span class="cl-cedd57b7">TRUE</span></p></td><td class="cl-cede716e"><p class="cl-cede66b0"><span class="cl-cedd57b7">TRUE</span></p></td><td class="cl-cede716e"><p class="cl-cede66b0"><span class="cl-cedd57b7">TRUE</span></p></td><td class="cl-cede716e"><p class="cl-cede66b0"><span class="cl-cedd57b7">TRUE</span></p></td><td class="cl-cede716e"><p class="cl-cede66b0"><span class="cl-cedd57b7">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cede716f"><p class="cl-cede66b0"><span class="cl-cedd57b7">FALSE</span></p></td><td class="cl-cede716e"><p class="cl-cede66b0"><span class="cl-cedd57b7">TRUE</span></p></td><td class="cl-cede716e"><p class="cl-cede66b0"><span class="cl-cedd57b7">TRUE</span></p></td><td class="cl-cede716e"><p class="cl-cede66b0"><span class="cl-cedd57b7">TRUE</span></p></td><td class="cl-cede716e"><p class="cl-cede66b0"><span class="cl-cedd57b7">TRUE</span></p></td><td class="cl-cede716f"><p class="cl-cede66b0"><span class="cl-cedd57b7">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cede7170"><p class="cl-cede66b0"><span class="cl-cedd57b8">TRUE</span></p></td><td class="cl-cede7170"><p class="cl-cede66b0"><span class="cl-cedd57c0">FALSE</span></p></td><td class="cl-cede7170"><p class="cl-cede66b0"><span class="cl-cedd57c0">FALSE</span></p></td><td class="cl-cede7170"><p class="cl-cede66b0"><span class="cl-cedd57c0">FALSE</span></p></td><td class="cl-cede7170"><p class="cl-cede66b0"><span class="cl-cedd57c0">FALSE</span></p></td><td class="cl-cede7170"><p class="cl-cede66b0"><span class="cl-cedd57b8">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cede7171"><p class="cl-cede66b0"><span class="cl-cedd57c0">FALSE</span></p></td><td class="cl-cede7171"><p class="cl-cede66b0"><span class="cl-cedd57c0">FALSE</span></p></td><td class="cl-cede7171"><p class="cl-cede66b0"><span class="cl-cedd57b8">TRUE</span></p></td><td class="cl-cede7171"><p class="cl-cede66b0"><span class="cl-cedd57c0">FALSE</span></p></td><td class="cl-cede7171"><p class="cl-cede66b0"><span class="cl-cedd57c0">FALSE</span></p></td><td class="cl-cede7171"><p class="cl-cede66b0"><span class="cl-cedd57c0">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-cede7178"><p class="cl-cede66b0"><span class="cl-cedd57c1">P(H | E) = 0.5</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-e72441fe{}.cl-e7211a38{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e7211a42{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e7211a43{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e7211a44{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e7229408{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e722a01a{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e722a024{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e722a025{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e722a026{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e722a027{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e72441fe"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e722a01a"><p class="cl-e7229408"><span class="cl-e7211a38">A</span></p></th><th class="cl-e722a01a"><p class="cl-e7229408"><span class="cl-e7211a38">B</span></p></th><th class="cl-e722a01a"><p class="cl-e7229408"><span class="cl-e7211a38">P1</span></p></th><th class="cl-e722a01a"><p class="cl-e7229408"><span class="cl-e7211a38">P2</span></p></th><th class="cl-e722a01a"><p class="cl-e7229408"><span class="cl-e7211a38">E</span></p></th><th class="cl-e722a01a"><p class="cl-e7229408"><span class="cl-e7211a38">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a43">FALSE</span></p></td><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td><td class="cl-e722a024"><p class="cl-e7229408"><span class="cl-e7211a43">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e722a025"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td><td class="cl-e722a025"><p class="cl-e7229408"><span class="cl-e7211a43">FALSE</span></p></td><td class="cl-e722a025"><p class="cl-e7229408"><span class="cl-e7211a43">FALSE</span></p></td><td class="cl-e722a025"><p class="cl-e7229408"><span class="cl-e7211a43">FALSE</span></p></td><td class="cl-e722a025"><p class="cl-e7229408"><span class="cl-e7211a43">FALSE</span></p></td><td class="cl-e722a025"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e722a026"><p class="cl-e7229408"><span class="cl-e7211a43">FALSE</span></p></td><td class="cl-e722a026"><p class="cl-e7229408"><span class="cl-e7211a43">FALSE</span></p></td><td class="cl-e722a026"><p class="cl-e7229408"><span class="cl-e7211a42">TRUE</span></p></td><td class="cl-e722a026"><p class="cl-e7229408"><span class="cl-e7211a43">FALSE</span></p></td><td class="cl-e722a026"><p class="cl-e7229408"><span class="cl-e7211a43">FALSE</span></p></td><td class="cl-e722a026"><p class="cl-e7229408"><span class="cl-e7211a43">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-e722a027"><p class="cl-e7229408"><span class="cl-e7211a44">P(H | E) = 0.5</span></p></td></tr></tfoot></table></div>
+</div>
 </div>
 </div>
 </div></div>
 </section>
 <section id="denying-the-antecedent-1" class="slide level2">
 <h2>Denying the antecedent</h2>
-<p>Denying the antecedent is an <strong>invalid deductive argument</strong> that denies the antecedent to conclude the negation of the consequent</p>
+<p>Denying the antecedent is an <strong>invalid deductive argument</strong> that denies the antecedent to conclude the negation of the consequent.</p>
 <div class="columns">
 <div class="column">
-<p><span class="math display">\[
-\begin{array}{c}
-A \implies B \\
-\neg A \\
-\hline
-\neg B
-\end{array}
-\]</span></p>
-<div>
+<div class="fragment">
 <p><strong>Premises</strong></p>
 <ul>
 <li><p>If it is raining, then the ground is wet</p></li>
@@ -778,7 +759,18 @@ A \implies B \\
 <li>The ground is not wet</li>
 </ul>
 </div>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{array}{c}
+1. &amp; A \implies B \\
+2. &amp; \neg A \\
+\hline
+\therefore &amp; \neg B
+\end{array}
+\]</span></p>
+</div>
 </div><div class="column">
+<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">P</span>(</span>
 <span id="cb9-2"><a href=""></a>  <span class="at">P1 =</span> A <span class="sc">%=&gt;%</span> B,</span>
@@ -786,25 +778,18 @@ A \implies B \\
 <span id="cb9-4"><a href=""></a>  <span class="at">H  =</span> <span class="sc">!</span>B</span>
 <span id="cb9-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-cee9b880{}.cl-cee71238{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cee71239{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-cee71242{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-cee71243{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-cee71244{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cee82f9c{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-cee83a78{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cee83a79{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cee83a82{width:0.75in;background-color:rgba(139, 0, 0, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cee83a83{width:0.75in;background-color:rgba(0, 100, 0, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cee83a84{width:0.75in;background-color:rgba(139, 0, 0, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cee83a8c{width:0.75in;background-color:rgba(0, 100, 0, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cee83a8d{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-cee9b880"><thead><tr style="overflow-wrap:break-word;"><th class="cl-cee83a78"><p class="cl-cee82f9c"><span class="cl-cee71238">A</span></p></th><th class="cl-cee83a78"><p class="cl-cee82f9c"><span class="cl-cee71238">B</span></p></th><th class="cl-cee83a78"><p class="cl-cee82f9c"><span class="cl-cee71238">P1</span></p></th><th class="cl-cee83a78"><p class="cl-cee82f9c"><span class="cl-cee71238">P2</span></p></th><th class="cl-cee83a78"><p class="cl-cee82f9c"><span class="cl-cee71238">E</span></p></th><th class="cl-cee83a78"><p class="cl-cee82f9c"><span class="cl-cee71238">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71239">TRUE</span></p></td><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71239">TRUE</span></p></td><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71239">TRUE</span></p></td><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71242">FALSE</span></p></td><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71242">FALSE</span></p></td><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71242">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cee83a82"><p class="cl-cee82f9c"><span class="cl-cee71243">FALSE</span></p></td><td class="cl-cee83a83"><p class="cl-cee82f9c"><span class="cl-cee71243">TRUE</span></p></td><td class="cl-cee83a83"><p class="cl-cee82f9c"><span class="cl-cee71243">TRUE</span></p></td><td class="cl-cee83a83"><p class="cl-cee82f9c"><span class="cl-cee71243">TRUE</span></p></td><td class="cl-cee83a83"><p class="cl-cee82f9c"><span class="cl-cee71243">TRUE</span></p></td><td class="cl-cee83a82"><p class="cl-cee82f9c"><span class="cl-cee71243">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71239">TRUE</span></p></td><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71242">FALSE</span></p></td><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71242">FALSE</span></p></td><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71242">FALSE</span></p></td><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71242">FALSE</span></p></td><td class="cl-cee83a79"><p class="cl-cee82f9c"><span class="cl-cee71239">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cee83a84"><p class="cl-cee82f9c"><span class="cl-cee71243">FALSE</span></p></td><td class="cl-cee83a84"><p class="cl-cee82f9c"><span class="cl-cee71243">FALSE</span></p></td><td class="cl-cee83a8c"><p class="cl-cee82f9c"><span class="cl-cee71243">TRUE</span></p></td><td class="cl-cee83a8c"><p class="cl-cee82f9c"><span class="cl-cee71243">TRUE</span></p></td><td class="cl-cee83a8c"><p class="cl-cee82f9c"><span class="cl-cee71243">TRUE</span></p></td><td class="cl-cee83a8c"><p class="cl-cee82f9c"><span class="cl-cee71243">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-cee83a8d"><p class="cl-cee82f9c"><span class="cl-cee71244">P(H | E) = 0.5</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-e72dbbee{}.cl-e72aa2f6{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e72aa300{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e72aa301{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e72aa30a{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e72c1ce4{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e72c289c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e72c289d{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e72c289e{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e72c28a6{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e72c28a7{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e72dbbee"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e72c289c"><p class="cl-e72c1ce4"><span class="cl-e72aa2f6">A</span></p></th><th class="cl-e72c289c"><p class="cl-e72c1ce4"><span class="cl-e72aa2f6">B</span></p></th><th class="cl-e72c289c"><p class="cl-e72c1ce4"><span class="cl-e72aa2f6">P1</span></p></th><th class="cl-e72c289c"><p class="cl-e72c1ce4"><span class="cl-e72aa2f6">P2</span></p></th><th class="cl-e72c289c"><p class="cl-e72c1ce4"><span class="cl-e72aa2f6">E</span></p></th><th class="cl-e72c289c"><p class="cl-e72c1ce4"><span class="cl-e72aa2f6">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa301">FALSE</span></p></td><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa301">FALSE</span></p></td><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa301">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e72c289e"><p class="cl-e72c1ce4"><span class="cl-e72aa301">FALSE</span></p></td><td class="cl-e72c289e"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td><td class="cl-e72c289e"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td><td class="cl-e72c289e"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td><td class="cl-e72c289e"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td><td class="cl-e72c289e"><p class="cl-e72c1ce4"><span class="cl-e72aa301">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa301">FALSE</span></p></td><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa301">FALSE</span></p></td><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa301">FALSE</span></p></td><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa301">FALSE</span></p></td><td class="cl-e72c289d"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e72c28a6"><p class="cl-e72c1ce4"><span class="cl-e72aa301">FALSE</span></p></td><td class="cl-e72c28a6"><p class="cl-e72c1ce4"><span class="cl-e72aa301">FALSE</span></p></td><td class="cl-e72c28a6"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td><td class="cl-e72c28a6"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td><td class="cl-e72c28a6"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td><td class="cl-e72c28a6"><p class="cl-e72c1ce4"><span class="cl-e72aa300">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-e72c28a7"><p class="cl-e72c1ce4"><span class="cl-e72aa30a">P(H | E) = 0.5</span></p></td></tr></tfoot></table></div>
+</div>
 </div>
 </div>
 </div></div>
 </section>
 <section id="hypothetical-syllogism" class="slide level2">
 <h2>Hypothetical syllogism</h2>
-<p>Hypothetical syllogism is a <strong>valid deductive argument</strong> that combines two conditional statements to conclude a third conditional statement</p>
+<p>The hypothetical syllogism is a <strong>valid deductive argument</strong> that combines two conditional statements to conclude a third conditional statement.</p>
 <div class="columns">
 <div class="column">
-<p><span class="math display">\[
-\begin{array}{c}
-A \implies B \\
-B \implies C \\
-\hline
-A \implies C
-\end{array}
-\]</span></p>
-<div>
+<div class="fragment">
 <p><strong>Premises</strong></p>
 <ul>
 <li><p>If it is raining, then the ground is wet</p></li>
@@ -812,10 +797,21 @@ A \implies C
 </ul>
 <p><strong>Conclusion</strong></p>
 <ul>
-<li>If it is raining, then the plants grow.</li>
+<li>If it is raining, then the plants grow</li>
 </ul>
 </div>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{array}{c}
+1. &amp; A \implies B \\
+2. &amp; B \implies C \\
+\hline
+\therefore &amp; A \implies C
+\end{array}
+\]</span></p>
+</div>
 </div><div class="column">
+<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">P</span>(</span>
 <span id="cb10-2"><a href=""></a>  <span class="at">P1 =</span> A <span class="sc">%=&gt;%</span> B,</span>
@@ -823,105 +819,232 @@ A \implies C
 <span id="cb10-4"><a href=""></a>  <span class="at">H  =</span> A <span class="sc">%=&gt;%</span> C</span>
 <span id="cb10-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-cef4c7ca{}.cl-cef1f284{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cef1f285{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-cef1f28e{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-cef1f28f{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-cef1f290{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cef3186c{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-cef323de{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cef323e8{width:0.75in;background-color:rgba(0, 100, 0, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cef323e9{width:0.75in;background-color:rgba(139, 0, 0, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cef323ea{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cef323f2{width:0.75in;background-color:rgba(139, 0, 0, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cef323f3{width:0.75in;background-color:rgba(0, 100, 0, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cef323f4{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-cef4c7ca"><thead><tr style="overflow-wrap:break-word;"><th class="cl-cef323de"><p class="cl-cef3186c"><span class="cl-cef1f284">A</span></p></th><th class="cl-cef323de"><p class="cl-cef3186c"><span class="cl-cef1f284">B</span></p></th><th class="cl-cef323de"><p class="cl-cef3186c"><span class="cl-cef1f284">C</span></p></th><th class="cl-cef323de"><p class="cl-cef3186c"><span class="cl-cef1f284">P1</span></p></th><th class="cl-cef323de"><p class="cl-cef3186c"><span class="cl-cef1f284">P2</span></p></th><th class="cl-cef323de"><p class="cl-cef3186c"><span class="cl-cef1f284">E</span></p></th><th class="cl-cef323de"><p class="cl-cef3186c"><span class="cl-cef1f284">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cef323e9"><p class="cl-cef3186c"><span class="cl-cef1f285">FALSE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cef323e9"><p class="cl-cef3186c"><span class="cl-cef1f285">FALSE</span></p></td><td class="cl-cef323e9"><p class="cl-cef3186c"><span class="cl-cef1f285">FALSE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323e8"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28e">TRUE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td><td class="cl-cef323ea"><p class="cl-cef3186c"><span class="cl-cef1f28f">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cef323f2"><p class="cl-cef3186c"><span class="cl-cef1f285">FALSE</span></p></td><td class="cl-cef323f2"><p class="cl-cef3186c"><span class="cl-cef1f285">FALSE</span></p></td><td class="cl-cef323f2"><p class="cl-cef3186c"><span class="cl-cef1f285">FALSE</span></p></td><td class="cl-cef323f3"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323f3"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323f3"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td><td class="cl-cef323f3"><p class="cl-cef3186c"><span class="cl-cef1f285">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="7" class="cl-cef323f4"><p class="cl-cef3186c"><span class="cl-cef1f290">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-e738a194{}.cl-e735c906{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e735c910{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e735c911{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e735c91a{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e736ed04{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e736f90c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e736f90d{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e736f90e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e736f916{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e736f917{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e738a194"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e736f90c"><p class="cl-e736ed04"><span class="cl-e735c906">A</span></p></th><th class="cl-e736f90c"><p class="cl-e736ed04"><span class="cl-e735c906">B</span></p></th><th class="cl-e736f90c"><p class="cl-e736ed04"><span class="cl-e735c906">C</span></p></th><th class="cl-e736f90c"><p class="cl-e736ed04"><span class="cl-e735c906">P1</span></p></th><th class="cl-e736f90c"><p class="cl-e736ed04"><span class="cl-e735c906">P2</span></p></th><th class="cl-e736f90c"><p class="cl-e736ed04"><span class="cl-e735c906">E</span></p></th><th class="cl-e736f90c"><p class="cl-e736ed04"><span class="cl-e735c906">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90d"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f90e"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e736f916"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f916"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f916"><p class="cl-e736ed04"><span class="cl-e735c911">FALSE</span></p></td><td class="cl-e736f916"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f916"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f916"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td><td class="cl-e736f916"><p class="cl-e736ed04"><span class="cl-e735c910">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="7" class="cl-e736f917"><p class="cl-e736ed04"><span class="cl-e735c91a">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
+</div>
 </div>
 </div>
 </div></div>
 </section>
 <section id="proportional-syllogism-1" class="slide level2">
 <h2>Proportional syllogism</h2>
-<p>Proportional syllogism is a <strong>invalid deductive argument</strong> that derives conclusions based on the proportions in a population</p>
+<p>The proportional syllogism is a logical argument that draws a conclusions based on a proportion.</p>
 <div class="columns">
 <div class="column">
-<p><span class="math display">\[
-\begin{array}{c}
-B1 \lor B2 \lor W \\
-\neg((B1 \land B2) \lor (B1 \land W) \lor (B2 \land W)) \\
-\hline
-B1 \lor B2
-\end{array}
-\]</span></p>
-<div>
+<div class="fragment">
 <p><strong>Premises</strong></p>
 <ul>
-<li><p>At least one ball is drawn</p></li>
-<li><p>No two balls can be drawn simultaneously</p></li>
+<li><p>A bag contains two blue balls and one white ball</p></li>
+<li><p>One ball is drawn from the bag</p></li>
 </ul>
 <p><strong>Conclusion</strong></p>
 <ul>
-<li>The ball drawn is blue</li>
+<li>A blue ball is drawn from the bag</li>
 </ul>
 </div>
+<aside class="notes">
+<p>Propositional symbols/variables:</p>
+<p>B1 = “Blue ball 1 is drawn” B2 = “Blue ball 2 is drawn” W = “The white ball is drawn”</p>
+<p>The propositional symbols/variables used in the premises define the set of all possible worlds/outcomes (i.e., truth table/logical space/sample space) and the logical structure of the premises/the knowledge represented by the premises restricts this set to the subset in which all premises are true.</p>
+<p>The premises logically constrain the possible worlds/outcomes.</p>
+<p>By the principle of indifference (logical probability), each possible world/outcome in the truth table is equally likely.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<aside class="notes">
+<p><span class="math display">\[
+P(A) = \lim_{n \to \infty} \frac{\text{Number of times } A \text{ occurs in } n \text{ trials}}{n}
+\]</span> Frequentist probability requires infinite trials and physical mixing because it depends on empirical relative frequencies.</p>
+<p>Frequentist probability is undefined for a single-instance event like drawing one ball.</p>
+<p>Logical probability is a better framework in this case because it relies on counting possible worlds, not repeated trials.</p>
+<p>Frequentist probability cannot actually compute probabilities.</p>
+<p>Logical probability actually computes probability—frequentists can only estimate it.</p>
+<p>Frequentist probability is useless in one-time events—it requires infinite trials to be strictly valid.</p>
+<p>If you want a coherent theory of probability that always applies, you must use logical (Bayesian) probability.</p>
+<p>Despite these flaws, frequentist probability persists in practice because: 1. It works well for large-scale empirical data (e.g., coin flips, medical studies). 2. It avoids subjective priors (which some mistakenly see as a flaw in Bayesian probability). 3. Historically, probability theory was developed with physical randomness in mind (games of chance, dice, coins).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{array}{ll}
+1. &amp; B1 \lor B2 \lor W \\
+2. &amp; \neg((B1 \land B2) \lor (B1 \land W) \lor (B2 \land W)) \\
+\hline
+\therefore &amp; B1 \lor B2
+\end{array}
+\]</span></p>
+</div>
 </div><div class="column">
+<div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">P</span>(</span>
-<span id="cb11-2"><a href=""></a>  <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,                           </span>
-<span id="cb11-3"><a href=""></a>  <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2) <span class="sc">&amp;</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W) <span class="sc">&amp;</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),    </span>
+<span id="cb11-2"><a href=""></a>  <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,                         </span>
+<span id="cb11-3"><a href=""></a>  <span class="at">P2 =</span> <span class="sc">!</span>((B1 <span class="sc">&amp;</span> B2) <span class="sc">|</span> (B1 <span class="sc">&amp;</span> W) <span class="sc">|</span> (B2 <span class="sc">&amp;</span> W)),</span>
 <span id="cb11-4"><a href=""></a>  <span class="at">H  =</span> B1 <span class="sc">|</span> B2                                </span>
 <span id="cb11-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-ceffef56{}.cl-cefd14b6{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cefd14c0{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-cefd14c1{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-cefd14c2{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-cefd14c3{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cefe44da{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-cefe518c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cefe518d{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cefe5196{width:0.75in;background-color:rgba(139, 0, 0, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cefe5197{width:0.75in;background-color:rgba(0, 100, 0, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cefe5198{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cefe5199{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-ceffef56"><thead><tr style="overflow-wrap:break-word;"><th class="cl-cefe518c"><p class="cl-cefe44da"><span class="cl-cefd14b6">B1</span></p></th><th class="cl-cefe518c"><p class="cl-cefe44da"><span class="cl-cefd14b6">B2</span></p></th><th class="cl-cefe518c"><p class="cl-cefe44da"><span class="cl-cefd14b6">W</span></p></th><th class="cl-cefe518c"><p class="cl-cefe44da"><span class="cl-cefd14b6">P1</span></p></th><th class="cl-cefe518c"><p class="cl-cefe44da"><span class="cl-cefd14b6">P2</span></p></th><th class="cl-cefe518c"><p class="cl-cefe44da"><span class="cl-cefd14b6">E</span></p></th><th class="cl-cefe518c"><p class="cl-cefe44da"><span class="cl-cefd14b6">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cefe5196"><p class="cl-cefe44da"><span class="cl-cefd14c2">FALSE</span></p></td><td class="cl-cefe5196"><p class="cl-cefe44da"><span class="cl-cefd14c2">FALSE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5196"><p class="cl-cefe44da"><span class="cl-cefd14c2">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe518d"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cefe5196"><p class="cl-cefe44da"><span class="cl-cefd14c2">FALSE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5196"><p class="cl-cefe44da"><span class="cl-cefd14c2">FALSE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5196"><p class="cl-cefe44da"><span class="cl-cefd14c2">FALSE</span></p></td><td class="cl-cefe5196"><p class="cl-cefe44da"><span class="cl-cefd14c2">FALSE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td><td class="cl-cefe5197"><p class="cl-cefe44da"><span class="cl-cefd14c2">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cefe5198"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe5198"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe5198"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe5198"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe5198"><p class="cl-cefe44da"><span class="cl-cefd14c0">TRUE</span></p></td><td class="cl-cefe5198"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td><td class="cl-cefe5198"><p class="cl-cefe44da"><span class="cl-cefd14c1">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="7" class="cl-cefe5199"><p class="cl-cefe44da"><span class="cl-cefd14c3">P(H | E) = 0.667</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-e7436dea{}.cl-e740895e{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e7408968{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e7408969{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e740896a{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e741bd88{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e741c9f4{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e741c9fe{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e741c9ff{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e741ca00{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e741ca08{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e7436dea"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e741c9f4"><p class="cl-e741bd88"><span class="cl-e740895e">B1</span></p></th><th class="cl-e741c9f4"><p class="cl-e741bd88"><span class="cl-e740895e">B2</span></p></th><th class="cl-e741c9f4"><p class="cl-e741bd88"><span class="cl-e740895e">W</span></p></th><th class="cl-e741c9f4"><p class="cl-e741bd88"><span class="cl-e740895e">P1</span></p></th><th class="cl-e741c9f4"><p class="cl-e741bd88"><span class="cl-e740895e">P2</span></p></th><th class="cl-e741c9f4"><p class="cl-e741bd88"><span class="cl-e740895e">E</span></p></th><th class="cl-e741c9f4"><p class="cl-e741bd88"><span class="cl-e740895e">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9fe"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741c9ff"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e741ca00"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741ca00"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741ca00"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741ca00"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741ca00"><p class="cl-e741bd88"><span class="cl-e7408968">TRUE</span></p></td><td class="cl-e741ca00"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td><td class="cl-e741ca00"><p class="cl-e741bd88"><span class="cl-e7408969">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="7" class="cl-e741ca08"><p class="cl-e741bd88"><span class="cl-e740896a">P(H | E) = 0.667</span></p></td></tr></tfoot></table></div>
+</div>
 </div>
 </div>
 </div></div>
 </section>
+<section id="statistical-syllogism" class="slide level2">
+<h2>Statistical syllogism</h2>
+<p>The statistical syllogism is a logical argument that draws a conclusion about a specific case based on a generalization.</p>
+<div class="fragment">
+<p><strong>Premises</strong></p>
+<ul>
+<li><p>Most birds can fly</p></li>
+<li><p>Pingu is a bird</p></li>
+</ul>
+<p><strong>Conclusion</strong></p>
+<ul>
+<li>Pingu can fly</li>
+</ul>
+</div>
+<div class="fragment">
+<p>Bayesian reasoning provides a formal framework for the statistical syllogism.</p>
+</div>
+</section>
+<section id="inductive-generalization-1" class="slide level2">
+<h2>Inductive generalization</h2>
+<p>Inductive generalization (a.k.a. inductive inference) is a logical argument that draws a conclusion about a generalization based on a specific case.</p>
+<p>This type of reasoning moves in the opposite direction of the statistical syllogism: it uses specific cases (observations) as evidence to infer a general rule, pattern, or principle.</p>
+<div class="fragment">
+<p><strong>Premises</strong></p>
+<ul>
+<li><p>Pingu is a bird and cannot fly</p></li>
+<li><p>Kiwi is a bird and cannot fly</p></li>
+<li><p>Ostrich is a bird and cannot fly</p></li>
+</ul>
+<p><strong>Conclusion</strong></p>
+<ul>
+<li>Most birds cannot fly</li>
+</ul>
+</div>
+<div class="fragment">
+<p>Bayesian reasoning provides a formal framework for inductive generalization.</p>
+</div>
+</section>
+<section id="logical-probability-function" class="slide level2 hidden">
+<h2>Logical probability function</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="co"># Main function to calculate the proportion</span></span>
+<span id="cb12-2"><a href=""></a>P <span class="ot">&lt;-</span> <span class="cf">function</span>(..., H) {</span>
+<span id="cb12-3"><a href=""></a>  <span class="co"># Capture all premises (P1, P2, ...) as quosures</span></span>
+<span id="cb12-4"><a href=""></a>  premises <span class="ot">&lt;-</span> <span class="fu">enquos</span>(...)</span>
+<span id="cb12-5"><a href=""></a>  </span>
+<span id="cb12-6"><a href=""></a>  <span class="co"># Combine all premises into a single evidence expression (E)</span></span>
+<span id="cb12-7"><a href=""></a>  evidence_expr <span class="ot">&lt;-</span> <span class="fu">reduce</span>(premises, <span class="sc">~</span> <span class="fu">expr</span>((<span class="sc">!!</span> .x) <span class="sc">&amp;</span> (<span class="sc">!!</span> .y)))</span>
+<span id="cb12-8"><a href=""></a>  </span>
+<span id="cb12-9"><a href=""></a>  <span class="co"># Capture the hypothesis as a quosure</span></span>
+<span id="cb12-10"><a href=""></a>  hypothesis_expr <span class="ot">&lt;-</span> <span class="fu">enquo</span>(H)</span>
+<span id="cb12-11"><a href=""></a>  </span>
+<span id="cb12-12"><a href=""></a>  <span class="co"># Extract variables from evidence and hypothesis</span></span>
+<span id="cb12-13"><a href=""></a>  variables <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">c</span>(</span>
+<span id="cb12-14"><a href=""></a>    <span class="fu">all.vars</span>(evidence_expr),</span>
+<span id="cb12-15"><a href=""></a>    <span class="fu">all.vars</span>(hypothesis_expr)</span>
+<span id="cb12-16"><a href=""></a>  ))</span>
+<span id="cb12-17"><a href=""></a>  </span>
+<span id="cb12-18"><a href=""></a>  <span class="co"># Generate set of all possible worlds</span></span>
+<span id="cb12-19"><a href=""></a>  possible_worlds <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(<span class="sc">!!!</span><span class="fu">set_names</span>(<span class="fu">rep</span>(<span class="fu">list</span>(<span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)), <span class="fu">length</span>(variables)), variables))</span>
+<span id="cb12-20"><a href=""></a>  </span>
+<span id="cb12-21"><a href=""></a>  <span class="co"># Filter set of all possible worlds where evidence is true and calculate proportion where hypothesis is true</span></span>
+<span id="cb12-22"><a href=""></a>  possible_worlds <span class="sc">%&gt;%</span></span>
+<span id="cb12-23"><a href=""></a>    <span class="fu">mutate</span>(</span>
+<span id="cb12-24"><a href=""></a>      <span class="at">E =</span> <span class="sc">!!</span>evidence_expr,</span>
+<span id="cb12-25"><a href=""></a>      <span class="at">H =</span> <span class="sc">!!</span>hypothesis_expr</span>
+<span id="cb12-26"><a href=""></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-27"><a href=""></a>    <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span></span>
+<span id="cb12-28"><a href=""></a>    <span class="fu">summarize</span>(<span class="at">proportion =</span> <span class="fu">mean</span>(H)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-29"><a href=""></a>    <span class="fu">pull</span>(proportion)</span>
+<span id="cb12-30"><a href=""></a>}</span>
+<span id="cb12-31"><a href=""></a></span>
+<span id="cb12-32"><a href=""></a><span class="co"># Example Usage: Multiple premises as expressions</span></span>
+<span id="cb12-33"><a href=""></a><span class="fu">P</span>(</span>
+<span id="cb12-34"><a href=""></a>  <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb12-35"><a href=""></a>  <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2) <span class="sc">&amp;</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W) <span class="sc">&amp;</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb12-36"><a href=""></a>  <span class="at">H =</span> B1 <span class="sc">|</span> B2</span>
+<span id="cb12-37"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6667</code></pre>
+</div>
+</div>
+</section>
 <section id="logical-probability-function-1" class="slide level2 hidden">
 <h2>Logical probability function</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>P <span class="ot">&lt;-</span> <span class="cf">function</span>(..., H, <span class="at">p =</span> <span class="cn">NULL</span>) {</span>
-<span id="cb12-2"><a href=""></a>  <span class="co"># capture the premises as a list of quosures</span></span>
-<span id="cb12-3"><a href=""></a>  premises <span class="ot">&lt;-</span> rlang<span class="sc">::</span><span class="fu">enquos</span>(...)</span>
-<span id="cb12-4"><a href=""></a>  </span>
-<span id="cb12-5"><a href=""></a>  <span class="co"># capture the conclusion as a quosure</span></span>
-<span id="cb12-6"><a href=""></a>  conclusion <span class="ot">&lt;-</span> rlang<span class="sc">::</span><span class="fu">enquo</span>(H)</span>
-<span id="cb12-7"><a href=""></a>  </span>
-<span id="cb12-8"><a href=""></a>  <span class="co"># extract variable names from premises and conclusion</span></span>
-<span id="cb12-9"><a href=""></a>  vars <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">c</span>(</span>
-<span id="cb12-10"><a href=""></a>    <span class="fu">unlist</span>(<span class="fu">lapply</span>(premises, all.vars)),</span>
-<span id="cb12-11"><a href=""></a>    <span class="fu">all.vars</span>(conclusion)</span>
-<span id="cb12-12"><a href=""></a>  ))</span>
-<span id="cb12-13"><a href=""></a>  </span>
-<span id="cb12-14"><a href=""></a>  <span class="co"># generate truth table with all possible combinations of variables</span></span>
-<span id="cb12-15"><a href=""></a>  truth_table <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="fu">replicate</span>(<span class="fu">length</span>(vars), <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">simplify =</span> <span class="cn">FALSE</span>))</span>
-<span id="cb12-16"><a href=""></a>  <span class="fu">colnames</span>(truth_table) <span class="ot">&lt;-</span> vars</span>
-<span id="cb12-17"><a href=""></a>  </span>
-<span id="cb12-18"><a href=""></a>  <span class="co"># add premises P1, P2, ... to the truth table</span></span>
-<span id="cb12-19"><a href=""></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(premises)) {</span>
-<span id="cb12-20"><a href=""></a>    premise <span class="ot">&lt;-</span> premises[[i]]</span>
-<span id="cb12-21"><a href=""></a>    truth_table[[<span class="fu">paste0</span>(<span class="st">"P"</span>, i)]] <span class="ot">&lt;-</span> rlang<span class="sc">::</span><span class="fu">eval_tidy</span>(premise, <span class="at">data =</span> truth_table)</span>
-<span id="cb12-22"><a href=""></a>  }</span>
-<span id="cb12-23"><a href=""></a>  </span>
-<span id="cb12-24"><a href=""></a>  <span class="co"># add evidence E to the truth table</span></span>
-<span id="cb12-25"><a href=""></a>  truth_table <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
-<span id="cb12-26"><a href=""></a>    <span class="fu">mutate</span>(<span class="at">E =</span> <span class="fu">if_all</span>(<span class="fu">starts_with</span>(<span class="st">"P"</span>), identity)) <span class="co"># or `rowMeans(pick(starts_with("P"))) == 1`</span></span>
-<span id="cb12-27"><a href=""></a>  </span>
-<span id="cb12-28"><a href=""></a>  <span class="co"># add hypothesis H to the truth table</span></span>
-<span id="cb12-29"><a href=""></a>  truth_table <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
-<span id="cb12-30"><a href=""></a>    <span class="fu">mutate</span>(<span class="at">H =</span> rlang<span class="sc">::</span><span class="fu">eval_tidy</span>(conclusion, <span class="at">data =</span> truth_table))</span>
-<span id="cb12-31"><a href=""></a>  </span>
-<span id="cb12-32"><a href=""></a>  <span class="co"># add uniform prior distribution if none provided</span></span>
-<span id="cb12-33"><a href=""></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(p)) {</span>
-<span id="cb12-34"><a href=""></a>    truth_table <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
-<span id="cb12-35"><a href=""></a>      <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span>
-<span id="cb12-36"><a href=""></a>  } <span class="cf">else</span> {</span>
-<span id="cb12-37"><a href=""></a>    <span class="cf">if</span> (<span class="fu">length</span>(p) <span class="sc">!=</span> <span class="fu">nrow</span>(truth_table)) {</span>
-<span id="cb12-38"><a href=""></a>      <span class="fu">stop</span>(<span class="st">"Length of probability vector 'p' must match the number of truth table rows."</span>)</span>
-<span id="cb12-39"><a href=""></a>    }</span>
-<span id="cb12-40"><a href=""></a>    truth_table <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
-<span id="cb12-41"><a href=""></a>      <span class="fu">mutate</span>(<span class="at">p =</span> p)</span>
-<span id="cb12-42"><a href=""></a>  }</span>
-<span id="cb12-43"><a href=""></a>  </span>
-<span id="cb12-44"><a href=""></a>  <span class="co"># print truth table</span></span>
-<span id="cb12-45"><a href=""></a>  <span class="fu">print</span>(truth_table)</span>
-<span id="cb12-46"><a href=""></a>  </span>
-<span id="cb12-47"><a href=""></a>  <span class="co"># calculate P(H | E)</span></span>
-<span id="cb12-48"><a href=""></a>  P <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
-<span id="cb12-49"><a href=""></a>    <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span></span>
-<span id="cb12-50"><a href=""></a>    <span class="fu">summarise</span>(<span class="at">P =</span> <span class="fu">sum</span>(p <span class="sc">*</span> H) <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-51"><a href=""></a>    <span class="fu">pull</span>(P)</span>
-<span id="cb12-52"><a href=""></a>  </span>
-<span id="cb12-53"><a href=""></a>  <span class="fu">return</span>(P)</span>
-<span id="cb12-54"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>P <span class="ot">&lt;-</span> <span class="cf">function</span>(..., H, <span class="at">p =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb14-2"><a href=""></a>  <span class="co"># capture the premises as a list of quosures</span></span>
+<span id="cb14-3"><a href=""></a>  premises <span class="ot">&lt;-</span> rlang<span class="sc">::</span><span class="fu">enquos</span>(...)</span>
+<span id="cb14-4"><a href=""></a>  </span>
+<span id="cb14-5"><a href=""></a>  <span class="co"># capture the conclusion as a quosure</span></span>
+<span id="cb14-6"><a href=""></a>  conclusion <span class="ot">&lt;-</span> rlang<span class="sc">::</span><span class="fu">enquo</span>(H)</span>
+<span id="cb14-7"><a href=""></a>  </span>
+<span id="cb14-8"><a href=""></a>  <span class="co"># extract variable names from premises and conclusion</span></span>
+<span id="cb14-9"><a href=""></a>  vars <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">c</span>(</span>
+<span id="cb14-10"><a href=""></a>    <span class="fu">unlist</span>(<span class="fu">lapply</span>(premises, all.vars)),</span>
+<span id="cb14-11"><a href=""></a>    <span class="fu">all.vars</span>(conclusion)</span>
+<span id="cb14-12"><a href=""></a>  ))</span>
+<span id="cb14-13"><a href=""></a>  </span>
+<span id="cb14-14"><a href=""></a>  <span class="co"># generate truth table with all possible combinations of variables</span></span>
+<span id="cb14-15"><a href=""></a>  truth_table <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="fu">replicate</span>(<span class="fu">length</span>(vars), <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">simplify =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb14-16"><a href=""></a>  <span class="fu">colnames</span>(truth_table) <span class="ot">&lt;-</span> vars</span>
+<span id="cb14-17"><a href=""></a>  </span>
+<span id="cb14-18"><a href=""></a>  <span class="co"># add premises P1, P2, ... to the truth table</span></span>
+<span id="cb14-19"><a href=""></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(premises)) {</span>
+<span id="cb14-20"><a href=""></a>    premise <span class="ot">&lt;-</span> premises[[i]]</span>
+<span id="cb14-21"><a href=""></a>    truth_table[[<span class="fu">paste0</span>(<span class="st">"P"</span>, i)]] <span class="ot">&lt;-</span> rlang<span class="sc">::</span><span class="fu">eval_tidy</span>(premise, <span class="at">data =</span> truth_table)</span>
+<span id="cb14-22"><a href=""></a>  }</span>
+<span id="cb14-23"><a href=""></a>  </span>
+<span id="cb14-24"><a href=""></a>  <span class="co"># add evidence E to the truth table</span></span>
+<span id="cb14-25"><a href=""></a>  truth_table <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
+<span id="cb14-26"><a href=""></a>    <span class="fu">mutate</span>(<span class="at">E =</span> <span class="fu">if_all</span>(<span class="fu">starts_with</span>(<span class="st">"P"</span>), identity)) <span class="co"># or `rowMeans(pick(starts_with("P"))) == 1`</span></span>
+<span id="cb14-27"><a href=""></a>  </span>
+<span id="cb14-28"><a href=""></a>  <span class="co"># add hypothesis H to the truth table</span></span>
+<span id="cb14-29"><a href=""></a>  truth_table <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
+<span id="cb14-30"><a href=""></a>    <span class="fu">mutate</span>(<span class="at">H =</span> rlang<span class="sc">::</span><span class="fu">eval_tidy</span>(conclusion, <span class="at">data =</span> truth_table))</span>
+<span id="cb14-31"><a href=""></a>  </span>
+<span id="cb14-32"><a href=""></a>  <span class="co"># add uniform prior distribution if none provided</span></span>
+<span id="cb14-33"><a href=""></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(p)) {</span>
+<span id="cb14-34"><a href=""></a>    truth_table <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
+<span id="cb14-35"><a href=""></a>      <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span>
+<span id="cb14-36"><a href=""></a>  } <span class="cf">else</span> {</span>
+<span id="cb14-37"><a href=""></a>    <span class="cf">if</span> (<span class="fu">length</span>(p) <span class="sc">!=</span> <span class="fu">nrow</span>(truth_table)) {</span>
+<span id="cb14-38"><a href=""></a>      <span class="fu">stop</span>(<span class="st">"Length of probability vector 'p' must match the number of truth table rows."</span>)</span>
+<span id="cb14-39"><a href=""></a>    }</span>
+<span id="cb14-40"><a href=""></a>    truth_table <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
+<span id="cb14-41"><a href=""></a>      <span class="fu">mutate</span>(<span class="at">p =</span> p)</span>
+<span id="cb14-42"><a href=""></a>  }</span>
+<span id="cb14-43"><a href=""></a>  </span>
+<span id="cb14-44"><a href=""></a>  <span class="co"># print truth table</span></span>
+<span id="cb14-45"><a href=""></a>  <span class="fu">print</span>(truth_table)</span>
+<span id="cb14-46"><a href=""></a>  </span>
+<span id="cb14-47"><a href=""></a>  <span class="co"># calculate P(H | E)</span></span>
+<span id="cb14-48"><a href=""></a>  P <span class="ot">&lt;-</span> truth_table <span class="sc">%&gt;%</span></span>
+<span id="cb14-49"><a href=""></a>    <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span></span>
+<span id="cb14-50"><a href=""></a>    <span class="fu">summarise</span>(<span class="at">P =</span> <span class="fu">sum</span>(p <span class="sc">*</span> H) <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-51"><a href=""></a>    <span class="fu">pull</span>(P)</span>
+<span id="cb14-52"><a href=""></a>  </span>
+<span id="cb14-53"><a href=""></a>  <span class="fu">return</span>(P)</span>
+<span id="cb14-54"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="chance-does-not-cause-anything" class="slide level2">
@@ -1063,6 +1186,60 @@ B1 \lor B2
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="logical-vs-frequentist-probability" class="slide level2 scrollable">
+<h2>Logical vs frequentist probability</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 38%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th><strong>Logical Probability</strong></th>
+<th><strong>Frequentist Probability</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Definition</strong></td>
+<td>Degree of belief based on available information</td>
+<td>Long-run relative frequency in infinite trials</td>
+</tr>
+<tr class="even">
+<td><strong>Can Compute Probability?</strong></td>
+<td>✅ Yes, by counting possible worlds</td>
+<td>❌ No, requires infinite trials (it can only be estimated)</td>
+</tr>
+<tr class="odd">
+<td><strong>Works for Single Events?</strong></td>
+<td>✅ Yes</td>
+<td>❌ No, must assume hypothetical repetition</td>
+</tr>
+<tr class="even">
+<td><strong>Requires a Physical Process?</strong></td>
+<td>❌ No, just logic and premises</td>
+<td>✅ Yes, needs repeatable trials</td>
+</tr>
+<tr class="odd">
+<td><strong>Respects the Likelihood Principle?</strong></td>
+<td>✅ Yes</td>
+<td>❌ No, depends on sampling distributions and hypotheticals</td>
+</tr>
+<tr class="even">
+<td><strong>Requires i.i.d. Observations?</strong></td>
+<td>❌ No, works with dependencies and heterogeneity</td>
+<td>✅ Yes, i.i.d. required by definition, but it can be “relaxed”</td>
+</tr>
+<tr class="odd">
+<td><strong>Example: P(drawing blue ball)</strong></td>
+<td><span class="math inline">\(\frac{2}{3}\)</span>, based on the proportion of possible outcomes</td>
+<td>Undefined unless an infinite number of trials are conducted</td>
+</tr>
+</tbody>
+</table>
 
 </section>
     </div>
