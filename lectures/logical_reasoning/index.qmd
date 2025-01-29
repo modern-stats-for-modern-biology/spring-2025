@@ -19,20 +19,46 @@ df-print: kable
 
 ## What is statistical inference?
 
-Statistical inference is (inductive) logical reasoning:
+-   Statistical inference is inductive **logical reasoning**
 
+-   The process of drawing a probable **conclusion** about a >>**MODEL**<< of the data generating process (DGP, a.k.a., a "*population*") based on model assumptions and incomplete **DATA** (a.k.a., a "*sample*") as **evidence**
+
+::: fragment
+![](images/Slide5.png){fig-align="center" height="350"}
+:::
+
+::: {.fragment .text-align-center}
+**Don't fall for the sin of reification!**
+:::
+
+::: notes
+Reification (also called the *Fallacy of Misplaced Concreteness*) occurs when treating a model as if it were the actual reality.
+:::
+
+::: notes
 $$
 \begin{array}{ll}
 1. & \text{Observations/data} \\
-2. & \text{Model assumptions} \\
+2. & \text{DGP} : P(D \mid M) \ \rightarrow \text{Predict} \\
+3. & \text{Prior} : P(M) \\
 \hline
-\therefore & \text{Model}\ \rightarrow \text{Predictions} \\
+\therefore & \text{Post } : P(M \mid D) \\
+& \text{Post predictive} : P(D \mid M) \ \rightarrow \text{Predict/Explain}^* \\
 \end{array}
 $$
 
-that uses incomplete data (e.g., a sample) and a model of the data generating process (DGP) as evidence in support of a hypothesis/claim about the DGP (e.g., random sampling from a population)
+-   $^*$only if a **causal model** is specified!
+:::
 
-Statistical inference is the process of using inductive reasoning to draw conclusions about a data-generating process (DGP) based on incomplete data (e.g., a sample) and a model of the DGP as evidence.
+## What is statistical inference?
+
+::: nonincremental
+-   Statistical inference is inductive **logical reasoning**
+
+-   The process of drawing a probable **conclusion** about a >>**MODEL**<< of the data generating process (DGP, a.k.a., a "*population*") based on model assumptions and incomplete **DATA** (a.k.a., a "*sample*") as **evidence**
+:::
+
+![](images/Slide6.png){fig-align="center" height="430"}
 
 ## Ancient philosophy: Rationalism vs empiricism
 
@@ -44,20 +70,6 @@ Statistical inference is the process of using inductive reasoning to draw conclu
 
 [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
 
-## An example of (frequentist) statistical inference
-
-[**LPS treatment blunts UCP1 expression in subcutaneous adipocytes**]{.orange}
-
-![](images/41467_2020_15483_Fig1_HTML.png)
-
-Values are expressed as mean ± SEM. \*\**p* = 0.004. Statistical test used: two-sided *t*-test.
-
- 
-
-**Figure 1** from [ASK1 inhibits browning of white adipose tissue in obesity](https://doi.org/10.1038/s41467-020-15483-7)
-
-Lucchini *et al.* (2020) **Nat Commun** 11(1):1642
-
 ## Statistical inference
 
 ![](images/clipboard-2620420083.png)
@@ -68,11 +80,7 @@ Lucchini *et al.* (2020) **Nat Commun** 11(1):1642
 
 ## Inference
 
--   Inference is logical reasoning
-
-## Scientific reasoning is inductive reasoning
-
-XXX
+-   Inference = reasoning
 
 ## Arguments
 
@@ -726,6 +734,11 @@ This type of reasoning moves in the opposite direction of the statistical syllog
 Bayesian reasoning provides a formal framework for inductive generalization.
 :::
 
+## Scientific reasoning is inductive reasoning
+
+XXX
+
+
 ## Logical probability function {.hidden}
 
 ```{r}
@@ -831,8 +844,6 @@ P <- function(..., H, p = NULL) {
 }
 ```
 
-
-
 ## Chance does not cause anything!
 
 ![Dosso Dossi: Allegory of Fortune (left, the god of chance; right, the goddess of luck)](images/dosso_dossi.allegory_of_fortune.png){fig-alt="https://www.getty.edu/art/collection/object/103RJG" fig-align="left" height="550"}
@@ -890,7 +901,7 @@ Chance is a descriptor of unpredictability — whether due to lack of informatio
 ## Logical vs frequentist probability {.scrollable}
 
 | Feature | **Logical Probability** | **Frequentist Probability** |
-|-----------------|----------------------------|----------------------------|
+|------------------|---------------------------|---------------------------|
 | **Definition** | Degree of belief based on available information | Long-run relative frequency in infinite trials |
 | **Can Compute Probability?** | ✅ Yes, by counting possible worlds | ❌ No, requires infinite trials (it can only be estimated) |
 | **Works for Single Events?** | ✅ Yes | ❌ No, must assume hypothetical repetition |
