@@ -24,23 +24,35 @@ df-print: kable
 ::: fragment
 $$
 \begin{array}{ll}
-1. & \text{Past data/observations} \\
+1. & \text{Observed data} \\
 2. & \text{Model of the data generating process (DGP)} \\
 \hline
-\therefore & \text{Future data/predictions} \\
+\therefore & \text{Unobserved data} \\
 \end{array}
 $$
 :::
 
-## Ancient philosophy: Rationalism vs. empiricism
+-   Observed data:
+
+    -   Past observations
+    -   Sample statistics (e.g., sample mean and variance)
+    
+-   Unobserved data:
+
+    -   Prediction: future observations
+    -   Estimation: population parameters (e.g., population mean and variance)
+    -   Estimation: latent variables (e.g., factors in factor analysis)
+    -   Imputation: missing data
+
+## Ancient philosophy: rationalism vs. empiricism
 
 ![Raffaello Sanzio: The School of Athens (left, Plato; right, Aristotle)](images/Sanzio_01_Plato_Aristotle.jpg){fig-alt="https://en.wikipedia.org/wiki/The_School_of_Athens" fig-align="center" height="550"}
 
-## Modern science: Statistical (+ causal) inference
+## Modern science: statistical (+ causal) inference
 
 ![Luigi Sabatelli: Galileo presents the telescope to the Senate of Venice](images/galileo.webp){fig-alt="https://en.wikipedia.org/wiki/Tribune_of_Galileo" fig-align="center" height="550"}
 
-## Modern science: Statistical (+ causal) inference
+## Modern science: statistical (+ causal) inference
 
 ![](images/Slide1.png){fig-align="center" width="979"}
 
@@ -56,9 +68,11 @@ $$
 
 ## Logical reasoning
 
--   Reasoning is the process of drawing a **conclusion** from one or more **premises**
+-   **Reasoning** is the process of drawing a conclusion from one or more premises
 
--   An **argument** is a set of propositions: one or more premises and a conclusion
+-   It is usually expressed as an **argument**
+
+-   An argument is a **set of propositions**: one or more **premises** and a **conclusion**
 
 ::: fragment
 $$
@@ -71,37 +85,43 @@ $$
 $$
 :::
 
+-   The **set of premises** is also known as the **evidence** or **knowledge base**
+
+-   The **conclusion** is also known as the **hypothesis** or **query**
+
 ## Logical reasoning
-
-::: nonincremental
--   Reasoning is the process of drawing a **conclusion** from one or more **premises**
-
--   An **argument** is a set of propositions: one or more premises and a conclusion
-
-    -   The set of premises is also known as the **evidence** or **knowledge base**
-
-    -   The conclusion is also known as the **hypothesis** or **query**
-:::
 
 -   A **proposition** is a statement, i.e., a declarative sentence that is either *true* or *false*
 
-    -   "The sun rises in the east" vs. "Let's go watch the sunrise!"
+    -   "The sun rises in the east"
+    
+    -   "Let's go watch the sunrise!"
 
-    -   "2 + 3 = 4" vs. "x + 3 = 5"
+    -   "2 + 3 = 4"
+    
+    -   "x + 3 = 5"
 
--   Logical reasoning is reasoning that obeys the **rules of logic**
+-   **Logical reasoning** is reasoning that follows the **rules of logic**
 
--   Logical reasoning can be broadly categorized into two types:
+-   It can be broadly categorized into two types:
 
-    -   **Deductive reasoning** (which obeys the rules of **propositional logic**)
+    -   **Deductive reasoning**
+    
+        -   follows the rules of **propositional logic**
+        
+        -   is the basis of **mathematical proof** (and computer science)
 
-    -   **Inductive reasoning** (which obeys the rules of **probability theory**)
+    -   **Inductive reasoning**
+    
+        -   follows the rules of **probability theory**
+        
+        -   is the basis of **scientific reasoning** (incl. statistical inference)
 
-## Deductive vs. inductive arguments
+## Deductive vs. inductive reasoning
 
 ![](images/deductive_vs_inductive_arguments_flowchart.png){fig-align="center"}
 
-## Deductive vs. inductive arguments
+## Deductive vs. inductive reasoning
 
 \[Examples\]
 
@@ -135,54 +155,79 @@ $$
 $$
 :::
 
--   Inductive reasoning is fundamental to scientific reasoning (incl. statistical inference)
--   Deductive reasoning is the basis of mathematical proof and much of computer science
+## A computer algorithm for logical reasoning
 
-## AI for logical reasoning
+-   Our goal in this series is to program an **artificial intelligence (AI)**—a computer algorithm capable of **logical reasoning**
 
--   Our goal in this series is to program an **artificial intelligence** (AI), i.e., a computer algorithm capable of deductive and inductive reasoning
+-   To achieve this, we need a **logical reasoning** and a **computer programming language**
 
--   To achieve this goal, we need a language for logical reasoning and computer programming
+-   Specifically, we will use:
 
--   In particular, we will use:
+    -   **Propositional logic**: a mathematical language used to formalize deductive reasoning
 
-    -   **Propositional logic** (mathematical language used to formalize deductive reasoning)
+    -   **Probability theory**: a mathematical language used to formalize inductive reasoning
 
-    -   **Probability theory** (mathematical language used to formalize inductive reasoning)
-
-    -   **R** (programming language used to translate propositional logic and probability theory into a computer algorithm)
+    -   **R**: a programming language used to translate propositional logic and probability theory into a computer algorithm
 
 ## AI for deductive reasoning
 
--   This AI will be implemented in R as a function named `P` that:
+-   This AI will be implemented in R as a function named `P` that
 
-    -   takes one or more premises (**evidence**, named `E`) and a conclusion (**hypothesis**, named `H`) as arguments `P(..., H)`
+    -   takes one or more premises (**evidence**, named `E`) and a conclusion (**hypothesis**, named `H`) as input
 
-    -   returns a `Numeric` value between `0` and `1`
+    -   returns a `Numeric` value between `0` and `1` as output
 
-        -   If `P(..., H) = 1`, then the reasoning is deductively valid, i.e., `H` is necessarily true given `E`
+        -   If `P(E, H) = 1`, the reasoning is deductively valid (`H` is necessarily true given `E`)
 
-        -   If `0 < P(E, H) < 1`, then the reasoning is deductively invalid
+        -   If `0 < P(E, H) < 1`, the reasoning is deductively invalid (`H` is not necessarily true given `E`)
 
-        -   If `P(E, H) = 0`, then the reasoning is deductively invalid and contradictory, i.e., `H` is necessarily false given `E`
+        -   If `P(E, H) = 0`, the reasoning is deductively invalid and contradictory (`H` is necessarily false given `E`)
 
 ## Propositional logic: Variables
 
-| English                   | Logic | R          |             |
-|---------------------------|-------|------------|-------------|
-| *it's raining* (A)        | $A$   | `A = TRUE` | `A = FALSE` |
-| *the streets are wet* (B) | $B$   | `B = TRUE` | `B = FALSE` |
+| English                    | Logic | R           |              |
+|----------------------------|-------|-------------|--------------|
+| *the robot is blue*        | $A$   | `A <- TRUE` | `A <- FALSE` |
+| *the robot has an antenna* | $B$   | `B <- TRUE` | `B <- FALSE` |
 
 ## Propositional logic: Operators
 
-| English                  | Logic          | R           |            |             |
-|--------------------------|----------------|-------------|------------|-------------|
-| A                        | $A$            | `A`         |            |             |
-| not A                    | $\lnot A$      | `!A`        |            |             |
-| A and B                  | $A \land B$    | `A & B`     |            | `all(A, B)` |
-| A or B                   | $A \lor B$     | `A | B`     | `!(A & B)` | `any(A, B)` |
-| if A then B; A implies B | $A \implies B$ | `A %=>% B`  | `!A | B`   |             |
-| A if and only if B       | $A \iff B$     | `A %<=>% B` |            |             |
++--------------+----------------+-------------+--------------+-------------+
+| English      | Logic          | R           |              |             |
++==============+================+=============+==============+=============+
+| A            | $A$            | `A`         | `A == TRUE`  |             |
++--------------+----------------+-------------+--------------+-------------+
+| not A        | $\lnot A$      | `!A`        | `A == FALSE` |             |
++--------------+----------------+-------------+--------------+-------------+
+| A and B      | $A \land B$    | `A & B`     |              | `all(A, B)` |
++--------------+----------------+-------------+--------------+-------------+
+| A or B       | $A \lor B$     | `A | B`     | `!(A & B)`   | `any(A, B)` |
++--------------+----------------+-------------+--------------+-------------+
+| A implies B\ | $A \implies B$ | `A %=>% B`  | `!A | B`     |             |
+| if A then B  |                |             |              |             |
++--------------+----------------+-------------+--------------+-------------+
+| A iff B      | $A \iff B$     | `A %<=>% B` |              |             |
++--------------+----------------+-------------+--------------+-------------+
+
+## Operators: Negation
+
+XXX
+
+## Operators: Conjunction
+
+XXX
+
+## Operators: Disjuction
+
+XXX
+
+## Operators: Conditional
+
+XXX
+
+## Operators: Biconditional
+
+XXX
 
 ## Deductive logic
 
@@ -995,15 +1040,23 @@ Chance is a descriptor of unpredictability — whether due to lack of informatio
 
 ## Logical vs frequentist probability {.scrollable}
 
-| Feature | **Logical Probability** | **Frequentist Probability** |
-|------------------|---------------------------|---------------------------|
-| **Definition** | Strength of inductive argument/Degree of belief based on available information | Long-run relative frequency in infinite trials |
-| **Can Compute Probability?** | ✅ Yes, by counting possible worlds | ❌ No, requires infinite trials (it can only be estimated) |
-| **Works for Single Events?** | ✅ Yes | ❌ No, must assume hypothetical repetition |
-| **Requires a Physical Process?** | ❌ No, just logic and premises | ✅ Yes, needs repeatable trials |
-| **Respects the Likelihood Principle?** | ✅ Yes | ❌ No, depends on sampling distributions and hypotheticals |
-| **Requires i.i.d. Observations?** | ❌ No, works with dependencies and heterogeneity | ✅ Yes, by definition (but it can be "relaxed") |
-| **Example: P(drawing blue ball)** | $\frac{2}{3}$, based on the proportion of possible outcomes | Undefined, unless an infinite number of trials are conducted |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| Feature                                | **Logical Probability**                                                        | **Frequentist Probability**                                  |
++========================================+================================================================================+==============================================================+
+| **Definition**                         | Strength of inductive argument/Degree of belief based on available information | Long-run relative frequency in infinite trials               |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Can Compute Probability?**           | ✅ Yes, by counting possible worlds                                            | ❌ No, requires infinite trials (it can only be estimated)   |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Works for Single Events?**           | ✅ Yes                                                                         | ❌ No, must assume hypothetical repetition                   |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Requires a Physical Process?**       | ❌ No, just logic and premises                                                 | ✅ Yes, needs repeatable trials                              |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Respects the Likelihood Principle?** | ✅ Yes                                                                         | ❌ No, depends on sampling distributions and hypotheticals   |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Requires i.i.d. Observations?**      | ❌ No, works with dependencies and heterogeneity                               | ✅ Yes, by definition (but it can be "relaxed")              |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Example: P(drawing blue ball)**      | $\frac{2}{3}$, based on the proportion of possible outcomes                    | Undefined, unless an infinite number of trials are conducted |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
 
 ## What is statistical inference?
 
