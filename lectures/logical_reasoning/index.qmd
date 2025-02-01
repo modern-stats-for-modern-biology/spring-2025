@@ -60,9 +60,28 @@ $$
 
 -   An **argument** is a set of propositions: one or more premises and a conclusion
 
-    -   The set of premises is a.k.a. the **evidence** or **knowledge base**
+::: fragment
+$$
+\begin{array}{ll}
+1. & \text{All humans are mortal} \\
+2. & \text{Socrates is a human} \\
+\hline
+\therefore & \text{Socrates is mortal} \\
+\end{array}
+$$
+:::
 
-    -   The conclusion is a.k.a. the **hypothesis** or **query**
+## Logical reasoning
+
+::: nonincremental
+-   Reasoning is the process of drawing a **conclusion** from one or more **premises**
+
+-   An **argument** is a set of propositions: one or more premises and a conclusion
+
+    -   The set of premises is also known as the **evidence** or **knowledge base**
+
+    -   The conclusion is also known as the **hypothesis** or **query**
+:::
 
 -   A **proposition** is a statement, i.e., a declarative sentence that is either *true* or *false*
 
@@ -82,12 +101,16 @@ $$
 
 ![](images/deductive_vs_inductive_arguments_flowchart.png){fig-align="center"}
 
-## Deductive vs. inductive reasoning {.hidden}
+## Deductive vs. inductive arguments
 
-Logical reasoning can be broadly categorized into two types:
+\[Examples\]
 
--   **Deductive reasoning**: If the premises are true and the argument is **valid**, then the *conclusion must be true*
--   If, in addition, the premises are actually true, then the argument is **sound**
+-   Deductive reasoning is truth-preserving
+-   Inductive reasoning is ampliative
+
+## Deductive vs. inductive reasoning
+
+-   The goal of **deductive reasoning** is to determine whether the conclusion is guaranteed to be true, assuming the premises are true
 
 ::: fragment
 $$
@@ -100,8 +123,7 @@ $$
 $$
 :::
 
--   **Inductive reasoning**: If the premises are true and the argument is **strong**, then the *conclusion is likely true*
--   If, in addition, the premises are actually true, then the argument is **cogent**
+-   The goal of **inductive reasoning** is to determine whether the conclusion is likely to be true, assuming the premises are true
 
 ::: fragment
 $$
@@ -113,17 +135,54 @@ $$
 $$
 :::
 
-## The rules of logic
+-   Inductive reasoning is fundamental to scientific reasoning (incl. statistical inference)
+-   Deductive reasoning is the basis of mathematical proof and much of computer science
 
--   Logical reasoning is reasoning that obeys the **rules of logic**
+## AI for logical reasoning
 
-    -   The rules of **propositional logic** for deductive reasoning
+-   Our goal in this series is to program an **artificial intelligence** (AI), i.e., a computer algorithm capable of deductive and inductive reasoning
 
-        -   Used to determine whether an argument is valid
+-   To achieve this goal, we need a language for logical reasoning and computer programming
 
-    -   The rules of **probability theory** for inductive reasoning
+-   In particular, we will use:
 
-        -   Used to determine whether an argument is strong
+    -   **Propositional logic** (mathematical language used to formalize deductive reasoning)
+
+    -   **Probability theory** (mathematical language used to formalize inductive reasoning)
+
+    -   **R** (programming language used to translate propositional logic and probability theory into a computer algorithm)
+
+## AI for deductive reasoning
+
+-   This AI will be implemented in R as a function named `P` that:
+
+    -   takes one or more premises (**evidence**, named `E`) and a conclusion (**hypothesis**, named `H`) as arguments `P(..., H)`
+
+    -   returns a `Numeric` value between `0` and `1`
+
+        -   If `P(..., H) = 1`, then the reasoning is deductively valid, i.e., `H` is necessarily true given `E`
+
+        -   If `0 < P(E, H) < 1`, then the reasoning is deductively invalid
+
+        -   If `P(E, H) = 0`, then the reasoning is deductively invalid and contradictory, i.e., `H` is necessarily false given `E`
+
+## Propositional logic: Variables
+
+| English                   | Logic | R          |             |
+|---------------------------|-------|------------|-------------|
+| *it's raining* (A)        | $A$   | `A = TRUE` | `A = FALSE` |
+| *the streets are wet* (B) | $B$   | `B = TRUE` | `B = FALSE` |
+
+## Propositional logic: Operators
+
+| English                  | Logic          | R           |            |             |
+|--------------------------|----------------|-------------|------------|-------------|
+| A                        | $A$            | `A`         |            |             |
+| not A                    | $\lnot A$      | `!A`        |            |             |
+| A and B                  | $A \land B$    | `A & B`     |            | `all(A, B)` |
+| A or B                   | $A \lor B$     | `A | B`     | `!(A & B)` | `any(A, B)` |
+| if A then B; A implies B | $A \implies B$ | `A %=>% B`  | `!A | B`   |             |
+| A if and only if B       | $A \iff B$     | `A %<=>% B` |            |             |
 
 ## Deductive logic
 
@@ -984,3 +1043,17 @@ $$
 :::
 
 ![](images/Slide6.png){fig-align="center" height="430"}
+
+## AI for deductive and inductive reasoning
+
+-   This AI will be implemented in R as a function named `P` that:
+
+    -   takes one or more premises (**evidence**, named `E`), a conclusion (**hypothesis**, named `H`), and an optional prior probability distribution (named `p`) as arguments `P(..., H, p = NULL)`
+
+    -   returns a `Numeric` value between `0` and `1`, indicating how strongly `H` follows from `E`
+
+        -   If `P(..., H) = 1`, then the reasoning is deductively valid, i.e., `H` is true given `E`
+
+        -   If `0 < P(E, H) < 1`, then the reasoning is deductively invalid, with the value measuring inductive strength
+
+        -   If `P(E, H) = 0`, then the reasoning is deductively invalid and contradictory, i.e., `H` is false given `E`
