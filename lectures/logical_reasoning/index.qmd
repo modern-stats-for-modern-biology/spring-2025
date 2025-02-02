@@ -17,9 +17,14 @@ format:
 df-print: kable
 ---
 
+```{r}
+#| include: false
+library(tidyverse)
+```
+
 ## Statistical inference is logical reasoning
 
--   Statistical inference is an *inductive reasoning* process where *known quantities* (**data**) and a **model** of the *data generating process* (DGP) are used to infer *unknown quantities*
+-   Statistical inference is an **inductive reasoning** process using *known quantities* (**data**) and a **model** of the data generating process (DGP) to infer *unknown quantities*
 
 ::: fragment
 $$
@@ -48,7 +53,7 @@ $$
 
 ## Ancient philosophy: rationalism vs. empiricism
 
-![Raffaello Sanzio: The School of Athens (left, Plato; right, Aristotle)](images/Sanzio_01_Plato_Aristotle.jpg){fig-alt="https://en.wikipedia.org/wiki/The_School_of_Athens" fig-align="center" height="550"}
+![Raphael: The School of Athens (left, Plato; right, Aristotle)](images/Sanzio_01_Plato_Aristotle.jpg){fig-alt="https://en.wikipedia.org/wiki/The_School_of_Athens" fig-align="center" height="550"}
 
 ## Modern science: statistical (+ causal) inference
 
@@ -248,31 +253,30 @@ $$
 $$
 :::
 
-## AI: A computer algorithm for logical reasoning
+## A computer algorithm for logical reasoning
 
 ::: nonincremental
--   Our goal in this series is to program an **artificial intelligence** (AI): a **computer algorithm** that is capable of **logical reasoning**
+-   Our goal in this series is to program an **artificial intelligence** (AI): a computer algorithm that is capable of deductive and inductive reasoning
 :::
 
 ![](images/How-to-build-a-thinking-AI-model.webp){height="500"}
 
-## AI: A computer algorithm for logical reasoning
+## A computer algorithm for logical reasoning
 
 ::: nonincremental
--   Our goal in this series is to program an **artificial intelligence** (AI): a **computer algorithm** that is capable of **logical reasoning**
+-   Our goal in this series is to program an **artificial intelligence** (AI): a computer algorithm that is capable of deductive and inductive reasoning
 
-
--   To achieve this, we need to translate logical reasoning/arguments from English to a computer programming language
+-   To achieve this, we need to translate logical reasoning/arguments from English to a programming language that the computer understands
 :::
 
 -   Specifically, we will use:
 
-    -   **Propositional logic**: a mathematical language used to formalize **deductive reasoning**
+    -   **Propositional logic** (a mathematical language) to formalize **deductive reasoning**
 
-    -   **Probability theory**: a mathematical language used to formalize **inductive reasoning**
+    -   **Probability theory** (a mathematical language) to formalize **inductive reasoning**
 
-    -   **R**: a programming language used to translate propositional logic and probability theory into a computer algorithm
-    
+    -   **R** (a programming language) to translate propositional logic and probability theory into a computer algorithm
+
 ::: notes
 A mathematical language used to represent and use knowledge/information to reason about the truth or plausibility of a conclusion assuming that the premises are true
 :::
@@ -287,77 +291,23 @@ First-order logic is a structured representation of knowledge.
 
 ## AI for deductive reasoning
 
--   We will implement this AI in R as a function named `is.valid` that:
+-   We will implement an AI for deductive reasoning in R as a function named `is.valid`
 
-    -   takes a deductive argument (one or more premises named `E` for evidence, and a conclusion named `H` for hypothesis) as input
+    -   Takes a deductive argument (one or more premises named `E` for evidence, and a conclusion named `H` for hypothesis) as input
 
-    -   returns a `Logical` value (`TRUE` or `FALSE`) as output
+    -   Returns a `Logical` value (`TRUE` or `FALSE`) as output
 
 -   If `is.valid(E, H)` returns `TRUE`, then the deductive argument is valid
 
 -   If `is.valid(E, H)` returns `FALSE`, then the deductive argument is invalid
 
-## Propositional logic: Propositional variables
+## Propositional logic: Variables
 
--   **Atomic variables** (e.g., $A$, $B$) each represent a single, indivisible proposition
+-   **Propositional variables** (a.k.a. logical or Boolean variables) represent propositions and thus hold one of two values, either **True** or **False** (a.k.a. **truth value**)
 
-::: fragment
-| English                     | Logic | R                      |
-|-----------------------------|-------|------------------------|
-| *The robot is blue.*        | $A$   | `A <- TRUE` or `FALSE` |
-| *The robot has an antenna.* | $B$   | `B <- TRUE` or `FALSE` |
-:::
+-   Propositional variables are typically represented by uppercase Roman letters
 
--   **Compound variables** are formed by combining atomic variables with *logical operators* (AND $\land$ `&`, OR $\lor$ `|`, NOT $\lnot$ `!`)
-
-::: fragment
-| English | Logic | R |
-|--------------------------------------------|--------------|--------------|
-| *The robot is **NOT** blue.* | $\lnot A$ | `!A` |
-| *The robot is blue **AND** it has an antenna.* | $A \land B$ | `A & B` |
-| *The robot has an antenna **OR** it's **NOT** blue.* | $B \lor \lnot A$ | `B | !A` |
-:::
-
--   Atomic variables are assigned a `Logical` value (`TRUE` or `FALSE`, a.k.a. a *truth value*)
-
--   Compound variables derive their truth value from these atomic assignments and the logical operators, according to the rules of propositional logic
-
-## Propositional logic: Logical operators
-
-| English         | Logic          | R           |             |              |
-|-----------------|----------------|-------------|-------------|--------------|
-| A               | $A$            | `A`         | `A == TRUE` |              |
-| **NOT** A       | $\lnot A$      | `!A`        | `A != TRUE` | `A == FALSE` |
-| A **AND** B     | $A \land B$    | `A & B`     |             | `all(A, B)`  |
-| A **OR** B      | $A \lor B$     | `A | B`     | `!(A & B)`  | `any(A, B)`  |
-| A **IMPLIES** B | $A \implies B$ | `A %=>% B`  | `!A | B`    |              |
-| A **IFF** B     | $A \iff B$     | `A %<=>% B` |             |              |
-
-## Logical operators: Negation
-
-XXX
-
-## Logical operators: Conjunction
-
-XXX
-
-## Logical operators: Disjuction
-
-XXX
-
-## Logical operators: Conditional
-
-XXX
-
-## Logical operators: Biconditional
-
-XXX
-
-## Atomic vs. compound propositions
-
--   Propositions (a.k.a. propositional sentences) are made of propositional variables and logical connectives
-
--   Propositional variables (a.k.a. logical, Boolean, or binary variables) are typically represented by a capital letter
+ 
 
 ::::::: columns
 :::: {.column .fragment width="50%"}
@@ -377,67 +327,93 @@ $B$ ["*the robot has an antenna*"]{.fragment}
 ::::
 :::::::
 
--   Propositional variables assume one of two values, typically represented by `TRUE` and `FALSE`
--   These values are implicit in the syntax of propositional logic, as we write $A$ to mean $A = \text{TRUE}$ and $\lnot A$ to mean $A = \text{FALSE}$
+## Propositional logic: Variables
 
-## Logical connectives and inference rules
+There are two types of propositional variables: atomic and compound variables
 
--   **Logical connectives** (a.k.a. propositional, logical, or Boolean operators) are used to [form]{.underline} new propositions from existing ones
+-   An **atomic variable** represents a single, indivisible proposition
 
--   **Inference rules** are used to [derive]{.underline} the truth value of new propositions from those of existing ones
+-   A **compound variable** is formed by combining one or more atomic variables with **logical operators** (a.k.a. logical connectives or Boolean operators)
 
--   A proposition whose truth value is not derived from those of existing ones is called an **axiom**
-
--   Axioms serve as foundational premises/assumptions/evidence/knowledge base upon which the truth value of all other propositions is derived using inference rules
-
-## Logical connectives and inference rules
+ 
 
 ::: fragment
-**Negation (NOT)** $\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}$
+| English                                               | Math             | R        |
+|:------------------------------------------------------|:-----------------|:---------|
+| "*the robot is **NOT** blue*"                         | $\lnot A$        | `!A`     |
+| "*the robot is blue **AND** it has an antenna*"       | $A \land B$      | `A & B`  |
+| "*The robot has an antenna **OR** it's **NOT** blue*" | $B \lor \lnot A$ | `B | !A` |
 :::
 
+## Propositional logic: Operators
+
+| English         | Math           | R           |                       |
+|:----------------|:---------------|:------------|:----------------------|
+| A               | $A$            | `A`         |                       |
+| **NOT** A       | $\lnot A$      | `!A`        |                       |
+| A **AND** B     | $A \land B$    | `A & B`     | `all(A, B)`           |
+| A **OR** B      | $A \lor B$     | `A | B`     | `any(A, B)`           |
+| A **IMPLIES** B | $A \implies B$ | `A %=>% B`  | `!A | B`              |
+| A **IFF** B     | $A \iff B$     | `A %<=>% B` | `(!A | B) & (!B | A)` |
+
+-   The truth value of an atomic variable is assigned as previously shown
+
+-   The truth value of a compound variable is determined by the truth values of its atomic components according to the rules of propositional logic (a.k.a. **truth tables**)
+
+-   In the context of an argument, propositional variables are assumed to be true
+
+    -   $A$ means $A = \text{True}$
+
+    -   $\lnot A$ means $A = \text{False}$
+
+## Propositional logic: Negation rule
+
+**Negation (NOT) operator** $\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}$
+
 ::: fragment
-$\lnot A$ ["*the robot is NOT blue*"]{.fragment}
+$\lnot A$ ["*the robot is **NOT** blue*"]{.fragment}
 :::
 
 ::::: columns
-::: {.column .fragment width="50%"}
+
+::: {.column .fragment width="33%"}
 ![](images/NOT_P.png){height="120"}
 :::
 
-::: {.column .fragment width="50%"}
+::: {.column .fragment width="33%"}
 |      $A$       |   $\lnot A$    |
 |:--------------:|:--------------:|
 | [TRUE]{.green} | [FALSE]{.red}  |
 | [FALSE]{.red}  | [TRUE]{.green} |
 :::
-:::::
 
-::: fragment
+::: {.column .fragment width="34%"}
 ```{r}
-#| output-location: slide
-boolean_not <- function(A) {
-  return(1 - A) # return(!A)
-}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE)) %>%
+  mutate(`¬A` = !A)
 ```
 :::
 
-## Logical connectives and inference rules
+:::::
+
+
+
+## Propositional logic: Conjunction rule
+
+**Conjunction (AND) operator** $\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B$
 
 ::: fragment
-**Conjunction/logical product (AND)** $\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B$
-:::
-
-::: fragment
-$A \land B$ ["*the robot is blue AND it has an antenna*"]{.fragment}
+$A \land B$ ["*the robot is blue **AND** it has an antenna*"]{.fragment}
 :::
 
 ::::: columns
-::: {.column .fragment width="50%"}
+::: {.column .fragment width="33%"}
 ![](images/P_AND_Q.png){height="120"}
 :::
 
-::: {.column .fragment width="50%"}
+::: {.column .fragment width="33%"}
 |      $A$       |      $B$       |  $A \land B$   |
 |:--------------:|:--------------:|:--------------:|
 | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
@@ -445,39 +421,39 @@ $A \land B$ ["*the robot is blue AND it has an antenna*"]{.fragment}
 | [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  |
 | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
 :::
-:::::
 
-::: fragment
+::: {.column .fragment width="34%"}
 ```{r}
-#| output-location: slide
-boolean_and <- function(A, B) {
-  return(A * B) # return(A & B)
-}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ∧ B` = A & B)
 ```
 :::
 
- 
+:::::
 
--   $A \land \lnot A$ ["*the robot is blue AND it is NOT blue*"]{.fragment} [is an example of a **contradiction**:]{.fragment}<br/>[a proposition that is always false ($F$)]{.fragment}
+::: notes
+-   $A \land \lnot A$ "*the robot is blue **AND** it is **NOT** blue*" is an example of a **contradiction**: A proposition that is always false ($\bot$)
 
--   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**:<br/>[a proposition and its negation cannot both be true at the same time]{.fragment}
-
-## Logical connectives and inference rules
-
-::: fragment
-**Disjunction/logical sum (OR)** $\quad A \lor B \quad A + B \quad A \cup B$
+-   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
 :::
 
+## Propositional logic: Disjunction rule
+
+**Disjunction (OR) operator** $\quad A \lor B \quad A + B \quad A \cup B$
+
 ::: fragment
-$A \lor B$ ["*the robot is blue OR it has an antenna*"]{.fragment}
+$A \lor B$ ["*the robot is blue **OR** it has an antenna*"]{.fragment}
 :::
 
 ::::: columns
-::: {.column .fragment width="50%"}
+::: {.column .fragment width="33%"}
 ![](images/P_OR_Q.png){height="120"}
 :::
 
-::: {.column .fragment width="50%"}
+::: {.column .fragment width="33%"}
 |      $A$       |      $B$       |   $A \lor B$   |
 |:--------------:|:--------------:|:--------------:|
 | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
@@ -485,38 +461,40 @@ $A \lor B$ ["*the robot is blue OR it has an antenna*"]{.fragment}
 | [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |
 | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
 :::
-:::::
 
-::: fragment
+::: {.column .fragment width="34%"}
 ```{r}
-#| output-location: slide
-boolean_or <- function(A, B) {
-  return(A + B - A * B) # return(A | B)
-}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ∨ B` = A | B)
 ```
 :::
+:::::
 
- 
 
--   $A \lor \lnot A$ ["*the robot is blue OR it is NOT blue*"]{.fragment} [is an example of a **tautology**:]{.fragment}<br/>[a proposition that is always true ($T$)]{.fragment}
--   $A \lor \lnot A$ is also known as the **law of excluded middle**:<br/>[either a proposition is true or its negation is true]{.fragment}
 
-## Logical connectives and inference rules
+::: notes
+-   $A \lor \lnot A$ "*the robot is blue **OR** it is **NOT** blue*" is an example of a **tautology**: A proposition that is always true ($\top$)]
 
-::: fragment
-**Conditional/Implication (IF-THEN, IMPLIES)** $\quad A \implies B \quad A \subseteq B$
+-   $A \lor \lnot A$ is also known as the **law of excluded middle**
 :::
 
+## Propositional logic: Conditional rule
+
+**Conditional/Implication (IF-THEN/IMPLIES) operator** $\quad A \implies B \quad A \subseteq B$
+
 ::: fragment
-$A \implies B$ ["*IF the robot is blue THEN it has an antenna*"]{.fragment}
+$A \implies B$ ["***IF** the robot is blue **THEN** it has an antenna*"]{.fragment}
 :::
 
 ::::: columns
-::: {.column .fragment width="50%"}
+::: {.column .fragment width="33%"}
 ![](images/IF_P_THEN_Q.png){height="120"}
 :::
 
-::: {.column .fragment width="50%"}
+::: {.column .fragment width="33%"}
 |      $A$       |      $B$       | $A \implies B$ |
 |:--------------:|:--------------:|:--------------:|
 | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
@@ -524,16 +502,21 @@ $A \implies B$ ["*IF the robot is blue THEN it has an antenna*"]{.fragment}
 | [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |
 | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
 :::
-:::::
 
-::: fragment
+::: {.column .fragment width="34%"}
 ```{r}
-#| output-location: slide
-boolean_implies <- function(A, B) {
-  return(1 - A + A * B) # return(!A | B)
+#| output-location: default
+`%=>%` <- function(A, B) {
+  !A | B
 }
+
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ⇒ B` = A %=>% B)
 ```
 :::
+:::::
 
 -   $A$ is the **antecedent**
 -   $B$ is the **consequent**
@@ -552,22 +535,20 @@ Logical relationships are not the same as causal relationships:
 -   The distinction is important because logical relationships are often concerned with the validity of arguments, while causal relationships involve understanding the mechanisms by which one variable influences another
 :::
 
-## Logical connectives and inference rules
+## Propositional logic: Biconditional rule
+
+**Biconditional (IFF) operator** $\quad A \iff B \quad A = B$
 
 ::: fragment
-**Biconditional (IFF)** $\quad A \iff B \quad A = B$
-:::
-
-::: fragment
-$A \iff B$ ["*the robot is blue IFF it has an antenna*"]{.fragment}
+$A \iff B$ ["*the robot is blue **IFF** it has an antenna*"]{.fragment}
 :::
 
 ::::: columns
-::: {.column .fragment width="50%"}
+::: {.column .fragment width="33%"}
 ![](images/P_IFF_Q.png){height="120"}
 :::
 
-::: {.column .fragment width="50%"}
+::: {.column .fragment width="33%"}
 |      $A$       |      $B$       |   $A \iff B$   |
 |:--------------:|:--------------:|:--------------:|
 | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
@@ -575,20 +556,26 @@ $A \iff B$ ["*the robot is blue IFF it has an antenna*"]{.fragment}
 | [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  |
 | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
 :::
-:::::
 
-::: fragment
+::: {.column .fragment width="34%"}
 ```{r}
-#| output-location: slide
-boolean_iff <- function(A, B) {
-  return(A * B + (1 - A) * (1 - B)) # return(A == B)
+#| output-location: default
+`%<=>%` <- function(A, B) {
+  (!A | B) & (!B | A)
 }
+
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ⇔ B` = A %<=>% B)
 ```
 :::
+:::::
+
 
 ## Sample space
 
--   The **sample space** ($\Omega$) is the set of all possible worlds ($\omega_i$), i.e., all possible combinations of truth values of all propositional variables in an argument
+-   The **sample space** ($\Omega$) is the set of all possible worlds ($\omega_i$), i.e., all possible combinations of truth values of all atomic variables in an argument
 
 -   The size of the sample space is $2^n$, where $n$ is the size of the given set of propositional variables ($\Omega = \{ \omega_1, \omega_2, \ldots, \omega_{2^n} \}$)
 
@@ -975,7 +962,6 @@ In summary, frequentism is not a comprehensive theory of evidence like Bayesiani
 ![](images/Slide2.png)
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
-
 
 ## Deductive logic
 

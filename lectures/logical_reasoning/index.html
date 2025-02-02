@@ -211,7 +211,7 @@ Edoardo “Dado” Marcora
 <section id="statistical-inference-is-logical-reasoning" class="slide level2">
 <h2>Statistical inference is logical reasoning</h2>
 <ul>
-<li class="fragment">Statistical inference is an <em>inductive reasoning</em> process where <em>known quantities</em> (<strong>data</strong>) and a <strong>model</strong> of the <em>data generating process</em> (DGP) are used to infer <em>unknown quantities</em></li>
+<li class="fragment">Statistical inference is an <strong>inductive reasoning</strong> process using <em>known quantities</em> (<strong>data</strong>) and a <strong>model</strong> of the data generating process (DGP) to infer <em>unknown quantities</em></li>
 </ul>
 <div class="fragment">
 <p><span class="math display">\[
@@ -256,7 +256,7 @@ Edoardo “Dado” Marcora
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="images/Sanzio_01_Plato_Aristotle.jpg" alt="https://en.wikipedia.org/wiki/The_School_of_Athens" height="550"></p>
-<figcaption>Raffaello Sanzio: The School of Athens (left, Plato; right, Aristotle)</figcaption>
+<figcaption>Raphael: The School of Athens (left, Plato; right, Aristotle)</figcaption>
 </figure>
 </div>
 </section>
@@ -434,29 +434,29 @@ Edoardo “Dado” Marcora
 \]</span></p>
 </div>
 </section>
-<section id="ai-a-computer-algorithm-for-logical-reasoning" class="slide level2">
-<h2>AI: A computer algorithm for logical reasoning</h2>
+<section id="a-computer-algorithm-for-logical-reasoning" class="slide level2">
+<h2>A computer algorithm for logical reasoning</h2>
 <div>
 <ul>
-<li>Our goal in this series is to program an <strong>artificial intelligence</strong> (AI): a <strong>computer algorithm</strong> that is capable of <strong>logical reasoning</strong></li>
+<li>Our goal in this series is to program an <strong>artificial intelligence</strong> (AI): a computer algorithm that is capable of deductive and inductive reasoning</li>
 </ul>
 </div>
 <p><img data-src="images/How-to-build-a-thinking-AI-model.webp" height="500"></p>
 </section>
-<section id="ai-a-computer-algorithm-for-logical-reasoning-1" class="slide level2">
-<h2>AI: A computer algorithm for logical reasoning</h2>
+<section id="a-computer-algorithm-for-logical-reasoning-1" class="slide level2">
+<h2>A computer algorithm for logical reasoning</h2>
 <div>
 <ul>
-<li><p>Our goal in this series is to program an <strong>artificial intelligence</strong> (AI): a <strong>computer algorithm</strong> that is capable of <strong>logical reasoning</strong></p></li>
-<li><p>To achieve this, we need to translate logical reasoning/arguments from English to a computer programming language</p></li>
+<li><p>Our goal in this series is to program an <strong>artificial intelligence</strong> (AI): a computer algorithm that is capable of deductive and inductive reasoning</p></li>
+<li><p>To achieve this, we need to translate logical reasoning/arguments from English to a programming language that the computer understands</p></li>
 </ul>
 </div>
 <ul>
 <li class="fragment"><p>Specifically, we will use:</p>
 <ul>
-<li class="fragment"><p><strong>Propositional logic</strong>: a mathematical language used to formalize <strong>deductive reasoning</strong></p></li>
-<li class="fragment"><p><strong>Probability theory</strong>: a mathematical language used to formalize <strong>inductive reasoning</strong></p></li>
-<li class="fragment"><p><strong>R</strong>: a programming language used to translate propositional logic and probability theory into a computer algorithm</p></li>
+<li class="fragment"><p><strong>Propositional logic</strong> (a mathematical language) to formalize <strong>deductive reasoning</strong></p></li>
+<li class="fragment"><p><strong>Probability theory</strong> (a mathematical language) to formalize <strong>inductive reasoning</strong></p></li>
+<li class="fragment"><p><strong>R</strong> (a programming language) to translate propositional logic and probability theory into a computer algorithm</p></li>
 </ul></li>
 </ul>
 <aside class="notes">
@@ -491,175 +491,22 @@ Edoardo “Dado” Marcora
 <section id="ai-for-deductive-reasoning" class="slide level2">
 <h2>AI for deductive reasoning</h2>
 <ul>
-<li class="fragment"><p>We will implement this AI in R as a function named <code>is.valid</code> that:</p>
+<li class="fragment"><p>We will implement an AI for deductive reasoning in R as a function named <code>is.valid</code></p>
 <ul>
-<li class="fragment"><p>takes a deductive argument (one or more premises named <code>E</code> for evidence, and a conclusion named <code>H</code> for hypothesis) as input</p></li>
-<li class="fragment"><p>returns a <code>Logical</code> value (<code>TRUE</code> or <code>FALSE</code>) as output</p></li>
+<li class="fragment"><p>Takes a deductive argument (one or more premises named <code>E</code> for evidence, and a conclusion named <code>H</code> for hypothesis) as input</p></li>
+<li class="fragment"><p>Returns a <code>Logical</code> value (<code>TRUE</code> or <code>FALSE</code>) as output</p></li>
 </ul></li>
 <li class="fragment"><p>If <code>is.valid(E, H)</code> returns <code>TRUE</code>, then the deductive argument is valid</p></li>
 <li class="fragment"><p>If <code>is.valid(E, H)</code> returns <code>FALSE</code>, then the deductive argument is invalid</p></li>
 </ul>
 </section>
-<section id="propositional-logic-propositional-variables" class="slide level2">
-<h2>Propositional logic: Propositional variables</h2>
+<section id="propositional-logic-variables" class="slide level2">
+<h2>Propositional logic: Variables</h2>
 <ul>
-<li class="fragment"><strong>Atomic variables</strong> (e.g., <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span>) each represent a single, indivisible proposition</li>
+<li class="fragment"><p><strong>Propositional variables</strong> (a.k.a. logical or Boolean variables) represent propositions and thus hold one of two values, either <strong>True</strong> or <strong>False</strong> (a.k.a. <strong>truth value</strong>)</p></li>
+<li class="fragment"><p>Propositional variables are typically represented by uppercase Roman letters</p></li>
 </ul>
-<div class="fragment">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>English</th>
-<th>Logic</th>
-<th>R</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><em>The robot is blue.</em></td>
-<td><span class="math inline">\(A\)</span></td>
-<td><code>A &lt;- TRUE</code> or <code>FALSE</code></td>
-</tr>
-<tr class="even">
-<td><em>The robot has an antenna.</em></td>
-<td><span class="math inline">\(B\)</span></td>
-<td><code>B &lt;- TRUE</code> or <code>FALSE</code></td>
-</tr>
-</tbody>
-</table>
-</div>
-<ul>
-<li class="fragment"><strong>Compound variables</strong> are formed by combining atomic variables with <em>logical operators</em> (AND <span class="math inline">\(\land\)</span> <code>&amp;</code>, OR <span class="math inline">\(\lor\)</span> <code>|</code>, NOT <span class="math inline">\(\lnot\)</span> <code>!</code>)</li>
-</ul>
-<div class="fragment">
-<table class="caption-top">
-<colgroup>
-<col style="width: 61%">
-<col style="width: 19%">
-<col style="width: 19%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>English</th>
-<th>Logic</th>
-<th>R</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><em>The robot is <strong>NOT</strong> blue.</em></td>
-<td><span class="math inline">\(\lnot A\)</span></td>
-<td><code>!A</code></td>
-</tr>
-<tr class="even">
-<td><em>The robot is blue <strong>AND</strong> it has an antenna.</em></td>
-<td><span class="math inline">\(A \land B\)</span></td>
-<td><code>A &amp; B</code></td>
-</tr>
-<tr class="odd">
-<td><em>The robot has an antenna <strong>OR</strong> it’s <strong>NOT</strong> blue.</em></td>
-<td><span class="math inline">\(B \lor \lnot A\)</span></td>
-<td><code>B | !A</code></td>
-</tr>
-</tbody>
-</table>
-</div>
-<ul>
-<li class="fragment"><p>Atomic variables are assigned a <code>Logical</code> value (<code>TRUE</code> or <code>FALSE</code>, a.k.a. a <em>truth value</em>)</p></li>
-<li class="fragment"><p>Compound variables derive their truth value from these atomic assignments and the logical operators, according to the rules of propositional logic</p></li>
-</ul>
-</section>
-<section id="propositional-logic-logical-operators" class="slide level2">
-<h2>Propositional logic: Logical operators</h2>
-<table class="caption-top" style="width:100%;">
-<colgroup>
-<col style="width: 23%">
-<col style="width: 21%">
-<col style="width: 17%">
-<col style="width: 17%">
-<col style="width: 19%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>English</th>
-<th>Logic</th>
-<th>R</th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>A</td>
-<td><span class="math inline">\(A\)</span></td>
-<td><code>A</code></td>
-<td><code>A == TRUE</code></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>NOT</strong> A</td>
-<td><span class="math inline">\(\lnot A\)</span></td>
-<td><code>!A</code></td>
-<td><code>A != TRUE</code></td>
-<td><code>A == FALSE</code></td>
-</tr>
-<tr class="odd">
-<td>A <strong>AND</strong> B</td>
-<td><span class="math inline">\(A \land B\)</span></td>
-<td><code>A &amp; B</code></td>
-<td></td>
-<td><code>all(A, B)</code></td>
-</tr>
-<tr class="even">
-<td>A <strong>OR</strong> B</td>
-<td><span class="math inline">\(A \lor B\)</span></td>
-<td><code>A | B</code></td>
-<td><code>!(A &amp; B)</code></td>
-<td><code>any(A, B)</code></td>
-</tr>
-<tr class="odd">
-<td>A <strong>IMPLIES</strong> B</td>
-<td><span class="math inline">\(A \implies B\)</span></td>
-<td><code>A %=&gt;% B</code></td>
-<td><code>!A | B</code></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>A <strong>IFF</strong> B</td>
-<td><span class="math inline">\(A \iff B\)</span></td>
-<td><code>A %&lt;=&gt;% B</code></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="logical-operators-negation" class="slide level2">
-<h2>Logical operators: Negation</h2>
-<p>XXX</p>
-</section>
-<section id="logical-operators-conjunction" class="slide level2">
-<h2>Logical operators: Conjunction</h2>
-<p>XXX</p>
-</section>
-<section id="logical-operators-disjuction" class="slide level2">
-<h2>Logical operators: Disjuction</h2>
-<p>XXX</p>
-</section>
-<section id="logical-operators-conditional" class="slide level2">
-<h2>Logical operators: Conditional</h2>
-<p>XXX</p>
-</section>
-<section id="logical-operators-biconditional" class="slide level2">
-<h2>Logical operators: Biconditional</h2>
-<p>XXX</p>
-</section>
-<section id="atomic-vs.-compound-propositions" class="slide level2">
-<h2>Atomic vs.&nbsp;compound propositions</h2>
-<ul>
-<li class="fragment"><p>Propositions (a.k.a. propositional sentences) are made of propositional variables and logical connectives</p></li>
-<li class="fragment"><p>Propositional variables (a.k.a. logical, Boolean, or binary variables) are typically represented by a capital letter</p></li>
-</ul>
+<p>&nbsp;</p>
 <div class="columns">
 <div class="column fragment" style="width:50%;">
 <p><span class="math inline">\(A\)</span> <span class="fragment">“<em>the robot is blue</em>”</span></p>
@@ -672,32 +519,125 @@ Edoardo “Dado” Marcora
 <p><img data-src="images/NOT_P.png" height="120"></p>
 </div>
 </div></div>
-<ul>
-<li class="fragment">Propositional variables assume one of two values, typically represented by <code>TRUE</code> and <code>FALSE</code></li>
-<li class="fragment">These values are implicit in the syntax of propositional logic, as we write <span class="math inline">\(A\)</span> to mean <span class="math inline">\(A = \text{TRUE}\)</span> and <span class="math inline">\(\lnot A\)</span> to mean <span class="math inline">\(A = \text{FALSE}\)</span></li>
-</ul>
 </section>
-<section id="logical-connectives-and-inference-rules" class="slide level2">
-<h2>Logical connectives and inference rules</h2>
+<section id="propositional-logic-variables-1" class="slide level2">
+<h2>Propositional logic: Variables</h2>
+<p>There are two types of propositional variables: atomic and compound variables</p>
 <ul>
-<li class="fragment"><p><strong>Logical connectives</strong> (a.k.a. propositional, logical, or Boolean operators) are used to <u>form</u> new propositions from existing ones</p></li>
-<li class="fragment"><p><strong>Inference rules</strong> are used to <u>derive</u> the truth value of new propositions from those of existing ones</p></li>
-<li class="fragment"><p>A proposition whose truth value is not derived from those of existing ones is called an <strong>axiom</strong></p></li>
-<li class="fragment"><p>Axioms serve as foundational premises/assumptions/evidence/knowledge base upon which the truth value of all other propositions is derived using inference rules</p></li>
+<li class="fragment"><p>An <strong>atomic variable</strong> represents a single, indivisible proposition</p></li>
+<li class="fragment"><p>A <strong>compound variable</strong> is formed by combining one or more atomic variables with <strong>logical operators</strong> (a.k.a. logical connectives or Boolean operators)</p></li>
 </ul>
-</section>
-<section id="logical-connectives-and-inference-rules-1" class="slide level2">
-<h2>Logical connectives and inference rules</h2>
+<p>&nbsp;</p>
 <div class="fragment">
-<p><strong>Negation (NOT)</strong> <span class="math inline">\(\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}\)</span></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 66%">
+<col style="width: 21%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">English</th>
+<th style="text-align: left;">Math</th>
+<th style="text-align: left;">R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">“<em>the robot is <strong>NOT</strong> blue</em>”</td>
+<td style="text-align: left;"><span class="math inline">\(\lnot A\)</span></td>
+<td style="text-align: left;"><code>!A</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">“<em>the robot is blue <strong>AND</strong> it has an antenna</em>”</td>
+<td style="text-align: left;"><span class="math inline">\(A \land B\)</span></td>
+<td style="text-align: left;"><code>A &amp; B</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">“<em>The robot has an antenna <strong>OR</strong> it’s <strong>NOT</strong> blue</em>”</td>
+<td style="text-align: left;"><span class="math inline">\(B \lor \lnot A\)</span></td>
+<td style="text-align: left;"><code>B | !A</code></td>
+</tr>
+</tbody>
+</table>
 </div>
+</section>
+<section id="propositional-logic-operators" class="slide level2">
+<h2>Propositional logic: Operators</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 23%">
+<col style="width: 18%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">English</th>
+<th style="text-align: left;">Math</th>
+<th style="text-align: left;">R</th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">A</td>
+<td style="text-align: left;"><span class="math inline">\(A\)</span></td>
+<td style="text-align: left;"><code>A</code></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>NOT</strong> A</td>
+<td style="text-align: left;"><span class="math inline">\(\lnot A\)</span></td>
+<td style="text-align: left;"><code>!A</code></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">A <strong>AND</strong> B</td>
+<td style="text-align: left;"><span class="math inline">\(A \land B\)</span></td>
+<td style="text-align: left;"><code>A &amp; B</code></td>
+<td style="text-align: left;"><code>all(A, B)</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">A <strong>OR</strong> B</td>
+<td style="text-align: left;"><span class="math inline">\(A \lor B\)</span></td>
+<td style="text-align: left;"><code>A | B</code></td>
+<td style="text-align: left;"><code>any(A, B)</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">A <strong>IMPLIES</strong> B</td>
+<td style="text-align: left;"><span class="math inline">\(A \implies B\)</span></td>
+<td style="text-align: left;"><code>A %=&gt;% B</code></td>
+<td style="text-align: left;"><code>!A | B</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">A <strong>IFF</strong> B</td>
+<td style="text-align: left;"><span class="math inline">\(A \iff B\)</span></td>
+<td style="text-align: left;"><code>A %&lt;=&gt;% B</code></td>
+<td style="text-align: left;"><code>(!A | B) &amp; (!B | A)</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li class="fragment"><p>The truth value of an atomic variable is assigned as previously shown</p></li>
+<li class="fragment"><p>The truth value of a compound variable is determined by the truth values of its atomic components according to the rules of propositional logic (a.k.a. <strong>truth tables</strong>)</p></li>
+<li class="fragment"><p>In the context of an argument, propositional variables are assumed to be true</p>
+<ul>
+<li class="fragment"><p><span class="math inline">\(A\)</span> means <span class="math inline">\(A = \text{True}\)</span></p></li>
+<li class="fragment"><p><span class="math inline">\(\lnot A\)</span> means <span class="math inline">\(A = \text{False}\)</span></p></li>
+</ul></li>
+</ul>
+</section>
+<section id="propositional-logic-negation-rule" class="slide level2">
+<h2>Propositional logic: Negation rule</h2>
+<p><strong>Negation (NOT) operator</strong> <span class="math inline">\(\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}\)</span></p>
 <div class="fragment">
-<p><span class="math inline">\(\lnot A\)</span> <span class="fragment">“<em>the robot is NOT blue</em>”</span></p>
+<p><span class="math inline">\(\lnot A\)</span> <span class="fragment">“<em>the robot is <strong>NOT</strong> blue</em>”</span></p>
 </div>
 <div class="columns">
-<div class="column fragment" style="width:50%;">
+<div class="column fragment" style="width:33%;">
 <p><img data-src="images/NOT_P.png" height="120"></p>
-</div><div class="column fragment" style="width:50%;">
+</div><div class="column fragment" style="width:33%;">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -716,30 +656,46 @@ Edoardo “Dado” Marcora
 </tr>
 </tbody>
 </table>
-</div></div>
-<div class="fragment">
+</div><div class="column fragment" style="width:34%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>boolean_not <span class="ot">&lt;-</span> <span class="cf">function</span>(A) {</span>
-<span id="cb1-2"><a href=""></a>  <span class="fu">return</span>(<span class="dv">1</span> <span class="sc">-</span> A) <span class="co"># return(!A)</span></span>
-<span id="cb1-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb1-2"><a href=""></a>  <span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">¬A</span><span class="st">`</span> <span class="ot">=</span> <span class="sc">!</span>A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">¬A</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
 </div>
-
 </div>
+</div>
+</div></div>
 </section>
-<section id="logical-connectives-and-inference-rules-1-output" class="slide level2 output-location-slide"><h2>Logical connectives and inference rules</h2><div class="cell output-location-slide">
-
-</div></section><section id="logical-connectives-and-inference-rules-2" class="slide level2">
-<h2>Logical connectives and inference rules</h2>
+<section id="propositional-logic-conjunction-rule" class="slide level2">
+<h2>Propositional logic: Conjunction rule</h2>
+<p><strong>Conjunction (AND) operator</strong> <span class="math inline">\(\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B\)</span></p>
 <div class="fragment">
-<p><strong>Conjunction/logical product (AND)</strong> <span class="math inline">\(\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B\)</span></p>
-</div>
-<div class="fragment">
-<p><span class="math inline">\(A \land B\)</span> <span class="fragment">“<em>the robot is blue AND it has an antenna</em>”</span></p>
+<p><span class="math inline">\(A \land B\)</span> <span class="fragment">“<em>the robot is blue <strong>AND</strong> it has an antenna</em>”</span></p>
 </div>
 <div class="columns">
-<div class="column fragment" style="width:50%;">
+<div class="column fragment" style="width:33%;">
 <p><img data-src="images/P_AND_Q.png" height="120"></p>
-</div><div class="column fragment" style="width:50%;">
+</div><div class="column fragment" style="width:33%;">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -771,35 +727,76 @@ Edoardo “Dado” Marcora
 </tr>
 </tbody>
 </table>
-</div></div>
-<div class="fragment">
+</div><div class="column fragment" style="width:34%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>boolean_and <span class="ot">&lt;-</span> <span class="cf">function</span>(A, B) {</span>
-<span id="cb2-2"><a href=""></a>  <span class="fu">return</span>(A <span class="sc">*</span> B) <span class="co"># return(A &amp; B)</span></span>
-<span id="cb2-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb2-2"><a href=""></a>  <span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb2-3"><a href=""></a>  <span class="at">B =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">A ∧ B</span><span class="st">`</span> <span class="ot">=</span> A <span class="sc">&amp;</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: left;">A ∧ B</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
 </div>
-
 </div>
-<p>&nbsp;</p>
+</div>
+</div></div>
+<aside class="notes">
 <ul>
-<li class="fragment"><p><span class="math inline">\(A \land \lnot A\)</span> <span class="fragment">“<em>the robot is blue AND it is NOT blue</em>”</span> <span class="fragment">is an example of a <strong>contradiction</strong>:</span><br><span class="fragment">a proposition that is always false (<span class="math inline">\(F\)</span>)</span></p></li>
-<li class="fragment"><p><span class="math inline">\(\lnot({A \land \lnot A)}\)</span> is also known as the <strong>law of non-contradiction</strong>:<br><span class="fragment">a proposition and its negation cannot both be true at the same time</span></p></li>
+<li><p><span class="math inline">\(A \land \lnot A\)</span> “<em>the robot is blue <strong>AND</strong> it is <strong>NOT</strong> blue</em>” is an example of a <strong>contradiction</strong>: A proposition that is always false (<span class="math inline">\(\bot\)</span>)</p></li>
+<li><p><span class="math inline">\(\lnot({A \land \lnot A)}\)</span> is also known as the <strong>law of non-contradiction</strong></p></li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="logical-connectives-and-inference-rules-2-output" class="slide level2 output-location-slide"><h2>Logical connectives and inference rules</h2><div class="cell output-location-slide">
-
-</div></section><section id="logical-connectives-and-inference-rules-3" class="slide level2">
-<h2>Logical connectives and inference rules</h2>
+<section id="propositional-logic-disjunction-rule" class="slide level2">
+<h2>Propositional logic: Disjunction rule</h2>
+<p><strong>Disjunction (OR) operator</strong> <span class="math inline">\(\quad A \lor B \quad A + B \quad A \cup B\)</span></p>
 <div class="fragment">
-<p><strong>Disjunction/logical sum (OR)</strong> <span class="math inline">\(\quad A \lor B \quad A + B \quad A \cup B\)</span></p>
-</div>
-<div class="fragment">
-<p><span class="math inline">\(A \lor B\)</span> <span class="fragment">“<em>the robot is blue OR it has an antenna</em>”</span></p>
+<p><span class="math inline">\(A \lor B\)</span> <span class="fragment">“<em>the robot is blue <strong>OR</strong> it has an antenna</em>”</span></p>
 </div>
 <div class="columns">
-<div class="column fragment" style="width:50%;">
+<div class="column fragment" style="width:33%;">
 <p><img data-src="images/P_OR_Q.png" height="120"></p>
-</div><div class="column fragment" style="width:50%;">
+</div><div class="column fragment" style="width:33%;">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -831,35 +828,76 @@ Edoardo “Dado” Marcora
 </tr>
 </tbody>
 </table>
-</div></div>
-<div class="fragment">
+</div><div class="column fragment" style="width:34%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>boolean_or <span class="ot">&lt;-</span> <span class="cf">function</span>(A, B) {</span>
-<span id="cb3-2"><a href=""></a>  <span class="fu">return</span>(A <span class="sc">+</span> B <span class="sc">-</span> A <span class="sc">*</span> B) <span class="co"># return(A | B)</span></span>
-<span id="cb3-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb3-2"><a href=""></a>  <span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb3-3"><a href=""></a>  <span class="at">B =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">A ∨ B</span><span class="st">`</span> <span class="ot">=</span> A <span class="sc">|</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: left;">A ∨ B</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
 </div>
-
 </div>
-<p>&nbsp;</p>
+</div>
+</div></div>
+<aside class="notes">
 <ul>
-<li class="fragment"><span class="math inline">\(A \lor \lnot A\)</span> <span class="fragment">“<em>the robot is blue OR it is NOT blue</em>”</span> <span class="fragment">is an example of a <strong>tautology</strong>:</span><br><span class="fragment">a proposition that is always true (<span class="math inline">\(T\)</span>)</span></li>
-<li class="fragment"><span class="math inline">\(A \lor \lnot A\)</span> is also known as the <strong>law of excluded middle</strong>:<br><span class="fragment">either a proposition is true or its negation is true</span></li>
+<li><p><span class="math inline">\(A \lor \lnot A\)</span> “<em>the robot is blue <strong>OR</strong> it is <strong>NOT</strong> blue</em>” is an example of a <strong>tautology</strong>: A proposition that is always true (<span class="math inline">\(\top\)</span>)]</p></li>
+<li><p><span class="math inline">\(A \lor \lnot A\)</span> is also known as the <strong>law of excluded middle</strong></p></li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="logical-connectives-and-inference-rules-3-output" class="slide level2 output-location-slide"><h2>Logical connectives and inference rules</h2><div class="cell output-location-slide">
-
-</div></section><section id="logical-connectives-and-inference-rules-4" class="slide level2">
-<h2>Logical connectives and inference rules</h2>
+<section id="propositional-logic-conditional-rule" class="slide level2">
+<h2>Propositional logic: Conditional rule</h2>
+<p><strong>Conditional/Implication (IF-THEN/IMPLIES) operator</strong> <span class="math inline">\(\quad A \implies B \quad A \subseteq B\)</span></p>
 <div class="fragment">
-<p><strong>Conditional/Implication (IF-THEN, IMPLIES)</strong> <span class="math inline">\(\quad A \implies B \quad A \subseteq B\)</span></p>
-</div>
-<div class="fragment">
-<p><span class="math inline">\(A \implies B\)</span> <span class="fragment">“<em>IF the robot is blue THEN it has an antenna</em>”</span></p>
+<p><span class="math inline">\(A \implies B\)</span> <span class="fragment">“<em><strong>IF</strong> the robot is blue <strong>THEN</strong> it has an antenna</em>”</span></p>
 </div>
 <div class="columns">
-<div class="column fragment" style="width:50%;">
+<div class="column fragment" style="width:33%;">
 <p><img data-src="images/IF_P_THEN_Q.png" height="120"></p>
-</div><div class="column fragment" style="width:50%;">
+</div><div class="column fragment" style="width:33%;">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -891,15 +929,53 @@ Edoardo “Dado” Marcora
 </tr>
 </tbody>
 </table>
-</div></div>
-<div class="fragment">
+</div><div class="column fragment" style="width:34%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>boolean_implies <span class="ot">&lt;-</span> <span class="cf">function</span>(A, B) {</span>
-<span id="cb4-2"><a href=""></a>  <span class="fu">return</span>(<span class="dv">1</span> <span class="sc">-</span> A <span class="sc">+</span> A <span class="sc">*</span> B) <span class="co"># return(!A | B)</span></span>
-<span id="cb4-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="st">`</span><span class="at">%=&gt;%</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(A, B) {</span>
+<span id="cb4-2"><a href=""></a>  <span class="sc">!</span>A <span class="sc">|</span> B</span>
+<span id="cb4-3"><a href=""></a>}</span>
+<span id="cb4-4"><a href=""></a></span>
+<span id="cb4-5"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb4-6"><a href=""></a>  <span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb4-7"><a href=""></a>  <span class="at">B =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">A ⇒ B</span><span class="st">`</span> <span class="ot">=</span> A <span class="sc">%=&gt;%</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: left;">A ⇒ B</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
 </div>
-
 </div>
+</div>
+</div></div>
 <ul>
 <li class="fragment"><span class="math inline">\(A\)</span> is the <strong>antecedent</strong></li>
 <li class="fragment"><span class="math inline">\(B\)</span> is the <strong>consequent</strong></li>
@@ -925,20 +1001,16 @@ Edoardo “Dado” Marcora
           display:block!important;
       }</style></aside>
 </section>
-<section id="logical-connectives-and-inference-rules-4-output" class="slide level2 output-location-slide"><h2>Logical connectives and inference rules</h2><div class="cell output-location-slide">
-
-</div></section><section id="logical-connectives-and-inference-rules-5" class="slide level2">
-<h2>Logical connectives and inference rules</h2>
+<section id="propositional-logic-biconditional-rule" class="slide level2">
+<h2>Propositional logic: Biconditional rule</h2>
+<p><strong>Biconditional (IFF) operator</strong> <span class="math inline">\(\quad A \iff B \quad A = B\)</span></p>
 <div class="fragment">
-<p><strong>Biconditional (IFF)</strong> <span class="math inline">\(\quad A \iff B \quad A = B\)</span></p>
-</div>
-<div class="fragment">
-<p><span class="math inline">\(A \iff B\)</span> <span class="fragment">“<em>the robot is blue IFF it has an antenna</em>”</span></p>
+<p><span class="math inline">\(A \iff B\)</span> <span class="fragment">“<em>the robot is blue <strong>IFF</strong> it has an antenna</em>”</span></p>
 </div>
 <div class="columns">
-<div class="column fragment" style="width:50%;">
+<div class="column fragment" style="width:33%;">
 <p><img data-src="images/P_IFF_Q.png" height="120"></p>
-</div><div class="column fragment" style="width:50%;">
+</div><div class="column fragment" style="width:33%;">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -970,22 +1042,58 @@ Edoardo “Dado” Marcora
 </tr>
 </tbody>
 </table>
-</div></div>
-<div class="fragment">
+</div><div class="column fragment" style="width:34%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>boolean_iff <span class="ot">&lt;-</span> <span class="cf">function</span>(A, B) {</span>
-<span id="cb5-2"><a href=""></a>  <span class="fu">return</span>(A <span class="sc">*</span> B <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> A) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> B)) <span class="co"># return(A == B)</span></span>
-<span id="cb5-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="st">`</span><span class="at">%&lt;=&gt;%</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(A, B) {</span>
+<span id="cb5-2"><a href=""></a>  (<span class="sc">!</span>A <span class="sc">|</span> B) <span class="sc">&amp;</span> (<span class="sc">!</span>B <span class="sc">|</span> A)</span>
+<span id="cb5-3"><a href=""></a>}</span>
+<span id="cb5-4"><a href=""></a></span>
+<span id="cb5-5"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb5-6"><a href=""></a>  <span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb5-7"><a href=""></a>  <span class="at">B =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">A ⇔ B</span><span class="st">`</span> <span class="ot">=</span> A <span class="sc">%&lt;=&gt;%</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: left;">A ⇔ B</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
 </div>
-
 </div>
+</div>
+</div></div>
 </section>
-<section id="logical-connectives-and-inference-rules-5-output" class="slide level2 output-location-slide"><h2>Logical connectives and inference rules</h2><div class="cell output-location-slide">
-
-</div></section><section id="sample-space" class="slide level2">
+<section id="sample-space" class="slide level2">
 <h2>Sample space</h2>
 <ul>
-<li class="fragment"><p>The <strong>sample space</strong> (<span class="math inline">\(\Omega\)</span>) is the set of all possible worlds (<span class="math inline">\(\omega_i\)</span>), i.e., all possible combinations of truth values of all propositional variables in an argument</p></li>
+<li class="fragment"><p>The <strong>sample space</strong> (<span class="math inline">\(\Omega\)</span>) is the set of all possible worlds (<span class="math inline">\(\omega_i\)</span>), i.e., all possible combinations of truth values of all atomic variables in an argument</p></li>
 <li class="fragment"><p>The size of the sample space is <span class="math inline">\(2^n\)</span>, where <span class="math inline">\(n\)</span> is the size of the given set of propositional variables (<span class="math inline">\(\Omega = \{ \omega_1, \omega_2, \ldots, \omega_{2^n} \}\)</span>)</p></li>
 <li class="fragment"><p>For example, given an argument with two propositional variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, the sample space consists of four possible worlds:</p></li>
 </ul>
@@ -1975,7 +2083,7 @@ A \implies B \\
 <span id="cb11-4"><a href=""></a>  <span class="at">H  =</span> B</span>
 <span id="cb11-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-e3135a3a{}.cl-e3103f3a{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e3103f44{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e3103f4e{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e3103f4f{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e3119722{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e311a3fc{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e311a3fd{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e311a406{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e311a407{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e311a408{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e3135a3a"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e311a3fc"><p class="cl-e3119722"><span class="cl-e3103f3a">A</span></p></th><th class="cl-e311a3fc"><p class="cl-e3119722"><span class="cl-e3103f3a">B</span></p></th><th class="cl-e311a3fc"><p class="cl-e3119722"><span class="cl-e3103f3a">P1</span></p></th><th class="cl-e311a3fc"><p class="cl-e3119722"><span class="cl-e3103f3a">P2</span></p></th><th class="cl-e311a3fc"><p class="cl-e3119722"><span class="cl-e3103f3a">E</span></p></th><th class="cl-e311a3fc"><p class="cl-e3119722"><span class="cl-e3103f3a">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e311a3fd"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td><td class="cl-e311a3fd"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td><td class="cl-e311a3fd"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td><td class="cl-e311a3fd"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td><td class="cl-e311a3fd"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td><td class="cl-e311a3fd"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td><td class="cl-e311a406"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e311a407"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td><td class="cl-e311a407"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td><td class="cl-e311a407"><p class="cl-e3119722"><span class="cl-e3103f44">TRUE</span></p></td><td class="cl-e311a407"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td><td class="cl-e311a407"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td><td class="cl-e311a407"><p class="cl-e3119722"><span class="cl-e3103f4e">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-e311a408"><p class="cl-e3119722"><span class="cl-e3103f4f">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-4fcce85e{}.cl-4fc9cd36{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4fc9cd40{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-4fc9cd41{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-4fc9cd4a{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4fcb1bc8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4fcb2762{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fcb2763{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fcb276c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fcb276d{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fcb276e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-4fcce85e"><thead><tr style="overflow-wrap:break-word;"><th class="cl-4fcb2762"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd36">A</span></p></th><th class="cl-4fcb2762"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd36">B</span></p></th><th class="cl-4fcb2762"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd36">P1</span></p></th><th class="cl-4fcb2762"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd36">P2</span></p></th><th class="cl-4fcb2762"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd36">E</span></p></th><th class="cl-4fcb2762"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd36">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-4fcb2763"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td><td class="cl-4fcb2763"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td><td class="cl-4fcb2763"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td><td class="cl-4fcb2763"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td><td class="cl-4fcb2763"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td><td class="cl-4fcb2763"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td><td class="cl-4fcb276c"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fcb276d"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td><td class="cl-4fcb276d"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td><td class="cl-4fcb276d"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd40">TRUE</span></p></td><td class="cl-4fcb276d"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td><td class="cl-4fcb276d"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td><td class="cl-4fcb276d"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd41">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-4fcb276e"><p class="cl-4fcb1bc8"><span class="cl-4fc9cd4a">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
 </div>
 </div>
 </div>
@@ -2016,7 +2124,7 @@ A \implies B \\
 <span id="cb12-4"><a href=""></a>  <span class="at">H  =</span> <span class="sc">!</span>A</span>
 <span id="cb12-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-e31d9edc{}.cl-e31aac9a{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e31aac9b{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e31aaca4{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e31aaca5{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e31bbe5a{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e31bc904{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e31bc90e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e31bc90f{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e31bc910{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e31d9edc"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e31bc904"><p class="cl-e31bbe5a"><span class="cl-e31aac9a">A</span></p></th><th class="cl-e31bc904"><p class="cl-e31bbe5a"><span class="cl-e31aac9a">B</span></p></th><th class="cl-e31bc904"><p class="cl-e31bbe5a"><span class="cl-e31aac9a">P1</span></p></th><th class="cl-e31bc904"><p class="cl-e31bbe5a"><span class="cl-e31aac9a">P2</span></p></th><th class="cl-e31bc904"><p class="cl-e31bbe5a"><span class="cl-e31aac9a">E</span></p></th><th class="cl-e31bc904"><p class="cl-e31bbe5a"><span class="cl-e31aac9a">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td><td class="cl-e31bc90e"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e31bc90f"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td><td class="cl-e31bc90f"><p class="cl-e31bbe5a"><span class="cl-e31aaca4">FALSE</span></p></td><td class="cl-e31bc90f"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td><td class="cl-e31bc90f"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td><td class="cl-e31bc90f"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td><td class="cl-e31bc90f"><p class="cl-e31bbe5a"><span class="cl-e31aac9b">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-e31bc910"><p class="cl-e31bbe5a"><span class="cl-e31aaca5">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-4fd6e69c{}.cl-4fd41728{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4fd41732{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-4fd41733{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-4fd4173c{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4fd549e0{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4fd557fa{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fd557fb{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fd55804{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fd55805{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-4fd6e69c"><thead><tr style="overflow-wrap:break-word;"><th class="cl-4fd557fa"><p class="cl-4fd549e0"><span class="cl-4fd41728">A</span></p></th><th class="cl-4fd557fa"><p class="cl-4fd549e0"><span class="cl-4fd41728">B</span></p></th><th class="cl-4fd557fa"><p class="cl-4fd549e0"><span class="cl-4fd41728">P1</span></p></th><th class="cl-4fd557fa"><p class="cl-4fd549e0"><span class="cl-4fd41728">P2</span></p></th><th class="cl-4fd557fa"><p class="cl-4fd549e0"><span class="cl-4fd41728">E</span></p></th><th class="cl-4fd557fa"><p class="cl-4fd549e0"><span class="cl-4fd41728">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td><td class="cl-4fd557fb"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fd55804"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td><td class="cl-4fd55804"><p class="cl-4fd549e0"><span class="cl-4fd41733">FALSE</span></p></td><td class="cl-4fd55804"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td><td class="cl-4fd55804"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td><td class="cl-4fd55804"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td><td class="cl-4fd55804"><p class="cl-4fd549e0"><span class="cl-4fd41732">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-4fd55805"><p class="cl-4fd549e0"><span class="cl-4fd4173c">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
 </div>
 </div>
 </div>
@@ -2057,7 +2165,7 @@ A \implies B \\
 <span id="cb13-4"><a href=""></a>  <span class="at">H  =</span> A</span>
 <span id="cb13-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-e326e3a2{}.cl-e323e4a4{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e323e4a5{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e323e4a6{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e323e4ae{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e3254df8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e32558a2{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e32558a3{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e32558a4{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e32558ac{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e32558ad{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e326e3a2"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e32558a2"><p class="cl-e3254df8"><span class="cl-e323e4a4">A</span></p></th><th class="cl-e32558a2"><p class="cl-e3254df8"><span class="cl-e323e4a4">B</span></p></th><th class="cl-e32558a2"><p class="cl-e3254df8"><span class="cl-e323e4a4">P1</span></p></th><th class="cl-e32558a2"><p class="cl-e3254df8"><span class="cl-e323e4a4">P2</span></p></th><th class="cl-e32558a2"><p class="cl-e3254df8"><span class="cl-e323e4a4">E</span></p></th><th class="cl-e32558a2"><p class="cl-e3254df8"><span class="cl-e323e4a4">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a6">FALSE</span></p></td><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td><td class="cl-e32558a3"><p class="cl-e3254df8"><span class="cl-e323e4a6">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e32558a4"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td><td class="cl-e32558a4"><p class="cl-e3254df8"><span class="cl-e323e4a6">FALSE</span></p></td><td class="cl-e32558a4"><p class="cl-e3254df8"><span class="cl-e323e4a6">FALSE</span></p></td><td class="cl-e32558a4"><p class="cl-e3254df8"><span class="cl-e323e4a6">FALSE</span></p></td><td class="cl-e32558a4"><p class="cl-e3254df8"><span class="cl-e323e4a6">FALSE</span></p></td><td class="cl-e32558a4"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e32558ac"><p class="cl-e3254df8"><span class="cl-e323e4a6">FALSE</span></p></td><td class="cl-e32558ac"><p class="cl-e3254df8"><span class="cl-e323e4a6">FALSE</span></p></td><td class="cl-e32558ac"><p class="cl-e3254df8"><span class="cl-e323e4a5">TRUE</span></p></td><td class="cl-e32558ac"><p class="cl-e3254df8"><span class="cl-e323e4a6">FALSE</span></p></td><td class="cl-e32558ac"><p class="cl-e3254df8"><span class="cl-e323e4a6">FALSE</span></p></td><td class="cl-e32558ac"><p class="cl-e3254df8"><span class="cl-e323e4a6">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-e32558ad"><p class="cl-e3254df8"><span class="cl-e323e4ae">P(H | E) = 0.5</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-4fe0b8d4{}.cl-4fdde05a{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4fdde05b{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-4fdde064{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-4fdde065{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4fdf041c{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4fdf0f5c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fdf0f5d{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fdf0f5e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fdf0f5f{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fdf0f60{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-4fe0b8d4"><thead><tr style="overflow-wrap:break-word;"><th class="cl-4fdf0f5c"><p class="cl-4fdf041c"><span class="cl-4fdde05a">A</span></p></th><th class="cl-4fdf0f5c"><p class="cl-4fdf041c"><span class="cl-4fdde05a">B</span></p></th><th class="cl-4fdf0f5c"><p class="cl-4fdf041c"><span class="cl-4fdde05a">P1</span></p></th><th class="cl-4fdf0f5c"><p class="cl-4fdf041c"><span class="cl-4fdde05a">P2</span></p></th><th class="cl-4fdf0f5c"><p class="cl-4fdf041c"><span class="cl-4fdde05a">E</span></p></th><th class="cl-4fdf0f5c"><p class="cl-4fdf041c"><span class="cl-4fdde05a">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde064">FALSE</span></p></td><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td><td class="cl-4fdf0f5d"><p class="cl-4fdf041c"><span class="cl-4fdde064">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fdf0f5e"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td><td class="cl-4fdf0f5e"><p class="cl-4fdf041c"><span class="cl-4fdde064">FALSE</span></p></td><td class="cl-4fdf0f5e"><p class="cl-4fdf041c"><span class="cl-4fdde064">FALSE</span></p></td><td class="cl-4fdf0f5e"><p class="cl-4fdf041c"><span class="cl-4fdde064">FALSE</span></p></td><td class="cl-4fdf0f5e"><p class="cl-4fdf041c"><span class="cl-4fdde064">FALSE</span></p></td><td class="cl-4fdf0f5e"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fdf0f5f"><p class="cl-4fdf041c"><span class="cl-4fdde064">FALSE</span></p></td><td class="cl-4fdf0f5f"><p class="cl-4fdf041c"><span class="cl-4fdde064">FALSE</span></p></td><td class="cl-4fdf0f5f"><p class="cl-4fdf041c"><span class="cl-4fdde05b">TRUE</span></p></td><td class="cl-4fdf0f5f"><p class="cl-4fdf041c"><span class="cl-4fdde064">FALSE</span></p></td><td class="cl-4fdf0f5f"><p class="cl-4fdf041c"><span class="cl-4fdde064">FALSE</span></p></td><td class="cl-4fdf0f5f"><p class="cl-4fdf041c"><span class="cl-4fdde064">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-4fdf0f60"><p class="cl-4fdf041c"><span class="cl-4fdde065">P(H | E) = 0.5</span></p></td></tr></tfoot></table></div>
 </div>
 </div>
 </div>
@@ -2098,7 +2206,7 @@ A \implies B \\
 <span id="cb14-4"><a href=""></a>  <span class="at">H  =</span> <span class="sc">!</span>B</span>
 <span id="cb14-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-e33072aa{}.cl-e32da886{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e32da887{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e32da890{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e32da891{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e32eca68{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e32ed74c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e32ed74d{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e32ed756{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e32ed757{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e32ed758{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e33072aa"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e32ed74c"><p class="cl-e32eca68"><span class="cl-e32da886">A</span></p></th><th class="cl-e32ed74c"><p class="cl-e32eca68"><span class="cl-e32da886">B</span></p></th><th class="cl-e32ed74c"><p class="cl-e32eca68"><span class="cl-e32da886">P1</span></p></th><th class="cl-e32ed74c"><p class="cl-e32eca68"><span class="cl-e32da886">P2</span></p></th><th class="cl-e32ed74c"><p class="cl-e32eca68"><span class="cl-e32da886">E</span></p></th><th class="cl-e32ed74c"><p class="cl-e32eca68"><span class="cl-e32da886">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da890">FALSE</span></p></td><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da890">FALSE</span></p></td><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da890">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e32ed756"><p class="cl-e32eca68"><span class="cl-e32da890">FALSE</span></p></td><td class="cl-e32ed756"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td><td class="cl-e32ed756"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td><td class="cl-e32ed756"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td><td class="cl-e32ed756"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td><td class="cl-e32ed756"><p class="cl-e32eca68"><span class="cl-e32da890">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da890">FALSE</span></p></td><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da890">FALSE</span></p></td><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da890">FALSE</span></p></td><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da890">FALSE</span></p></td><td class="cl-e32ed74d"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e32ed757"><p class="cl-e32eca68"><span class="cl-e32da890">FALSE</span></p></td><td class="cl-e32ed757"><p class="cl-e32eca68"><span class="cl-e32da890">FALSE</span></p></td><td class="cl-e32ed757"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td><td class="cl-e32ed757"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td><td class="cl-e32ed757"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td><td class="cl-e32ed757"><p class="cl-e32eca68"><span class="cl-e32da887">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-e32ed758"><p class="cl-e32eca68"><span class="cl-e32da891">P(H | E) = 0.5</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-4fead2c4{}.cl-4fe7e190{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4fe7e19a{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-4fe7e19b{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-4fe7e19c{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4fe923c0{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4fe92ff0{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fe92ff1{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fe92ffa{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fe92ffb{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fe92ffc{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-4fead2c4"><thead><tr style="overflow-wrap:break-word;"><th class="cl-4fe92ff0"><p class="cl-4fe923c0"><span class="cl-4fe7e190">A</span></p></th><th class="cl-4fe92ff0"><p class="cl-4fe923c0"><span class="cl-4fe7e190">B</span></p></th><th class="cl-4fe92ff0"><p class="cl-4fe923c0"><span class="cl-4fe7e190">P1</span></p></th><th class="cl-4fe92ff0"><p class="cl-4fe923c0"><span class="cl-4fe7e190">P2</span></p></th><th class="cl-4fe92ff0"><p class="cl-4fe923c0"><span class="cl-4fe7e190">E</span></p></th><th class="cl-4fe92ff0"><p class="cl-4fe923c0"><span class="cl-4fe7e190">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19b">FALSE</span></p></td><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19b">FALSE</span></p></td><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19b">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fe92ffa"><p class="cl-4fe923c0"><span class="cl-4fe7e19b">FALSE</span></p></td><td class="cl-4fe92ffa"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td><td class="cl-4fe92ffa"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td><td class="cl-4fe92ffa"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td><td class="cl-4fe92ffa"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td><td class="cl-4fe92ffa"><p class="cl-4fe923c0"><span class="cl-4fe7e19b">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19b">FALSE</span></p></td><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19b">FALSE</span></p></td><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19b">FALSE</span></p></td><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19b">FALSE</span></p></td><td class="cl-4fe92ff1"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fe92ffb"><p class="cl-4fe923c0"><span class="cl-4fe7e19b">FALSE</span></p></td><td class="cl-4fe92ffb"><p class="cl-4fe923c0"><span class="cl-4fe7e19b">FALSE</span></p></td><td class="cl-4fe92ffb"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td><td class="cl-4fe92ffb"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td><td class="cl-4fe92ffb"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td><td class="cl-4fe92ffb"><p class="cl-4fe923c0"><span class="cl-4fe7e19a">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-4fe92ffc"><p class="cl-4fe923c0"><span class="cl-4fe7e19c">P(H | E) = 0.5</span></p></td></tr></tfoot></table></div>
 </div>
 </div>
 </div>
@@ -2139,7 +2247,7 @@ A \implies B \\
 <span id="cb15-4"><a href=""></a>  <span class="at">H  =</span> A <span class="sc">%=&gt;%</span> C</span>
 <span id="cb15-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-e33b6cd2{}.cl-e3388c60{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e3388c6a{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e3388c6b{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e3388c74{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e339b1e4{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e339bd92{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e339bd93{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e339bd9c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e339bd9d{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e339bd9e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e33b6cd2"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e339bd92"><p class="cl-e339b1e4"><span class="cl-e3388c60">A</span></p></th><th class="cl-e339bd92"><p class="cl-e339b1e4"><span class="cl-e3388c60">B</span></p></th><th class="cl-e339bd92"><p class="cl-e339b1e4"><span class="cl-e3388c60">C</span></p></th><th class="cl-e339bd92"><p class="cl-e339b1e4"><span class="cl-e3388c60">P1</span></p></th><th class="cl-e339bd92"><p class="cl-e339b1e4"><span class="cl-e3388c60">P2</span></p></th><th class="cl-e339bd92"><p class="cl-e339b1e4"><span class="cl-e3388c60">E</span></p></th><th class="cl-e339bd92"><p class="cl-e339b1e4"><span class="cl-e3388c60">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd93"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9c"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e339bd9d"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9d"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9d"><p class="cl-e339b1e4"><span class="cl-e3388c6b">FALSE</span></p></td><td class="cl-e339bd9d"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9d"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9d"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td><td class="cl-e339bd9d"><p class="cl-e339b1e4"><span class="cl-e3388c6a">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="7" class="cl-e339bd9e"><p class="cl-e339b1e4"><span class="cl-e3388c74">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-4ff5cca6{}.cl-4ff2c402{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4ff2c40c{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-4ff2c40d{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-4ff2c40e{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4ff40fd8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4ff41cee{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4ff41cef{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4ff41cf0{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4ff41cf8{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4ff41cf9{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-4ff5cca6"><thead><tr style="overflow-wrap:break-word;"><th class="cl-4ff41cee"><p class="cl-4ff40fd8"><span class="cl-4ff2c402">A</span></p></th><th class="cl-4ff41cee"><p class="cl-4ff40fd8"><span class="cl-4ff2c402">B</span></p></th><th class="cl-4ff41cee"><p class="cl-4ff40fd8"><span class="cl-4ff2c402">C</span></p></th><th class="cl-4ff41cee"><p class="cl-4ff40fd8"><span class="cl-4ff2c402">P1</span></p></th><th class="cl-4ff41cee"><p class="cl-4ff40fd8"><span class="cl-4ff2c402">P2</span></p></th><th class="cl-4ff41cee"><p class="cl-4ff40fd8"><span class="cl-4ff2c402">E</span></p></th><th class="cl-4ff41cee"><p class="cl-4ff40fd8"><span class="cl-4ff2c402">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cef"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf0"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ff41cf8"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf8"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf8"><p class="cl-4ff40fd8"><span class="cl-4ff2c40d">FALSE</span></p></td><td class="cl-4ff41cf8"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf8"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf8"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td><td class="cl-4ff41cf8"><p class="cl-4ff40fd8"><span class="cl-4ff2c40c">TRUE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="7" class="cl-4ff41cf9"><p class="cl-4ff40fd8"><span class="cl-4ff2c40e">P(H | E) = 1</span></p></td></tr></tfoot></table></div>
 </div>
 </div>
 </div>
@@ -2219,7 +2327,7 @@ P(A) = \lim_{n \to \infty} \frac{\text{Number of times } A \text{ occurs in } n 
 <span id="cb16-4"><a href=""></a>  <span class="at">H  =</span> B1 <span class="sc">|</span> B2                                </span>
 <span id="cb16-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-e3468018{}.cl-e3435afa{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e3435b36{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-e3435b37{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-e3435b38{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-e34492d0{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e3449eb0{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e3449eb1{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e3449eb2{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e3449eb3{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-e3449eba{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-e3468018"><thead><tr style="overflow-wrap:break-word;"><th class="cl-e3449eb0"><p class="cl-e34492d0"><span class="cl-e3435afa">B1</span></p></th><th class="cl-e3449eb0"><p class="cl-e34492d0"><span class="cl-e3435afa">B2</span></p></th><th class="cl-e3449eb0"><p class="cl-e34492d0"><span class="cl-e3435afa">W</span></p></th><th class="cl-e3449eb0"><p class="cl-e34492d0"><span class="cl-e3435afa">P1</span></p></th><th class="cl-e3449eb0"><p class="cl-e34492d0"><span class="cl-e3435afa">P2</span></p></th><th class="cl-e3449eb0"><p class="cl-e34492d0"><span class="cl-e3435afa">E</span></p></th><th class="cl-e3449eb0"><p class="cl-e34492d0"><span class="cl-e3435afa">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb1"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb2"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-e3449eb3"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb3"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb3"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb3"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb3"><p class="cl-e34492d0"><span class="cl-e3435b36">TRUE</span></p></td><td class="cl-e3449eb3"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td><td class="cl-e3449eb3"><p class="cl-e34492d0"><span class="cl-e3435b37">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="7" class="cl-e3449eba"><p class="cl-e34492d0"><span class="cl-e3435b38">P(H | E) = 0.667</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-500099a6{}.cl-4ffd8dd8{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4ffd8dd9{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-4ffd8de2{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-4ffd8de3{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4ffef1aa{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4ffefd1c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4ffefd26{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4ffefd27{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4ffefd28{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4ffefd29{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-500099a6"><thead><tr style="overflow-wrap:break-word;"><th class="cl-4ffefd1c"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd8">B1</span></p></th><th class="cl-4ffefd1c"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd8">B2</span></p></th><th class="cl-4ffefd1c"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd8">W</span></p></th><th class="cl-4ffefd1c"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd8">P1</span></p></th><th class="cl-4ffefd1c"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd8">P2</span></p></th><th class="cl-4ffefd1c"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd8">E</span></p></th><th class="cl-4ffefd1c"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd8">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd26"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd27"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4ffefd28"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd28"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd28"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd28"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd28"><p class="cl-4ffef1aa"><span class="cl-4ffd8dd9">TRUE</span></p></td><td class="cl-4ffefd28"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td><td class="cl-4ffefd28"><p class="cl-4ffef1aa"><span class="cl-4ffd8de2">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="7" class="cl-4ffefd29"><p class="cl-4ffef1aa"><span class="cl-4ffd8de3">P(H | E) = 0.667</span></p></td></tr></tfoot></table></div>
 </div>
 </div>
 </div>
