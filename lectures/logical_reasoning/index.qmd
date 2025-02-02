@@ -293,7 +293,7 @@ First-order logic is a structured representation of knowledge.
 
 -   We will implement an AI for deductive reasoning in R as a function named `is.valid`
 
-    -   Takes a deductive argument (one or more premises named `E` for evidence, and a conclusion named `H` for hypothesis) as input
+    -   Takes a deductive argument (one or more premises named `E` for **evidence**, and a conclusion named `H` for **hypothesis**) as input
 
     -   Returns a `Logical` value (`TRUE` or `FALSE`) as output
 
@@ -307,25 +307,41 @@ First-order logic is a structured representation of knowledge.
 
 -   Propositional variables are typically represented by uppercase Roman letters
 
+::::: columns
+::: {.column .fragment}
+$A$ ["*the robot has an antenna*"]{.fragment}
+:::
+
+::: {.column .fragment}
+$B$ ["*the robot is blue*"]{.fragment}
+:::
+:::::
+
+:::::: columns
+::: {.column .fragment width="34%"}
+![](logical_operators/Slide1.png)
+:::
+
+::: {.column .fragment width="33%"}
  
 
-::::::: columns
-:::: {.column .fragment width="50%"}
-$A$ ["*the robot is blue*"]{.fragment}
-
-::: fragment
-![](images/P.png){height="120"}
+|      $A$       |      $B$       |
+|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  |
+| [FALSE]{.red}  | [TRUE]{.green} |
+| [FALSE]{.red}  | [FALSE]{.red}  |
 :::
-::::
 
-:::: {.column .fragment width="50%"}
-$B$ ["*the robot has an antenna*"]{.fragment}
-
-::: fragment
-![](images/NOT_P.png){height="120"}
+::: {.column .fragment width="33%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE))
+```
 :::
-::::
-:::::::
+::::::
 
 ## Propositional logic: Variables
 
@@ -338,11 +354,11 @@ There are two types of propositional variables: atomic and compound variables
  
 
 ::: fragment
-| English                                               | Math             | R        |
-|:------------------------------------------------------|:-----------------|:---------|
-| "*the robot is **NOT** blue*"                         | $\lnot A$        | `!A`     |
-| "*the robot is blue **AND** it has an antenna*"       | $A \land B$      | `A & B`  |
-| "*The robot has an antenna **OR** it's **NOT** blue*" | $B \lor \lnot A$ | `B | !A` |
+| English | Math | R |
+|:-----------------------------------------|:--------------|:--------------|
+| $P$ "*the robot is **NOT** blue*" | $\lnot B$ | `!B` |
+| $Q$ "*the robot is blue **AND** it has an antenna*" | $B \land A$ | `B & A` |
+| $R$ "***IF** the robot has an antenna **THEN** it's **NOT** blue*" | $A \implies \lnot B$ | `A %=>% !B` |
 :::
 
 ## Propositional logic: Operators
@@ -371,49 +387,87 @@ There are two types of propositional variables: atomic and compound variables
 **Negation (NOT) operator** $\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}$
 
 ::: fragment
-$\lnot A$ ["*the robot is **NOT** blue*"]{.fragment}
+$\lnot A$ ["*the robot does **NOT** have an antenna*"]{.fragment}
 :::
 
-::::: columns
-
-::: {.column .fragment width="33%"}
-![](images/NOT_P.png){height="120"}
-:::
-
-::: {.column .fragment width="33%"}
-|      $A$       |   $\lnot A$    |
-|:--------------:|:--------------:|
-| [TRUE]{.green} | [FALSE]{.red}  |
-| [FALSE]{.red}  | [TRUE]{.green} |
+:::::: columns
+::: {.column .fragment width="30%"}
+![](logical_operators/Slide2.png)
 :::
 
 ::: {.column .fragment width="34%"}
+ 
+
+|      $A$       |      $B$       |   $\lnot A$    |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red}  |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |
+| [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
+:::
+
+::: {.column .fragment width="36%"}
 ```{r}
 #| output-location: default
 expand_grid(
-  A = c(TRUE, FALSE)) %>%
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
   mutate(`¬A` = !A)
 ```
 :::
+::::::
 
-:::::
+## Propositional logic: Negation rule
 
+**Negation (NOT) operator** $\quad \lnot B \quad B' \quad \bar{B} \quad B^{\complement}$
 
+::: fragment
+$\lnot B$ ["*the robot is **NOT** blue*"]{.fragment}
+:::
+
+:::::: columns
+::: {.column .fragment width="30%"}
+![](logical_operators/Slide3.png)
+:::
+
+::: {.column .fragment width="34%"}
+ 
+
+|      $A$       |      $B$       |   $\lnot B$    |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red}  |
+| [TRUE]{.green} | [FALSE]{.red}  | [TRUE]{.green} |
+| [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  |
+| [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
+:::
+
+::: {.column .fragment width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`¬B` = !B)
+```
+:::
+::::::
 
 ## Propositional logic: Conjunction rule
 
 **Conjunction (AND) operator** $\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B$
 
 ::: fragment
-$A \land B$ ["*the robot is blue **AND** it has an antenna*"]{.fragment}
+$A \land B$ ["*the robot has an antenna **AND** it's blue*"]{.fragment}
 :::
 
-::::: columns
-::: {.column .fragment width="33%"}
-![](images/P_AND_Q.png){height="120"}
+:::::: columns
+::: {.column .fragment width="30%"}
+![](logical_operators/Slide4.png)
 :::
 
-::: {.column .fragment width="33%"}
+::: {.column .fragment width="34%"}
+ 
+
 |      $A$       |      $B$       |  $A \land B$   |
 |:--------------:|:--------------:|:--------------:|
 | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
@@ -422,7 +476,7 @@ $A \land B$ ["*the robot is blue **AND** it has an antenna*"]{.fragment}
 | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
 :::
 
-::: {.column .fragment width="34%"}
+::: {.column .fragment width="36%"}
 ```{r}
 #| output-location: default
 expand_grid(
@@ -431,11 +485,10 @@ expand_grid(
   mutate(`A ∧ B` = A & B)
 ```
 :::
-
-:::::
+::::::
 
 ::: notes
--   $A \land \lnot A$ "*the robot is blue **AND** it is **NOT** blue*" is an example of a **contradiction**: A proposition that is always false ($\bot$)
+-   $A \land \lnot A$ "*the robot has an antenna **AND** it does **NOT** have an antenna*" is an example of a **contradiction**: A proposition that is always false ($\bot$)
 
 -   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
 :::
@@ -445,15 +498,17 @@ expand_grid(
 **Disjunction (OR) operator** $\quad A \lor B \quad A + B \quad A \cup B$
 
 ::: fragment
-$A \lor B$ ["*the robot is blue **OR** it has an antenna*"]{.fragment}
+$A \lor B$ ["*the robot has an antenna **OR** it's blue*"]{.fragment}
 :::
 
-::::: columns
-::: {.column .fragment width="33%"}
-![](images/P_OR_Q.png){height="120"}
+:::::: columns
+::: {.column .fragment width="30%"}
+![](logical_operators/Slide5.png)
 :::
 
-::: {.column .fragment width="33%"}
+::: {.column .fragment width="34%"}
+ 
+
 |      $A$       |      $B$       |   $A \lor B$   |
 |:--------------:|:--------------:|:--------------:|
 | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
@@ -462,7 +517,7 @@ $A \lor B$ ["*the robot is blue **OR** it has an antenna*"]{.fragment}
 | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
 :::
 
-::: {.column .fragment width="34%"}
+::: {.column .fragment width="36%"}
 ```{r}
 #| output-location: default
 expand_grid(
@@ -471,12 +526,10 @@ expand_grid(
   mutate(`A ∨ B` = A | B)
 ```
 :::
-:::::
-
-
+::::::
 
 ::: notes
--   $A \lor \lnot A$ "*the robot is blue **OR** it is **NOT** blue*" is an example of a **tautology**: A proposition that is always true ($\top$)]
+-   $A \lor \lnot A$ "*the robot has an antenna **OR** it does **NOT** have an antenna*" is an example of a **tautology**: A proposition that is always true ($\top$)\]
 
 -   $A \lor \lnot A$ is also known as the **law of excluded middle**
 :::
@@ -486,15 +539,17 @@ expand_grid(
 **Conditional/Implication (IF-THEN/IMPLIES) operator** $\quad A \implies B \quad A \subseteq B$
 
 ::: fragment
-$A \implies B$ ["***IF** the robot is blue **THEN** it has an antenna*"]{.fragment}
+$A \implies B$ ["***IF** the robot has an antenna **THEN** it's blue*"]{.fragment}
 :::
 
-::::: columns
-::: {.column .fragment width="33%"}
-![](images/IF_P_THEN_Q.png){height="120"}
+:::::: columns
+::: {.column .fragment width="30%"}
+![](logical_operators/Slide6.png)
 :::
 
-::: {.column .fragment width="33%"}
+::: {.column .fragment width="34%"}
+ 
+
 |      $A$       |      $B$       | $A \implies B$ |
 |:--------------:|:--------------:|:--------------:|
 | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
@@ -503,7 +558,7 @@ $A \implies B$ ["***IF** the robot is blue **THEN** it has an antenna*"]{.fragme
 | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
 :::
 
-::: {.column .fragment width="34%"}
+::: {.column .fragment width="36%"}
 ```{r}
 #| output-location: default
 `%=>%` <- function(A, B) {
@@ -516,7 +571,7 @@ expand_grid(
   mutate(`A ⇒ B` = A %=>% B)
 ```
 :::
-:::::
+::::::
 
 -   $A$ is the **antecedent**
 -   $B$ is the **consequent**
@@ -540,15 +595,17 @@ Logical relationships are not the same as causal relationships:
 **Biconditional (IFF) operator** $\quad A \iff B \quad A = B$
 
 ::: fragment
-$A \iff B$ ["*the robot is blue **IFF** it has an antenna*"]{.fragment}
+$A \iff B$ ["*the robot has an antenna **IFF** it's blue*"]{.fragment}
 :::
 
-::::: columns
-::: {.column .fragment width="33%"}
-![](images/P_IFF_Q.png){height="120"}
+:::::: columns
+::: {.column .fragment width="30%"}
+![](logical_operators/Slide7.png)
 :::
 
-::: {.column .fragment width="33%"}
+::: {.column .fragment width="34%"}
+ 
+
 |      $A$       |      $B$       |   $A \iff B$   |
 |:--------------:|:--------------:|:--------------:|
 | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
@@ -557,7 +614,7 @@ $A \iff B$ ["*the robot is blue **IFF** it has an antenna*"]{.fragment}
 | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
 :::
 
-::: {.column .fragment width="34%"}
+::: {.column .fragment width="36%"}
 ```{r}
 #| output-location: default
 `%<=>%` <- function(A, B) {
@@ -570,8 +627,7 @@ expand_grid(
   mutate(`A ⇔ B` = A %<=>% B)
 ```
 :::
-:::::
-
+::::::
 
 ## Sample space
 
