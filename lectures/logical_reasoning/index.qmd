@@ -24,20 +24,20 @@ library(tidyverse)
 
 ## Statistical inference is logical reasoning
 
--   Statistical inference is an **inductive reasoning** process using *known quantities* (**data**) and a **model** of the data generating process (DGP) to infer *unknown quantities*
+-   Statistical inference is an **inductive reasoning** process using *observables* (**data**) and a **model** of the data generating process (DGP) to infer *unobservables*
 
 ::: fragment
 $$
 \begin{array}{ll}
-1. & \text{Known quantities (data)} \\
-2. & \text{Model of the DGP} \\
+1. & \text{observables (data)} \\
+2. & \text{model of the DGP} \\
 \hline
-\therefore & \text{Unknown quantities} \\
+\therefore & \text{unobservables} \\
 \end{array}
 $$
 :::
 
--   Unknown quantities include:
+-   Unobservables include:
 
     -   Future observations or unobserved/unrecorded past outcomes (prediction)
     -   Unobservable counterfactual outcomes (causal inference)
@@ -46,8 +46,8 @@ $$
     -   Missing data (imputation)
 
 ::: notes
--   Known quantities = data/observations/measurements/observed quantities
--   Unknown quantities = unobserved or unobservable quantities
+-   observables = data/observations/measurements/observed quantities
+-   unobservables = unobserved or unobservable quantities
 -   Causal inference = estimation of causal effects; prediction of effects of interventions
 :::
 
@@ -225,9 +225,9 @@ $$
 :::::
 ::::::::::::
 
-## Deductive vs. inductive reasoning
+## Deductive and inductive reasoning recap
 
--   The goal of **deductive reasoning** is to determine whether the conclusion is guaranteed to be true, assuming the premises are true
+-   The goal of **deductive reasoning** is to determine whether the **conclusion is guaranteed** to be true, assuming the premises are true (*truth-preserving, non-ampliative*)
 
 ::: fragment
 $$
@@ -240,7 +240,7 @@ $$
 $$
 :::
 
--   The goal of **inductive reasoning** is to determine whether the conclusion is likely to be true, assuming the premises are true
+-   The goal of **inductive reasoning** is to determine whether the **conclusion is likely** to be true, assuming the premises are true (*not truth-preserving, ampliative*)
 
 ::: fragment
 $$
@@ -253,20 +253,20 @@ $$
 $$
 :::
 
-## A computer algorithm for logical reasoning
+## Artificial intelligence
 
 ::: nonincremental
--   Our goal in this series is to program an **artificial intelligence** (AI): a computer algorithm that is capable of deductive and inductive reasoning
+-   Our goal in this series is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of deductive and inductive reasoning
 :::
 
 ![](images/How-to-build-a-thinking-AI-model.webp){height="500"}
 
-## A computer algorithm for logical reasoning
+## Artificial intelligence
 
 ::: nonincremental
--   Our goal in this series is to program an **artificial intelligence** (AI): a computer algorithm that is capable of deductive and inductive reasoning
+-   Our goal in this series is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of deductive and inductive reasoning
 
--   To achieve this, we need to translate logical reasoning/arguments from English to a programming language that the computer understands
+-   To achieve this, we need to translate deductive and inductive arguments from English to a language that the computer understands
 :::
 
 -   Specifically, we will use:
@@ -275,7 +275,7 @@ $$
 
     -   **Probability theory** (a mathematical language) to formalize **inductive reasoning**
 
-    -   **R** (a programming language) to translate propositional logic and probability theory into a computer algorithm
+    -   **R** (a programming language) to translate deductive and inductive arguments written in the language of propositional logic and probability theory into a computer algorithm
 
 ::: notes
 A mathematical language used to represent and use knowledge/information to reason about the truth or plausibility of a conclusion assuming that the premises are true
@@ -289,7 +289,7 @@ Propositional logic is a factored representation of knowledge.
 First-order logic is a structured representation of knowledge.
 :::
 
-## AI for deductive reasoning
+## Artificial intelligence for deductive reasoning
 
 -   We will implement an AI for deductive reasoning in R as a function named `is.valid`
 
@@ -303,7 +303,7 @@ First-order logic is a structured representation of knowledge.
 
 ## Propositional logic: Variables
 
--   **Propositional variables** (a.k.a. logical or Boolean variables) represent propositions and thus hold one of two values, either **True** or **False** (a.k.a. **truth value**)
+-   **Propositional variables** (a.k.a. logical or Boolean variables) represent propositions and thus hold one of two values, either **True** or **False** (a.k.a. the **truth value** of a proposition)
 
 -   Propositional variables are typically represented by uppercase Roman letters
 
@@ -318,11 +318,11 @@ $B$ ["*the robot is blue*"]{.fragment}
 :::::
 
 :::::: columns
-::: {.column .fragment width="34%"}
+::: {.column .fragment width="30%"}
 ![](logical_operators/Slide1.png)
 :::
 
-::: {.column .fragment width="33%"}
+::: {.column .fragment width="34%"}
  
 
 |      $A$       |      $B$       |
@@ -333,7 +333,7 @@ $B$ ["*the robot is blue*"]{.fragment}
 | [FALSE]{.red}  | [FALSE]{.red}  |
 :::
 
-::: {.column .fragment width="33%"}
+::: {.column .fragment width="36%"}
 ```{r}
 #| output-location: default
 expand_grid(
@@ -342,6 +342,16 @@ expand_grid(
 ```
 :::
 ::::::
+
+::: notes
+**Truth table** = the set of all possible truth-value assignments (valuations) of a set of atomic variables
+
+**Sample space** = the set of all possible outcomes
+
+**Logical space** = the set of all possible worlds
+
+**State space** = the set of all possible states a system can be in
+:::
 
 ## Propositional logic: Variables
 
@@ -355,32 +365,36 @@ There are two types of propositional variables: atomic and compound variables
 
 ::: fragment
 | English | Math | R |
-|:-----------------------------------------|:--------------|:--------------|
-| $P$ "*the robot is **NOT** blue*" | $\lnot B$ | `!B` |
-| $Q$ "*the robot is blue **AND** it has an antenna*" | $B \land A$ | `B & A` |
-| $R$ "***IF** the robot has an antenna **THEN** it's **NOT** blue*" | $A \implies \lnot B$ | `A %=>% !B` |
+|:------------------------------------|:-----------------|:-----------------|
+| $X$ "*the robot is **NOT** blue*" | $\lnot B$ | `!B` |
+| $Y$ "*the robot is blue **AND** it has an antenna*" | $B \land A$ | `B & A` |
+| $Z$ "***IF** the robot has an antenna **THEN** it's **NOT** blue*" | $A \implies \lnot B$ | `A %=>% !B` |
 :::
 
 ## Propositional logic: Operators
 
-| English         | Math           | R           |                       |
-|:----------------|:---------------|:------------|:----------------------|
-| A               | $A$            | `A`         |                       |
-| **NOT** A       | $\lnot A$      | `!A`        |                       |
-| A **AND** B     | $A \land B$    | `A & B`     | `all(A, B)`           |
-| A **OR** B      | $A \lor B$     | `A | B`     | `any(A, B)`           |
-| A **IMPLIES** B | $A \implies B$ | `A %=>% B`  | `!A | B`              |
-| A **IFF** B     | $A \iff B$     | `A %<=>% B` | `(!A | B) & (!B | A)` |
+| English         | Math           | R           |                            |
+|:----------------|:---------------|:------------|:---------------------------|
+| A               | $A$            | `A`         | `A == TRUE`                |
+| **NOT** A       | $\lnot A$      | `!A`        | `A != TRUE`   `A == FALSE` |
+| A **AND** B     | $A \land B$    | `A & B`     | `all(A, B)`                |
+| A **OR** B      | $A \lor B$     | `A | B`     | `any(A, B)`                |
+| A **IMPLIES** B | $A \implies B$ | `A %=>% B`  | `!A | B`                   |
+| A **IFF** B     | $A \iff B$     | `A %<=>% B` | `(!A | B) & (!B | A)`      |
 
 -   The truth value of an atomic variable is assigned as previously shown
 
--   The truth value of a compound variable is determined by the truth values of its atomic components according to the rules of propositional logic (a.k.a. **truth tables**)
+-   The truth value of a compound variable is determined by the truth-value assignments of its atomic components according to the rules of propositional logic
 
--   In the context of an argument, propositional variables are assumed to be true
+-   The **truth table** is the **set of all possible truth-value assignments** of a set of atomic variables
 
-    -   $A$ means $A = \text{True}$
+-   The truth table is also known as **universe** ($\Omega$), sample space, state space, etc.
 
-    -   $\lnot A$ means $A = \text{False}$
+-   The truth-value assignments are also known as **worlds** ($\omega$), outcomes, states, etc.
+
+::: notes
+The truth table/logical space is the set of all possible truth-value assignments/valuations of a set of atomic variables
+:::
 
 ## Propositional logic: Negation rule
 
@@ -419,6 +433,40 @@ expand_grid(
 
 ## Propositional logic: Negation rule
 
+**Negation (NOT) operator** $\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}$
+
+$\lnot A$ "*the robot does **NOT** have an antenna*"
+
+:::::: columns
+::: {.column width="30%"}
+![](logical_operators/Slide2.png)
+:::
+
+::: {.column width="34%"}
+ 
+
+|      $A$       |      $B$       |   $\lnot A$    |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red}  |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |
+| [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
+:::
+
+::: {.column width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`¬A` = !A) %>%
+  filter(`¬A`)
+```
+:::
+::::::
+
+## Propositional logic: Negation rule
+
 **Negation (NOT) operator** $\quad \lnot B \quad B' \quad \bar{B} \quad B^{\complement}$
 
 ::: fragment
@@ -448,6 +496,40 @@ expand_grid(
   A = c(TRUE, FALSE),
   B = c(TRUE, FALSE)) %>%
   mutate(`¬B` = !B)
+```
+:::
+::::::
+
+## Propositional logic: Negation rule
+
+**Negation (NOT) operator** $\quad \lnot B \quad B' \quad \bar{B} \quad B^{\complement}$
+
+$\lnot B$ "*the robot is **NOT** blue*"
+
+:::::: columns
+::: {.column width="30%"}
+![](logical_operators/Slide3.png)
+:::
+
+::: {.column width="34%"}
+ 
+
+|      $A$       |      $B$       |   $\lnot B$    |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red}  |
+| [TRUE]{.green} | [FALSE]{.red}  | [TRUE]{.green} |
+| [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  |
+| [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
+:::
+
+::: {.column width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`¬B` = !B) %>%
+  filter(`¬B`)
 ```
 :::
 ::::::
@@ -493,6 +575,44 @@ expand_grid(
 -   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
 :::
 
+## Propositional logic: Conjunction rule
+
+**Conjunction (AND) operator** $\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B$
+
+$A \land B$ "*the robot has an antenna **AND** it's blue*"
+
+:::::: columns
+::: {.column width="30%"}
+![](logical_operators/Slide4.png)
+:::
+
+::: {.column width="34%"}
+ 
+
+|      $A$       |      $B$       |  $A \land B$   |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |
+| [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  |
+| [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
+:::
+
+::: {.column width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ∧ B` = A & B) %>%
+  filter(`A ∧ B`)
+```
+:::
+::::::
+
+-   $A \land \lnot A$ "*the robot has an antenna **AND** it does **NOT** have an antenna*" is an example of a **contradiction**: A proposition that is always false ($\bot$)
+
+-   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
+
 ## Propositional logic: Disjunction rule
 
 **Disjunction (OR) operator** $\quad A \lor B \quad A + B \quad A \cup B$
@@ -528,26 +648,58 @@ expand_grid(
 :::
 ::::::
 
-::: notes
--   $A \lor \lnot A$ "*the robot has an antenna **OR** it does **NOT** have an antenna*" is an example of a **tautology**: A proposition that is always true ($\top$)\]
+## Propositional logic: Disjunction rule
+
+**Disjunction (OR) operator** $\quad A \lor B \quad A + B \quad A \cup B$
+
+$A \lor B$ "*the robot has an antenna **OR** it's blue*"
+
+:::::: columns
+::: {.column width="30%"}
+![](logical_operators/Slide5.png)
+:::
+
+::: {.column width="34%"}
+ 
+
+|      $A$       |      $B$       |   $A \lor B$   |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  | [TRUE]{.green} |
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |
+| [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
+:::
+
+::: {.column width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ∨ B` = A | B) %>%
+  filter(`A ∨ B`)
+```
+:::
+::::::
+
+-   $A \lor \lnot A$ "*the robot has an antenna **OR** it does **NOT** have an antenna*" is an example of a **tautology**: A proposition that is always true ($\top$)
 
 -   $A \lor \lnot A$ is also known as the **law of excluded middle**
-:::
 
 ## Propositional logic: Conditional rule
 
-**Conditional/Implication (IF-THEN/IMPLIES) operator** $\quad A \implies B \quad A \subseteq B$
+**Conditional/Implication (IF-THEN/IMPLIES) operator** $\quad A \implies B \quad A \rightarrow B \quad A \subseteq B$
 
 ::: fragment
 $A \implies B$ ["***IF** the robot has an antenna **THEN** it's blue*"]{.fragment}
 :::
 
-:::::: columns
+::::::: columns
 ::: {.column .fragment width="30%"}
 ![](logical_operators/Slide6.png)
 :::
 
-::: {.column .fragment width="34%"}
+:::: {.column .fragment width="34%"}
  
 
 |      $A$       |      $B$       | $A \implies B$ |
@@ -556,19 +708,71 @@ $A \implies B$ ["***IF** the robot has an antenna **THEN** it's blue*"]{.fragmen
 | [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |
 | [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |
 | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
+
+ 
+
+::: fragment
+```{r}
+#| output-location: default
+# def conditional operator
+`%=>%` <- function(A, B) {
+  !A | B
+}
+```
 :::
+::::
 
 ::: {.column .fragment width="36%"}
 ```{r}
 #| output-location: default
-`%=>%` <- function(A, B) {
-  !A | B
-}
-
 expand_grid(
   A = c(TRUE, FALSE),
   B = c(TRUE, FALSE)) %>%
   mutate(`A ⇒ B` = A %=>% B)
+```
+:::
+:::::::
+
+## Propositional logic: Conditional rule
+
+**Conditional/Implication (IF-THEN/IMPLIES) operator** $\quad A \implies B \quad A \rightarrow B \quad A \subseteq B$
+
+$A \implies B$ "***IF** the robot has an antenna **THEN** it's blue*"
+
+:::::: columns
+::: {.column width="30%"}
+![](logical_operators/Slide6.png)
+:::
+
+::: {.column width="34%"}
+ 
+
+|      $A$       |      $B$       | $A \implies B$ |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |
+| [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
+
+ 
+
+```{r}
+#| output-location: default
+# def conditional operator
+`%=>%` <- function(A, B) {
+  !A | B
+}
+```
+:::
+
+::: {.column width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ⇒ B` = A %=>% B) %>%
+  filter(`A ⇒ B`)
 ```
 :::
 ::::::
@@ -592,18 +796,18 @@ Logical relationships are not the same as causal relationships:
 
 ## Propositional logic: Biconditional rule
 
-**Biconditional (IFF) operator** $\quad A \iff B \quad A = B$
+**Biconditional (IFF) operator** $\quad A \iff B \quad A \leftrightarrow B \quad A = B$
 
 ::: fragment
 $A \iff B$ ["*the robot has an antenna **IFF** it's blue*"]{.fragment}
 :::
 
-:::::: columns
+::::::: columns
 ::: {.column .fragment width="30%"}
 ![](logical_operators/Slide7.png)
 :::
 
-::: {.column .fragment width="34%"}
+:::: {.column .fragment width="34%"}
  
 
 |      $A$       |      $B$       |   $A \iff B$   |
@@ -612,184 +816,109 @@ $A \iff B$ ["*the robot has an antenna **IFF** it's blue*"]{.fragment}
 | [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |
 | [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  |
 | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
+
+ 
+
+::: fragment
+```{r}
+#| output-location: default
+# def biconditional operator 
+`%<=>%` <- function(A, B) {
+  (!A | B) & (!B | A)
+}
+```
 :::
+::::
 
 ::: {.column .fragment width="36%"}
 ```{r}
 #| output-location: default
-`%<=>%` <- function(A, B) {
-  (!A | B) & (!B | A)
-}
-
 expand_grid(
   A = c(TRUE, FALSE),
   B = c(TRUE, FALSE)) %>%
   mutate(`A ⇔ B` = A %<=>% B)
 ```
 :::
-::::::
+:::::::
 
-## Sample space
+## Propositional logic: Biconditional rule
 
--   The **sample space** ($\Omega$) is the set of all possible worlds ($\omega_i$), i.e., all possible combinations of truth values of all atomic variables in an argument
+**Biconditional (IFF) operator** $\quad A \iff B \quad A \leftrightarrow B \quad A = B$
 
--   The size of the sample space is $2^n$, where $n$ is the size of the given set of propositional variables ($\Omega = \{ \omega_1, \omega_2, \ldots, \omega_{2^n} \}$)
+$A \iff B$ "*the robot has an antenna **IFF** it's blue*"
 
--   For example, given an argument with two propositional variables $A$ and $B$, the sample space consists of four possible worlds:
-
-::: fragment
-|  $\Omega$  |      $A$       |      $B$       |
-|:----------:|:--------------:|:--------------:|
-| $\omega_1$ | [TRUE]{.green} | [TRUE]{.green} |
-| $\omega_2$ | [TRUE]{.green} | [FALSE]{.red}  |
-| $\omega_3$ | [FALSE]{.red}  | [TRUE]{.green} |
-| $\omega_4$ | [FALSE]{.red}  | [FALSE]{.red}  |
+:::::: columns
+::: {.column width="30%"}
+![](logical_operators/Slide7.png)
 :::
 
-## Logical equivalence
+::: {.column width="34%"}
+ 
+
+|      $A$       |      $B$       |   $A \iff B$   |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |
+| [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  |
+| [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
+
+ 
+
+```{r}
+#| output-location: default
+# def biconditional operator 
+`%<=>%` <- function(A, B) {
+  (!A | B) & (!B | A)
+}
+```
+:::
+
+::: {.column width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ⇔ B` = A %<=>% B) %>%
+  filter(`A ⇔ B`)
+```
+:::
+::::::
+
+## Propositional logic: Logical equivalence
 
 ::: fragment
-Two propositions $P$ and $Q$ are **logically equivalent** ($P \equiv Q$) if and only if they have the same truth value in every possible world
+Two propositions $X$ and $Y$ are **logically equivalent** ($X \equiv Y$) if and only if they have the same truth value in every possible world
 :::
 
 ::: fragment
 For example:
 
-|            |                |                |       P        |        Q         |
-|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|
-|  $\Omega$  |      $A$       |      $B$       | $A \implies B$ | $\lnot A \lor B$ |
-| $\omega_1$ | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |  [TRUE]{.green}  |
-| $\omega_2$ | [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |  [FALSE]{.red}   |
-| $\omega_3$ | [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |  [TRUE]{.green}  |
-| $\omega_4$ | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |  [TRUE]{.green}  |
+|                |                |       X        |        Y         |
+|:--------------:|:--------------:|:--------------:|:----------------:|
+|      $A$       |      $B$       | $A \implies B$ | $\lnot A \lor B$ |
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |  [TRUE]{.green}  |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |  [FALSE]{.red}   |
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |  [TRUE]{.green}  |
+| [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |  [TRUE]{.green}  |
 :::
 
-## Logical equivalences
-
-:::::::::: columns
-::::: {.column width="30%"}
-::: fragment
-**Double negation law**
-
-$\lnot(\lnot A) \equiv A$
-:::
+## Propositional logic: Logical entailment
 
 ::: fragment
-**De Morgan's laws**
-
-$\lnot(A \land B) \equiv \lnot A \lor \lnot B$
-
-$\lnot(A \lor B) \equiv \lnot A \land \lnot B$
-
-$A \lor B \equiv \lnot(\lnot A \land \lnot B)$
-:::
-:::::
-
-:::: {.column width="34%"}
-::: fragment
-**Conditional**
-
-$A \implies B \equiv \lnot A \lor B$
-
-$\lnot(A \implies B) \equiv A \land \lnot B$
-
-$A \implies B \not \equiv B \implies A$
-
-$A \implies B \not \equiv \lnot A \implies \lnot B$
-
-$A \implies B \equiv \lnot B \implies \lnot A$
-:::
-::::
-
-:::: {.column width="36%"}
-::: fragment
-**Biconditional**
-
-$A \iff B \equiv (A \implies B) \land (B \implies A)$
-
-$A \iff B \equiv (\lnot A \lor B) \land (\lnot B \lor A)$
-
-$\lnot(A \iff B) \equiv (A \land \lnot B) \lor (B \land \lnot A)$
-:::
-::::
-::::::::::
-
-::: notes
-$B \implies A$ is the converse of $A \implies B$
-
-$\lnot A \implies \lnot B$ is the inverse of $A \implies B$
-
-$\lnot B \implies \lnot A$ is the contrapositive of (and equivalent to) $A \implies B$
-:::
-
-## Logical equivalences
-
-:::::::::::: columns
-::::: {.column width="40%"}
-::: fragment
-**Commutative laws**
-
-$A \land B \equiv B \land A$
-
-$A \lor B \equiv B \lor A$
-:::
-
-::: fragment
-**Associative laws**
-
-$(A \land B) \land C \equiv A \land (B \land C)$
-
-$(A \lor B) \lor C \equiv A \lor (B \lor C)$
-:::
-:::::
-
-:::::::: {.column width="60%"}
-::: fragment
-**Distributive laws**
-
-$A \land (B \lor C) \equiv (A \land B) \lor (A \land C)$
-
-$A \lor (B \land C) \equiv (A \lor B) \land (A \lor C)$
-:::
-
-:::::: fragment
-::::: columns
-::: {.column width="44%"}
-**Idempotent laws**
-
-$A \land A \equiv A$
-
-$A \lor A \equiv A$
-:::
-
-::: {.column width="56%"}
-**Identity laws**
-
-$A \land T \equiv A$
-
-$A \lor F \equiv A$
-:::
-:::::
-::::::
-::::::::
-::::::::::::
-
-## Logical entailment
-
-::: fragment
-A proposition $P$ **entails** another proposition $Q$ ($P \models Q$) if and only if, in all possible worlds in which $P$ is true, $Q$ is also true.
+A proposition $X$ **entails** another proposition $Y$ ($X \models Y$) if and only if, in all possible worlds in which $X$ is true, $Y$ is also true.
 :::
 
 ::: fragment
 For example:
 
-|            |                |                |       P        |       Q        |
-|:----------:|:--------------:|:--------------:|:--------------:|:--------------:|
-|  $\Omega$  |      $A$       |      $B$       |  $A \land B$   |   $A \lor B$   |
-| $\omega_1$ | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
-| $\omega_2$ | [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
-| $\omega_3$ | [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  | [TRUE]{.green} |
-| $\omega_4$ | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
+|                |                |       X        |       Y        |
+|:--------------:|:--------------:|:--------------:|:--------------:|
+|      $A$       |      $B$       |  $A \land B$   |   $A \lor B$   |
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
+| [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  | [TRUE]{.green} |
+| [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
 :::
 
  
@@ -804,57 +933,38 @@ propositional logic provides a formal framework for defining **properties** of s
 **model checking**
 :::
 
-## Standard and conditional form of an argument
+## Artificial intelligence for deductive reasoning
 
-::: fragment
-$$
-\begin{array}{ll}
-1. & P_1 \\
-2. & P_2 \\
-\vdots \\
-n. & P_n \\
-\hline
-\therefore & C
-\end{array}
-$$
+::: nonincremental
+-   We will implement an AI for deductive reasoning in R as a function named `is.valid`
+
+    -   Takes a deductive argument (one or more premises named `E` for **evidence**, and a conclusion named `H` for **hypothesis**) as input
+
+    -   Returns a `Logical` value (`TRUE` or `FALSE`) as output
+
+-   If `is.valid(E, H)` returns `TRUE`, then the deductive argument is valid
+
+-   If `is.valid(E, H)` returns `FALSE`, then the deductive argument is invalid
 :::
 
-::: fragment
-the same argument can also be expressed in conditional form as:
+-   In the context of an argument, propositional variables are assumed to be true:\
+    $A$ means $A$ is True   $\lnot A$ means $A$ is False
 
-$$
-(P_1 \land P_2 \land \ldots \land P_n) \implies C
-$$
-:::
+## The set of all possible worlds
 
-::: fragment
-where the proposition $(P_1 \land P_2 \land \ldots \land P_n)$ is also know as **evidence** $E$ (or **knowledge base**) and the conclusion $C$ is also known as **hypothesis** $H$ (or **query**)
-:::
+-   The **universe** ($\Omega$) is the set of all possible worlds ($\omega_i$), i.e., all possible combinations of truth values of all atomic variables in an argument
 
-::: fragment
-$$
-E \implies H
-$$
-:::
+-   The size of the sample space is $2^n$, where $n$ is the size of the given set of propositional variables ($\Omega = \{ \omega_1, \omega_2, \ldots, \omega_{2^n} \}$)
 
-## Standard and conditional form of an argument
+-   For example, given an argument with two propositional variables $A$ and $B$, the sample space consists of four possible worlds:
 
 ::: fragment
-A deductive argument is valid iff the evidence entails the hypothesis:
-
-$$\quad E \models H$$
-:::
-
-::: fragment
-or the corresponding conditional proposition is a tautology:
-
-$$\quad (E \implies H) \equiv T$$
-:::
-
-::: notes
-If the corresponding conditional proposition is not a tautology, then the argument is invalid
-
-If the corresponding conditional proposition is a contradiction, then the argument is inconsistent
+|  $\Omega$  |      $A$       |      $B$       |
+|:----------:|:--------------:|:--------------:|
+| $\omega_1$ | [TRUE]{.green} | [TRUE]{.green} |
+| $\omega_2$ | [TRUE]{.green} | [FALSE]{.red}  |
+| $\omega_3$ | [FALSE]{.red}  | [TRUE]{.green} |
+| $\omega_4$ | [FALSE]{.red}  | [FALSE]{.red}  |
 :::
 
 ## Rules of [valid]{.underline} deductive reasoning/inference
@@ -891,65 +1001,6 @@ $$
 ((A \implies B) \land A) \models B \quad \text{or} \quad (((A \implies B) \land A) \implies B) \equiv T
 $$
 :::
-
-## Rules of [valid]{.underline} deductive reasoning/inference
-
-[**Affirming the antecedent**]{.underline} (*Modus ponens*)
-
-|   |   |   | P1 | P2 | E | H | E **⇒ H** |
-|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
-| $\Omega$ | $A$ | $B$ | $A \implies B$ | $A$ | $(A \implies B) \land A$ | $B$ | $((A \implies B) \land A) \implies B$ |
-| $\omega_1$ | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green .fragment fragment-index="100"} | [TRUE]{.green} | [TRUE]{.green .fragment fragment-index="101"} |
-| $\omega_2$ | [TRUE]{.green} | [FALSE]{.red} | [FALSE]{.red} | [TRUE]{.green} | [FALSE]{.red .fragment fragment-index="100"} | [FALSE]{.red} | [TRUE]{.green .fragment fragment-index="101"} |
-| $\omega_3$ | [FALSE]{.red} | [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red} | [FALSE]{.red .fragment fragment-index="100"} | [TRUE]{.green} | [TRUE]{.green .fragment fragment-index="101"} |
-| $\omega_4$ | [FALSE]{.red} | [FALSE]{.red} | [TRUE]{.green} | [FALSE]{.red} | [FALSE]{.red .fragment fragment-index="100"} | [FALSE]{.red} | [TRUE]{.green .fragment fragment-index="101"} |
-
-## Rules of [invalid]{.underline} deductive reasoning/inference
-
-[**Affirming the consequent**]{.underline}
-
-**Premise 1**: "*IF the robot is blue THEN it has an antenna*"
-
-**Premise 2**: "*the robot has an antenna*"
-
-**Conclusion**: "*the robot is blue*"
-
-::: fragment
-$$
-\begin{array}{ll}
-1. & A \implies B \\
-2. & B \\
-\hline
-\therefore & A
-\end{array}
-$$
-:::
-
- 
-
-::: fragment
-$$
-E \not \models H \quad \text{or} \quad (E \implies H) \not \equiv T
-$$
-:::
-
-::: fragment
-$$
-((A \implies B) \land B) \not \models A \quad \text{or} \quad (((A \implies B) \land B) \implies A) \not \equiv T
-$$
-:::
-
-## Rules of [invalid]{.underline} deductive reasoning/inference
-
-[**Affirming the consequent**]{.underline}
-
-|   |   |   | P1 | P2 | E | H | E **⇒ H** |
-|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
-| $\Omega$ | $A$ | $B$ | $A \implies B$ | $B$ | $(A \implies B) \land B$ | $A$ | $((A \implies B) \land B) \implies A$ |
-| $\omega_1$ | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green .fragment fragment-index="100"} | [TRUE]{.green} | [TRUE]{.green .fragment fragment-index="101"} |
-| $\omega_2$ | [TRUE]{.green} | [FALSE]{.red} | [FALSE]{.red} | [FALSE]{.red} | [FALSE]{.red .fragment fragment-index="100"} | [TRUE]{.green} | [TRUE]{.green .fragment fragment-index="101"} |
-| $\omega_3$ | [FALSE]{.red} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green .fragment fragment-index="100"} | [FALSE]{.red} | [FALSE]{.red .fragment fragment-index="101"} |
-| $\omega_4$ | [FALSE]{.red} | [FALSE]{.red} | [TRUE]{.green} | [FALSE]{.red} | [FALSE]{.red .fragment fragment-index="100"} | [FALSE]{.red} | [TRUE]{.green .fragment fragment-index="101"} |
 
 ## Scientific reasoning is inductive reasoning
 
