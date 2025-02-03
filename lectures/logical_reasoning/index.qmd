@@ -25,12 +25,12 @@ theme_set(theme_minimal())
 
 ## Statistical inference is logical reasoning
 
--   Statistical inference is a logical (inductive) reasoning process using 1) *observables*/**data** and 2) a **model of the data generating process** (DGP) to infer *unobservables*:
+-   Statistical inference is a logical (inductive) reasoning process using 1) **data** (observations/measurements of observable quantities) and 2) a **model of the data generating process** (DGP), to infer unobservable quantities:
 
 ::: fragment
 $$
 \begin{array}{ll}
-1. & \text{observables (data)} \\
+1. & \text{data (observations)} \\
 2. & \text{process model} \\
 \hline
 \therefore & \text{unobservables} \\
@@ -85,13 +85,32 @@ $$
 ::: fragment
 $$
 \begin{array}{ll}
+1. & \text{data (observations)} \\
+2. & \text{process model} \\
+\hline
+\therefore & \text{unobservables} \\
+\end{array}
+$$
+:::
+
+## Reasoning and arguments
+
+::: nonincremental
+-   **Reasoning** is the process of drawing a conclusion from one or more premises
+
+-   It is usually expressed as an **argument**
+
+-   An argument is a **series of propositions**: one or more **premises** and a **conclusion**
+:::
+
+$$
+\begin{array}{ll}
 1. & \text{All men are mortal} \\
 2. & \text{Socrates is a man} \\
 \hline
 \therefore & \text{Socrates is mortal} \\
 \end{array}
 $$
-:::
 
 -   **Premises** are also known as **assumptions**
 
@@ -101,16 +120,25 @@ $$
 
 ## Propositions
 
--   A **proposition** is a statement that is either true or false
+-   A **proposition** (or statement) is a declarative sentence that is either true or false, but not both at the same time
 
 -   It represents an assertion or claim about a particular state of affairs in the world
 
-    -   "*It's raining*" [is a proposition]{.fragment .green}
-    -   "*Is it raining?*" [is not a proposition]{.fragment .red}
-    -   "*Gaborone is the capital of Botswana*" [is a proposition]{.fragment .green}
-    -   "*Italy will win the 2026 FIFA World Cup*" [is a proposition]{.fragment .green}
+    -   "*it's raining*" 🌧️ [is a proposition]{.fragment .green}
+    -   "*is it raining?*" 🤔 [is not a proposition]{.fragment .red}
+    -   "*Gaborone is the capital of Botswana*" 🇧🇼 [is a proposition]{.fragment .green}
+    -   "*Italy will win the 2026 FIFA World Cup*" ⚽️ [is a proposition]{.fragment .green}
+    -   "*unicorns fly*" 🦄 [is a proposition]{.fragment .green}
     -   "*2 + 2 = 5*" [is a proposition]{.fragment .green}
     -   "*X + 2 = 5*" [is not a proposition]{.fragment .red}
+
+::: notes
+-   "*unicorns fly* is a proposition, because it can be assigned a truth value: in the real world, we would generally consider this false because unicorns don’t exist, and thus they can’t fly
+
+-   The key is that it could be true in a hypothetical world where unicorns exist and can fly
+
+-   The truth value doesn’t need to be known or verifiable—it just needs to be something that could, in principle, be true or false
+:::
 
 ## Logical reasoning
 
@@ -129,6 +157,8 @@ $$
         -   follows the rules of **probability theory**
 
         -   is the basis of **scientific reasoning** (incl. statistical inference)
+
+-   Probability theory is the logic of science!
 
 ## Deductive vs. inductive arguments
 
@@ -228,7 +258,7 @@ $$
 
 ## Deductive and inductive reasoning recap
 
--   The goal of **deductive reasoning** is to determine whether the **conclusion is guaranteed** to be true, assuming the premises are true (*truth-preserving, non-ampliative*, *certain*)
+-   The goal of **deductive reasoning** is to determine whether the **conclusion is guaranteed** to be true, assuming the premises are true (truth-preserving, certain/full info)
 
 ::: fragment
 $$
@@ -241,7 +271,7 @@ $$
 $$
 :::
 
--   The goal of **inductive reasoning** is to determine whether the **conclusion is likely** to be true, assuming the premises are true (*not truth-preserving, ampliative*, *uncertain*)
+-   The goal of **inductive reasoning** is to determine whether the **conclusion is likely** to be true, assuming the premises are true (not truth-preserving, uncertain/partial info)
 
 ::: fragment
 $$
@@ -252,6 +282,44 @@ $$
 \therefore & \text{Socrates is RH} \\
 \end{array}
 $$
+:::
+
+::: notes
+Complete vs incomplete information/knowledge of the causes
+
+Information is quantified as the reduction in uncertainty (or entropy) when the outcome of a random process is revealed.
+
+Information is tied to how much an observation resolves ambiguity.
+
+**Entropy**
+
+-   Entropy measures the average uncertainty or "surprise" in a random variable $X$
+
+-   Higher entropy means more uncertainty
+
+-   When an outcome is observed, the entropy reduction equals the information gained (in bits)
+
+**Self information (surprisal)**
+
+-   The information gained from observing a specific outcome $x$
+
+-   Rare outcomes (low $p(x)$) provide more information than common ones
+
+**Mutual information**
+
+-   Quantifies the reduction in uncertainty about $Y$ after knowing $X$
+
+-   Measures shared information between variables
+
+**Conditional entropy**
+
+-   Residual uncertainty in $Y$ given knowledge of $X$
+
+**Kullback-Leibler (KL) divergence**
+
+-   Measures the "distance" between two distributions $P$ and $Q$
+
+-   Represents inefficiency (in bits) of using $Q$ to model $P$
 :::
 
 ## Artificial intelligence
@@ -276,7 +344,7 @@ $$
 
     -   **Probability theory** (mathematical language) to formalize **inductive reasoning**
 
-    -   **R** (programming language) to translate a deductive or inductive argument written in the language of propositional logic and probability theory into a computer algorithm
+    -   **R** (programming language) to translate a deductive or inductive argument written in the language of propositional logic or probability theory into a computer algorithm
 
 ::: notes
 A mathematical language used to represent and use knowledge/information to reason about the truth or plausibility of a conclusion assuming that the premises are true
@@ -354,7 +422,7 @@ There are two types of propositional variables: atomic and compound variables
 
 ::: fragment
 | English | Math | R |
-|:------------------------------------|:-----------------|:-----------------|
+|:----------------------------------|:------------------|:------------------|
 | $X \:$ "*the robot is **NOT** blue*" | $\lnot B$ | `!B` |
 | $Y \:$ "*the robot is blue **AND** it has an antenna*" | $B \land A$ | `B & A` |
 | $Z \:$ "***IF** the robot has an antenna **THEN** it's **NOT** blue*" | $A \implies \lnot B$ | `A %=>% !B` |
@@ -372,16 +440,11 @@ There are two types of propositional variables: atomic and compound variables
 | A **IFF** B     | $A \iff B$     | `A %<=>% B` |             |
 
 -   The assignment of a truth value to an **atomic variable** (e.g., $A$ and $B$) is called **valuation**
-
 -   The truth value of a **compound variable** is determined by the truth values of its atomic variables and the logical operators, according to the **rules of propositional logic**
-
 -   A **truth table** is the **set of all possible valuations** for a set of atomic variables
-
 -   A truth table for $n$ atomic variables consists of $2^n$ possible valuations
-
--   A truth table is also known as **universe** ($\Omega$), sample space, state space, etc.
-
 -   Valuations are also known as **worlds** ($\omega$), outcomes, states, etc.
+-   A truth table is also known as the **universe** ($\Omega$), sample space, state space, etc.
 
 ::: notes
 In propositional logic, the truth value of an atomic variable is assigned by a truth assignment (also called a valuation), which is a function that maps each atomic variable to either True (T) or False (F).
@@ -403,6 +466,26 @@ $\lnot A \:$ ["*the robot does **NOT** have an antenna*"]{.fragment}
 
 :::::: columns
 ::: {.column .fragment width="30%"}
+![](logical_operators/Slide1.png)
+:::
+
+::: {.column width="34%"}
+ 
+:::
+
+::: {.column width="36%"}
+ 
+:::
+::::::
+
+## Propositional logic: Negation rule
+
+**Negation (NOT) operator** $\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}$
+
+$\lnot A \:$ "*the robot does **NOT** have an antenna*"
+
+:::::: columns
+::: {.column width="30%"}
 ![](logical_operators/Slide2.png)
 :::
 
@@ -821,7 +904,7 @@ $A \iff B \:$ ["*the robot has an antenna **IFF** it's blue*"]{.fragment}
 #| output-location: default
 # def biconditional operator 
 `%<=>%` <- function(A, B) {
-  (!A | B) & (!B | A)
+  (A %=>% B) & (B %=>% A)
 }
 ```
 :::
@@ -865,7 +948,7 @@ $A \iff B \:$ "*the robot has an antenna **IFF** it's blue*"
 #| output-location: default
 # def biconditional operator 
 `%<=>%` <- function(A, B) {
-  (!A | B) & (!B | A)
+  (A %=>% B) & (B %=>% A)
 }
 ```
 :::
@@ -910,12 +993,10 @@ For example:
 #| output-location: default
 expand_grid(
   A = c(TRUE, FALSE),
-  B = c(TRUE, FALSE)
-) %>%
-mutate(
-  X = A %=>% B,
-  Y = !A | B
-)
+  B = c(TRUE, FALSE)) %>%
+  mutate(
+    X = A %=>% B,
+    Y = !A | B)
 ```
 :::
 :::::
@@ -931,7 +1012,7 @@ For example:
  
 
 |   |   | X | Y |
-|:---------------:|:---------------:|:---------------:|:--------------------:|
+|:----------------:|:----------------:|:----------------:|:-----------------:|
 | $A$ | $B$ | $A \lor B$ | $\lnot (\lnot A \land \lnot B)$ |
 | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
 | [TRUE]{.green} | [FALSE]{.red} | [TRUE]{.green} | [TRUE]{.green} |
@@ -944,12 +1025,10 @@ For example:
 #| output-location: default
 expand_grid(
   A = c(TRUE, FALSE),
-  B = c(TRUE, FALSE)
-) %>%
-mutate(
-  X = A | B,
-  Y = !(!A & !B)
-)
+  B = c(TRUE, FALSE)) %>%
+  mutate(
+    X = A | B,
+    Y = !(!A & !B))
 ```
 :::
 :::::
@@ -957,7 +1036,7 @@ mutate(
 ::: fragment
 Alternatively:
 
-Two propositions $X$ and $Y$ are **logically equivalent** ($X \equiv Y$) iff $X \iff Y$ is a tautology
+Two propositions $X$ and $Y$ are **logically equivalent** iff $X \iff Y$ is a tautology
 :::
 
 ## Propositional logic: Logical entailment
@@ -984,14 +1063,10 @@ For example:
 ::: {.column .fragment}
 ```{r}
 #| output-location: default
-expand_grid(
-  A = c(TRUE, FALSE),
-  B = c(TRUE, FALSE)
-) %>%
-mutate(
-  X = A & B,
-  Y = A | B
-)
+expand_grid(A = c(TRUE, FALSE), B = c(TRUE, FALSE)) %>%
+  mutate(
+    X = A & B,
+    Y = A | B)
 ```
 :::
 :::::
@@ -999,8 +1074,14 @@ mutate(
 ::: fragment
 Alternatively:
 
-A proposition $X$ **logically entails** another proposition $Y$ ($X \models Y$) iff $X \implies Y$ is a tautology
+A proposition $X$ **logically entails** another proposition $Y$ iff $X \implies Y$ is a tautology
 :::
+
+## Logical entailment and deductive validity
+
+-   Deductive validity is determined by checking whether the conclusion ($H$) necessarily follows from/is guaranteed by the premises ($E$)
+
+-   Symbolically, this is expressed as $E \models H$, meaning $H$ is a logical implication of $E$
 
 ## Artificial intelligence for deductive reasoning
 
@@ -1014,11 +1095,17 @@ $$
 \boxed{V(H \mid E) = \begin{cases} \text{True} & \text{if } E \models H \\ \text{False} & \text{otherwise} \end{cases}}
 $$
 
--   We will implement this AI in R as a function named `is.valid` that
+-   We will implement this AI in R as a function:
 
--   takes a deductive argument (one or more premises named `E` for evidence, and a conclusion named `H` for hypothesis) as input, and
+    -   **Input**: A deductive argument with one or more premises (`E` for evidence) and a conclusion (`H` for hypothesis)
 
--   returns a `Logical` value (`TRUE` or `FALSE`) as output
+    -   **Output**: A `Logical` value (`TRUE` or `FALSE`), indicating whether the argument is deductively valid
+
+-   First, we will program this computer algorithm step-by-step using functions from the [`tidyverse`](https://www.tidyverse.org/) package
+
+-   Then, we will wrap it up into a reusable function called `is.valid` using functions from the [`rlang`](https://rlang.r-lib.org/) package
+
+-   We will use the *proportional syllogism*, a classical argument that is foundational to statistical inference, as an example
 
 ## Proportional syllogism
 
@@ -1051,33 +1138,54 @@ $$
 
 ## Proportional syllogism
 
-Build truth table (set of all possible worlds)
+The proportional syllogism is a logical argument that draws a conclusion based on a proportion
+
+$$
+\begin{array}{ll}
+1. & B1 \lor B2 \lor W \\
+2. & \neg((B1 \land B2) \lor (B1 \land W) \lor (B2 \land W)) \\
+\hline
+\therefore & B1 \lor B2
+\end{array}
+$$
+[We will approach this in three steps:]{.fragment}
+
+1.  Build the truth table (the set of all possible worlds/truth-value assignments of the set of atomic variables in the argument)
+
+2.  Add the premises and conclusion to the truth table
+
+3.  Identify the possible worlds where all the premises (`E`) are true
+
+4.  Check that the argument is deductively valid, i.e., that the conclusion (`H`) is true in each of those possible worlds ($E \models H$)
+
+
+## Proportional syllogism
+
+Build the truth table
 
 ```{r}
 expand_grid(
   B1 = c(TRUE, FALSE),
   B2 = c(TRUE, FALSE),
-  W  = c(TRUE, FALSE)
-)
+  W  = c(TRUE, FALSE))
 ```
 
 ## Proportional syllogism
 
-Add premises, combine them as evidence, and add conclusion/hypothesis
+Add the premises and conclusion to the truth table
 
 ```{r}
 expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W = c(TRUE, FALSE)) %>%
   mutate(
     P1 = B1 | B2 | W,
     P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    E  = P1 & P2,
     H  = B1 | B2
   )
 ```
 
 ## Proportional syllogism
 
-Check that argument is valid $\quad E \models H$
+Identify the possible worlds where all the premises (`E`) are true
 
 ```{r}
 #| output-location: default
@@ -1093,7 +1201,7 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
 
 ## Proportional syllogism
 
-Check that argument is valid $\quad E \models H$
+Check that the argument is deductively valid ($E \models H$)
 
 ```{r}
 #| output-location: default
@@ -1110,7 +1218,7 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
 
 ## Proportional syllogism
 
-Check that argument is valid $\quad E \models H$
+Check that the argument is deductively valid ($E \models H$)
 
 ```{r}
 #| output-location: default
@@ -1128,7 +1236,7 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
 
 ## Proportional syllogism
 
-Check that argument is valid $\quad E \models H$
+Check that the argument is deductively valid ($E \models H$)
 
 ```{r}
 #| output-location: default
@@ -1143,6 +1251,11 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
   pull(H) %>%
   all()
 ```
+
+::: fragment
+![](images/100pcs-lot-Eco-Friendly-Blue-White-Ball-Pits-Soft-Plastic-Water-Pool-Ocean-Wave-Baby-Funny.jpg){height="300"}
+:::
+
 
 ## Artificial intelligence for deductive reasoning
 
@@ -1321,9 +1434,9 @@ P <- function(..., H, table = TRUE, flex = TRUE) {
 
 ## *Modus ponens*
 
-*Modus ponens* is a **valid deductive argument** that affirms the antecedent to conclude the consequent
+*Modus ponens* is a logical argument that affirms the antecedent to conclude the consequent
 
-:::::::: columns
+::::::::: columns
 ::::: column
 ::: {.fragment .nonincremental}
 **Premises**
@@ -1349,16 +1462,12 @@ $$
 :::
 :::::
 
-:::: column
+::::: column
 ::: fragment
 ```{r}
 #| echo: false
 #| output-location: default
-P(
-  P1 = R %=>% W,
-  P2 = R,       
-  H  = W
-)
+P(P1 = R %=>% W, P2 = R, H  = W)
 ```
 :::
 
@@ -1368,74 +1477,17 @@ P(
 is.valid(
   P1 = R %=>% W,
   P2 = R,       
-  H  = W
-)
+  H  = W)
 ```
-:::
-::::
-::::::::
-
-## *Modus tollens*
-
-*Modus tollens* is a **valid deductive argument** that denies the consequent to conclude the negation of the antecedent
-
-:::::::: columns
-::::: column
-::: {.fragment .nonincremental}
-**Premises**
-
--   If it is raining, then the ground is wet
-
--   The ground is not wet
-
-**Conclusion**
-
--   It is not raining
-:::
-
-::: fragment
-$$
-\begin{array}{ll}
-1. & R \implies W \\
-2. & \neg W \\
-\hline
-\therefore & \neg R
-\end{array}
-$$
 :::
 :::::
-
-:::: column
-::: fragment
-```{r}
-#| echo: false
-#| output-location: default
-P(
-  P1 = R %=>% W,
-  P2 = !W,
-  H  = !R
-)
-```
-:::
-
-::: fragment
-```{r}
-#| output-location: default
-is.valid(
-  P1 = R %=>% W,
-  P2 = !W,
-  H  = !R
-)
-```
-:::
-::::
-::::::::
+:::::::::
 
 ## Affirming the consequent
 
-Affirming the consequent is an **invalid deductive argument** that affirms the consequent to conclude the antecedent
+Affirming the consequent is a logical argument that affirms the consequent to conclude the antecedent
 
-:::::::: columns
+::::::::: columns
 ::::: column
 ::: {.fragment .nonincremental}
 **Premises**
@@ -1461,16 +1513,12 @@ $$
 :::
 :::::
 
-:::: column
+::::: column
 ::: fragment
 ```{r}
 #| echo: false
 #| output-location: default
-P(
-  P1 = R %=>% W,
-  P2 = W,
-  H  = R
-)
+P(P1 = R %=>% W, P2 = W, H  = R)
 ```
 :::
 
@@ -1480,18 +1528,69 @@ P(
 is.valid(
   P1 = R %=>% W,
   P2 = W,
-  H  = R
-)
+  H  = R)
 ```
 :::
-::::
-::::::::
+:::::
+:::::::::
+
+## *Modus tollens*
+
+*Modus tollens* is a logical argument that denies the consequent to conclude the negation of the antecedent
+
+::::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   The ground is not wet
+
+**Conclusion**
+
+-   It is not raining
+:::
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & R \implies W \\
+2. & \neg W \\
+\hline
+\therefore & \neg R
+\end{array}
+$$
+:::
+:::::
+
+::::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P(P1 = R %=>% W, P2 = !W, H  = !R)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+is.valid(
+  P1 = R %=>% W,
+  P2 = !W,
+  H  = !R)
+```
+:::
+:::::
+:::::::::
+
 
 ## Denying the antecedent
 
-Denying the antecedent is an **invalid deductive argument** that denies the antecedent to conclude the negation of the consequent
+Denying the antecedent is a logical argument that denies the antecedent to conclude the negation of the consequent
 
-:::::::: columns
+::::::::: columns
 ::::: column
 ::: {.fragment .nonincremental}
 **Premises**
@@ -1517,16 +1616,12 @@ $$
 :::
 :::::
 
-:::: column
+::::: column
 ::: fragment
 ```{r}
 #| echo: false
 #| output-location: default
-P(
-  P1 = R %=>% W,
-  P2 = !R,
-  H  = !W
-)
+P(P1 = R %=>% W, P2 = !R, H  = !W)
 ```
 :::
 
@@ -1536,18 +1631,17 @@ P(
 is.valid(
   P1 = R %=>% W,
   P2 = !R,
-  H  = !W
-)
+  H  = !W)
 ```
 :::
-::::
-::::::::
+:::::
+:::::::::
 
 ## Hypothetical syllogism
 
-The hypothetical syllogism is a **valid deductive argument** that combines two conditional statements to conclude a third conditional statement
+The hypothetical syllogism is a logical argument that combines two conditional statements to conclude a third conditional statement
 
-:::::::: columns
+::::::::: columns
 ::::: column
 ::: {.fragment .nonincremental}
 **Premises**
@@ -1573,16 +1667,12 @@ $$
 :::
 :::::
 
-:::: column
+::::: column
 ::: fragment
 ```{r}
 #| echo: false
 #| output-location: default
-P(
-  P1 = R %=>% W,
-  P2 = W %=>% G,
-  H  = R %=>% G
-)
+P(P1 = R %=>% W, P2 = W %=>% G, H  = R %=>% G)
 ```
 :::
 
@@ -1592,18 +1682,17 @@ P(
 is.valid(
   P1 = R %=>% W,
   P2 = W %=>% G,
-  H  = R %=>% G
-)
+  H  = R %=>% G)
 ```
 :::
-::::
-::::::::
+:::::
+:::::::::
 
 ## Proportional syllogism
 
 The proportional syllogism is a logical argument that draws a conclusion based on a proportion
 
-:::::::::: columns
+::::::::::: columns
 ::::::: column
 ::: {.fragment .nonincremental}
 **Premises**
@@ -1649,7 +1738,7 @@ If you want a coherent theory of probability that always applies, you must use l
 Despite these flaws, frequentist probability persists in practice because: 1. It works well for large-scale empirical data (e.g., coin flips, medical studies). 2. It avoids subjective priors (which some mistakenly see as a flaw in Bayesian probability). 3. Historically, probability theory was developed with physical randomness in mind (games of chance, dice, coins).
 :::
 
-&nbsp;
+ 
 
 ::: fragment
 $$
@@ -1663,16 +1752,12 @@ $$
 :::
 :::::::
 
-:::: column
+::::: column
 ::: fragment
 ```{r}
 #| echo: false
 #| output-location: default
-P(
-  P1 = B1 | B2 | W,                         
-  P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-  H  = B1 | B2                                
-)
+P(P1 = B1 | B2 | W, P2 = !((B1 & B2) | (B1 & W) | (B2 & W)), H  = B1 | B2)
 ```
 :::
 
@@ -1682,12 +1767,11 @@ P(
 is.valid(
   P1 = B1 | B2 | W,                         
   P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-  H  = B1 | B2                                
-)
+  H  = B1 | B2)
 ```
 :::
-::::
-::::::::::
+:::::
+:::::::::::
 
 ## Statistical syllogism
 
@@ -1703,10 +1787,6 @@ The statistical syllogism is a logical argument that draws a conclusion about a 
 **Conclusion**
 
 -   Pingu can fly
-:::
-
-::: fragment
-Bayesian reasoning provides a formal framework for the statistical syllogism.
 :::
 
 ## Inductive generalization
@@ -2079,7 +2159,7 @@ Chance is a descriptor of unpredictability — whether due to lack of informatio
 ## Logical vs frequentist probability {.scrollable}
 
 | Feature | **Logical Probability** | **Frequentist Probability** |
-|------------------|------------------------------|------------------------|
+|-------------------|-----------------------------|------------------------|
 | **Definition** | Strength of inductive argument/Degree of belief based on available information | Long-run relative frequency in infinite trials |
 | **Can Compute Probability?** | ✅ Yes, by counting possible worlds | ❌ No, requires infinite trials (it can only be estimated) |
 | **Works for Single Events?** | ✅ Yes | ❌ No, must assume hypothetical repetition |
