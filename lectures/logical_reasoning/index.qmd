@@ -20,34 +20,35 @@ df-print: kable
 ```{r}
 #| include: false
 library(tidyverse)
+theme_set(theme_minimal())
 ```
 
 ## Statistical inference is logical reasoning
 
--   Statistical inference is an **inductive reasoning** process using *observables* (**data**) and a **model** of the data generating process (DGP) to infer *unobservables*
+-   Statistical inference is a logical (inductive) reasoning process using 1) *observables*/**data** and 2) a **model of the data generating process** (DGP) to infer *unobservables*:
 
 ::: fragment
 $$
 \begin{array}{ll}
 1. & \text{observables (data)} \\
-2. & \text{model of the DGP} \\
+2. & \text{process model} \\
 \hline
 \therefore & \text{unobservables} \\
 \end{array}
 $$
 :::
 
--   Unobservables include:
-
-    -   Future observations or unobserved/unrecorded past outcomes (prediction)
-    -   Unobservable counterfactual outcomes (causal inference)
-    -   Unobservable model parameters (estimation)
-    -   Unobservable latent variables (estimation)
-    -   Missing data (imputation)
+-   Future observations (prediction/forecasting)
+-   Unrecorded past observations or unobserved events (retrodiction/backcasting)
+-   Hypothetical observations (frequentist inference)
+-   Unobservable counterfactual outcomes (causal inference, requires a **causal model**)
+-   Missing data (imputation)
+-   Unobservable model parameters (estimation)
+-   Unobservable latent variables (estimation)
 
 ::: notes
--   observables = data/observations/measurements/observed quantities
--   unobservables = unobserved or unobservable quantities
+-   observables/knowns = data/observations/measurements/observed quantities; data or quantities we actually measured or could in principle measure
+-   unobservables/unknowns = unobserved or unobservable quantities; quantities we cannot (or have not) measured
 -   Causal inference = estimation of causal effects; prediction of effects of interventions
 :::
 
@@ -227,7 +228,7 @@ $$
 
 ## Deductive and inductive reasoning recap
 
--   The goal of **deductive reasoning** is to determine whether the **conclusion is guaranteed** to be true, assuming the premises are true (*truth-preserving, non-ampliative*)
+-   The goal of **deductive reasoning** is to determine whether the **conclusion is guaranteed** to be true, assuming the premises are true (*truth-preserving, non-ampliative*, *certain*)
 
 ::: fragment
 $$
@@ -240,7 +241,7 @@ $$
 $$
 :::
 
--   The goal of **inductive reasoning** is to determine whether the **conclusion is likely** to be true, assuming the premises are true (*not truth-preserving, ampliative*)
+-   The goal of **inductive reasoning** is to determine whether the **conclusion is likely** to be true, assuming the premises are true (*not truth-preserving, ampliative*, *uncertain*)
 
 ::: fragment
 $$
@@ -256,7 +257,7 @@ $$
 ## Artificial intelligence
 
 ::: nonincremental
--   Our goal in this series is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of deductive and inductive reasoning
+-   Our goal in this series is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical (deductive and inductive) reasoning
 :::
 
 ![](images/How-to-build-a-thinking-AI-model.webp){height="500"}
@@ -264,18 +265,18 @@ $$
 ## Artificial intelligence
 
 ::: nonincremental
--   Our goal in this series is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of deductive and inductive reasoning
+-   Our goal in this series is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical (deductive and inductive) reasoning
 
--   To achieve this, we need to translate deductive and inductive arguments from English to a language that the computer understands
+-   To achieve this, we need a way to translate a logical argument from English to a language that the computer understands
 :::
 
 -   Specifically, we will use:
 
-    -   **Propositional logic** (a mathematical language) to formalize **deductive reasoning**
+    -   **Propositional logic** (mathematical language) to formalize **deductive reasoning**
 
-    -   **Probability theory** (a mathematical language) to formalize **inductive reasoning**
+    -   **Probability theory** (mathematical language) to formalize **inductive reasoning**
 
-    -   **R** (a programming language) to translate deductive and inductive arguments written in the language of propositional logic and probability theory into a computer algorithm
+    -   **R** (programming language) to translate a deductive or inductive argument written in the language of propositional logic and probability theory into a computer algorithm
 
 ::: notes
 A mathematical language used to represent and use knowledge/information to reason about the truth or plausibility of a conclusion assuming that the premises are true
@@ -289,18 +290,6 @@ Propositional logic is a factored representation of knowledge.
 First-order logic is a structured representation of knowledge.
 :::
 
-## Artificial intelligence for deductive reasoning
-
--   We will implement an AI for deductive reasoning in R as a function named `is.valid`
-
-    -   Takes a deductive argument (one or more premises named `E` for **evidence**, and a conclusion named `H` for **hypothesis**) as input
-
-    -   Returns a `Logical` value (`TRUE` or `FALSE`) as output
-
--   If `is.valid(E, H)` returns `TRUE`, then the deductive argument is valid
-
--   If `is.valid(E, H)` returns `FALSE`, then the deductive argument is invalid
-
 ## Propositional logic: Variables
 
 -   **Propositional variables** (a.k.a. logical or Boolean variables) represent propositions and thus hold one of two values, either **True** or **False** (a.k.a. the **truth value** of a proposition)
@@ -309,11 +298,11 @@ First-order logic is a structured representation of knowledge.
 
 ::::: columns
 ::: {.column .fragment}
-$A$ ["*the robot has an antenna*"]{.fragment}
+$A \:$ ["*the robot has an antenna*"]{.fragment}
 :::
 
 ::: {.column .fragment}
-$B$ ["*the robot is blue*"]{.fragment}
+$B \:$ ["*the robot is blue*"]{.fragment}
 :::
 :::::
 
@@ -366,34 +355,42 @@ There are two types of propositional variables: atomic and compound variables
 ::: fragment
 | English | Math | R |
 |:------------------------------------|:-----------------|:-----------------|
-| $X$ "*the robot is **NOT** blue*" | $\lnot B$ | `!B` |
-| $Y$ "*the robot is blue **AND** it has an antenna*" | $B \land A$ | `B & A` |
-| $Z$ "***IF** the robot has an antenna **THEN** it's **NOT** blue*" | $A \implies \lnot B$ | `A %=>% !B` |
+| $X \:$ "*the robot is **NOT** blue*" | $\lnot B$ | `!B` |
+| $Y \:$ "*the robot is blue **AND** it has an antenna*" | $B \land A$ | `B & A` |
+| $Z \:$ "***IF** the robot has an antenna **THEN** it's **NOT** blue*" | $A \implies \lnot B$ | `A %=>% !B` |
 :::
 
 ## Propositional logic: Operators
 
-| English         | Math           | R           |                            |
-|:----------------|:---------------|:------------|:---------------------------|
-| A               | $A$            | `A`         | `A == TRUE`                |
-| **NOT** A       | $\lnot A$      | `!A`        | `A != TRUE`   `A == FALSE` |
-| A **AND** B     | $A \land B$    | `A & B`     | `all(A, B)`                |
-| A **OR** B      | $A \lor B$     | `A | B`     | `any(A, B)`                |
-| A **IMPLIES** B | $A \implies B$ | `A %=>% B`  | `!A | B`                   |
-| A **IFF** B     | $A \iff B$     | `A %<=>% B` | `(!A | B) & (!B | A)`      |
+| English         | Math           | R           |             |
+|:----------------|:---------------|:------------|:------------|
+| A               | $A$            | `A`         |             |
+| **NOT** A       | $\lnot A$      | `!A`        |             |
+| A **AND** B     | $A \land B$    | `A & B`     | `all(A, B)` |
+| A **OR** B      | $A \lor B$     | `A | B`     | `any(A, B)` |
+| A **IMPLIES** B | $A \implies B$ | `A %=>% B`  |             |
+| A **IFF** B     | $A \iff B$     | `A %<=>% B` |             |
 
--   The truth value of an atomic variable is assigned as previously shown
+-   The assignment of a truth value to an **atomic variable** (e.g., $A$ and $B$) is called **valuation**
 
--   The truth value of a compound variable is determined by the truth-value assignments of its atomic components according to the rules of propositional logic
+-   The truth value of a **compound variable** is determined by the truth values of its atomic variables and the logical operators, according to the **rules of propositional logic**
 
--   The **truth table** is the **set of all possible truth-value assignments** of a set of atomic variables
+-   A **truth table** is the **set of all possible valuations** for a set of atomic variables
 
--   The truth table is also known as **universe** ($\Omega$), sample space, state space, etc.
+-   A truth table for $n$ atomic variables consists of $2^n$ possible valuations
 
--   The truth-value assignments are also known as **worlds** ($\omega$), outcomes, states, etc.
+-   A truth table is also known as **universe** ($\Omega$), sample space, state space, etc.
+
+-   Valuations are also known as **worlds** ($\omega$), outcomes, states, etc.
 
 ::: notes
-The truth table/logical space is the set of all possible truth-value assignments/valuations of a set of atomic variables
+In propositional logic, the truth value of an atomic variable is assigned by a truth assignment (also called a valuation), which is a function that maps each atomic variable to either True (T) or False (F).
+
+This assignment is arbitrary and not determined by the logic itself—it depends on the context or interpretation of the variables.
+
+-   To analyze complex formulas, all possible truth assignments are enumerated in a truth table.
+
+-   For $n$ atomic variables, there are $2^n$ possible assignments.
 :::
 
 ## Propositional logic: Negation rule
@@ -401,7 +398,7 @@ The truth table/logical space is the set of all possible truth-value assignments
 **Negation (NOT) operator** $\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}$
 
 ::: fragment
-$\lnot A$ ["*the robot does **NOT** have an antenna*"]{.fragment}
+$\lnot A \:$ ["*the robot does **NOT** have an antenna*"]{.fragment}
 :::
 
 :::::: columns
@@ -435,7 +432,7 @@ expand_grid(
 
 **Negation (NOT) operator** $\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}$
 
-$\lnot A$ "*the robot does **NOT** have an antenna*"
+$\lnot A \:$ "*the robot does **NOT** have an antenna*"
 
 :::::: columns
 ::: {.column width="30%"}
@@ -470,7 +467,7 @@ expand_grid(
 **Negation (NOT) operator** $\quad \lnot B \quad B' \quad \bar{B} \quad B^{\complement}$
 
 ::: fragment
-$\lnot B$ ["*the robot is **NOT** blue*"]{.fragment}
+$\lnot B \:$ ["*the robot is **NOT** blue*"]{.fragment}
 :::
 
 :::::: columns
@@ -504,7 +501,7 @@ expand_grid(
 
 **Negation (NOT) operator** $\quad \lnot B \quad B' \quad \bar{B} \quad B^{\complement}$
 
-$\lnot B$ "*the robot is **NOT** blue*"
+$\lnot B \:$ "*the robot is **NOT** blue*"
 
 :::::: columns
 ::: {.column width="30%"}
@@ -539,7 +536,7 @@ expand_grid(
 **Conjunction (AND) operator** $\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B$
 
 ::: fragment
-$A \land B$ ["*the robot has an antenna **AND** it's blue*"]{.fragment}
+$A \land B \:$ ["*the robot has an antenna **AND** it's blue*"]{.fragment}
 :::
 
 :::::: columns
@@ -570,7 +567,7 @@ expand_grid(
 ::::::
 
 ::: notes
--   $A \land \lnot A$ "*the robot has an antenna **AND** it does **NOT** have an antenna*" is an example of a **contradiction**: A proposition that is always false ($\bot$)
+-   $A \land \lnot A \:$ "*the robot has an antenna **AND** it does **NOT** have an antenna*" is an example of a **contradiction**, i.e., proposition that is always false ($\bot$)
 
 -   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
 :::
@@ -579,7 +576,7 @@ expand_grid(
 
 **Conjunction (AND) operator** $\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B$
 
-$A \land B$ "*the robot has an antenna **AND** it's blue*"
+$A \land B \:$ "*the robot has an antenna **AND** it's blue*"
 
 :::::: columns
 ::: {.column width="30%"}
@@ -609,7 +606,7 @@ expand_grid(
 :::
 ::::::
 
--   $A \land \lnot A$ "*the robot has an antenna **AND** it does **NOT** have an antenna*" is an example of a **contradiction**: A proposition that is always false ($\bot$)
+-   $A \land \lnot A$ "*the robot has an antenna **AND** it does **NOT** have an antenna*" is an example of a **contradiction**, i.e., a proposition that is always false ($\bot$)
 
 -   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
 
@@ -618,7 +615,7 @@ expand_grid(
 **Disjunction (OR) operator** $\quad A \lor B \quad A + B \quad A \cup B$
 
 ::: fragment
-$A \lor B$ ["*the robot has an antenna **OR** it's blue*"]{.fragment}
+$A \lor B \:$ ["*the robot has an antenna **OR** it's blue*"]{.fragment}
 :::
 
 :::::: columns
@@ -652,7 +649,7 @@ expand_grid(
 
 **Disjunction (OR) operator** $\quad A \lor B \quad A + B \quad A \cup B$
 
-$A \lor B$ "*the robot has an antenna **OR** it's blue*"
+$A \lor B \:$ "*the robot has an antenna **OR** it's blue*"
 
 :::::: columns
 ::: {.column width="30%"}
@@ -682,7 +679,7 @@ expand_grid(
 :::
 ::::::
 
--   $A \lor \lnot A$ "*the robot has an antenna **OR** it does **NOT** have an antenna*" is an example of a **tautology**: A proposition that is always true ($\top$)
+-   $A \lor \lnot A$ "*the robot has an antenna **OR** it does **NOT** have an antenna*" is an example of a **tautology**, i.e., a proposition that is always true ($\top$)
 
 -   $A \lor \lnot A$ is also known as the **law of excluded middle**
 
@@ -691,7 +688,7 @@ expand_grid(
 **Conditional/Implication (IF-THEN/IMPLIES) operator** $\quad A \implies B \quad A \rightarrow B \quad A \subseteq B$
 
 ::: fragment
-$A \implies B$ ["***IF** the robot has an antenna **THEN** it's blue*"]{.fragment}
+$A \implies B \:$ ["***IF** the robot has an antenna **THEN** it's blue*"]{.fragment}
 :::
 
 ::::::: columns
@@ -737,7 +734,7 @@ expand_grid(
 
 **Conditional/Implication (IF-THEN/IMPLIES) operator** $\quad A \implies B \quad A \rightarrow B \quad A \subseteq B$
 
-$A \implies B$ "***IF** the robot has an antenna **THEN** it's blue*"
+$A \implies B \:$ "***IF** the robot has an antenna **THEN** it's blue*"
 
 :::::: columns
 ::: {.column width="30%"}
@@ -799,7 +796,7 @@ Logical relationships are not the same as causal relationships:
 **Biconditional (IFF) operator** $\quad A \iff B \quad A \leftrightarrow B \quad A = B$
 
 ::: fragment
-$A \iff B$ ["*the robot has an antenna **IFF** it's blue*"]{.fragment}
+$A \iff B \:$ ["*the robot has an antenna **IFF** it's blue*"]{.fragment}
 :::
 
 ::::::: columns
@@ -845,7 +842,7 @@ expand_grid(
 
 **Biconditional (IFF) operator** $\quad A \iff B \quad A \leftrightarrow B \quad A = B$
 
-$A \iff B$ "*the robot has an antenna **IFF** it's blue*"
+$A \iff B \:$ "*the robot has an antenna **IFF** it's blue*"
 
 :::::: columns
 ::: {.column width="30%"}
@@ -888,11 +885,16 @@ expand_grid(
 ## Propositional logic: Logical equivalence
 
 ::: fragment
-Two propositions $X$ and $Y$ are **logically equivalent** ($X \equiv Y$) if and only if they have the same truth value in every possible world
+Two propositions $X$ and $Y$ are **logically equivalent** ($X \equiv Y$) iff they have the same truth value in every possible world
 :::
 
 ::: fragment
 For example:
+:::
+
+::::: columns
+::: {.column .fragment}
+ 
 
 |                |                |       X        |        Y         |
 |:--------------:|:--------------:|:--------------:|:----------------:|
@@ -903,14 +905,72 @@ For example:
 | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |  [TRUE]{.green}  |
 :::
 
+::: {.column .fragment}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)
+) %>%
+mutate(
+  X = A %=>% B,
+  Y = !A | B
+)
+```
+:::
+:::::
+
+## Propositional logic: Logical equivalence
+
+Two propositions $X$ and $Y$ are **logically equivalent** ($X \equiv Y$) iff they have the same truth value in every possible world
+
+For example:
+
+::::: columns
+::: column
+ 
+
+|   |   | X | Y |
+|:---------------:|:---------------:|:---------------:|:--------------------:|
+| $A$ | $B$ | $A \lor B$ | $\lnot (\lnot A \land \lnot B)$ |
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red} | [TRUE]{.green} | [TRUE]{.green} |
+| [FALSE]{.red} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [FALSE]{.red} | [FALSE]{.red} | [FALSE]{.red} | [FALSE]{.red} |
+:::
+
+::: column
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)
+) %>%
+mutate(
+  X = A | B,
+  Y = !(!A & !B)
+)
+```
+:::
+:::::
+
+::: fragment
+Alternatively:
+
+Two propositions $X$ and $Y$ are **logically equivalent** ($X \equiv Y$) iff $X \iff Y$ is a tautology
+:::
+
 ## Propositional logic: Logical entailment
 
 ::: fragment
-A proposition $X$ **entails** another proposition $Y$ ($X \models Y$) if and only if, in all possible worlds in which $X$ is true, $Y$ is also true.
+A proposition $X$ **logically entails** another proposition $Y$ ($X \models Y$) iff in every possible world where $X$ is true, $Y$ is also true
 :::
 
-::: fragment
+::::: columns
+::: {.column .fragment}
 For example:
+
+ 
 
 |                |                |       X        |       Y        |
 |:--------------:|:--------------:|:--------------:|:--------------:|
@@ -921,86 +981,755 @@ For example:
 | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
 :::
 
- 
+::: {.column .fragment}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)
+) %>%
+mutate(
+  X = A & B,
+  Y = A | B
+)
+```
+:::
+:::::
 
 ::: fragment
-Logical entailment is the logical relationship where the truth of the premises guarantees the truth of the conclusion, thereby determining the validity of a deductive argument
-:::
+Alternatively:
 
-::: notes
-propositional logic provides a formal framework for defining **properties** of sentences (e.g., consistency and validity) and the **relationships** among them (e.g., implication, equivalence, mutual exclusiveness)
-
-**model checking**
+A proposition $X$ **logically entails** another proposition $Y$ ($X \models Y$) iff $X \implies Y$ is a tautology
 :::
 
 ## Artificial intelligence for deductive reasoning
 
-::: nonincremental
--   We will implement an AI for deductive reasoning in R as a function named `is.valid`
+$$
+\boxed{V(\frac{E}{H}) = \begin{cases} \text{True} & \text{if } E \models H \\ \text{False} & \text{otherwise} \end{cases}}
+$$
 
-    -   Takes a deductive argument (one or more premises named `E` for **evidence**, and a conclusion named `H` for **hypothesis**) as input
+## Artificial intelligence for deductive reasoning
 
-    -   Returns a `Logical` value (`TRUE` or `FALSE`) as output
+$$
+\boxed{V(H \mid E) = \begin{cases} \text{True} & \text{if } E \models H \\ \text{False} & \text{otherwise} \end{cases}}
+$$
 
--   If `is.valid(E, H)` returns `TRUE`, then the deductive argument is valid
+-   We will implement this AI in R as a function named `is.valid` that
 
--   If `is.valid(E, H)` returns `FALSE`, then the deductive argument is invalid
+-   takes a deductive argument (one or more premises named `E` for evidence, and a conclusion named `H` for hypothesis) as input, and
+
+-   returns a `Logical` value (`TRUE` or `FALSE`) as output
+
+## Proportional syllogism
+
+The proportional syllogism is a logical argument that draws a conclusion based on a proportion
+
+::::: columns
+::: {.column .fragment .nonincremental}
+**Premises**
+
+-   A bag contains two blue balls and one white ball
+
+-   One ball is drawn from the bag
+
+**Conclusion**
+
+-   A blue ball is drawn from the bag
 :::
 
--   In the context of an argument, propositional variables are assumed to be true:\
-    $A$ means $A$ is True   $\lnot A$ means $A$ is False
-
-## The set of all possible worlds
-
--   The **universe** ($\Omega$) is the set of all possible worlds ($\omega_i$), i.e., all possible combinations of truth values of all atomic variables in an argument
-
--   The size of the sample space is $2^n$, where $n$ is the size of the given set of propositional variables ($\Omega = \{ \omega_1, \omega_2, \ldots, \omega_{2^n} \}$)
-
--   For example, given an argument with two propositional variables $A$ and $B$, the sample space consists of four possible worlds:
-
-::: fragment
-|  $\Omega$  |      $A$       |      $B$       |
-|:----------:|:--------------:|:--------------:|
-| $\omega_1$ | [TRUE]{.green} | [TRUE]{.green} |
-| $\omega_2$ | [TRUE]{.green} | [FALSE]{.red}  |
-| $\omega_3$ | [FALSE]{.red}  | [TRUE]{.green} |
-| $\omega_4$ | [FALSE]{.red}  | [FALSE]{.red}  |
-:::
-
-## Rules of [valid]{.underline} deductive reasoning/inference
-
-[**Affirming the antecedent**]{.underline} (*Modus ponens*)
-
-**Premise 1**: "*IF the robot is blue THEN it has an antenna*"
-
-**Premise 2**: "*the robot is blue*"
-
-**Conclusion**: "*the robot has an antenna*"
-
-::: fragment
+::: {.column .fragment .nonincremental}
 $$
 \begin{array}{ll}
-1. & A \implies B \\
-2. & A \\
+1. & B1 \lor B2 \lor W \\
+2. & \neg((B1 \land B2) \lor (B1 \land W) \lor (B2 \land W)) \\
 \hline
-\therefore & B
+\therefore & B1 \lor B2
+\end{array}
+$$
+:::
+:::::
+
+## Proportional syllogism
+
+Build truth table (set of all possible worlds)
+
+```{r}
+expand_grid(
+  B1 = c(TRUE, FALSE),
+  B2 = c(TRUE, FALSE),
+  W  = c(TRUE, FALSE)
+)
+```
+
+## Proportional syllogism
+
+Add premises, combine them as evidence, and add conclusion/hypothesis
+
+```{r}
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
+    E  = P1 & P2,
+    H  = B1 | B2
+  )
+```
+
+## Proportional syllogism
+
+Check that argument is valid $\quad E \models H$
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
+    E  = P1 & P2,
+    H  = B1 | B2
+  ) %>%
+  filter(E)
+```
+
+## Proportional syllogism
+
+Check that argument is valid $\quad E \models H$
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
+    E  = P1 & P2,
+    H  = B1 | B2
+  ) %>%
+  filter(E) %>%
+  pull(H)
+```
+
+## Proportional syllogism
+
+Check that argument is valid $\quad E \models H$
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
+    E  = P1 & P2,
+    H  = B1 | B2
+  ) %>%
+  filter(E) %>%
+  pull(H) %>%
+  mean()
+```
+
+## Proportional syllogism
+
+Check that argument is valid $\quad E \models H$
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
+    E  = P1 & P2,
+    H  = B1 | B2
+  ) %>%
+  filter(E) %>%
+  pull(H) %>%
+  all()
+```
+
+## Artificial intelligence for deductive reasoning
+
+```{r}
+#| output-location: default
+library(rlang)
+```
+
+```{r}
+#| output-location: default
+is.valid <- function(..., H) {
+  # Capture premises as quosures
+  premises <- enquos(...)
+  
+  # Combine premises as evidence
+  evidence_expr <- reduce(premises, ~ expr((!! .x) & (!! .y)))
+  
+  # Capture hypothesis as a quosure
+  hypothesis_expr <- enquo(H)
+  
+  # Extract variables from evidence and hypothesis
+  variables <- unique(c(
+    all.vars(evidence_expr),
+    all.vars(hypothesis_expr)
+  ))
+  
+  # Build truth table (set of all possible worlds)
+  tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(variables)), variables))
+  
+  # Add evidence and hypothesis
+  # Check that argument is valid: Hypothesis is true in all possible worlds where evidence is true
+  tt %>%
+    mutate(
+      E = !!evidence_expr,
+      H = !!hypothesis_expr
+    ) %>%
+    filter(E) %>%
+    pull(H) %>%
+    all()
+}
+```
+
+## Classical valid and invalid deductive arguments
+
+::::: columns
+::: {.column width="50%"}
+***Modus ponens***
+
+$$
+\begin{array}{c}
+A \implies B \\
+A \\
+\hline
+B
 \end{array}
 $$
 :::
 
- 
+::: {.column width="50%"}
+***Modus tollens***
 
-::: fragment
 $$
-E \models H \quad \text{or} \quad (E \implies H) \equiv T
+\begin{array}{c}
+A \implies B \\
+\neg B \\
+\hline
+\neg A
+\end{array}
 $$
+:::
+:::::
+
+::::: columns
+::: {.column width="50%"}
+**Affirming the consequent**
+
+$$
+\begin{array}{c}
+A \implies B \\
+B \\
+\hline
+A
+\end{array}
+$$
+:::
+
+::: {.column width="50%"}
+**Denying the antecedent**
+
+$$
+\begin{array}{c}
+A \implies B \\
+\neg A \\
+\hline
+\neg B
+\end{array}
+$$
+:::
+:::::
+
+```{r}
+#| include: false
+library(flextable)
+
+P <- function(..., H, table = TRUE, flex = TRUE) {
+  # capture the premises/evidence as a list of quosures
+  premises <- enquos(...)
+  
+  # capture the conclusion/hypothesis as a quosure
+  conclusion <- enquo(H)
+  
+  # extract variable names
+  vars <- unique(c(unlist(lapply(premises, all.vars)), all.vars(conclusion)))
+  
+  # build truth table
+  truth_table <- expand.grid(replicate(length(vars), c(TRUE, FALSE), simplify = FALSE))
+  colnames(truth_table) <- vars
+  
+  # evaluate premises in the context of the truth table
+  for (i in seq_along(premises)) {
+    truth_table[[paste0("P", i)]] <- eval_tidy(premises[[i]], data = truth_table)
+  }
+  
+  # evaluate evidence and conclusion/hypothesis in the context of the truth table
+  truth_table <- truth_table %>%
+    mutate(
+      E = if_all(starts_with("P"), identity),
+      H = eval_tidy(conclusion, data = truth_table)
+    )
+  
+  # calculate P(H | E)
+  P_value <- truth_table %>%
+    summarise(P = mean(H[E])) %>%
+    pull(P)
+  
+  # return P value if truth table output is not requested
+  if (!table) {
+    return(P_value)
+  }
+  
+  # return truth table if formatted truth table output is not requested
+  if (!flex) {
+    return(truth_table)
+  }
+  
+  # define colors
+  highlight_color <- "beige"  # Standard HTML color name
+  true_color <- "darkgreen"
+  false_color <- "darkred"
+  
+  # convert the truth table into a flextable
+  truth_table_formatted <- flextable(truth_table) %>%
+    bold(part = "header") %>%  # Bold the header
+    bold(part = "footer") %>%  # Bold the footer
+    bg(i = which(truth_table$E == TRUE), bg = highlight_color, part = "body")  # Highlight E = TRUE rows
+  
+  # apply text colors
+  for (col in colnames(truth_table)) {
+    truth_table_formatted <- truth_table_formatted %>%
+      color(i = which(truth_table[[col]] == TRUE), j = col, color = true_color) %>%
+      color(i = which(truth_table[[col]] == FALSE), j = col, color = false_color)
+  }
+  
+  # add footer with the calculated P(H | E) value
+  truth_table_formatted <- truth_table_formatted %>%
+    add_footer_row(
+      values = paste("P(H | E) =", round(P_value, 3)),
+      colwidths = ncol(truth_table)
+    ) %>%
+    align(align = "right", part = "footer")
+
+  # return formatted truth table
+  return(truth_table_formatted)
+}
+```
+
+## *Modus ponens*
+
+*Modus ponens* is a **valid deductive argument** that affirms the antecedent to conclude the consequent
+
+:::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   It is raining
+
+**Conclusion**
+
+-   The ground is wet
 :::
 
 ::: fragment
 $$
-((A \implies B) \land A) \models B \quad \text{or} \quad (((A \implies B) \land A) \implies B) \equiv T
+\begin{array}{ll}
+1. & R \implies W \\
+2. & R \\
+\hline
+\therefore & W
+\end{array}
 $$
 :::
+:::::
+
+:::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P(
+  P1 = R %=>% W,
+  P2 = R,       
+  H  = W
+)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+is.valid(
+  P1 = R %=>% W,
+  P2 = R,       
+  H  = W
+)
+```
+:::
+::::
+::::::::
+
+## *Modus tollens*
+
+*Modus tollens* is a **valid deductive argument** that denies the consequent to conclude the negation of the antecedent
+
+:::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   The ground is not wet
+
+**Conclusion**
+
+-   It is not raining
+:::
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & R \implies W \\
+2. & \neg W \\
+\hline
+\therefore & \neg R
+\end{array}
+$$
+:::
+:::::
+
+:::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P(
+  P1 = R %=>% W,
+  P2 = !W,
+  H  = !R
+)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+is.valid(
+  P1 = R %=>% W,
+  P2 = !W,
+  H  = !R
+)
+```
+:::
+::::
+::::::::
+
+## Affirming the consequent
+
+Affirming the consequent is an **invalid deductive argument** that affirms the consequent to conclude the antecedent
+
+:::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   The ground is wet
+
+**Conclusion**
+
+-   It is raining
+:::
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & R \implies W \\
+2. & W \\
+\hline
+\therefore & R
+\end{array}
+$$
+:::
+:::::
+
+:::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P(
+  P1 = R %=>% W,
+  P2 = W,
+  H  = R
+)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+is.valid(
+  P1 = R %=>% W,
+  P2 = W,
+  H  = R
+)
+```
+:::
+::::
+::::::::
+
+## Denying the antecedent
+
+Denying the antecedent is an **invalid deductive argument** that denies the antecedent to conclude the negation of the consequent
+
+:::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   It is not raining
+
+**Conclusion**
+
+-   The ground is not wet
+:::
+
+::: fragment
+$$
+\begin{array}{c}
+1. & R \implies W \\
+2. & \neg R \\
+\hline
+\therefore & \neg W
+\end{array}
+$$
+:::
+:::::
+
+:::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P(
+  P1 = R %=>% W,
+  P2 = !R,
+  H  = !W
+)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+is.valid(
+  P1 = R %=>% W,
+  P2 = !R,
+  H  = !W
+)
+```
+:::
+::::
+::::::::
+
+## Hypothetical syllogism
+
+The hypothetical syllogism is a **valid deductive argument** that combines two conditional statements to conclude a third conditional statement
+
+:::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   If the ground is wet, then the plants grow
+
+**Conclusion**
+
+-   If it is raining, then the plants grow
+:::
+
+::: fragment
+$$
+\begin{array}{c}
+1. & R \implies W \\
+2. & W \implies G \\
+\hline
+\therefore & R \implies G
+\end{array}
+$$
+:::
+:::::
+
+:::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P(
+  P1 = R %=>% W,
+  P2 = W %=>% G,
+  H  = R %=>% G
+)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+is.valid(
+  P1 = R %=>% W,
+  P2 = W %=>% G,
+  H  = R %=>% G
+)
+```
+:::
+::::
+::::::::
+
+## Proportional syllogism
+
+The proportional syllogism is a logical argument that draws a conclusion based on a proportion
+
+:::::::::: columns
+::::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   A bag contains two blue balls and one white ball
+
+-   One ball is drawn from the bag
+
+**Conclusion**
+
+-   A blue ball is drawn from the bag
+:::
+
+::: notes
+Propositional symbols/variables:
+
+B1 = "Blue ball 1 is drawn" B2 = "Blue ball 2 is drawn" W = "The white ball is drawn"
+
+The propositional symbols/variables used in the premises define the set of all possible worlds/outcomes (i.e., truth table/logical space/sample space) and the logical structure of the premises/the knowledge represented by the premises restricts this set to the subset in which all premises are true.
+
+The premises logically constrain the possible worlds/outcomes.
+
+By the principle of indifference (logical probability), each possible world/outcome in the truth table is equally likely.
+:::
+
+::: notes
+$$
+P(A) = \lim_{n \to \infty} \frac{\text{Number of times } A \text{ occurs in } n \text{ trials}}{n}
+$$ Frequentist probability requires infinite trials and physical mixing because it depends on empirical relative frequencies.
+
+Frequentist probability is undefined for a single-instance event like drawing one ball.
+
+Logical probability is a better framework in this case because it relies on counting possible worlds, not repeated trials.
+
+Frequentist probability cannot actually compute probabilities.
+
+Logical probability actually computes probability—frequentists can only estimate it.
+
+Frequentist probability is useless in one-time events—it requires infinite trials to be strictly valid.
+
+If you want a coherent theory of probability that always applies, you must use logical (Bayesian) probability.
+
+Despite these flaws, frequentist probability persists in practice because: 1. It works well for large-scale empirical data (e.g., coin flips, medical studies). 2. It avoids subjective priors (which some mistakenly see as a flaw in Bayesian probability). 3. Historically, probability theory was developed with physical randomness in mind (games of chance, dice, coins).
+:::
+
+&nbsp;
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & B1 \lor B2 \lor W \\
+2. & \neg((B1 \land B2) \lor (B1 \land W) \lor (B2 \land W)) \\
+\hline
+\therefore & B1 \lor B2
+\end{array}
+$$
+:::
+:::::::
+
+:::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P(
+  P1 = B1 | B2 | W,                         
+  P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
+  H  = B1 | B2                                
+)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+is.valid(
+  P1 = B1 | B2 | W,                         
+  P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
+  H  = B1 | B2                                
+)
+```
+:::
+::::
+::::::::::
+
+## Statistical syllogism
+
+The statistical syllogism is a logical argument that draws a conclusion about a specific case based on a generalization
+
+::: {.fragment .nonincremental}
+**Premises**
+
+-   Most birds can fly
+
+-   Pingu is a bird
+
+**Conclusion**
+
+-   Pingu can fly
+:::
+
+::: fragment
+Bayesian reasoning provides a formal framework for the statistical syllogism.
+:::
+
+## Inductive generalization
+
+Inductive generalization (a.k.a. inductive inference) is a logical argument that draws a conclusion about a generalization based on a specific case
+
+This type of reasoning moves in the opposite direction of the statistical syllogism: it uses specific cases (observations) as evidence to infer a general conclusion
+
+::: {.fragment .nonincremental}
+**Premises**
+
+-   Pingu is a bird and cannot fly
+
+-   Kiwi is a bird and cannot fly
+
+-   Ostrich is a bird and cannot fly
+
+**Conclusion**
+
+-   Most birds cannot fly
+:::
+
+##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
 ## Scientific reasoning is inductive reasoning
 
@@ -1067,8 +1796,6 @@ In summary, frequentism is not a comprehensive theory of evidence like Bayesiani
 ## Statistical inference is inductive reasoning
 
 ![](images/Slide2.png)
-
-##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
 ## Deductive logic
 
@@ -1167,536 +1894,6 @@ Argument forms as inference rules of propositional logic/deductive inference:
 -   Distributive law (2)
 
 -   *Modus tollens*
-
-## Propositional symbols/variables
-
-In propositional logic, the terms **propositional symbol** and **propositional variable** are often used interchangeably to denote **atomic propositions**—statements that are either true or false and cannot be broken down into simpler statements. These atomic propositions serve as the foundational building blocks for more complex, compound propositions formed using logical connectives/boolean operators such as AND, OR, and NOT.
-
-A propositional variable has a truth value, i.e., it is either true or false but not both at the same time.
-
-## Inductive reasoning: Probability theory
-
-XXX
-
-## Setup environment
-
-```{r}
-#| output-location: default
-#| output: false
-library(tidyverse)
-
-theme_set(theme_minimal())
-```
-
-```{r}
-A <- c(TRUE, FALSE)
-B <- c(TRUE, FALSE)
-C <- c(TRUE, FALSE)
-
-ss <- expand_grid(A, B, C)
-
-ss
-```
-
-```{r}
-# conditional operator
-`%=>%` <- function(A, B) !A | B
-
-# biconditional operator
-`%<=>%` <- function(A, B) (!A | B) | (!B | A)
-```
-
-```{r}
-# modus ponens
-ss %>% 
-  rowwise() %>% 
-  mutate(
-    P1 = A %=>% B,
-    P2 = A
-  ) %>% 
-  mutate(E = all(pick(starts_with("P")))) %>% 
-  mutate(
-    H = B
-  ) %>% 
-  ungroup() %>% 
-  summarize(
-    P = mean(H[E]),
-    V = if_else(P == 1, TRUE, FALSE)
-  )
-```
-
-## Propositional logic-based AI in 8 lines of R code! {.scrollable}
-
-```{r}
-#| output-location: default
-library(rlang)
-library(flextable)
-
-P <- function(..., H, table = TRUE, flex = TRUE) {
-  # capture the premises/evidence as a list of quosures
-  premises <- enquos(...)
-  
-  # capture the conclusion/hypothesis as a quosure
-  conclusion <- enquo(H)
-  
-  # extract variable names
-  vars <- unique(c(unlist(lapply(premises, all.vars)), all.vars(conclusion)))
-  
-  # build truth table
-  truth_table <- expand.grid(replicate(length(vars), c(TRUE, FALSE), simplify = FALSE))
-  colnames(truth_table) <- vars
-  
-  # evaluate premises in the context of the truth table
-  for (i in seq_along(premises)) {
-    truth_table[[paste0("P", i)]] <- eval_tidy(premises[[i]], data = truth_table)
-  }
-  
-  # evaluate evidence and conclusion/hypothesis in the context of the truth table
-  truth_table <- truth_table %>%
-    mutate(
-      E = if_all(starts_with("P"), identity),
-      H = eval_tidy(conclusion, data = truth_table)
-    )
-  
-  # calculate P(H | E)
-  P_value <- truth_table %>%
-    summarise(P = mean(H[E])) %>%
-    pull(P)
-  
-  # return P value if truth table output is not requested
-  if (!table) {
-    return(P_value)
-  }
-  
-  # return truth table if formatted truth table output is not requested
-  if (!flex) {
-    return(truth_table)
-  }
-  
-  # define colors
-  highlight_color <- "beige"  # Standard HTML color name
-  true_color <- "darkgreen"
-  false_color <- "darkred"
-  
-  # convert the truth table into a flextable
-  truth_table_formatted <- flextable(truth_table) %>%
-    bold(part = "header") %>%  # Bold the header
-    bold(part = "footer") %>%  # Bold the footer
-    bg(i = which(truth_table$E == TRUE), bg = highlight_color, part = "body")  # Highlight E = TRUE rows
-  
-  # apply text colors
-  for (col in colnames(truth_table)) {
-    truth_table_formatted <- truth_table_formatted %>%
-      color(i = which(truth_table[[col]] == TRUE), j = col, color = true_color) %>%
-      color(i = which(truth_table[[col]] == FALSE), j = col, color = false_color)
-  }
-  
-  # add footer with the calculated P(H | E) value
-  truth_table_formatted <- truth_table_formatted %>%
-    add_footer_row(
-      values = paste("P(H | E) =", round(P_value, 3)),
-      colwidths = ncol(truth_table)
-    ) %>%
-    align(align = "right", part = "footer")
-
-  # return formatted truth table
-  return(truth_table_formatted)
-}
-```
-
-## Deductive arguments {.hidden}
-
-::::: columns
-::: {.column width="50%"}
-### Modus ponens
-
-$$
-\begin{array}{c}
-A \implies B \\
-A \\
-\hline
-B
-\end{array}
-$$
-:::
-
-::: {.column width="50%"}
-### Modus tollens
-
-$$
-\begin{array}{c}
-A \implies B \\
-\neg B \\
-\hline
-\neg A
-\end{array}
-$$
-:::
-:::::
-
-::::: columns
-::: {.column width="50%"}
-### Affirming the consequent
-
-$$
-\begin{array}{c}
-A \implies B \\
-B \\
-\hline
-A
-\end{array}
-$$
-:::
-
-::: {.column width="50%"}
-### Denying the antecedent
-
-$$
-\begin{array}{c}
-A \implies B \\
-\neg A \\
-\hline
-\neg B
-\end{array}
-$$
-:::
-:::::
-
-## Modus ponens
-
-Modus ponens is a **valid deductive argument** that affirms the antecedent to conclude the consequent.
-
-:::::::: columns
-::::: column
-::: {.fragment .nonincremental}
-**Premises**
-
--   If it is raining, then the ground is wet
-
--   It is raining
-
-**Conclusion**
-
--   The ground is wet
-:::
-
-::: fragment
-$$
-\begin{array}{ll}
-1. & A \implies B \\
-2. & A \\
-\hline
-\therefore & B
-\end{array}
-$$
-:::
-:::::
-
-:::: column
-::: fragment
-```{r}
-#| output-location: default
-P(
-  P1 = A %=>% B,
-  P2 = A,       
-  H  = B
-)
-```
-:::
-::::
-::::::::
-
-## Modus tollens
-
-Modus tollens is a **valid deductive argument** that denies the consequent to conclude the negation of the antecedent.
-
-:::::::: columns
-::::: column
-::: {.fragment .nonincremental}
-**Premises**
-
--   If it is raining, then the ground is wet
-
--   The ground is not wet
-
-**Conclusion**
-
--   It is not raining
-:::
-
-::: fragment
-$$
-\begin{array}{ll}
-1. & A \implies B \\
-2. & \neg B \\
-\hline
-\therefore & \neg A
-\end{array}
-$$
-:::
-:::::
-
-:::: column
-::: fragment
-```{r}
-#| output-location: default
-P(
-  P1 = A %=>% B,
-  P2 = !B,
-  H  = !A
-)
-```
-:::
-::::
-::::::::
-
-## Affirming the consequent
-
-Affirming the consequent is an **invalid deductive argument** that affirms the consequent to conclude the antecedent.
-
-:::::::: columns
-::::: column
-::: {.fragment .nonincremental}
-**Premises**
-
--   If it is raining, then the ground is wet
-
--   The ground is wet
-
-**Conclusion**
-
--   It is raining
-:::
-
-::: fragment
-$$
-\begin{array}{ll}
-1. & A \implies B \\
-2. & B \\
-\hline
-\therefore & A
-\end{array}
-$$
-:::
-:::::
-
-:::: column
-::: fragment
-```{r}
-#| output-location: default
-P(
-  P1 = A %=>% B,
-  P2 = B,
-  H  = A
-)
-```
-:::
-::::
-::::::::
-
-## Denying the antecedent
-
-Denying the antecedent is an **invalid deductive argument** that denies the antecedent to conclude the negation of the consequent.
-
-:::::::: columns
-::::: column
-::: {.fragment .nonincremental}
-**Premises**
-
--   If it is raining, then the ground is wet
-
--   It is not raining
-
-**Conclusion**
-
--   The ground is not wet
-:::
-
-::: fragment
-$$
-\begin{array}{c}
-1. & A \implies B \\
-2. & \neg A \\
-\hline
-\therefore & \neg B
-\end{array}
-$$
-:::
-:::::
-
-:::: column
-::: fragment
-```{r}
-#| output-location: default
-P(
-  P1 = A %=>% B,
-  P2 = !A,
-  H  = !B
-)
-```
-:::
-::::
-::::::::
-
-## Hypothetical syllogism
-
-The hypothetical syllogism is a **valid deductive argument** that combines two conditional statements to conclude a third conditional statement.
-
-:::::::: columns
-::::: column
-::: {.fragment .nonincremental}
-**Premises**
-
--   If it is raining, then the ground is wet
-
--   If the ground is wet, then the plants grow
-
-**Conclusion**
-
--   If it is raining, then the plants grow
-:::
-
-::: fragment
-$$
-\begin{array}{c}
-1. & A \implies B \\
-2. & B \implies C \\
-\hline
-\therefore & A \implies C
-\end{array}
-$$
-:::
-:::::
-
-:::: column
-::: fragment
-```{r}
-#| output-location: default
-P(
-  P1 = A %=>% B,
-  P2 = B %=>% C,
-  H  = A %=>% C
-)
-```
-:::
-::::
-::::::::
-
-## Proportional syllogism
-
-The proportional syllogism is a logical argument that draws a conclusion based on a proportion.
-
-:::::::::: columns
-::::::: column
-::: {.fragment .nonincremental}
-**Premises**
-
--   A bag contains two blue balls and one white ball
-
--   One ball is drawn from the bag
-
-**Conclusion**
-
--   A blue ball is drawn from the bag
-:::
-
-::: notes
-Propositional symbols/variables:
-
-B1 = "Blue ball 1 is drawn" B2 = "Blue ball 2 is drawn" W = "The white ball is drawn"
-
-The propositional symbols/variables used in the premises define the set of all possible worlds/outcomes (i.e., truth table/logical space/sample space) and the logical structure of the premises/the knowledge represented by the premises restricts this set to the subset in which all premises are true.
-
-The premises logically constrain the possible worlds/outcomes.
-
-By the principle of indifference (logical probability), each possible world/outcome in the truth table is equally likely.
-:::
-
-::: notes
-$$
-P(A) = \lim_{n \to \infty} \frac{\text{Number of times } A \text{ occurs in } n \text{ trials}}{n}
-$$ Frequentist probability requires infinite trials and physical mixing because it depends on empirical relative frequencies.
-
-Frequentist probability is undefined for a single-instance event like drawing one ball.
-
-Logical probability is a better framework in this case because it relies on counting possible worlds, not repeated trials.
-
-Frequentist probability cannot actually compute probabilities.
-
-Logical probability actually computes probability—frequentists can only estimate it.
-
-Frequentist probability is useless in one-time events—it requires infinite trials to be strictly valid.
-
-If you want a coherent theory of probability that always applies, you must use logical (Bayesian) probability.
-
-Despite these flaws, frequentist probability persists in practice because: 1. It works well for large-scale empirical data (e.g., coin flips, medical studies). 2. It avoids subjective priors (which some mistakenly see as a flaw in Bayesian probability). 3. Historically, probability theory was developed with physical randomness in mind (games of chance, dice, coins).
-:::
-
-::: fragment
-$$
-\begin{array}{ll}
-1. & B1 \lor B2 \lor W \\
-2. & \neg((B1 \land B2) \lor (B1 \land W) \lor (B2 \land W)) \\
-\hline
-\therefore & B1 \lor B2
-\end{array}
-$$
-:::
-:::::::
-
-:::: column
-::: fragment
-```{r}
-#| output-location: default
-P(
-  P1 = B1 | B2 | W,                         
-  P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-  H  = B1 | B2                                
-)
-```
-:::
-::::
-::::::::::
-
-## Statistical syllogism
-
-The statistical syllogism is a logical argument that draws a conclusion about a specific case based on a generalization.
-
-::: {.fragment .nonincremental}
-**Premises**
-
--   Most birds can fly
-
--   Pingu is a bird
-
-**Conclusion**
-
--   Pingu can fly
-:::
-
-::: fragment
-Bayesian reasoning provides a formal framework for the statistical syllogism.
-:::
-
-## Inductive generalization
-
-Inductive generalization (a.k.a. inductive inference) is a logical argument that draws a conclusion about a generalization based on a specific case.
-
-This type of reasoning moves in the opposite direction of the statistical syllogism: it uses specific cases (observations) as evidence to infer a general conclusion.
-
-::: {.fragment .nonincremental}
-**Premises**
-
--   Pingu is a bird and cannot fly
-
--   Kiwi is a bird and cannot fly
-
--   Ostrich is a bird and cannot fly
-
-**Conclusion**
-
--   Most birds cannot fly
-:::
 
 ## Scientific reasoning is inductive reasoning
 
