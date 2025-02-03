@@ -114,7 +114,7 @@ $$
 
 -   **Premises** are also known as **assumptions**
 
--   The **set of premises** is also known as the **evidence** or **knowledge base**
+-   The conjunction of all premises is also known as the **evidence** or **knowledge base**
 
 -   The **conclusion** is also known as the **hypothesis** or **query**
 
@@ -158,7 +158,7 @@ $$
 
         -   is the basis of **scientific reasoning** (incl. statistical inference)
 
--   Probability theory is the logic of science!
+        -   Probability theory is the logic of science!
 
 ## Deductive vs. inductive arguments
 
@@ -432,16 +432,15 @@ There are two types of propositional variables: atomic and compound variables
 
 | English         | Math           | R           |             |
 |:----------------|:---------------|:------------|:------------|
-| A               | $A$            | `A`         |             |
 | **NOT** A       | $\lnot A$      | `!A`        |             |
 | A **AND** B     | $A \land B$    | `A & B`     | `all(A, B)` |
 | A **OR** B      | $A \lor B$     | `A | B`     | `any(A, B)` |
 | A **IMPLIES** B | $A \implies B$ | `A %=>% B`  |             |
 | A **IFF** B     | $A \iff B$     | `A %<=>% B` |             |
 
--   The assignment of a truth value to an **atomic variable** (e.g., $A$ and $B$) is called **valuation**
--   The truth value of a **compound variable** is determined by the truth values of its atomic variables and the logical operators, according to the **rules of propositional logic**
--   A **truth table** is the **set of all possible valuations** for a set of atomic variables
+-   The truth value of an **atomic variable** (e.g., $A$ and $B$) is assigned
+-   The truth value of a **compound variable** is determined by the logical operators and truth values of its atomic components, according to the **rules of propositional logic**
+-   A **truth table** is the set of all possible combinations of truth-value assignments (valuations) for a set of atomic variables
 -   A truth table for $n$ atomic variables consists of $2^n$ possible valuations
 -   Valuations are also known as **worlds** ($\omega$), outcomes, states, etc.
 -   A truth table is also known as the **universe** ($\Omega$), sample space, state space, etc.
@@ -501,6 +500,38 @@ $\lnot A \:$ "*the robot does **NOT** have an antenna*"
 :::
 
 ::: {.column .fragment width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE))
+```
+:::
+::::::
+
+## Propositional logic: Negation rule
+
+**Negation (NOT) operator** $\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}$
+
+$\lnot A \:$ "*the robot does **NOT** have an antenna*"
+
+:::::: columns
+::: {.column width="30%"}
+![](logical_operators/Slide2.png)
+:::
+
+::: {.column width="34%"}
+ 
+
+|      $A$       |      $B$       |   $\lnot A$    |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red}  |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |
+| [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
+:::
+
+::: {.column width="36%"}
 ```{r}
 #| output-location: default
 expand_grid(
@@ -861,17 +892,20 @@ expand_grid(
 -   $B$ is the **consequent**
 
 ::: notes
-Logical relationships are not the same as causal relationships:
+Conditional (→) represents a sufficient condition and implies a necessary condition
 
--   Logical relationships involve the connections between propositions
+A is a sufficient condition for B: If A is true, then B must be true
 
--   Causal relationships involve cause-and-effect connections between variables
+B is a necessary condition for A: If B is false, A cannot be true
 
--   Causal relationships describe how changes in one variable (the cause) lead to changes in another variable (the effect)
+Example:
 
--   In some cases, logical relationships can model or represent causal relationships, but they are not inherently the same.
-
--   The distinction is important because logical relationships are often concerned with the validity of arguments, while causal relationships involve understanding the mechanisms by which one variable influences another
+If it is raining (A), then the ground is wet (B).
+	
+	•	Sufficient: Rain guarantees the ground is wet
+	
+	•	Necessary: For it to be raining, the ground must be wet (if the ground isn’t wet, it can’t be raining)
+	
 :::
 
 ## Propositional logic: Biconditional rule
@@ -964,6 +998,14 @@ expand_grid(
 ```
 :::
 ::::::
+
+::: notes
+Biconditional (↔) represents a necessary and sufficient condition
+
+A is necessary and sufficient for B, and vice versa
+
+Example: You can drive (A) iff you have a license (B)
+:::
 
 ## Propositional logic: Logical equivalence
 
@@ -1079,33 +1121,49 @@ A proposition $X$ **logically entails** another proposition $Y$ iff $X \implies 
 
 ## Logical entailment and deductive validity
 
--   Deductive validity is determined by checking whether the conclusion ($H$) necessarily follows from/is guaranteed by the premises ($E$)
+-   The deductive validity of a logical argument is determined by checking whether the conclusion is guaranteed to be true, assuming the premises are true
 
--   Symbolically, this is expressed as $E \models H$, meaning $H$ is a logical implication of $E$
+-   In other words, a logical argument is deductively valid iff the premises ($E$) logically entail the conclusion ($H$)
 
-## Artificial intelligence for deductive reasoning
+::: fragment
+$$E \models H$$
+:::
 
+::: fragment
 $$
 \boxed{V(\frac{E}{H}) = \begin{cases} \text{True} & \text{if } E \models H \\ \text{False} & \text{otherwise} \end{cases}}
 $$
+:::
 
-## Artificial intelligence for deductive reasoning
+## Logical entailment and deductive validity
 
+::: nonincremental
+-   The deductive validity of a logical argument is determined by checking whether the conclusion is guaranteed to be true, assuming the premises are true
+
+-   In other words, a logical argument is deductively valid iff the premises ($E$) logically entail the conclusion ($H$)
+:::
+
+$$E \models H$$
 $$
 \boxed{V(H \mid E) = \begin{cases} \text{True} & \text{if } E \models H \\ \text{False} & \text{otherwise} \end{cases}}
 $$
 
--   We will implement this AI in R as a function:
 
-    -   **Input**: A deductive argument with one or more premises (`E` for evidence) and a conclusion (`H` for hypothesis)
 
-    -   **Output**: A `Logical` value (`TRUE` or `FALSE`), indicating whether the argument is deductively valid
+
+## Artificial intelligence for deductive reasoning
+
+-   We will implement this function in R as the AI for deductive reasoning:
+
+    -   **Input**: A deductive argument with one or more premises (`E`) and a conclusion (`H`)
+
+    -   **Output**: A `Logical` value (`TRUE` or `FALSE`), indicating whether the argument is deductively valid or not
 
 -   First, we will program this computer algorithm step-by-step using functions from the [`tidyverse`](https://www.tidyverse.org/) package
 
 -   Then, we will wrap it up into a reusable function called `is.valid` using functions from the [`rlang`](https://rlang.r-lib.org/) package
 
--   We will use the *proportional syllogism*, a classical argument that is foundational to statistical inference, as an example
+-   We will use the *proportional syllogism* (a classical argument that is foundational to statistical inference) as an example
 
 ## Proportional syllogism
 
@@ -1148,15 +1206,16 @@ $$
 \therefore & B1 \lor B2
 \end{array}
 $$
-[We will approach this in three steps:]{.fragment}
+
+[We will determine the deductive validity of this logical argument in three steps:]{.fragment}
 
 1.  Build the truth table (the set of all possible worlds/truth-value assignments of the set of atomic variables in the argument)
 
-2.  Add the premises and conclusion to the truth table
+2.  Add premises and conclusion (`H`) to the truth table
 
 3.  Identify the possible worlds where all the premises (`E`) are true
 
-4.  Check that the argument is deductively valid, i.e., that the conclusion (`H`) is true in each of those possible worlds ($E \models H$)
+4.  Check that the logical argument is deductively valid ($E \models H$), i.e., that the conclusion is true in all those possible worlds
 
 
 ## Proportional syllogism
@@ -1172,7 +1231,7 @@ expand_grid(
 
 ## Proportional syllogism
 
-Add the premises and conclusion to the truth table
+Add premises and conclusion (`H`) to the truth table
 
 ```{r}
 expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W = c(TRUE, FALSE)) %>%
@@ -1195,13 +1254,28 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
     P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
     E  = P1 & P2,
     H  = B1 | B2
+  )
+```
+
+## Proportional syllogism
+
+Identify the possible worlds where all the premises (`E`) are true
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
+    E  = P1 & P2,
+    H  = B1 | B2
   ) %>%
   filter(E)
 ```
 
 ## Proportional syllogism
 
-Check that the argument is deductively valid ($E \models H$)
+Check that the logical argument is deductively valid ($E \models H$)
 
 ```{r}
 #| output-location: default
@@ -1218,7 +1292,7 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
 
 ## Proportional syllogism
 
-Check that the argument is deductively valid ($E \models H$)
+Check that the logical argument is deductively valid ($E \models H$)
 
 ```{r}
 #| output-location: default
@@ -1236,7 +1310,7 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
 
 ## Proportional syllogism
 
-Check that the argument is deductively valid ($E \models H$)
+Check that the logical argument is deductively valid ($E \models H$)
 
 ```{r}
 #| output-location: default
@@ -1256,6 +1330,14 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
 ![](images/100pcs-lot-Eco-Friendly-Blue-White-Ball-Pits-Soft-Plastic-Water-Pool-Ocean-Wave-Baby-Funny.jpg){height="300"}
 :::
 
+## Proportional syllogism
+
+Artificial intelligence for deductive reasoning implemented in a single line of R code! 🤯
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>% mutate(P1 = B1 | B2 | W, P2 = !((B1 & B2) | (B1 & W) | (B2 & W)), E  = P1 & P2, H  = B1 | B2) %>% filter(E) %>% pull(H) %>% all()
+```
 
 ## Artificial intelligence for deductive reasoning
 
@@ -1267,26 +1349,26 @@ library(rlang)
 ```{r}
 #| output-location: default
 is.valid <- function(..., H) {
-  # Capture premises as quosures
+  # capture the premises as quosures
   premises <- enquos(...)
   
-  # Combine premises as evidence
+  # conjoin the premises as evidence
   evidence_expr <- reduce(premises, ~ expr((!! .x) & (!! .y)))
   
-  # Capture hypothesis as a quosure
+  # capture the conclusion/hypothesis as a quosure
   hypothesis_expr <- enquo(H)
   
-  # Extract variables from evidence and hypothesis
+  # extract the atomic variables from the evidence and hypothesis
   variables <- unique(c(
     all.vars(evidence_expr),
     all.vars(hypothesis_expr)
   ))
   
-  # Build truth table (set of all possible worlds)
+  # build the truth table (set of all possible worlds)
   tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(variables)), variables))
   
-  # Add evidence and hypothesis
-  # Check that argument is valid: Hypothesis is true in all possible worlds where evidence is true
+  # add evidence and hypothesis to the truth table
+  # check that the logical argument deductively valid: hypothesis is true in all possible worlds where evidence is true
   tt %>%
     mutate(
       E = !!evidence_expr,
@@ -1809,8 +1891,6 @@ This type of reasoning moves in the opposite direction of the statistical syllog
 -   Most birds cannot fly
 :::
 
-##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
-
 ## Scientific reasoning is inductive reasoning
 
 ::: fragment
@@ -1825,13 +1905,13 @@ In logic, inductive reasoning is defined as **risky reasoning** (from true premi
 :::
 
 ::: fragment
-There are many forms of inductive arguments:
+There are many types of inductive reasoning:
 :::
 
 -   **inductive generalization** (from the specific to the general)
 -   **statistical syllogism** (from the general to the specific)
 -   **analogical reasoning** (from specific to specific or from general to general)
--   **prediction** (from the past to the future)
+-   **forecasting** (from the past to the future)
 -   **abductive reasoning** (inference to the best/most plausible explanation)
 -   **causal inference** (from the factual to the counterfactual)
 
@@ -1876,6 +1956,8 @@ In summary, frequentism is not a comprehensive theory of evidence like Bayesiani
 ## Statistical inference is inductive reasoning
 
 ![](images/Slide2.png)
+
+##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
 ## Deductive logic
 
