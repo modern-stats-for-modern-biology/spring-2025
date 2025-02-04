@@ -25,15 +25,15 @@ theme_set(theme_minimal())
 
 ## Statistical inference is logical reasoning
 
--   Statistical inference is logical reasoning using 1) **data** (observations/measurements of observable quantities) and 2) a **model of the data generating process** (DGP) as evidence to infer unobservable quantities:
+Statistical inference is logical reasoning using 1) **data** (measurements of observable quantities) and 2) a **model** of the data generating process (DGP) as evidence to infer unobservable quantities:
 
 ::: fragment
 $$
 \begin{array}{ll}
 1. & \text{data (observations)} \\
-2. & \text{process model} \\
+2. & \text{process model (DGP)} \\
 \hline
-\therefore & \text{unobservables} \\
+\therefore & \text{unobservable quantities} \\
 \end{array}
 $$
 :::
@@ -86,9 +86,9 @@ $$
 $$
 \begin{array}{ll}
 1. & \text{data (observations)} \\
-2. & \text{process model} \\
+2. & \text{process model (DGP)} \\
 \hline
-\therefore & \text{unobservables} \\
+\therefore & \text{unobservable quantities} \\
 \end{array}
 $$
 :::
@@ -127,8 +127,8 @@ $$
     -   "*it's raining*" 🌧️ [is a proposition]{.fragment .green}
     -   "*is it raining?*" 🤔 [is not a proposition]{.fragment .red}
     -   "*Gaborone is the capital of Botswana*" 🇧🇼 [is a proposition]{.fragment .green}
-    -   "*Italy will win the 2026 FIFA World Cup*" ⚽️ [is a proposition]{.fragment .green}
-    -   "*unicorns fly*" 🦄 [is a proposition]{.fragment .green}
+    -   "*Italy will win the 2026 FIFA World Cup*" 🇮🇹⚽️ [is a proposition]{.fragment .green}
+    -   "*unicorns poop candy*" 🦄🍭 [is a proposition]{.fragment .green}
     -   "*2 + 2 = 5*" [is a proposition]{.fragment .green}
     -   "*X + 2 = 5*" [is not a proposition]{.fragment .red}
 
@@ -159,6 +159,7 @@ $$
         -   is the basis of **scientific reasoning** (incl. statistical inference)
 
         -   Probability theory is the logic of science!
+        
 
 ## Deductive vs. inductive arguments
 
@@ -412,21 +413,13 @@ expand_grid(
 
 ## Propositional logic: Variables
 
-There are two types of propositional variables: atomic and compound variables
+There are two types of propositional variables:
 
--   An **atomic variable** represents a single, indivisible proposition
+-   An **atomic variable** represents a single, indivisible proposition (e.g., "*the robot is blue*")
 
--   A **compound variable** is formed by combining one or more atomic variables with **logical operators** (a.k.a. logical connectives or Boolean operators)
+-   A **compound variable** is formed by combining one or more atomic variables with **logical operators** (*e.g.,* "*The robot is blue **AND** has an antenna*")
 
- 
-
-::: fragment
-| English | Math | R |
-|:----------------------------------|:------------------|:------------------|
-| $X \:$ "*the robot is **NOT** blue*" | $\lnot B$ | `!B` |
-| $Y \:$ "*the robot is blue **AND** it has an antenna*" | $B \land A$ | `B & A` |
-| $Z \:$ "***IF** the robot has an antenna **THEN** it's **NOT** blue*" | $A \implies \lnot B$ | `A %=>% !B` |
-:::
+-   Logical operators are also known as logical connectives or Boolean operators
 
 ## Propositional logic: Operators
 
@@ -438,7 +431,7 @@ There are two types of propositional variables: atomic and compound variables
 | A **IMPLIES** B | $A \implies B$ | `A %=>% B`  |             |
 | A **IFF** B     | $A \iff B$     | `A %<=>% B` |             |
 
--   The truth value of an **atomic variable** (e.g., $A$ and $B$) is assigned
+-   The truth value of an **atomic variable** is assigned
 -   The truth value of a **compound variable** is determined by the logical operators and truth values of its atomic components, according to the **rules of propositional logic**
 -   A **truth table** is the set of all possible combinations of truth-value assignments (valuations) for a set of atomic variables
 -   A truth table for $n$ atomic variables consists of $2^n$ possible valuations
@@ -901,11 +894,12 @@ B is a necessary condition for A: If B is false, A cannot be true
 Example:
 
 If it is raining (A), then the ground is wet (B).
-	
-	•	Sufficient: Rain guarantees the ground is wet
-	
-	•	Necessary: For it to be raining, the ground must be wet (if the ground isn’t wet, it can’t be raining)
-	
+
+```         
+•   Sufficient: Rain guarantees the ground is wet
+
+•   Necessary: For it to be raining, the ground must be wet (if the ground isn’t wet, it can’t be raining)
+```
 :::
 
 ## Propositional logic: Biconditional rule
@@ -1105,7 +1099,9 @@ For example:
 ::: {.column .fragment}
 ```{r}
 #| output-location: default
-expand_grid(A = c(TRUE, FALSE), B = c(TRUE, FALSE)) %>%
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
   mutate(
     X = A & B,
     Y = A | B)
@@ -1121,13 +1117,15 @@ A proposition $X$ **logically entails** another proposition $Y$ iff $X \implies 
 
 ## Logical entailment and deductive validity
 
--   The deductive validity of a logical argument is determined by checking whether the conclusion is guaranteed to be true, assuming the premises are true
+-   Recall: The goal of **deductive reasoning** is to determine whether the conclusion is guaranteed to be true, assuming the premises are true
 
--   In other words, a logical argument is deductively valid iff the premises ($E$) logically entail the conclusion ($H$)
+-   In other words, a logical argument is deductively valid iff the premises ($E$) logically entail the conclusion ($H$), i.e., in every possible world where $E$ is true, $H$ is also true
 
 ::: fragment
 $$E \models H$$
 :::
+
+-   Therefore, we can formalize deductive reasoning using this function:
 
 ::: fragment
 $$
@@ -1138,22 +1136,23 @@ $$
 ## Logical entailment and deductive validity
 
 ::: nonincremental
--   The deductive validity of a logical argument is determined by checking whether the conclusion is guaranteed to be true, assuming the premises are true
+-   Recall: The goal of **deductive reasoning** is to determine whether the conclusion is guaranteed to be true, assuming the premises are true
 
--   In other words, a logical argument is deductively valid iff the premises ($E$) logically entail the conclusion ($H$)
-:::
+-   In other words, a logical argument is deductively valid iff the premises ($E$) logically entail the conclusion ($H$), i.e., in every possible world where $E$ is true, $H$ is also true
 
 $$E \models H$$
+
+-   Therefore, we can formalize deductive reasoning using this function:
+:::
+
 $$
 \boxed{V(H \mid E) = \begin{cases} \text{True} & \text{if } E \models H \\ \text{False} & \text{otherwise} \end{cases}}
 $$
 
 
-
-
 ## Artificial intelligence for deductive reasoning
 
--   We will implement this function in R as the AI for deductive reasoning:
+-   Next, we will implement the $V$ function in R to build a simple AI for deductive reasoning
 
     -   **Input**: A deductive argument with one or more premises (`E`) and a conclusion (`H`)
 
@@ -1206,21 +1205,17 @@ $$
 \therefore & B1 \lor B2
 \end{array}
 $$
+&nbsp;
 
-[We will determine the deductive validity of this logical argument in three steps:]{.fragment}
+-   We will determine the deductive validity of this logical argument in three steps:
 
-1.  Build the truth table (the set of all possible worlds/truth-value assignments of the set of atomic variables in the argument)
-
-2.  Add premises and conclusion (`H`) to the truth table
-
-3.  Identify the possible worlds where all the premises (`E`) are true
-
-4.  Check that the logical argument is deductively valid ($E \models H$), i.e., that the conclusion is true in all those possible worlds
-
+    1.  Build the truth table (the set of all possible worlds)
+    2.  Add premises ($E$) and conclusion ($H$) to the truth table
+    3.  Check that in every possible world where $E$ is true, $H$ is also true
 
 ## Proportional syllogism
 
-Build the truth table
+Build the truth table (the set of all possible worlds)
 
 ```{r}
 expand_grid(
@@ -1231,20 +1226,7 @@ expand_grid(
 
 ## Proportional syllogism
 
-Add premises and conclusion (`H`) to the truth table
-
-```{r}
-expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W = c(TRUE, FALSE)) %>%
-  mutate(
-    P1 = B1 | B2 | W,
-    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    H  = B1 | B2
-  )
-```
-
-## Proportional syllogism
-
-Identify the possible worlds where all the premises (`E`) are true
+Add premises ($E$) and conclusion ($H$) to the truth table
 
 ```{r}
 #| output-location: default
@@ -1259,7 +1241,7 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
 
 ## Proportional syllogism
 
-Identify the possible worlds where all the premises (`E`) are true
+Check that in every possible world where $E$ is true, $H$ is also true
 
 ```{r}
 #| output-location: default
@@ -1275,7 +1257,7 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
 
 ## Proportional syllogism
 
-Check that the logical argument is deductively valid ($E \models H$)
+Check that in every possible world where $E$ is true, $H$ is also true
 
 ```{r}
 #| output-location: default
@@ -1292,7 +1274,7 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
 
 ## Proportional syllogism
 
-Check that the logical argument is deductively valid ($E \models H$)
+Check that in every possible world where $E$ is true, $H$ is also true
 
 ```{r}
 #| output-location: default
@@ -1310,7 +1292,7 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
 
 ## Proportional syllogism
 
-Check that the logical argument is deductively valid ($E \models H$)
+Check that in every possible world where $E$ is true, $H$ is also true
 
 ```{r}
 #| output-location: default
@@ -1364,11 +1346,11 @@ is.valid <- function(..., H) {
     all.vars(hypothesis_expr)
   ))
   
-  # build the truth table (set of all possible worlds)
+  # build the truth table (the set of all possible worlds)
   tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(variables)), variables))
   
-  # add evidence and hypothesis to the truth table
-  # check that the logical argument deductively valid: hypothesis is true in all possible worlds where evidence is true
+  # add evidence (E) and hypothesis (H) to the truth table
+  # check that in every possible world where E is true, H is also true
   tt %>%
     mutate(
       E = !!evidence_expr,
@@ -1667,7 +1649,6 @@ is.valid(
 :::::
 :::::::::
 
-
 ## Denying the antecedent
 
 Denying the antecedent is a logical argument that denies the antecedent to conclude the negation of the consequent
@@ -1873,9 +1854,9 @@ The statistical syllogism is a logical argument that draws a conclusion about a 
 
 ## Inductive generalization
 
-Inductive generalization (a.k.a. inductive inference) is a logical argument that draws a conclusion about a generalization based on a specific case
+Inductive generalization is a logical argument that draws a conclusion about a generalization based on a specific case
 
-This type of reasoning moves in the opposite direction of the statistical syllogism: it uses specific cases (observations) as evidence to infer a general conclusion
+This type of reasoning moves in the opposite direction of the statistical syllogism
 
 ::: {.fragment .nonincremental}
 **Premises**
@@ -1893,27 +1874,19 @@ This type of reasoning moves in the opposite direction of the statistical syllog
 
 ## Scientific reasoning is inductive reasoning
 
-::: fragment
-In science, inductive reasoning is often defined as reasoning from the specific to the general, i.e., **inductive generalization**:
-:::
+-   In science, inductive reasoning is often defined as reasoning from the specific to the general, i.e., **inductive generalization**:
 
--   from a sample to a population
--   from specific observations to a general conclusion
+    -   from a sample to a population
+    -   from specific observations to a general conclusion
 
-::: fragment
-In logic, inductive reasoning is defined as **risky reasoning** (from true premises to uncertain conclusion/a conclusion that might be false)
-:::
+-   In logic, inductive reasoning is more broadly defined as **risky reasoning** (from true premises to a conclusion that might be false), which includes:
 
-::: fragment
-There are many types of inductive reasoning:
-:::
-
--   **inductive generalization** (from the specific to the general)
--   **statistical syllogism** (from the general to the specific)
--   **analogical reasoning** (from specific to specific or from general to general)
--   **forecasting** (from the past to the future)
--   **abductive reasoning** (inference to the best/most plausible explanation)
--   **causal inference** (from the factual to the counterfactual)
+    -   **inductive generalization** (from the specific to the general)
+    -   **statistical syllogism** (from the general to the specific)
+    -   **analogical reasoning** (from specific to specific or from general to general)
+    -   **forecasting** (from the past to the future)
+    -   **abductive reasoning** (inference to the best/most plausible explanation)
+    -   **causal inference** (from the factual to the counterfactual)
 
 ::: notes
 Strong inductive reasoning (where the conclusion is probable if the premises are true) differs from valid deductive reasoning, where the conclusion is certain if the premises are true
@@ -2009,75 +1982,6 @@ XXX
 
 XXX
 
-## Knowledge-based AI
-
--   Logic (e.g., propositional logic or first-order logic) is a language used to represent knowledge and to reason (draw conclusions, make inferences) based on this knowledge
-
--   Logic is used in a knowledge-based AI agent to represent knowledge and to reason (draw conclusions, make inferences) based on this knowledge
-
--   In deductive logic the goal is to determine whether an argument is valid (the premises entail the conclusion), using some inference algorithm or rules
-
--   In inductive logic the goal is to determine whether an argument is strong (the premises partially entail the conclusion), using some inference algorithm or rules
-
-## Deductive reasoning: Propositional logic
-
--   The goal is to **prove** that a conclusion/hypothesis/query is true given some premises/evidence/knowledge known or assumed to be true
-
--   $E \models C$
-
--   $P(C \mid E) = 1$
-
-## Arguments/Rules of deductive inference
-
-Knowledge-based AI capable of logical reasoning
-
-Knowledge engineering
-
-Argument forms as inference rules of propositional logic/deductive inference:
-
--   *Modus ponens*
-
--   And elimination rule
-
--   Unit resolution rule
-
--   Double negation elimination rule
-
--   Implication elimination rule
-
--   Biconditional elimination rule
-
--   De Morgan's law (1)
-
--   De Morgan's law (2)
-
--   Distributive law (1)
-
--   Distributive law (2)
-
--   *Modus tollens*
-
-## Scientific reasoning is inductive reasoning
-
--   The rules of **propositional logic** provide a formal mathematical framework for **deductive reasoning** by determining whether a conclusion necessarily follows from the premises
-
-::: notes
--   The rules of propositional logic provide a formal mathematical framework for deductive reasoning by guaranteeing that if the premises are true, then the conclusion must also be true
-
--   The rules of propositional logic provide a formal mathematical framework for deductive reasoning by determining whether the premises logically entail the conclusion (i.e., whether the conclusion is true in every model where the premises are true)
-:::
-
--   The rules of **probability theory** provide a formal mathematical framework for **inductive reasoning** by quantifying the plausibility of a conclusion given the premises
-
-::::: columns
-::: {.column .fragment width="50%"}
-[![](images/probability_theory-logic_of_science.jpg){fig-align="center" height="300"}](https://bayes.wustl.edu/etj/prob/book.pdf)
-:::
-
-::: {.column .fragment width="50%"}
-{{< video https://youtu.be/zOeOgXbC5hE width="800" height="300" >}}
-:::
-:::::
 
 ## Logical probability function {.hidden}
 
@@ -2281,24 +2185,13 @@ $$
 -   $^*$only if a **causal model** is specified!
 :::
 
-## What is statistical inference?
-
-::: nonincremental
--   Statistical inference is inductive **logical reasoning**: The process of drawing a probable *conclusion* about a **MODEL** of the data generating process (DGP) based on model assumptions and incomplete **DATA** as *evidence*
+::::: columns
+::: {.column .fragment width="50%"}
+[![](images/probability_theory-logic_of_science.jpg){fig-align="center" height="300"}](https://bayes.wustl.edu/etj/prob/book.pdf)
 :::
 
-![](images/Slide6.png){fig-align="center" height="430"}
+::: {.column .fragment width="50%"}
+{{< video https://youtu.be/zOeOgXbC5hE width="800" height="300" >}}
+:::
+:::::
 
-## AI for deductive and inductive reasoning
-
--   This AI will be implemented in R as a function named `P` that:
-
-    -   takes one or more premises (**evidence**, named `E`), a conclusion (**hypothesis**, named `H`), and an optional prior probability distribution (named `p`) as arguments `P(..., H, p = NULL)`
-
-    -   returns a `Numeric` value between `0` and `1`, indicating how strongly `H` follows from `E`
-
-        -   If `P(..., H) = 1`, then the reasoning is deductively valid, i.e., `H` is true given `E`
-
-        -   If `0 < P(E, H) < 1`, then the reasoning is deductively invalid, with the value measuring inductive strength
-
-        -   If `P(E, H) = 0`, then the reasoning is deductively invalid and contradictory, i.e., `H` is false given `E`
