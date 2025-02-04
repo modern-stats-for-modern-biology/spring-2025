@@ -25,7 +25,7 @@ theme_set(theme_minimal())
 
 ## Statistical inference is logical reasoning
 
-Statistical inference is logical reasoning using 1) **data** (measurements of observable quantities) and 2) a **model** of the data generating process (DGP) as evidence to infer unobservable quantities:
+Statistical inference is logical reasoning using 1) **data** (*measurements of observable quantities*) and 2) a **model** of the data generating process (DGP) as evidence to infer *unobservable quantities*:
 
 ::: fragment
 $$
@@ -128,7 +128,7 @@ $$
     -   "*is it raining?*" 🤔 [is not a proposition]{.fragment .red}
     -   "*Gaborone is the capital of Botswana*" 🇧🇼 [is a proposition]{.fragment .green}
     -   "*Italy will win the 2026 FIFA World Cup*" 🇮🇹⚽️ [is a proposition]{.fragment .green}
-    -   "*unicorns poop candy*" 🦄🍭 [is a proposition]{.fragment .green}
+    -   "*unicorns poop ice cream*" 🦄🍦 [is a proposition]{.fragment .green}
     -   "*2 + 2 = 5*" [is a proposition]{.fragment .green}
     -   "*X + 2 = 5*" [is not a proposition]{.fragment .red}
 
@@ -1117,15 +1117,19 @@ A proposition $X$ **logically entails** another proposition $Y$ iff $X \implies 
 
 ## Logical entailment and deductive validity
 
--   Recall: The goal of **deductive reasoning** is to determine whether the conclusion is guaranteed to be true, assuming the premises are true
+-   Recall: The goal of **deductive reasoning** is to determine the deductive validity of an argument
 
--   In other words, a logical argument is deductively valid iff the premises ($E$) logically entail the conclusion ($H$), i.e., in every possible world where $E$ is true, $H$ is also true
+::: notes
+whether the **conclusion is guaranteed** to be true, assuming the premises are true
+:::
+
+-   An argument is deductively valid iff the premises ($E$) logically entail the conclusion ($H$), i.e., in every possible world where $E$ is true, $H$ is also true
 
 ::: fragment
 $$E \models H$$
 :::
 
--   Therefore, we can formalize deductive reasoning using this function:
+-   Therefore, we can formalize deductive reasoning as a function that takes an argument as input and returns true or false, indicating whether it is deductively valid
 
 ::: fragment
 $$
@@ -1136,13 +1140,17 @@ $$
 ## Logical entailment and deductive validity
 
 ::: nonincremental
--   Recall: The goal of **deductive reasoning** is to determine whether the conclusion is guaranteed to be true, assuming the premises are true
+-   Recall: The goal of **deductive reasoning** is to determine the deductive validity of an argument
 
--   In other words, a logical argument is deductively valid iff the premises ($E$) logically entail the conclusion ($H$), i.e., in every possible world where $E$ is true, $H$ is also true
+::: notes
+whether the **conclusion is guaranteed** to be true, assuming the premises are true
+:::
+
+-   An argument is deductively valid iff the premises ($E$) logically entail the conclusion ($H$), i.e., in every possible world where $E$ is true, $H$ is also true
 
 $$E \models H$$
 
--   Therefore, we can formalize deductive reasoning using this function:
+-   Therefore, we can formalize deductive reasoning as a function that takes an argument as input and returns true or false, indicating whether it is deductively valid
 :::
 
 $$
@@ -1152,11 +1160,11 @@ $$
 
 ## Artificial intelligence for deductive reasoning
 
--   Next, we will implement the $V$ function in R to build a simple AI for deductive reasoning
+-   Next, we will implement this $V$ function in R to build a simple AI for deductive reasoning
 
     -   **Input**: A deductive argument with one or more premises (`E`) and a conclusion (`H`)
 
-    -   **Output**: A `Logical` value (`TRUE` or `FALSE`), indicating whether the argument is deductively valid or not
+    -   **Output**: A `Logical` value (`TRUE` or `FALSE`), indicating whether the argument is deductively valid
 
 -   First, we will program this computer algorithm step-by-step using functions from the [`tidyverse`](https://www.tidyverse.org/) package
 
@@ -1207,7 +1215,7 @@ $$
 $$
 &nbsp;
 
--   We will determine the deductive validity of this logical argument in three steps:
+-   We will determine the deductive validity of this argument in three steps:
 
     1.  Build the truth table (the set of all possible worlds)
     2.  Add premises ($E$) and conclusion ($H$) to the truth table
