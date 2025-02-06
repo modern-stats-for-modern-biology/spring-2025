@@ -25,7 +25,7 @@ theme_set(theme_minimal())
 
 ## Statistical inference is logical reasoning
 
-Statistical inference is logical reasoning using 1) **data** (*measurements of observable quantities*) and 2) a **model** of the data generating process (DGP) as evidence to infer *unobservable quantities*:
+Statistical inference is logical reasoning using 1) **data** (*measurements of observable quantities*) and 2) a **model** of the data generating process (DGP) to infer *unobservable quantities*:
 
 ::: fragment
 $$
@@ -59,6 +59,20 @@ $$
 ## Modern science: statistical (+ causal) inference
 
 ![Luigi Sabatelli: Galileo presents the telescope to the Senate of Venice](images/galileo.webp){fig-alt="https://en.wikipedia.org/wiki/Tribune_of_Galileo" fig-align="center" height="550"}
+
+## Modern science: statistical (+ causal) inference
+
+[**LPS treatment blunts UCP1 expression in subcutaneous adipocytes**]{.orange}
+
+![](images/41467_2020_15483_Fig1_HTML.png)
+
+Values are expressed as mean ± SEM. \*\**p* = 0.004. Statistical test used: two-sided *t*-test.
+
+ 
+
+**Figure 1** from [ASK1 inhibits browning of white adipose tissue in obesity](https://doi.org/10.1038/s41467-020-15483-7)
+
+Lucchini *et al.* (2020) **Nat Commun** 11(1):1642
 
 ## Modern science: statistical (+ causal) inference
 
@@ -114,9 +128,11 @@ $$
 
 -   **Premises** are also known as **assumptions**, **facts**, or **rules**
 
--   In AI/ML, the set of premises is referred to as **knowledge base**, and the conclusion is referred to as **query**
+-   In statistical inference, the conclusion is also known as the **hypothesis**, while the premises are collectively referred to as the **evidence**
 
--   In AI/ML, the term **background information/knowledge** is used to refer to implicit assumptions
+-   In AI/ML, the conclusion is also known as the **query**, while the premises are collectively referred to as the **knowledge base** (or background information)
+
+-   Beware of hidden premises/implicit assumptions!
 
 ## Propositions
 
@@ -1000,6 +1016,26 @@ A is necessary and sufficient for B, and vice versa
 Example: You can drive (A) iff you have a license (B)
 :::
 
+## Propositional logic: Operators
+
+
+|      $A$       |      $B$       | $\neg A$ | $\neg B$ | $A \land B$ | $A \lor B$ | $A \implies B$ |   $A \iff B$   |
+|:--------------:|:--------------:|:--------:|:--------:|:------------:|:------------:|:------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green}  | [TRUE]{.green}  | [TRUE]{.green}  | [TRUE]{.green}  |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green}  | [FALSE]{.red}  | [TRUE]{.green}  | [FALSE]{.red}  | [FALSE]{.red}  |
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green}  | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green}  | [TRUE]{.green}  | [FALSE]{.red}  |
+| [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green}  | [TRUE]{.green}  | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green}  | [TRUE]{.green}  |
+
+::: fragment
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`¬A` = !A, `¬B` = !B, `A ∧ B` = A & B, `A ∨ B` = A | B, `A ⇒ B` = A %=>% B, `A ⇔ B` = A %<=>% B)
+```
+:::
+
 ## Propositional logic: Logical equivalence
 
 ::: fragment
@@ -1074,6 +1110,43 @@ Alternatively:
 Two propositions $X$ and $Y$ are **logically equivalent** iff $X \iff Y$ is a tautology
 :::
 
+## Propositional logic: Logical equivalence
+
+Two propositions $X$ and $Y$ are **logically equivalent** ($X \equiv Y$) iff they have the same truth value in every possible world
+
+For example:
+
+::::: columns
+::: column
+ 
+
+|   |   | X | Y |
+|:----------------:|:----------------:|:----------------:|:-----------------:|
+| $A$ | $B$ | $A \lor B$ | $\lnot (\lnot A \land \lnot B)$ |
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red} | [TRUE]{.green} | [TRUE]{.green} |
+| [FALSE]{.red} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [FALSE]{.red} | [FALSE]{.red} | [FALSE]{.red} | [FALSE]{.red} |
+:::
+
+::: column
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(
+    X = A | B,
+    Y = !(!A & !B), `X ⇔ Y` = X %<=>% Y)
+```
+:::
+:::::
+
+Alternatively:
+
+Two propositions $X$ and $Y$ are **logically equivalent** iff $X \iff Y$ is a tautology
+
+
 ## Propositional logic: Logical entailment
 
 ::: fragment
@@ -1114,6 +1187,42 @@ Alternatively:
 A proposition $X$ **logically entails** another proposition $Y$ iff $X \implies Y$ is a tautology
 :::
 
+## Propositional logic: Logical entailment
+
+A proposition $X$ **logically entails** another proposition $Y$ ($X \models Y$) iff in every possible world where $X$ is true, $Y$ is also true
+
+::::: columns
+::: {.column}
+For example:
+
+ 
+
+|                |                |       X        |       Y        |
+|:--------------:|:--------------:|:--------------:|:--------------:|
+|      $A$       |      $B$       |  $A \land B$   |   $A \lor B$   |
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} |
+| [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  | [TRUE]{.green} |
+| [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
+:::
+
+::: {.column}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(
+    X = A & B,
+    Y = A | B, `X ⇒ Y` = X %=>% Y)
+```
+:::
+:::::
+
+Alternatively:
+
+A proposition $X$ **logically entails** another proposition $Y$ iff $X \implies Y$ is a tautology
+
 ## Logical entailment and deductive validity
 
 -   Recall: The goal of **deductive reasoning** is to determine the validity of an argument
@@ -1122,18 +1231,18 @@ A proposition $X$ **logically entails** another proposition $Y$ iff $X \implies 
 whether the **conclusion is guaranteed** to be true, assuming the premises are true
 :::
 
--   An argument is deductively valid iff the premises ($K = P1, P2, \ldots$) logically entail the conclusion ($C$), i.e., in every possible world where $K$ is true, $C$ is also true
+-   An argument is deductively valid iff the premises ($E = P1, P2, \ldots$) logically entail the conclusion ($H$), i.e., in every possible world where $E$ is true, $H$ is also true
 
 ::: fragment
-$$K \models C$$
+$$E \models H$$
 :::
 
 -   Therefore, we can formalize deductive reasoning as a function that takes an argument as input and returns true or false to indicate whether the argument is deductively valid
 
 ::: fragment
 $$
-\boxed{V(\frac{K}{C}) = \begin{cases}
-\text{True} & \text{if } K \models C \\
+\boxed{V(\frac{E}{H}) = \begin{cases}
+\text{True} & \text{if } E \models H \\
 \text{False} & \text{otherwise}
 \end{cases}}
 $$
@@ -1148,16 +1257,16 @@ $$
 whether the **conclusion is guaranteed** to be true, assuming the premises are true
 :::
 
--   An argument is deductively valid iff the premises ($K = P1, P2, \ldots$) logically entail the conclusion ($C$), i.e., in every possible world where $K$ is true, $C$ is also true
+-   An argument is deductively valid iff the premises ($E = P1, P2, \ldots$) logically entail the conclusion ($H$), i.e., in every possible world where $E$ is true, $H$ is also true
 
-$$K \models C$$
+$$E \models H$$
 
 -   Therefore, we can formalize deductive reasoning as a function that takes an argument as input and returns true or false to indicate whether the argument is deductively valid
 ::::
 
 $$
-\boxed{V(\text{C} \mid \text{K}) = \begin{cases}
-\text{True} & \text{if } K \models C \\
+\boxed{V(\text{H} \mid \text{E}) = \begin{cases}
+\text{True} & \text{if } E \models H \\
 \text{False} & \text{otherwise}
 \end{cases}}
 $$
@@ -1166,7 +1275,7 @@ $$
 
 -   Next, we will implement this $V$ function in R to build an AI for deductive reasoning
 
-    -   **Input**: A deductive argument with one or more premises (`P1`, `P2`, …) and a conclusion (`C`)
+    -   **Input**: A deductive argument with one or more premises (`P1`, `P2`, …) and a conclusion (`H`)
 
     -   **Output**: A `Logical` value (`TRUE` or `FALSE`), indicating whether the argument is deductively valid
 
@@ -1221,8 +1330,8 @@ $$  
 -   We will determine the deductive validity of this argument in three steps:
 
     1.  Build the truth table (the set of all possible worlds)
-    2.  Add premises ($K = P1, P2$) and conclusion ($C$) to the truth table
-    3.  Check that in every possible world where $K$ is true, $C$ is also true
+    2.  Add premises ($E = P1, P2$) and conclusion ($H$) to the truth table
+    3.  Check that in every possible world where $E$ is true, $H$ is also true
 
 ## Proportional syllogism
 
@@ -1237,7 +1346,7 @@ expand_grid(
 
 ## Proportional syllogism
 
-Add premises ($K = P1, P2$) and conclusion ($C$) to the truth table
+Add premises ($E = P1, P2$) and conclusion ($H$) to the truth table
 
 ```{r}
 #| output-location: default
@@ -1245,14 +1354,14 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
   mutate(
     P1 = B1 | B2 | W,
     P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    K  = P1 & P2,
-    C  = B1 | B2
+    E  = P1 & P2,
+    H  = B1 | B2
   )
 ```
 
 ## Proportional syllogism
 
-Check that in every possible world where $K$ is true, $C$ is also true
+Check that in every possible world where $E$ is true, $H$ is also true
 
 ```{r}
 #| output-location: default
@@ -1260,15 +1369,15 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
   mutate(
     P1 = B1 | B2 | W,
     P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    K  = P1 & P2,
-    C  = B1 | B2
+    E  = P1 & P2,
+    H  = B1 | B2
   ) %>%
-  filter(K)
+  filter(E)
 ```
 
 ## Proportional syllogism
 
-Check that in every possible world where $K$ is true, $C$ is also true
+Check that in every possible world where $E$ is true, $H$ is also true
 
 ```{r}
 #| output-location: default
@@ -1276,16 +1385,16 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
   mutate(
     P1 = B1 | B2 | W,
     P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    K  = P1 & P2,
-    C  = B1 | B2
+    E  = P1 & P2,
+    H  = B1 | B2
   ) %>%
-  filter(K) %>%
-  pull(C)
+  filter(E) %>%
+  pull(H)
 ```
 
 ## Proportional syllogism
 
-Check that in every possible world where $K$ is true, $C$ is also true
+Check that in every possible world where $E$ is true, $H$ is also true
 
 ```{r}
 #| output-location: default
@@ -1293,17 +1402,17 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
   mutate(
     P1 = B1 | B2 | W,
     P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    K  = P1 & P2,
-    C  = B1 | B2
+    E  = P1 & P2,
+    H  = B1 | B2
   ) %>%
-  filter(K) %>%
-  pull(C) %>%
+  filter(E) %>%
+  pull(H) %>%
   mean()
 ```
 
 ## Proportional syllogism
 
-Check that in every possible world where $K$ is true, $C$ is also true
+Check that in every possible world where $E$ is true, $H$ is also true
 
 ```{r}
 #| output-location: default
@@ -1311,11 +1420,11 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
   mutate(
     P1 = B1 | B2 | W,
     P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    K  = P1 & P2,
-    C  = B1 | B2
+    E  = P1 & P2,
+    H  = B1 | B2
   ) %>%
-  filter(K) %>%
-  pull(C) %>%
+  filter(E) %>%
+  pull(H) %>%
   all()
 ```
 
@@ -1329,7 +1438,7 @@ Artificial intelligence for deductive reasoning implemented in a single line of 
 
 ```{r}
 #| output-location: default
-expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>% mutate(P1 = B1 | B2 | W, P2 = !((B1 & B2) | (B1 & W) | (B2 & W)), K = P1 & P2, C  = B1 | B2) %>% filter(K) %>% pull(C) %>% all()
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>% mutate(P1 = B1 | B2 | W, P2 = !((B1 & B2) | (B1 & W) | (B2 & W)), E = P1 & P2, H  = B1 | B2) %>% filter(E) %>% pull(H) %>% all()
 ```
 
 ## Artificial intelligence for deductive reasoning
@@ -1341,33 +1450,33 @@ library(rlang)
 
 ```{r}
 #| output-location: default
-is.valid <- function(..., C) {
+is.valid <- function(..., H) {
   # capture premises as a list of quosures
   premises <- enquos(...)
 
-  # capture conclusion as a quosure
-  C <- enquo(C)
+  # capture conclusion (H) as a quosure
+  H <- enquo(H)
 
   if (length(premises) == 0) {
-    # if no premises are provided, set knowledge base K to TRUE (tautology)
-    K <- expr(TRUE)
+    # if no premises are provided, set evidence (E) to TRUE (tautology)
+    E <- expr(TRUE)
   } else {
-    # else set knowledge base K to the conjunction of the premises
-    K <- reduce(premises, ~ expr((!! .x) & (!! .y)))
+    # else set evidence (E) to conjunction of all premises
+    E <- reduce(premises, ~ expr((!! .x) & (!! .y)))
   }
     
-  # extract atomic variables from knowledge base and conclusion
-  vars <- unique(c(all.vars(K), all.vars(C)))
+  # extract atomic variables from E and H
+  vars <- unique(c(all.vars(E), all.vars(H)))
   
   # build truth table
   tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars))
   
-  # add knowledge base (K) and conclusion (C) to truth table
-  # check that in every possible world where K is true, C is also true
+  # add E and H to truth table
+  # check that in every possible world where E is true, H is also true
   tt %>%
-    mutate(K = !!K, C = !!C) %>%
-    filter(K) %>%
-    pull(C) %>%
+    mutate(E = !!E, H = !!H) %>%
+    filter(E) %>%
+    pull(H) %>%
     all()
 }
 ```
@@ -1434,15 +1543,15 @@ $$
 #| include: false
 library(flextable)
 
-P <- function(..., C, table = TRUE, flex = TRUE) {
+P <- function(..., H, table = TRUE, flex = TRUE) {
   # capture premises as a list of quosures
   premises <- enquos(...)
   
-  # capture conclusion as a quosure
-  C <- enquo(C)
+  # capture conclusion (H) as a quosure
+  H <- enquo(H)
   
-  # extract atomic variables from premises and conclusion
-  vars <- unique(c(unlist(lapply(premises, all.vars)), all.vars(C)))
+  # extract atomic variables from premises and H
+  vars <- unique(c(unlist(lapply(premises, all.vars)), all.vars(H)))
   
   # build truth table
   tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars))
@@ -1452,20 +1561,20 @@ P <- function(..., C, table = TRUE, flex = TRUE) {
     tt[[paste0("P", i)]] <- eval_tidy(premises[[i]], data = tt)
   }
   
-  # add knowledge base (K) and conclusion (C) to truth table
+  # add conjunction of all premises (E) and H to truth table
   tt <- tt %>%
     mutate(
-      K = if_all(starts_with("P"), identity),
-      C = eval_tidy(C, data = tt)
+      E = if_all(starts_with("P"), identity),
+      H = eval_tidy(H, data = tt)
     )
   
-  # calculate P(C | K)
+  # calculate P(H | E) by checking whether in every possible world where E is true, H is also true
   P <- tt %>%
-    filter(K) %>%
-    pull(C) %>%
+    filter(E) %>%
+    pull(H) %>%
     mean()
   
-  # return P(C | K) if truth table output is not requested
+  # return P(H | E) if truth table output is not requested
   if (!table) {
     return(P)
   }
@@ -1484,7 +1593,7 @@ P <- function(..., C, table = TRUE, flex = TRUE) {
   tt.formatted <- flextable(tt) %>%
     bold(part = "header") %>%  # Bold the header
     bold(part = "footer") %>%  # Bold the footer
-    bg(i = which(tt$K == TRUE), bg = highlight_color, part = "body")  # Highlight E = TRUE rows
+    bg(i = which(tt$E == TRUE), bg = highlight_color, part = "body")  # Highlight E = TRUE rows
   
   # apply text colors
   for (col in colnames(tt)) {
@@ -1496,7 +1605,7 @@ P <- function(..., C, table = TRUE, flex = TRUE) {
   # add footer with the calculated P(C | K) value
   tt.formatted <- tt.formatted %>%
     add_footer_row(
-      values = paste("P(C | K) =", round(P, 3)),
+      values = paste("P(H | E) =", round(P, 3)),
       colwidths = ncol(tt)
     ) %>%
     align(align = "right", part = "footer")
@@ -1541,7 +1650,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = R %=>% W, P2 = R, C = W)
+P(P1 = R %=>% W, P2 = R, H = W)
 ```
 :::
 
@@ -1551,7 +1660,7 @@ P(P1 = R %=>% W, P2 = R, C = W)
 is.valid(
   P1 = R %=>% W,
   P2 = R,       
-  C  = W)
+  H  = W)
 ```
 :::
 :::::
@@ -1592,7 +1701,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = R %=>% W, P2 = W, C = R)
+P(P1 = R %=>% W, P2 = W, H = R)
 ```
 :::
 
@@ -1602,7 +1711,7 @@ P(P1 = R %=>% W, P2 = W, C = R)
 is.valid(
   P1 = R %=>% W,
   P2 = W,
-  C  = R)
+  H  = R)
 ```
 :::
 :::::
@@ -1643,7 +1752,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = R %=>% W, P2 = !W, C = !R)
+P(P1 = R %=>% W, P2 = !W, H = !R)
 ```
 :::
 
@@ -1653,7 +1762,7 @@ P(P1 = R %=>% W, P2 = !W, C = !R)
 is.valid(
   P1 = R %=>% W,
   P2 = !W,
-  C  = !R)
+  H  = !R)
 ```
 :::
 :::::
@@ -1694,7 +1803,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = R %=>% W, P2 = !R, C = !W)
+P(P1 = R %=>% W, P2 = !R, H = !W)
 ```
 :::
 
@@ -1704,7 +1813,7 @@ P(P1 = R %=>% W, P2 = !R, C = !W)
 is.valid(
   P1 = R %=>% W,
   P2 = !R,
-  C  = !W)
+  H  = !W)
 ```
 :::
 :::::
@@ -1745,7 +1854,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = R %=>% W, P2 = W %=>% G, C = R %=>% G)
+P(P1 = R %=>% W, P2 = W %=>% G, H = R %=>% G)
 ```
 :::
 
@@ -1755,7 +1864,7 @@ P(P1 = R %=>% W, P2 = W %=>% G, C = R %=>% G)
 is.valid(
   P1 = R %=>% W,
   P2 = W %=>% G,
-  C  = R %=>% G)
+  H  = R %=>% G)
 ```
 :::
 :::::
@@ -1830,7 +1939,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = B1 | B2 | W, P2 = !((B1 & B2) | (B1 & W) | (B2 & W)), C = B1 | B2)
+P(P1 = B1 | B2 | W, P2 = !((B1 & B2) | (B1 & W) | (B2 & W)), H = B1 | B2)
 ```
 :::
 
@@ -1840,7 +1949,7 @@ P(P1 = B1 | B2 | W, P2 = !((B1 & B2) | (B1 & W) | (B2 & W)), C = B1 | B2)
 is.valid(
   P1 = B1 | B2 | W,                         
   P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-  C  = B1 | B2)
+  H  = B1 | B2)
 ```
 :::
 :::::
