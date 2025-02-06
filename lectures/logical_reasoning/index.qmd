@@ -78,7 +78,7 @@ $$
 
 -   **Reasoning** is the process of drawing a conclusion from one or more premises
 
--   Reasoning is usually formalized as an **argument**
+-   Reasoning is formalized as an **argument**
 
 -   An argument is a **series of propositions**: one or more **premises** and a **conclusion**
 
@@ -98,7 +98,7 @@ $$
 ::: nonincremental
 -   **Reasoning** is the process of drawing a conclusion from one or more premises
 
--   Reasoning is usually formalized as an **argument**
+-   Reasoning is formalized as an **argument**
 
 -   An argument is a **series of propositions**: one or more **premises** and a **conclusion**
 :::
@@ -114,13 +114,13 @@ $$
 
 -   **Premises** are also known as **assumptions**, **facts**, or **rules**
 
--   In AI/ML, the **conjunction of premises** is known as the **knowledge base**, and the conclusion is referred to as the **query**
+-   In AI/ML, the set of premises is referred to as **knowledge base**, and the conclusion is referred to as **query**
 
--   The term **background information** is also often used to refer to contextual knowledge or implicit assumptions
+-   In AI/ML, the term **background information/knowledge** is used to refer to implicit assumptions
 
 ## Propositions
 
--   A **proposition** (or statement) is a declarative sentence that is either true or false, but not both at the same time
+-   A **proposition** (or statement) is a declarative sentence that can be either true or false, but not both at the same time
 
 -   It represents an assertion or claim about a particular state of affairs in the world
 
@@ -133,9 +133,9 @@ $$
     -   "*X + 2 = 5*" [is not a proposition]{.fragment .red}
 
 ::: notes
--   "*Unicorns fly!* is a proposition, because it can be assigned a truth value: in the real world, we would generally consider this false because unicorns don’t exist, and thus they can’t fly
+-   "*Unicorns fly!* is a proposition, because it can be assigned a truth value
 
--   The key is that it could be true in a hypothetical world where unicorns exist and can fly
+-   “a particular state of affairs in the world,” it’s not strictly about the real world but about any possible world where statements can be evaluated for their truth value
 
 -   The truth value doesn’t need to be known or verifiable—it just needs to be something that could, in principle, be true or false
 :::
@@ -258,7 +258,7 @@ $$
 
 ## Deductive and inductive reasoning recap
 
--   The goal of **deductive reasoning** is to determine whether the **conclusion is guaranteed** to be true, assuming the premises are true (truth-preserving, certain/full info)
+-   The goal of **deductive reasoning** is to determine whether the **conclusion is guaranteed** to be true, assuming the premises are true
 
 ::: fragment
 $$
@@ -271,7 +271,7 @@ $$
 $$
 :::
 
--   The goal of **inductive reasoning** is to determine whether the **conclusion is likely** to be true, assuming the premises are true (not truth-preserving, uncertain/partial info)
+-   The goal of **inductive reasoning** is to determine whether the **conclusion is likely** to be true, assuming the premises are true
 
 ::: fragment
 $$
@@ -473,7 +473,7 @@ $\lnot A \:$ ["*The robot does **NOT** have an antenna.*"]{.fragment}
 
 **Negation (NOT) operator** $\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}$
 
-$\lnot A \:$ "*The robot does **NOT** have an antenna*"
+$\lnot A \:$ "*The robot does **NOT** have an antenna.*"
 
 :::::: columns
 ::: {.column width="30%"}
@@ -505,7 +505,7 @@ expand_grid(
 
 **Negation (NOT) operator** $\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}$
 
-$\lnot A \:$ "*The robot does **NOT** have an antenna*"
+$\lnot A \:$ "*The robot does **NOT** have an antenna.*"
 
 :::::: columns
 ::: {.column width="30%"}
@@ -538,7 +538,7 @@ expand_grid(
 
 **Negation (NOT) operator** $\quad \lnot A \quad A' \quad \bar{A} \quad A^{\complement}$
 
-$\lnot A \:$ "*The robot does **NOT** have an antenna*"
+$\lnot A \:$ "*The robot does **NOT** have an antenna.*"
 
 :::::: columns
 ::: {.column width="30%"}
@@ -1124,17 +1124,18 @@ whether the **conclusion is guaranteed** to be true, assuming the premises are t
 
 -   An argument is deductively valid iff the premises ($K = P1, P2, \ldots$) logically entail the conclusion ($C$), i.e., in every possible world where $K$ is true, $C$ is also true
 
-
-
 ::: fragment
 $$K \models C$$
 :::
 
--   Therefore, we can formalize deductive reasoning as a function that takes an argument as input and returns true or false, indicating whether the argument is deductively valid
+-   Therefore, we can formalize deductive reasoning as a function that takes an argument as input and returns true or false to indicate whether the argument is deductively valid
 
 ::: fragment
 $$
-\boxed{V(\frac{K}{C}) = \begin{cases} \text{True} & \text{if } K \models C \\ \text{False} & \text{otherwise} \end{cases}}
+\boxed{V(\frac{K}{C}) = \begin{cases}
+\text{True} & \text{if } K \models C \\
+\text{False} & \text{otherwise}
+\end{cases}}
 $$
 :::
 
@@ -1151,24 +1152,27 @@ whether the **conclusion is guaranteed** to be true, assuming the premises are t
 
 $$K \models C$$
 
--   Therefore, we can formalize deductive reasoning as a function that takes an argument as input and returns true or false, indicating whether the argument is deductively valid
+-   Therefore, we can formalize deductive reasoning as a function that takes an argument as input and returns true or false to indicate whether the argument is deductively valid
 ::::
 
 $$
-\boxed{V(C \mid K) = \begin{cases} \text{True} & \text{if } K \models C \\ \text{False} & \text{otherwise} \end{cases}}
+\boxed{V(\text{C} \mid \text{K}) = \begin{cases}
+\text{True} & \text{if } K \models C \\
+\text{False} & \text{otherwise}
+\end{cases}}
 $$
 
 ## Artificial intelligence for deductive reasoning
 
--   Next, we will implement this $V$ function in R to build a simple AI for deductive reasoning
+-   Next, we will implement this $V$ function in R to build an AI for deductive reasoning
 
     -   **Input**: A deductive argument with one or more premises (`P1`, `P2`, …) and a conclusion (`C`)
 
     -   **Output**: A `Logical` value (`TRUE` or `FALSE`), indicating whether the argument is deductively valid
 
--   First, we will program this computer algorithm step-by-step using functions from the [`tidyverse`](https://www.tidyverse.org/) package
+-   First, we will program this computer algorithm step-by-step
 
--   Then, we will wrap it up into a reusable function called `is.valid` using functions from the [`rlang`](https://rlang.r-lib.org/) package
+-   Then, we will wrap it up into a reusable function called `is.valid`
 
 -   We will use the *proportional syllogism* (a classical argument that is foundational to statistical inference) as an example
 
@@ -1338,31 +1342,30 @@ library(rlang)
 ```{r}
 #| output-location: default
 is.valid <- function(..., C) {
-  # capture the premises as a list of quosures
+  # capture premises as a list of quosures
   premises <- enquos(...)
+
+  # capture conclusion as a quosure
+  C <- enquo(C)
+
+  if (length(premises) == 0) {
+    # if no premises are provided, set knowledge base K to TRUE (tautology)
+    K <- expr(TRUE)
+  } else {
+    # else set knowledge base K to the conjunction of the premises
+    K <- reduce(premises, ~ expr((!! .x) & (!! .y)))
+  }
+    
+  # extract atomic variables from knowledge base and conclusion
+  vars <- unique(c(all.vars(K), all.vars(C)))
   
-  # conjoin the premises into a knowledge base
-  K_expr <- reduce(premises, ~ expr((!! .x) & (!! .y)))
+  # build truth table
+  tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars))
   
-  # capture the conclusion as a quosure
-  C_expr <- enquo(C)
-  
-  # extract the atomic variables from the knowledge base and conclusion
-  variables <- unique(c(
-    all.vars(K_expr),
-    all.vars(C_expr)
-  ))
-  
-  # build the truth table (the set of all possible worlds)
-  tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(variables)), variables))
-  
-  # add the knowledge base (K) and conclusion (C) to the truth table
+  # add knowledge base (K) and conclusion (C) to truth table
   # check that in every possible world where K is true, C is also true
   tt %>%
-    mutate(
-      K = !!K_expr,
-      C = !!C_expr
-    ) %>%
+    mutate(K = !!K, C = !!C) %>%
     filter(K) %>%
     pull(C) %>%
     all()
@@ -1432,43 +1435,44 @@ $$
 library(flextable)
 
 P <- function(..., C, table = TRUE, flex = TRUE) {
-  # capture the premises as a list of quosures
+  # capture premises as a list of quosures
   premises <- enquos(...)
   
-  # conjoin the premises into a knowledge base
-  K_expr <- reduce(premises, ~ expr((!! .x) & (!! .y)))
+  # capture conclusion as a quosure
+  C <- enquo(C)
   
-  # capture the conclusion as a quosure
-  C_expr <- enquo(C)
+  # extract atomic variables from premises and conclusion
+  vars <- unique(c(unlist(lapply(premises, all.vars)), all.vars(C)))
   
-  # extract the atomic variables from the knowledge base and conclusion
-  variables <- unique(c(
-    all.vars(K_expr),
-    all.vars(C_expr)
-  ))
+  # build truth table
+  tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars))
+
+  # add premises to truth table
+  for (i in seq_along(premises)) {
+    tt[[paste0("P", i)]] <- eval_tidy(premises[[i]], data = tt)
+  }
   
-  # build the truth table (the set of all possible worlds)
-  tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(variables)), variables))
-  
-  # add the knowledge base (K) and conclusion (C) to the truth table
-  # check that in every possible world where K is true, C is also true
-  P_value <- tt %>%
+  # add knowledge base (K) and conclusion (C) to truth table
+  tt <- tt %>%
     mutate(
-      K = !!K_expr,
-      C = !!C_expr
-    ) %>%
+      K = if_all(starts_with("P"), identity),
+      C = eval_tidy(C, data = tt)
+    )
+  
+  # calculate P(C | K)
+  P <- tt %>%
     filter(K) %>%
     pull(C) %>%
-    all()
+    mean()
   
-  # return P value if truth table output is not requested
+  # return P(C | K) if truth table output is not requested
   if (!table) {
-    return(P_value)
+    return(P)
   }
   
   # return truth table if formatted truth table output is not requested
   if (!flex) {
-    return(truth_table)
+    return(tt)
   }
   
   # define colors
@@ -1492,7 +1496,7 @@ P <- function(..., C, table = TRUE, flex = TRUE) {
   # add footer with the calculated P(C | K) value
   tt.formatted <- tt.formatted %>%
     add_footer_row(
-      values = paste("P(C | K) =", round(P_value, 3)),
+      values = paste("P(C | K) =", round(P, 3)),
       colwidths = ncol(tt)
     ) %>%
     align(align = "right", part = "footer")
@@ -1844,7 +1848,7 @@ is.valid(
 
 ## Statistical syllogism
 
-The statistical syllogism is a logical argument that draws a conclusion about a specific case based on a generalization
+The statistical syllogism is a logical argument that draws a conclusion about a specific case (or cases) based on a generalization
 
 ::: {.fragment .nonincremental}
 **Premises**
@@ -1860,7 +1864,7 @@ The statistical syllogism is a logical argument that draws a conclusion about a 
 
 ## Inductive generalization
 
-Inductive generalization is a logical argument that draws a conclusion about a generalization based on a specific case
+Inductive generalization is a logical argument that draws a conclusion about a generalization based on a specific case (or cases)
 
 This type of reasoning moves in the opposite direction of the statistical syllogism
 
