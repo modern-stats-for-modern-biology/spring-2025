@@ -25,21 +25,138 @@ theme_set(theme_minimal())
 
 ## Statistical inference is logical reasoning
 
-Statistical inference is logical reasoning using **data** (*measurements of observable quantities*) and a **model of the data generating process** (DGP) to infer *unobservable quantities*:
+::: fragment
+Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
+:::
 
 ::: fragment
 $$
 \begin{array}{ll}
-1. & \text{data (observations)} \\
-2. & \text{DGP model} \\
+1. & \text{known quantities} \\
+2. & \text{model} \\
 \hline
-\therefore & \text{unobservable quantities} \\
+\therefore & \text{unknown quantities} \\
 \end{array}
 $$
 :::
 
+::: fragment
+A model is a function that relates known quantities to unknown quantities
+:::
+
+::: fragment
+$$\text{known quantities} \xrightarrow{\text{model}} \text{unknown quantities}$$
+:::
+
+## Statistical inference is logical reasoning
+
+Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
+
+$$
+\begin{array}{ll}
+1. & \text{known quantities} \\
+2. & \text{model} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+
+A model is a function that relates known quantities to unknown quantities
+
+$$\text{model} : \text{known quantities} \rightarrow \text{unknown quantities}$$
+
+::: fragment
+```{r}
+#| output-location: default
+#| eval: false
+unknown_quantities <- model(known_quantities)
+```
+:::
+
+::: notes
+The mathematical model formalizes how the known quantities relates to the unknown quantities
+
+-   "*Known (or assumed) quantities*" → represents observed data, prior knowledge, or assumptions
+-   "*A model*" → represents the formal structure that connects the known to the unknown
+-   "*Infer unknown quantities*" → captures the goal of statistical inference, whether estimating missing values, latent variables, or future outcomes
+
+A mathematical model is a function/mapping that relates/maps known quantities (data, assumptions, priors) to unknown quantities (parameters, predictions, latent variables, missing values)
+
+$$\text{model} : \text{known quantities} \rightarrow \text{unknown quantities}$$
+:::
+
+## Statistical inference is logical reasoning
+
+Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
+
+
+$$
+\begin{array}{ll}
+1. & \text{known quantities} \\
+2. & \text{model} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+
+A model is a function that relates known quantities to unknown quantities
+
+$$\text{model} : \text{known quantities} \rightarrow \text{unknown quantities}$$
+
+```{r}
+#| output-location: default
+#| eval: false
+model(known_quantities) -> unknown_quantities
+```
+
+## Statistical inference is logical reasoning
+
+Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
+
+
+$$
+\begin{array}{ll}
+1. & \text{known quantities} \\
+2. & \text{model} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+
+A model is a function that relates known quantities to unknown quantities
+
+$$\text{model} : \text{known quantities} \rightarrow \text{unknown quantities}$$
+
+```{r}
+#| output-location: default
+X <- 1 # X: known quantity
+
+Y <- NA # Y: unknown quantity
+
+# model: Y = 10 - 7 * X
+model <- function(X) 10 - 7 * X
+
+# infer Y from X and model
+Y <- model(X)
+
+Y
+```
+
+## Statistical inference is logical reasoning
+
+Statistical inference is inductive reasoning using **data** (*measured values of observable variables*) and a **model of the data-generating process (DGP)** to infer the *unmeasurable values of unobservable variables* (or *unmeasured values of observable variables*)
+
+$$
+\begin{array}{ll}
+1. & \text{data} \\
+2. & \text{DGP model} \\
+\hline
+\therefore & \text{(see below)} \\
+\end{array}
+$$
+
 -   Future observations (prediction/forecasting)
--   Unrecorded past observations or unobserved events (retrodiction/backcasting)
+-   Unrecorded past observations or unobservable past events (retrodiction/backcasting)
 -   Hypothetical observations (frequentist inference)
 -   Unobservable counterfactual outcomes (causal inference, requires a **causal model**)
 -   Missing data (imputation)
@@ -99,10 +216,10 @@ Lucchini *et al.* (2020) **Nat Commun** 11(1):1642
 ::: fragment
 $$
 \begin{array}{ll}
-1. & \text{data (observations)} \\
+1. & \text{data (known quantities)} \\
 2. & \text{DGP model} \\
 \hline
-\therefore & \text{unobservable quantities} \\
+\therefore & \text{unknown quantities} \\
 \end{array}
 $$
 :::
@@ -136,7 +253,7 @@ $$
 
 ## Propositions
 
--   A **proposition** (or statement) is a declarative sentence that can be either true or false, but not both at the same time
+-   A **proposition** (or statement) is a declarative sentence that is either **True** or **False**, but not both
 
 -   It represents an assertion or claim about a particular state of affairs in the world
 
@@ -374,11 +491,22 @@ Propositional logic is a factored representation of knowledge.
 First-order logic is a structured representation of knowledge.
 :::
 
-## Propositional logic: Variables
 
--   **Propositional variables** (a.k.a. logical or Boolean variables) represent propositions and thus hold one of two values, either **True** or **False** (a.k.a. the **truth value** of a proposition)
+## Propositional logic: Propositions
 
--   Propositional variables are typically represented by uppercase Roman letters
+There are two types of propositions:
+
+-   **Atomic propositions** are indivisible propositions (e.g., "*The robot is blue.*" or "*The robot has an antenna*")
+
+-   **Compound propositions** are formed by combining one or more atomic propositions using **logical operators** (*e.g.,* "*The robot is blue **AND** has an antenna.*")
+
+## Propositional logic: Propositional variables
+
+-   A **propositional variable** is a symbol representing a proposition
+
+-   A propositional variable holds a value (**truth value**) that is either **True** or **False**, but not both
+
+-   Propositional variables are also known as logical or Boolean variables and are typically denoted by uppercase Roman letters
 
 ::::: columns
 ::: {.column .fragment}
@@ -426,18 +554,12 @@ expand_grid(
 **State space** = the set of all possible states a system can be in
 :::
 
-## Propositional logic: Variables
 
-There are two types of propositional variables:
+## Propositional logic: Logical operators
 
--   An **atomic variable** represents a single, indivisible proposition (e.g., "*The robot is blue.*")
+-   A **logical operator** (also called a logical connective or Boolean operator) is a symbol representing a function that combines one or more propositions (atomic or compound) to form a new compound proposition
 
--   A **compound variable** is formed by combining one or more atomic variables with **logical operators** (*e.g.,* "*The robot is blue **AND** has an antenna.*")
-
--   Logical operators are also known as logical connectives or Boolean operators
-
-## Propositional logic: Operators
-
+::: fragment
 | English         | Math           | R           |             |
 |:----------------|:---------------|:------------|:------------|
 | **NOT** A       | $\lnot A$      | `!A`        |             |
@@ -445,13 +567,30 @@ There are two types of propositional variables:
 | A **OR** B      | $A \lor B$     | `A | B`     | `any(A, B)` |
 | A **IMPLIES** B | $A \implies B$ | `A %=>% B`  |             |
 | A **IFF** B     | $A \iff B$     | `A %<=>% B` |             |
+:::
 
 -   The truth value of an **atomic variable** is assigned
--   The truth value of a **compound variable** is determined by the logical operators and truth values of its atomic components, according to the **rules of propositional logic**
--   A **truth table** is the set of all possible combinations of truth-value assignments (valuations) for a set of atomic variables
--   A truth table for $n$ atomic variables consists of $2^n$ possible valuations
--   Valuations are also known as **worlds** ($\omega$), outcomes, states, etc.
--   A truth table is also known as the **universe** ($\Omega$), sample space, state space, etc.
+
+-   The truth value of a **compound variable** is determined by the logical operators and the truth values of its atomic components, according to the **rules of propositional logic**
+
+## Propositional logic: Truth tables
+
+-   A **truth table** is a tabular representation of the set of all possible combinations of truth-value assignments for a given set of atomic variables, along with the truth values of compound variables formed by combining them using logical operators
+
+-   A combination of truth-value assignments for a given set of atomic variables is also known as **valuation**
+
+-   The set of all possible valuations for a given set of atomic variables is also known as **logical space**
+
+-   The logical space for a set of $n$ atomic variables consists of $2^n$ possible valuations
+
+-   Valuations are also known as **worlds** ($\omega$), outcomes, or states
+
+-   The logical space is also known as the **universe** ($\Omega$), sample space, or state space
+
+    -   The universe is the set of all possible worlds
+    -   The sample space is the set of all possible outcomes
+    -   The state space is the set of all possible states
+
 
 ::: notes
 In propositional logic, the truth value of an atomic variable is assigned by a truth assignment (also called a valuation), which is a function that maps each atomic variable to either True (T) or False (F).
