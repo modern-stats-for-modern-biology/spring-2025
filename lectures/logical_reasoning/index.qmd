@@ -89,7 +89,6 @@ $$\text{model} : \text{known quantities} \rightarrow \text{unknown quantities}$$
 
 Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
 
-
 $$
 \begin{array}{ll}
 1. & \text{known quantities} \\
@@ -112,7 +111,6 @@ model(known_quantities) -> unknown_quantities
 ## Statistical inference is logical reasoning
 
 Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
-
 
 $$
 \begin{array}{ll}
@@ -137,7 +135,7 @@ Y <- NA # Y: unknown quantity
 model <- function(X) 10 - 7 * X
 
 # infer Y from X and model
-Y <- model(X)
+model(X) -> Y
 
 Y
 ```
@@ -156,8 +154,8 @@ $$
 $$
 
 -   Future observations (prediction/forecasting)
--   Unrecorded past observations or unobservable past events (retrodiction/backcasting)
--   Hypothetical observations (frequentist inference)
+-   Past unmeasured values (retrodiction/backcasting)
+-   Hypothetical observations (frequentist inference, hypothetical repetitions of the DGP)
 -   Unobservable counterfactual outcomes (causal inference, requires a **causal model**)
 -   Missing data (imputation)
 -   Unobservable model parameters (estimation)
@@ -243,35 +241,59 @@ $$
 \end{array}
 $$
 
+## Reasoning and arguments
+
+::: nonincremental
+-   **Reasoning** is the process of drawing a conclusion from one or more premises
+
+-   Reasoning is formalized as an **argument**
+
+-   An argument is a **series of propositions**: one or more **premises** and a **conclusion**
+:::
+
+$$
+\textbf{IF}\ \text{(all men are mortal}\ \textbf{AND}\ \text{Socrates is a man)}\ \textbf{THEN}\ \text{Socrates is mortal}
+$$
+
+## Reasoning and arguments
+
+::: nonincremental
+-   **Reasoning** is the process of drawing a conclusion from one or more premises
+
+-   Reasoning is formalized as an **argument**
+
+-   An argument is a **series of propositions**: one or more **premises** and a **conclusion**
+:::
+
+$$
+\text{(all men are mortal}\ \textbf{AND}\ \text{Socrates is a man)}\ \textbf{IMPLIES}\ \text{Socrates is mortal}
+$$
+
 -   **Premises** are also known as **assumptions**, **facts**, or **rules**
 
--   In statistical inference, the conclusion is also known as the **hypothesis**, while the premises are collectively referred to as the **evidence**
+-   In statistical inference, the conclusion is also known as the **hypothesis** (or claim), and the conjunction of the premises is known as the **evidence**
 
--   In AI/ML, the conclusion is also known as the **query**, while the premises are collectively referred to as the **knowledge base** (or background information)
+-   In AI/ML, the conclusion is also known as the **query**, and the conjunction of the premises is known as the **knowledge base** (or background information)
 
 -   Beware of hidden premises/implicit assumptions!
+
+## Reasoning and arguments
+
+ 
+
+![](images/gervais_facts_opinions.png){fig-align="center" height="440"}
 
 ## Propositions
 
 -   A **proposition** (or statement) is a declarative sentence that is either **True** or **False**, but not both
-
--   It represents an assertion or claim about a particular state of affairs in the world
 
     -   "*It's raining.*" 🌧️ [is a proposition]{.fragment .green}
     -   "*Is it raining?*" 🤔 [is not a proposition]{.fragment .red}
     -   "*Gaborone is the capital of Botswana.*" 🇧🇼 [is a proposition]{.fragment .green}
     -   "*Italy will win the 2026 FIFA World Cup.*" 🇮🇹⚽️ [is a proposition]{.fragment .green}
     -   "*Unicorns poop ice cream!*" 🦄🍦 [is a proposition]{.fragment .green}
-    -   "*2 + 2 = 5*" [is a proposition]{.fragment .green}
-    -   "*X + 2 = 5*" [is not a proposition]{.fragment .red}
-
-::: notes
--   "*Unicorns fly!* is a proposition, because it can be assigned a truth value
-
--   “a particular state of affairs in the world,” it’s not strictly about the real world but about any possible world where statements can be evaluated for their truth value
-
--   The truth value doesn’t need to be known or verifiable—it just needs to be something that could, in principle, be true or false
-:::
+    -   "*2 + 2 = 5*" 🧮 [is a proposition]{.fragment .green}
+    -   "*X + 2 = 5*" 𝑓 [is not a proposition]{.fragment .red}
 
 ## Propositions
 
@@ -279,16 +301,19 @@ There are two types of propositions:
 
 -   **Atomic propositions** are indivisible propositions
 
-    -   "*It's raining.*"
-    
-    -   "*Unicorns poop ice cream!*"
+    -   "*It's raining.*" 🌧
+
+    -   "*Gaborone is the capital of Botswana.*" 🇧🇼
+
+    -   "*Unicorns poop ice cream!*" 🦄🍦
+
+    -   "*2 + 2 = 5*" 🧮
 
 -   **Compound propositions** are formed by combining propositions using **logical operators**
 
-    -   "*Unicorns poop ice cream if and only if it's raining.*"
-    
-    -   "*It's raining and Unicorns poop ice cream!*"
+    -   "*It's raining* **AND** *Gaborone is the capital of Botswana.*" 🌧🇧🇼
 
+    -   "**IF** *2 + 2 = 5* **THEN** *Unicorns poop ice cream!*" 🧮🦄🍦
 
 ## Logical reasoning
 
@@ -308,7 +333,7 @@ There are two types of propositions:
 
         -   is the basis of **scientific reasoning** (incl. statistical inference)
 
-        -   Probability theory is the logic of science!
+        -   [Probability theory is the logic of science!]{.underline}
 
 ## Deductive vs. inductive arguments
 
@@ -406,7 +431,7 @@ There are two types of propositions:
 :::::
 ::::::::::::
 
-## Deductive and inductive reasoning recap
+## Deductive and inductive reasoning
 
 -   The goal of **deductive reasoning** is to determine whether the **conclusion is guaranteed** to be true, assuming the premises are true
 
@@ -475,7 +500,7 @@ Information is tied to how much an observation resolves ambiguity.
 ## Artificial intelligence
 
 ::: nonincremental
--   Our goal in this series is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical (deductive and inductive) reasoning
+-   Our goal in this series of lectures is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical reasoning
 :::
 
 ![](images/How-to-build-a-thinking-AI-model.webp){height="500"}
@@ -483,7 +508,7 @@ Information is tied to how much an observation resolves ambiguity.
 ## Artificial intelligence
 
 ::: nonincremental
--   Our goal in this series is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical (deductive and inductive) reasoning
+-   Our goal in this series of lectures is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical reasoning
 
 -   To achieve this, we need a way to translate a logical argument from English to a language that the computer understands
 :::
@@ -552,43 +577,97 @@ expand_grid(
 :::
 ::::::
 
-
 ## Propositional logic: Logical operators
 
 -   A **logical operator** (also called a logical connective or Boolean operator) is a symbol representing a function that combines one or more propositions (atomic or compound) to form a compound proposition
 
 ::: fragment
-| English         | Math           | R           |             |
-|:----------------|:---------------|:------------|:------------|
-| **NOT** A       | $\lnot A$      | `!A`        |             |
-| A **AND** B     | $A \land B$    | `A & B`     | `all(A, B)` |
-| A **OR** B      | $A \lor B$     | `A | B`     | `any(A, B)` |
-| A **IMPLIES** B | $A \implies B$ | `A %=>% B`  |             |
-| A **IFF** B     | $A \iff B$     | `A %<=>% B` |             |
++---------------------+----------------+--------------+--------------+
+| English             | Math           | R            |              |
++:====================+:===============+:=============+:=============+
+| **NOT** A           | $\lnot A$      | `!A`         |              |
++---------------------+----------------+--------------+--------------+
+| A **AND** B         | $A \land B$    | `A & B`      | `all(A, B)`  |
++---------------------+----------------+--------------+--------------+
+| A **OR** B          | $A \lor B$     | `A | B`      | `any(A, B)`  |
++---------------------+----------------+--------------+--------------+
+| **IF** A **THEN** B | $A \implies B$ | `A %=>% B`   |              |
+|                     |                |              |              |
+| A **IMPLIES** B     |                |              |              |
++---------------------+----------------+--------------+--------------+
+| A **IFF** B         | $A \iff B$     | `A %<=>% B`  |              |
++---------------------+----------------+--------------+--------------+
 :::
 
--   The truth value of an atomic proposition is assigned
+-   The truth value of an atomic proposition is **assigned**
 
--   The truth value of a compound proposition is determined by the logical operators and the truth values of its atomic components, according to the **rules of propositional logic**
+-   The truth value of a compound proposition is **calculated** from the truth values of its atomic components, according to the **rules of propositional logic**
 
 ## Propositional logic: Truth tables
 
--   A **truth table** is a tabular representation of the set of all possible combinations of truth-value assignments for a given set of atomic variables, along with the truth values of compound variables formed by combining them using logical operators
+-   A **world** ($\omega$) (a.k.a. **outcome** or **state**) is a combination of truth-value assignments for a given set of atomic variables
 
--   A combination of truth-value assignments for a given set of atomic variables is also known as **valuation**
+-   The **universe** ($\Omega$) (a.k.a. **sample space** or **state space**) is the set of all possible worlds
 
--   The set of all possible valuations for a given set of atomic variables is also known as **logical space**
+::::: columns
+::: {.column .fragment}
+$A \:$ ["*The robot has an antenna.*"]{.fragment}
+:::
 
--   The logical space for a set of $n$ atomic variables consists of $2^n$ possible valuations
+::: {.column .fragment}
+$B \:$ ["*The robot is blue.*"]{.fragment}
+:::
+:::::
 
--   Valuations are also known as **worlds** ($\omega$), outcomes, or states
+:::::: columns
+::: {.column .fragment width="30%"}
+![](logical_operators/Slide1.png)
+:::
 
--   The logical space is also known as the **universe** ($\Omega$), sample space, or state space
+::: {.column .fragment width="34%"}
+ 
 
-    -   The universe is the set of all possible worlds
-    -   The sample space is the set of all possible outcomes
-    -   The state space is the set of all possible states
+|      $A$       |      $B$       |
+|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  |
+| [FALSE]{.red}  | [TRUE]{.green} |
+| [FALSE]{.red}  | [FALSE]{.red}  |
+:::
 
+::: {.column .fragment width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE))
+```
+:::
+::::::
+
+## Propositional logic: Truth tables
+
+::: nonincremental
+-   A **world** ($\omega$) (a.k.a. **outcome** or **state**) is a combination of truth-value assignments for a given set of atomic variables
+
+-   The **universe** ($\Omega$) (a.k.a. **sample space** or **state space**) is the set of all possible worlds
+
+-   The universe for a set of $n$ atomic variables consists of $2^n$ possible worlds
+:::
+
+-   An **event** is a subset of the universe, including the empty set ($\emptyset$) and the universe itself
+
+-   A **truth table** is a table listing all possible worlds in the universe along with the truth values of atomic and compound propositions
+
+-   The propositions in the truth table define:
+
+    rules
+
+    :   logical constraints that may impose structure on the universe (i.e., restrict the set of possible worlds and/or create logical dependencies between variables)
+
+    events
+
+    :   sets of worlds where the rules apply (i.e., the corresponding propositions are true)
 
 ::: notes
 In propositional logic, the truth value of an atomic variable is assigned by a truth assignment (also called a valuation), which is a function that maps each atomic variable to either True (T) or False (F).
@@ -825,12 +904,6 @@ expand_grid(
 :::
 ::::::
 
-::: notes
--   $A \land \lnot A \:$ "*The robot has an antenna **AND** it does **NOT** have an antenna.*" is an example of a **contradiction**, i.e., proposition that is always false ($\bot$)
-
--   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
-:::
-
 ## Propositional logic: Conjunction rule
 
 **Conjunction (AND) operator** $\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B$
@@ -865,9 +938,88 @@ expand_grid(
 :::
 ::::::
 
--   $A \land \lnot A$ "*The robot has an antenna **AND** it does **NOT** have an antenna.*" is an example of a **contradiction**, i.e., a proposition that is always false ($\bot$)
+-   $A \land \lnot A$ "*The robot has an antenna **AND** it does **NOT** have an antenna.*" is an example of a **contradiction**, i.e., a proposition that is always false ($\bot$) and thus defines the $\emptyset$ event
 
 -   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
+
+## Propositional logic: Conjunction rule
+
+**Conjunction (AND) operator** $\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B$
+
+$A \land B \:$ "*The robot has an antenna **AND** it's blue.*"
+
+:::::: columns
+::: {.column width="30%"}
+![](logical_operators/Slide4.png)
+:::
+
+::: {.column width="34%"}
+ 
+
+|      $A$       |      $B$       |  $A \land B$   |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |
+| [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  |
+| [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
+:::
+
+::: {.column width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ∧ ¬A` = A & !A)
+```
+:::
+::::::
+
+::: nonincremental
+-   $A \land \lnot A$ "*The robot has an antenna **AND** it does **NOT** have an antenna.*" is an example of a **contradiction**, i.e., a proposition that is always false ($\bot$) and thus defines the $\emptyset$ event
+
+-   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
+:::
+
+## Propositional logic: Conjunction rule
+
+**Conjunction (AND) operator** $\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B$
+
+$A \land B \:$ "*The robot has an antenna **AND** it's blue.*"
+
+:::::: columns
+::: {.column width="30%"}
+![](logical_operators/Slide4.png)
+:::
+
+::: {.column width="34%"}
+ 
+
+|      $A$       |      $B$       |  $A \land B$   |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |
+| [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  |
+| [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
+:::
+
+::: {.column width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ∧ ¬A` = A & !A) %>%
+  filter(`A ∧ ¬A`)
+```
+:::
+::::::
+
+::: nonincremental
+-   $A \land \lnot A$ "*The robot has an antenna **AND** it does **NOT** have an antenna.*" is an example of a **contradiction**, i.e., a proposition that is always false ($\bot$) and thus defines the $\emptyset$ event
+
+-   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
+:::
 
 ## Propositional logic: Disjunction rule
 
@@ -938,9 +1090,88 @@ expand_grid(
 :::
 ::::::
 
--   $A \lor \lnot A$ "*The robot has an antenna **OR** it does **NOT** have an antenna.*" is an example of a **tautology**, i.e., a proposition that is always true ($\top$)
+-   $A \lor \lnot A$ "*The robot has an antenna **OR** it does **NOT** have an antenna.*" is an example of a **tautology**, i.e., a proposition that is always true ($\top$) and thus defines the $\Omega$ event
 
 -   $A \lor \lnot A$ is also known as the **law of excluded middle**
+
+## Propositional logic: Disjunction rule
+
+**Disjunction (OR) operator** $\quad A \lor B \quad A + B \quad A \cup B$
+
+$A \lor B \:$ "*The robot has an antenna **OR** it's blue.*"
+
+:::::: columns
+::: {.column width="30%"}
+![](logical_operators/Slide5.png)
+:::
+
+::: {.column width="34%"}
+ 
+
+|      $A$       |      $B$       |   $A \lor B$   |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  | [TRUE]{.green} |
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |
+| [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
+:::
+
+::: {.column width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ∨ ¬A` = A | !A)
+```
+:::
+::::::
+
+::: nonincremental
+-   $A \lor \lnot A$ "*The robot has an antenna **OR** it does **NOT** have an antenna.*" is an example of a **tautology**, i.e., a proposition that is always true ($\top$) and thus defines the $\Omega$ event
+
+-   $A \lor \lnot A$ is also known as the **law of excluded middle**
+:::
+
+## Propositional logic: Disjunction rule
+
+**Disjunction (OR) operator** $\quad A \lor B \quad A + B \quad A \cup B$
+
+$A \lor B \:$ "*The robot has an antenna **OR** it's blue.*"
+
+:::::: columns
+::: {.column width="30%"}
+![](logical_operators/Slide5.png)
+:::
+
+::: {.column width="34%"}
+ 
+
+|      $A$       |      $B$       |   $A \lor B$   |
+|:--------------:|:--------------:|:--------------:|
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
+| [TRUE]{.green} | [FALSE]{.red}  | [TRUE]{.green} |
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |
+| [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
+:::
+
+::: {.column width="36%"}
+```{r}
+#| output-location: default
+expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(`A ∨ ¬A` = A | !A) %>% 
+  filter(`A ∨ ¬A`)
+```
+:::
+::::::
+
+::: nonincremental
+-   $A \lor \lnot A$ "*The robot has an antenna **OR** it does **NOT** have an antenna.*" is an example of a **tautology**, i.e., a proposition that is always true ($\top$) and thus defines the $\Omega$ event
+
+-   $A \lor \lnot A$ is also known as the **law of excluded middle**
+:::
 
 ## Propositional logic: Conditional rule
 
@@ -1153,15 +1384,24 @@ A is necessary and sufficient for B, and vice versa
 Example: You can drive (A) iff you have a license (B)
 :::
 
+## Independence
+
+Two propositions  A  and  B  are logically dependent if knowing the truth value of  A  determines or restricts the truth value of  B
+
+
 ## Propositional logic: Operators
 
-
-|      $A$       |      $B$       | $\neg A$ | $\neg B$ | $A \land B$ | $A \lor B$ | $A \implies B$ |   $A \iff B$   |
-|:--------------:|:--------------:|:--------:|:--------:|:------------:|:------------:|:------------:|:--------------:|
-| [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green}  | [TRUE]{.green}  | [TRUE]{.green}  | [TRUE]{.green}  |
-| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green}  | [FALSE]{.red}  | [TRUE]{.green}  | [FALSE]{.red}  | [FALSE]{.red}  |
-| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green}  | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green}  | [TRUE]{.green}  | [FALSE]{.red}  |
-| [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green}  | [TRUE]{.green}  | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green}  | [TRUE]{.green}  |
++----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+
+| $A$            | $B$            | $\neg A$       | $\neg B$       | $A \land B$    | $A \lor B$     | $A \implies B$ | $A \iff B$     |
++:==============:+:==============:+:==============:+:==============:+:==============:+:==============:+:==============:+:==============:+
+| [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
++----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+
+| [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  | [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  |
++----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red}  |
++----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+
+| [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} | [FALSE]{.red}  | [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} |
++----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+
 
 ::: fragment
 ```{r}
@@ -1219,13 +1459,19 @@ For example:
 ::: column
  
 
-|   |   | X | Y |
-|:----------------:|:----------------:|:----------------:|:-----------------:|
-| $A$ | $B$ | $A \lor B$ | $\lnot (\lnot A \land \lnot B)$ |
-| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
-| [TRUE]{.green} | [FALSE]{.red} | [TRUE]{.green} | [TRUE]{.green} |
-| [FALSE]{.red} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
-| [FALSE]{.red} | [FALSE]{.red} | [FALSE]{.red} | [FALSE]{.red} |
++----------------+----------------+----------------+---------------------------------+
+|                |                | X              | Y                               |
++:==============:+:==============:+:==============:+:===============================:+
+| $A$            | $B$            | $A \lor B$     | $\lnot (\lnot A \land \lnot B)$ |
++----------------+----------------+----------------+---------------------------------+
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green}                  |
++----------------+----------------+----------------+---------------------------------+
+| [TRUE]{.green} | [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green}                  |
++----------------+----------------+----------------+---------------------------------+
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green}                  |
++----------------+----------------+----------------+---------------------------------+
+| [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}                   |
++----------------+----------------+----------------+---------------------------------+
 :::
 
 ::: column
@@ -1257,13 +1503,19 @@ For example:
 ::: column
  
 
-|   |   | X | Y |
-|:----------------:|:----------------:|:----------------:|:-----------------:|
-| $A$ | $B$ | $A \lor B$ | $\lnot (\lnot A \land \lnot B)$ |
-| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
-| [TRUE]{.green} | [FALSE]{.red} | [TRUE]{.green} | [TRUE]{.green} |
-| [FALSE]{.red} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} |
-| [FALSE]{.red} | [FALSE]{.red} | [FALSE]{.red} | [FALSE]{.red} |
++----------------+----------------+----------------+---------------------------------+
+|                |                | X              | Y                               |
++:==============:+:==============:+:==============:+:===============================:+
+| $A$            | $B$            | $A \lor B$     | $\lnot (\lnot A \land \lnot B)$ |
++----------------+----------------+----------------+---------------------------------+
+| [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green}                  |
++----------------+----------------+----------------+---------------------------------+
+| [TRUE]{.green} | [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green}                  |
++----------------+----------------+----------------+---------------------------------+
+| [FALSE]{.red}  | [TRUE]{.green} | [TRUE]{.green} | [TRUE]{.green}                  |
++----------------+----------------+----------------+---------------------------------+
+| [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}                   |
++----------------+----------------+----------------+---------------------------------+
 :::
 
 ::: column
@@ -1282,7 +1534,6 @@ expand_grid(
 Alternatively:
 
 Two propositions $X$ and $Y$ are **logically equivalent** iff $X \iff Y$ is a tautology
-
 
 ## Propositional logic: Logical entailment
 
@@ -1329,7 +1580,7 @@ A proposition $X$ **logically entails** another proposition $Y$ iff $X \implies 
 A proposition $X$ **logically entails** another proposition $Y$ ($X \models Y$) iff in every possible world where $X$ is true, $Y$ is also true
 
 ::::: columns
-::: {.column}
+::: column
 For example:
 
  
@@ -1343,7 +1594,7 @@ For example:
 | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  | [FALSE]{.red}  |
 :::
 
-::: {.column}
+::: column
 ```{r}
 #| output-location: default
 expand_grid(
@@ -2399,15 +2650,23 @@ Chance is a descriptor of unpredictability — whether due to lack of informatio
 
 ## Logical vs frequentist probability {.scrollable}
 
-| Feature | **Logical Probability** | **Frequentist Probability** |
-|-------------------|-----------------------------|------------------------|
-| **Definition** | Strength of inductive argument/Degree of belief based on available information | Long-run relative frequency in infinite trials |
-| **Can Compute Probability?** | ✅ Yes, by counting possible worlds | ❌ No, requires infinite trials (it can only be estimated) |
-| **Works for Single Events?** | ✅ Yes | ❌ No, must assume hypothetical repetition |
-| **Requires a Physical Process?** | ❌ No, just logic and premises | ✅ Yes, needs repeatable trials |
-| **Respects the Likelihood Principle?** | ✅ Yes | ❌ No, depends on sampling distributions and hypotheticals |
-| **Requires i.i.d. Observations?** | ❌ No, works with dependencies and heterogeneity | ✅ Yes, by definition (but it can be "relaxed") |
-| **Example: P(drawing blue ball)** | $\frac{2}{3}$, based on the proportion of possible outcomes | Undefined, unless an infinite number of trials are conducted |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| Feature                                | **Logical Probability**                                                        | **Frequentist Probability**                                  |
++========================================+================================================================================+==============================================================+
+| **Definition**                         | Strength of inductive argument/Degree of belief based on available information | Long-run relative frequency in infinite trials               |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Can Compute Probability?**           | ✅ Yes, by counting possible worlds                                            | ❌ No, requires infinite trials (it can only be estimated)   |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Works for Single Events?**           | ✅ Yes                                                                         | ❌ No, must assume hypothetical repetition                   |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Requires a Physical Process?**       | ❌ No, just logic and premises                                                 | ✅ Yes, needs repeatable trials                              |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Respects the Likelihood Principle?** | ✅ Yes                                                                         | ❌ No, depends on sampling distributions and hypotheticals   |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Requires i.i.d. Observations?**      | ❌ No, works with dependencies and heterogeneity                               | ✅ Yes, by definition (but it can be "relaxed")              |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Example: P(drawing blue ball)**      | $\frac{2}{3}$, based on the proportion of possible outcomes                    | Undefined, unless an infinite number of trials are conducted |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
 
 ## What is statistical inference?
 
