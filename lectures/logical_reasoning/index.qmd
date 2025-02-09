@@ -1,7 +1,7 @@
 ---
 title: "Logical reasoning" 
 subtitle: "Statistical inference"
-date: 2025-02-17
+date: 2025-02-10
 author: "Edoardo \"Dado\" Marcora"
 format:
   revealjs:
@@ -416,7 +416,7 @@ There are two types of propositions:
 
 ## Deductive and inductive reasoning
 
--   The goal of **deductive reasoning** is to determine whether the **conclusion is guaranteed** to be true, assuming the premises are true
+-   The goal of **deductive reasoning** is to determine whether the **conclusion is guaranteed to be true**, assuming the premises are true (i.e., the argument is valid)
 
 ::: fragment
 $$
@@ -429,7 +429,7 @@ $$
 $$
 :::
 
--   The goal of **inductive reasoning** is to determine whether the **conclusion is likely** to be true, assuming the premises are true
+-   The goal of **inductive reasoning** is to determine whether the **conclusion is likely to be true**, assuming the premises are true (i.e., the argument is strong)
 
 ::: fragment
 $$
@@ -2021,14 +2021,15 @@ $$
 \hline
 \therefore & B1 \lor B2
 \end{array}
-$$  
+$$
+-   The goal is to assess the **deductive validity** of this argument, i.e., to determine whether the conclusion is guaranteed to be true given that the premises are true
 
--   We will determine the deductive validity of this argument following these steps:
+-   We will assess the deductive validity of this argument following these steps:
 
-    1.  Build the truth table of this argument:
+    -   Build the truth table of this argument:
         -   First, create data frame with all possible combinations of atomic variables
         -   Second, add columns for premises ($E = P1, P2$) and conclusion ($H$)
-    3.  Check that in every row where $E$ is true, $H$ is also true
+    -   Check that in every row where $E$ is true, $H$ is also true (validity)
 
 ## Proportional syllogism
 
@@ -2044,6 +2045,21 @@ expand_grid(
 ## Proportional syllogism
 
 Add columns for premises ($E = P1, P2$) and conclusion ($H$)
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
+    E  = P1 & P2,
+    H  = B1 | B2
+  )
+```
+
+## Proportional syllogism
+
+Check that in every row where $E$ is true, $H$ is also true
 
 ```{r}
 #| output-location: default
@@ -2165,7 +2181,7 @@ is.valid <- function(..., H) {
   # extract atomic variables from E and H
   vars <- unique(c(all.vars(E), all.vars(H)))
   
-  # build truth table and check that in every row where $E$ is true, $H$ is also true
+  # build truth table and check that in every row where E is true, H is also true
   expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars)) %>%
     mutate(E = !!E, H = !!H) %>%
     filter(E) %>%
