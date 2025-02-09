@@ -25,9 +25,7 @@ theme_set(theme_minimal())
 
 ## Statistical inference is logical reasoning
 
-::: fragment
-Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
-:::
+-   Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
 
 ::: fragment
 $$
@@ -40,37 +38,10 @@ $$
 $$
 :::
 
-::: fragment
-A model is a function that relates known quantities to unknown quantities
-:::
+-   A model is a function that relates known quantities to unknown quantities
 
 ::: fragment
 $$\text{known quantities} \xrightarrow{\text{model}} \text{unknown quantities}$$
-:::
-
-## Statistical inference is logical reasoning
-
-Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
-
-$$
-\begin{array}{ll}
-1. & \text{known quantities} \\
-2. & \text{model} \\
-\hline
-\therefore & \text{unknown quantities} \\
-\end{array}
-$$
-
-A model is a function that relates known quantities to unknown quantities
-
-$$\text{model} : \text{known quantities} \rightarrow \text{unknown quantities}$$
-
-::: fragment
-```{r}
-#| output-location: default
-#| eval: false
-unknown_quantities <- model(known_quantities)
-```
 :::
 
 ::: notes
@@ -87,7 +58,9 @@ $$\text{model} : \text{known quantities} \rightarrow \text{unknown quantities}$$
 
 ## Statistical inference is logical reasoning
 
-Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
+::: nonincremental
+-   Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
+:::
 
 $$
 \begin{array}{ll}
@@ -98,58 +71,35 @@ $$
 \end{array}
 $$
 
-A model is a function that relates known quantities to unknown quantities
-
-$$\text{model} : \text{known quantities} \rightarrow \text{unknown quantities}$$
-
-```{r}
-#| output-location: default
-#| eval: false
-model(known_quantities) -> unknown_quantities
-```
-
-## Statistical inference is logical reasoning
-
-Statistical inference is logical reasoning using known (or assumed) quantities and a model to infer unknown quantities
-
-$$
-\begin{array}{ll}
-1. & \text{known quantities} \\
-2. & \text{model} \\
-\hline
-\therefore & \text{unknown quantities} \\
-\end{array}
-$$
-
-A model is a function that relates known quantities to unknown quantities
-
-$$\text{model} : \text{known quantities} \rightarrow \text{unknown quantities}$$
+::: nonincremental
+-   A model is a function that relates known quantities to unknown quantities
+:::
 
 ```{r}
 #| output-location: default
-X <- 1 # X: known quantity
+X <- 1                           # known quantity    X = 1
 
-Y <- NA # Y: unknown quantity
+model <- function(X) 10 - 7 * X  # model             Y = 10 - 7 * X
 
-# model: Y = 10 - 7 * X
-model <- function(X) 10 - 7 * X
+Y <- NA                          # unknown quantity  Y
 
-# infer Y from X and model
-model(X) -> Y
+Y <- model(X)                    # infer Y = 3 from X = 1 and model Y = 10 - 7 * X
 
 Y
 ```
 
 ## Statistical inference is logical reasoning
 
-Statistical inference is inductive reasoning using **data** (*measured values of observable variables*) and a **model of the data-generating process (DGP)** to infer the *unmeasurable values of unobservable variables* (or *unmeasured values of observable variables*)
+::: nonincremental
+-   Statistical inference is inductive reasoning that uses **data** and a **model** of the data-generating process (DGP) to infer unmeasured or unobservable values of variables
+:::
 
 $$
 \begin{array}{ll}
-1. & \text{data} \\
-2. & \text{DGP model} \\
+1. & \text{data (observations/measurements)} \\
+2. & \text{model (DGP)} \\
 \hline
-\therefore & \text{(see below)} \\
+\therefore & \text{unknown quantities (see below)} \\
 \end{array}
 $$
 
@@ -162,9 +112,7 @@ $$
 -   Unobservable latent variables (estimation)
 
 ::: notes
--   observables/knowns = data/observations/measurements/observed quantities; data or quantities we actually measured or could in principle measure
--   unobservables/unknowns = unobserved or unobservable quantities; quantities we cannot (or have not) measured
--   Causal inference = estimation of causal effects; prediction of effects of interventions
+Statistical inference is inductive reasoning using data (measured values of observable variables) and a model of the data-generating process (DGP) to infer unmeasured (or unmeasurable) values of observable (or unobservable) variables
 :::
 
 ## Ancient philosophy: rationalism vs. empiricism
@@ -214,8 +162,8 @@ Lucchini *et al.* (2020) **Nat Commun** 11(1):1642
 ::: fragment
 $$
 \begin{array}{ll}
-1. & \text{data (known quantities)} \\
-2. & \text{DGP model} \\
+1. & \text{known quantities} \\
+2. & \text{model} \\
 \hline
 \therefore & \text{unknown quantities} \\
 \end{array}
@@ -285,7 +233,7 @@ $$
 
 ## Propositions
 
--   A **proposition** (or statement) is a declarative sentence that is either **True** or **False**, but not both
+-   A **proposition** (or statement) is a declarative sentence that is either true or false, but not both
 
     -   "*It's raining.*" 🌧️ [is a proposition]{.fragment .green}
     -   "*Is it raining?*" 🤔 [is not a proposition]{.fragment .red}
@@ -537,7 +485,7 @@ First-order logic is a structured representation of knowledge.
 
 -   A **logical variable** is a symbol representing a proposition
 
--   A logical variable holds a value (**truth value**) that is either **True** or **False**, but not both
+-   A logical variable holds a value (**truth value**) that is either **[TRUE]{.green}** or **[FALSE]{.red}**, but not both
 
 -   Logical variables are also known as propositional or Boolean variables and are typically denoted by uppercase Roman letters
 
@@ -582,26 +530,26 @@ expand_grid(
 -   A **logical operator** (also called a logical connective or Boolean operator) is a symbol representing a function that combines one or more propositions (atomic or compound) to form a compound proposition
 
 ::: fragment
-+---------------------+----------------+--------------+--------------+
-| English             | Math           | R            |              |
-+:====================+:===============+:=============+:=============+
-| **NOT** A           | $\lnot A$      | `!A`         |              |
-+---------------------+----------------+--------------+--------------+
-| A **AND** B         | $A \land B$    | `A & B`      | `all(A, B)`  |
-+---------------------+----------------+--------------+--------------+
-| A **OR** B          | $A \lor B$     | `A | B`      | `any(A, B)`  |
-+---------------------+----------------+--------------+--------------+
-| **IF** A **THEN** B | $A \implies B$ | `A %=>% B`   |              |
-|                     |                |              |              |
-| A **IMPLIES** B     |                |              |              |
-+---------------------+----------------+--------------+--------------+
-| A **IFF** B         | $A \iff B$     | `A %<=>% B`  |              |
-+---------------------+----------------+--------------+--------------+
++---------------------+----------------+---------------+---------------+
+| English             | Math           | R             |               |
++:====================+:===============+:==============+:==============+
+| **NOT** A           | $\lnot A$      | `!A`          |               |
++---------------------+----------------+---------------+---------------+
+| A **AND** B         | $A \land B$    | `A & B`       | `all(A, B)`   |
++---------------------+----------------+---------------+---------------+
+| A **OR** B          | $A \lor B$     | `A | B`       | `any(A, B)`   |
++---------------------+----------------+---------------+---------------+
+| **IF** A **THEN** B | $A \implies B$ | `A %=>% B`    |               |
+|                     |                |               |               |
+| A **IMPLIES** B     |                |               |               |
++---------------------+----------------+---------------+---------------+
+| A **IFF** B         | $A \iff B$     | `A %<=>% B`   |               |
++---------------------+----------------+---------------+---------------+
 :::
 
--   The truth value of an atomic proposition is **assigned**
+-   The truth value of an atomic proposition is **assigned** (e.g., `A <- TRUE; B <- FALSE`)
 
--   The truth value of a compound proposition is **calculated** from the truth values of its atomic components, according to the **rules of propositional logic**
+-   The truth value of a compound proposition is **calculated** from the truth values of its atomic components, according to the **rules of propositional logic** (e.g., `C = A & B`)
 
 ## Propositional logic: Truth tables
 
@@ -940,8 +888,6 @@ expand_grid(
 
 -   $A \land \lnot A$ "*The robot has an antenna **AND** it does **NOT** have an antenna.*" is an example of a **contradiction**, i.e., a proposition that is always false ($\bot$) and thus defines the $\emptyset$ event
 
--   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
-
 ## Propositional logic: Conjunction rule
 
 **Conjunction (AND) operator** $\quad A \land B \quad A \cdot B \quad AB \quad A,B \quad A \cap B$
@@ -977,8 +923,6 @@ expand_grid(
 
 ::: nonincremental
 -   $A \land \lnot A$ "*The robot has an antenna **AND** it does **NOT** have an antenna.*" is an example of a **contradiction**, i.e., a proposition that is always false ($\bot$) and thus defines the $\emptyset$ event
-
--   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
 :::
 
 ## Propositional logic: Conjunction rule
@@ -1017,9 +961,10 @@ expand_grid(
 
 ::: nonincremental
 -   $A \land \lnot A$ "*The robot has an antenna **AND** it does **NOT** have an antenna.*" is an example of a **contradiction**, i.e., a proposition that is always false ($\bot$) and thus defines the $\emptyset$ event
+:::
 
 -   $\lnot({A \land \lnot A)}$ is also known as the **law of non-contradiction**
-:::
+
 
 ## Propositional logic: Disjunction rule
 
@@ -1092,8 +1037,6 @@ expand_grid(
 
 -   $A \lor \lnot A$ "*The robot has an antenna **OR** it does **NOT** have an antenna.*" is an example of a **tautology**, i.e., a proposition that is always true ($\top$) and thus defines the $\Omega$ event
 
--   $A \lor \lnot A$ is also known as the **law of excluded middle**
-
 ## Propositional logic: Disjunction rule
 
 **Disjunction (OR) operator** $\quad A \lor B \quad A + B \quad A \cup B$
@@ -1129,8 +1072,6 @@ expand_grid(
 
 ::: nonincremental
 -   $A \lor \lnot A$ "*The robot has an antenna **OR** it does **NOT** have an antenna.*" is an example of a **tautology**, i.e., a proposition that is always true ($\top$) and thus defines the $\Omega$ event
-
--   $A \lor \lnot A$ is also known as the **law of excluded middle**
 :::
 
 ## Propositional logic: Disjunction rule
@@ -1169,9 +1110,9 @@ expand_grid(
 
 ::: nonincremental
 -   $A \lor \lnot A$ "*The robot has an antenna **OR** it does **NOT** have an antenna.*" is an example of a **tautology**, i.e., a proposition that is always true ($\top$) and thus defines the $\Omega$ event
+:::
 
 -   $A \lor \lnot A$ is also known as the **law of excluded middle**
-:::
 
 ## Propositional logic: Conditional rule
 
@@ -1384,11 +1325,6 @@ A is necessary and sufficient for B, and vice versa
 Example: You can drive (A) iff you have a license (B)
 :::
 
-## Independence
-
-Two propositions  A  and  B  are logically dependent if knowing the truth value of  A  determines or restricts the truth value of  B
-
-
 ## Propositional logic: Operators
 
 +----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+
@@ -1412,6 +1348,10 @@ expand_grid(
   mutate(`¬A` = !A, `¬B` = !B, `A ∧ B` = A & B, `A ∨ B` = A | B, `A ⇒ B` = A %=>% B, `A ⇔ B` = A %<=>% B)
 ```
 :::
+
+## Propositional logic: Logical independence
+
+XXX
 
 ## Propositional logic: Logical equivalence
 
@@ -1488,7 +1428,7 @@ expand_grid(
 :::::
 
 ::: fragment
-Alternatively:
+Alternative definition:
 
 Two propositions $X$ and $Y$ are **logically equivalent** iff $X \iff Y$ is a tautology
 :::
@@ -1531,14 +1471,14 @@ expand_grid(
 :::
 :::::
 
-Alternatively:
+Alternative definition:
 
 Two propositions $X$ and $Y$ are **logically equivalent** iff $X \iff Y$ is a tautology
 
 ## Propositional logic: Logical entailment
 
 ::: fragment
-A proposition $X$ **logically entails** another proposition $Y$ ($X \models Y$) iff in every possible world where $X$ is true, $Y$ is also true
+A proposition $X$ **logically entails** another proposition $Y$ ($X \models Y$) iff in every possible world where $X$ is [TRUE]{.green}, $Y$ is also [TRUE]{.green}
 :::
 
 ::::: columns
@@ -1569,8 +1509,10 @@ expand_grid(
 :::
 :::::
 
+&nbsp;
+
 ::: fragment
-Alternatively:
+Alternative definition:
 
 A proposition $X$ **logically entails** another proposition $Y$ iff $X \implies Y$ is a tautology
 :::
@@ -1607,7 +1549,9 @@ expand_grid(
 :::
 :::::
 
-Alternatively:
+&nbsp;
+
+Alternative definition:
 
 A proposition $X$ **logically entails** another proposition $Y$ iff $X \implies Y$ is a tautology
 
