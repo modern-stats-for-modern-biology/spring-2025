@@ -1,5 +1,5 @@
 ---
-title: "From logic to probability" 
+title: "From propositional logic to probability theory" 
 subtitle: "Statistical inference"
 date: 2025-02-11
 author: "Edoardo \"Dado\" Marcora"
@@ -88,9 +88,9 @@ Plausible reasoning/Reasoning under uncertainty
 
 ![](images/clipboard-3461289063.png)
 
-This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/article/10.1007/s11192-023-04759-6)\] analyzing the frequency of hedging words, such as “might” and “probably,” in scientific literature over the past two decades. The findings indicate that the use of such words has declined by approximately 40% during this period.
+This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/article/10.1007/s11192-023-04759-6)\] analyzing the frequency of hedging words, such as "might" and "probably", in scientific literature over the past two decades. The findings indicate that the use of such words has declined by approximately 40% during this period.
 
-## What the &#%!\@? is probability?
+## What the &#%! is probability?
 
 ![](images/clipboard-452697347.png){height="200"}
 
@@ -104,9 +104,9 @@ This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/a
 
     -   Degree of belief in the truth of a proposition (subjective Bayesian)
 
-    -   Strength of an inductive argument (objective Bayesian) (objective Bayesian)
+    -   Strength of an inductive argument (objective Bayesian)
 
-## What the &#%!\@? is probability?
+## What the &#%! is probability?
 
 ![](images/clipboard-452697347.png){height="200"}
 
@@ -148,12 +148,11 @@ This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/a
 
     -   **R** (programming language) to translate a deductive or inductive argument written in the language of propositional logic or probability theory into a computer algorithm
 
-
 ## From propositional logic to probability theory
 
--   **Propositional logic** is a mathematical language used to **represent knowledge** with propositions and **reason** about the **truth** of a conclusion given a set of premises (*deductive reasoning*)
+-   **Propositional logic** is a mathematical language that we use to 1) **represent knowledge** with logical variables/propositions and 2) **reason** about the **truth** of propositions, given this knowledge base (*deductive reasoning*)
 
--   **Probability theory** extends propositional logic to reason about the **plausibility** of a conclusion given a set of premises (*inductive reasoning*)
+-   **Probability theory** extends propositional logic to reason about the **plausibility** of propositions, given this knowledge base (*inductive reasoning*)
 
 ## From propositional logic to probability theory
 
@@ -183,7 +182,7 @@ This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/a
 
 ![](images/Slide45.png)
 
-## Sample space
+## Sample space and outcomes
 
 -   The universe/**sample space** ($\Omega$) is the set of all possible worlds/**outcomes** ($\omega_i$), i.e., the set of all possible combinations of truth-value assignments for a given set of atomic variables
 
@@ -193,7 +192,7 @@ This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/a
 $$\Omega = \{ \omega_1, \omega_2, \ldots, \omega_{2^n} \}$$
 :::
 
--   For example, given an argument with two atomic variables $A$ and $B$, the sample space of the argument consists of four possible outcomes
+-   For example, given a set of two atomic variables $A$ and $B$, the sample space consists of four possible outcomes
 
 ::: fragment
 |  $\Omega$  |      $A$       |      $B$       |
@@ -204,9 +203,10 @@ $$\Omega = \{ \omega_1, \omega_2, \ldots, \omega_{2^n} \}$$
 | $\omega_4$ | [FALSE]{.red}  | [FALSE]{.red}  |
 :::
 
-## Sample space
+## Sample space and outcomes
 
 ```{r}
+#| include: false
 vars <- c("A", "B")
 
 ss <-
@@ -217,11 +217,22 @@ ss <-
 ss
 ```
 
+```{r}
+ss <-
+  expand_grid(
+    A = c(TRUE, FALSE),
+    B = c(TRUE, FALSE)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>%
+  select(Ω, everything())
+
+ss
+```
+
 ## Propositions and events
 
 -   An **event** is a subset of the sample space, including the empty set ($\emptyset$) and the sample space itself ($\Omega$)
 
--   Event $X$ is the subset of the sample space where proposition $X$ is true
+-   Event $X$: the subset of the sample space where proposition $X$ is true
 
 -   The terms **proposition** and **event** are often used interchangeably
 
@@ -234,7 +245,7 @@ ss
 ## Propositions and events
 
 ::: nonincremental
--   Proposition $X = A$
+-   Proposition $X$: $\: A$
 :::
 
 ::: fragment
@@ -247,7 +258,7 @@ ss
 ## Propositions and events
 
 ::: nonincremental
--   Proposition $X = A$
+-   Proposition $X$: $\: A$
 :::
 
 ```{r}
@@ -255,7 +266,7 @@ ss
 ss %>% mutate(X = A)
 ```
 
--   Event $X$ (subset of $\Omega$ where $X$ is true)
+-   Event $X$: the subset of $\Omega$ where $X$ is true
 
 ::: fragment
 ```{r}
@@ -266,7 +277,7 @@ ss %>% mutate(X = A) %>% filter(X)
 ## Propositions and events
 
 ::: nonincremental
--   Proposition $X = \lnot A$
+-   Proposition $X$: $\: \lnot A$
 :::
 
 ::: fragment
@@ -279,7 +290,7 @@ ss
 ## Propositions and events
 
 ::: nonincremental
--   Proposition $X = \lnot A$
+-   Proposition $X$: $\: \lnot A$
 :::
 
 ```{r}
@@ -287,7 +298,7 @@ ss
 ss %>% mutate(X = !A)
 ```
 
--   Event $X$ (subset of $\Omega$ where $X$ is true)
+-   Event $X$: the subset of $\Omega$ where $X$ is true
 
 ::: fragment
 ```{r}
@@ -298,7 +309,7 @@ ss %>% mutate(X = !A) %>% filter(X)
 ## Propositions and events
 
 ::: nonincremental
--   Proposition $X = \lnot A \lor B$
+-   Proposition $X$: $\: \lnot A \lor B$
 :::
 
 ::: fragment
@@ -311,7 +322,7 @@ ss
 ## Propositions and events
 
 ::: nonincremental
--   Proposition $X = \lnot A \lor B$
+-   Proposition $X$: $\: \lnot A \lor B$
 :::
 
 ```{r}
@@ -319,7 +330,7 @@ ss
 ss %>% mutate(X = !A | B)
 ```
 
--   Event $X$ (subset of $\Omega$ where $X$ is true)
+-   Event $X$: the subset of $\Omega$ where $X$ is true
 
 ::: fragment
 ```{r}
@@ -330,7 +341,7 @@ ss %>% mutate(X = !A | B) %>% filter(X)
 ## Propositions and events
 
 ::: nonincremental
--   Proposition $X = A \implies B$
+-   Proposition $X$: $\: A \implies B$
 :::
 
 ::: fragment
@@ -343,7 +354,7 @@ ss
 ## Propositions and events
 
 ::: nonincremental
--   Proposition $X = A \implies B$
+-   Proposition $X$: $\: A \implies B$
 :::
 
 ```{r}
@@ -351,7 +362,7 @@ ss
 ss %>% mutate(X = A %=>% B)
 ```
 
--   Event $X$ (subset of $\Omega$ where $X$ is true)
+-   Event $X$: the subset of $\Omega$ where $X$ is true
 
 ::: fragment
 ```{r}
@@ -362,7 +373,7 @@ ss %>% mutate(X = A %=>% B) %>% filter(X)
 ## Propositions and events
 
 ::: nonincremental
--   If $X$ is a tautology ($\top$, e.g., $A \lor \lnot A$), then event $X$ is the sample space $\Omega$
+-   If $X$ is a tautology ($\top$), then event $X$ is the sample space $\Omega$
 :::
 
 ::: fragment
@@ -375,7 +386,7 @@ ss
 ## Propositions and events
 
 ::: nonincremental
--   If $X$ is a tautology ($\top$, e.g., $A \lor \lnot A$), then event $X$ is the sample space $\Omega$
+-   If $X$ is a tautology ($\top$), then event $X$ is the sample space $\Omega$
 :::
 
 ```{r}
@@ -392,7 +403,7 @@ ss %>% mutate(X = A | !A) %>% filter(X)
 ## Propositions and events
 
 ::: nonincremental
--   If $X$ is a contradiction ($\bot$, e.g., $A \land \lnot A$), then event $X$ is the empty set $\emptyset$
+-   If $X$ is a contradiction ($\bot$), then event $X$ is the empty set $\emptyset$
 :::
 
 ::: fragment
@@ -405,7 +416,7 @@ ss
 ## Propositions and events
 
 ::: nonincremental
--   If $X$ is a contradiction ($\bot$, e.g., $A \land \lnot A$), then event $X$ is the empty set $\emptyset$
+-   If $X$ is a contradiction ($\bot$), then event $X$ is the empty set $\emptyset$
 :::
 
 ```{r}
@@ -492,13 +503,13 @@ $$
 -   We will assess the inductive strength of this argument following these steps:
 
     -   Build the truth table of this argument
-        -   First, create data frame with all possible combinations of atomic variables
+        -   First, create a data frame with all possible combinations of atomic variables
         -   Second, add columns for premises ($E = P1, P2$) and conclusion ($H$)
     -   Calculate the proportion of rows where $E$ is true, in which $H$ is also true (probability)
 
 ## Proportional syllogism
 
-Create data frame with all possible combinations of atomic variables
+Create a data frame with all possible combinations of atomic variables
 
 ```{r}
 expand_grid(
@@ -613,7 +624,7 @@ $$P(H \mid E) = 0.6667 = \frac{2}{2 + 1}$$
 $$P(H \mid E) = \frac{b}{b + w}$$
 :::
 
--   This formula reflects the logic of a [Bernoulli trial](https://en.wikipedia.org/wiki/Bernoulli_trial): the probability of success is the proportion of favorable outcomes
+-   This mathematical formula captures the logic of the [Bernoulli trial](https://en.wikipedia.org/wiki/Bernoulli_trial)
 
 -   This logic is fundamental to inductive reasoning/probability theory
 
@@ -653,11 +664,439 @@ P <- function(..., H) {
 }
 ```
 
+## Classical valid and invalid deductive arguments
+
+::::: columns
+::: {.column width="50%"}
+***Modus ponens***
+
+$$
+\begin{array}{c}
+A \implies B \\
+A \\
+\hline
+B
+\end{array}
+$$
+:::
+
+::: {.column width="50%"}
+***Modus tollens, inverse of***
+
+$$
+\begin{array}{c}
+A \implies B \\
+\neg B \\
+\hline
+A
+\end{array}
+$$
+:::
+:::::
+
+::::: columns
+::: {.column width="50%"}
+**Affirming the consequent**
+
+$$
+\begin{array}{c}
+A \implies B \\
+B \\
+\hline
+A
+\end{array}
+$$
+:::
+
+::: {.column width="50%"}
+**Denying the antecedent, inverse of**
+
+$$
+\begin{array}{c}
+A \implies B \\
+\neg A \\
+\hline
+B
+\end{array}
+$$
+:::
+:::::
+
+```{r}
+#| include: false
+library(flextable)
+
+P.flex <- function(..., H, table = TRUE, flex = TRUE) {
+  # capture premises as a list of quosures
+  premises <- enquos(...)
+  
+  # capture conclusion (H) as a quosure
+  H <- enquo(H)
+  
+  # extract atomic variables from premises and H
+  vars <- unique(c(unlist(lapply(premises, all.vars)), all.vars(H)))
+  
+  # create data frame with all possible combinations of atomic variables/worlds (universe)
+  tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars))
+
+  # add columns for premises
+  for (i in seq_along(premises)) {
+    tt[[paste0("P", i)]] <- eval_tidy(premises[[i]], data = tt)
+  }
+  
+  # add columns for conjunction of all premises (E) and H
+  tt <- tt %>%
+    mutate(
+      E = if_all(starts_with("P"), identity),
+      H = eval_tidy(H, data = tt)
+    )
+  
+  # calculate P(H | E) by checking whether in every possible world/row where E is true, H is also true
+  P <- tt %>%
+    filter(E) %>%
+    pull(H) %>%
+    mean()
+  
+  # return P(H | E) if truth table output is not requested
+  if (!table) {
+    return(P)
+  }
+  
+  # return truth table if formatted truth table output is not requested
+  if (!flex) {
+    return(tt)
+  }
+  
+  # define colors
+  highlight_color <- "beige"  # Standard HTML color name
+  true_color <- "darkgreen"
+  false_color <- "darkred"
+  
+  # convert the truth table into a flextable
+  tt.formatted <- flextable(tt) %>%
+    bold(part = "header") %>%  # Bold the header
+    bold(part = "footer") %>%  # Bold the footer
+    bg(i = which(tt$E == TRUE), bg = highlight_color, part = "body")  # Highlight E = TRUE rows
+  
+  # apply text colors
+  for (col in colnames(tt)) {
+    tt.formatted <- tt.formatted %>%
+      color(i = which(tt[[col]] == TRUE), j = col, color = true_color) %>%
+      color(i = which(tt[[col]] == FALSE), j = col, color = false_color)
+  }
+  
+  # add footer with the calculated P(C | K) value
+  tt.formatted <- tt.formatted %>%
+    add_footer_row(
+      values = paste("P(H | E) =", round(P, 3)),
+      colwidths = ncol(tt)
+    ) %>%
+    align(align = "right", part = "footer")
+
+  # return formatted truth table
+  return(tt.formatted)
+}
+```
+
+## *Modus ponens*
+
+*Modus ponens* is a logical argument that affirms the antecedent to conclude the consequent
+
+::::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   It is raining
+
+**Conclusion**
+
+-   The ground is wet
+:::
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & R \implies W \\
+2. & R \\
+\hline
+\therefore & W
+\end{array}
+$$
+:::
+:::::
+
+::::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, P2 = R, H = W)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  P2 = R,       
+  H  = W)
+```
+:::
+:::::
+:::::::::
+
+## Affirming the consequent
+
+Affirming the consequent is a logical argument that affirms the consequent to conclude the antecedent
+
+::::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   The ground is wet
+
+**Conclusion**
+
+-   It is raining
+:::
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & R \implies W \\
+2. & W \\
+\hline
+\therefore & R
+\end{array}
+$$
+:::
+:::::
+
+::::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, P2 = W, H = R)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  P2 = W,
+  H  = R)
+```
+:::
+:::::
+:::::::::
+
+## Affirming the consequent
+
+Affirming the consequent is a logical argument that affirms the consequent to conclude the antecedent
+
+:::::: columns
+:::: column
+::: nonincremental
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   ~~The ground is wet~~
+
+**Conclusion**
+
+-   It is raining
+:::
+
+$$
+\begin{array}{ll}
+1. & R \implies W \\
+\hline
+\therefore & R
+\end{array}
+$$
+::::
+
+::: column
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, H = R)
+```
+
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  H  = R)
+```
+:::
+::::::
+
+## *Modus tollens*, inverse of
+
+*Modus tollens* is a logical argument that denies the consequent to conclude the negation of the antecedent
+
+::::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   The ground is not wet
+
+**Conclusion**
+
+-   It is raining
+:::
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & R \implies W \\
+2. & \neg W \\
+\hline
+\therefore & R
+\end{array}
+$$
+:::
+:::::
+
+::::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, P2 = !W, H = R)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  P2 = !W,
+  H  = R)
+```
+:::
+:::::
+:::::::::
+
+## Denying the antecedent, inverse of
+
+Denying the antecedent is a logical argument that denies the antecedent to conclude the negation of the consequent
+
+::::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   It is not raining
+
+**Conclusion**
+
+-   The ground is wet
+:::
+
+::: fragment
+$$
+\begin{array}{c}
+1. & R \implies W \\
+2. & \neg R \\
+\hline
+\therefore & W
+\end{array}
+$$
+:::
+:::::
+
+::::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, P2 = !R, H = W)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  P2 = !R,
+  H  = W)
+```
+:::
+:::::
+:::::::::
+
+## Denying the antecedent, inverse of
+
+Denying the antecedent is a logical argument that denies the antecedent to conclude the negation of the consequent
+
+::::::::: columns
+::::: column
+::: nonincremental
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   ~~It is not raining~~
+
+**Conclusion**
+
+-   The ground is wet
+:::
+
+$$
+\begin{array}{c}
+1. & R \implies W \\
+\hline
+\therefore & W
+\end{array}
+$$
+:::::
+
+::::: column
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, H = W)
+```
+
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  H  = W)
+```
+:::::
+:::::::::
+
 ## From propositional logic to probability theory
 
-Three axioms/desiderata of probability theory ([Cox's theorem](https://en.wikipedia.org/wiki/Cox%27s_theorem))
+Desiderata of probability theory ([Cox's theorem](https://en.wikipedia.org/wiki/Cox%27s_theorem))
 
-1.  Probability of hypothesis $H$ given evidence $E$ can be represented by a real number
+-   Probability theory must obey the rules of propositional logic
+
+-   Probability theory must obey common-sense directional rules
+
+-   Probability theory should allow us to reason quantitatively about the plausibility of propositions
+
+## From propositional logic to probability theory
+
+Axioms of probability theory
+
+-   The plausability of a proposition is a real number
 
 ::: fragment
 $$
@@ -665,9 +1104,12 @@ P(H \mid E) \in \mathbb{R}
 $$
 :::
 
-2.  Probability obeys the rules of propositional logic
+-   XXX
 
-3.  Probability obeys common-sense directional rules
+-   XXX
+
+
+
 
  
 

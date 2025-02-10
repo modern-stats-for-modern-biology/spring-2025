@@ -2022,18 +2022,18 @@ $$
 \end{array}
 $$
 
-- The goal is to assess the **deductive validity** of this argument, i.e., to determine whether the conclusion is guaranteed to be true given that the premises are true
+-   The goal is to assess the **deductive validity** of this argument, i.e., to determine whether the conclusion is guaranteed to be true given that the premises are true
 
 -   We will assess the deductive validity of this argument following these steps:
 
     -   Build the truth table of this argument:
-        -   First, create data frame with all possible combinations of atomic variables
+        -   First, create a data frame with all possible combinations of atomic variables
         -   Second, add columns for premises ($E = P1, P2$) and conclusion ($H$)
     -   Check that in every row where $E$ is true, $H$ is also true (validity)
 
 ## Proportional syllogism
 
-Create data frame with all possible combinations of atomic variables
+Create a data frame with all possible combinations of atomic variables
 
 ```{r}
 expand_grid(
@@ -2252,7 +2252,7 @@ $$
 #| include: false
 library(flextable)
 
-P <- function(..., H, table = TRUE, flex = TRUE) {
+P.flex <- function(..., H, table = TRUE, flex = TRUE) {
   # capture premises as a list of quosures
   premises <- enquos(...)
   
@@ -2359,7 +2359,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = R %=>% W, P2 = R, H = W)
+P.flex(P1 = R %=>% W, P2 = R, H = W)
 ```
 :::
 
@@ -2410,7 +2410,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = R %=>% W, P2 = W, H = R)
+P.flex(P1 = R %=>% W, P2 = W, H = R)
 ```
 :::
 
@@ -2461,7 +2461,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = R %=>% W, P2 = !W, H = !R)
+P.flex(P1 = R %=>% W, P2 = !W, H = !R)
 ```
 :::
 
@@ -2512,7 +2512,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = R %=>% W, P2 = !R, H = !W)
+P.flex(P1 = R %=>% W, P2 = !R, H = !W)
 ```
 :::
 
@@ -2563,7 +2563,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = R %=>% W, P2 = W %=>% G, H = R %=>% G)
+P.flex(P1 = R %=>% W, P2 = W %=>% G, H = R %=>% G)
 ```
 :::
 
@@ -2648,7 +2648,7 @@ $$
 ```{r}
 #| echo: false
 #| output-location: default
-P(P1 = B1 | B2 | W, P2 = !((B1 & B2) | (B1 & W) | (B2 & W)), H = B1 | B2)
+P.flex(P1 = B1 | B2 | W, P2 = !((B1 & B2) | (B1 & W) | (B2 & W)), H = B1 | B2)
 ```
 :::
 
@@ -2969,18 +2969,25 @@ Chance is a descriptor of unpredictability — whether due to lack of informatio
 -   Statisticians distinguish between aleatory uncertainty (true randomness, as in quantum mechanics) and epistemic uncertainty (resulting from lack of knowledge or measurement precision).
 :::
 
-
 ## Logical vs frequentist probability {.scrollable}
 
-| Probability | Logical |  Frequentist |
-|------------------|------------------------------|------------------------|
-| **Definition** | Strength of inductive argument/Degree of belief based on available information | Long-run relative frequency in infinite trials |
-| **Computable?** | ✅ Yes, by counting possible worlds | ❌ No, requires infinite trials (it can only be estimated) |
-| **Works for single events?** | ✅ Yes | ❌ No, must assume hypothetical repetition |
-| **Requires a physical process?** | ❌ No, just logic and premises | ✅ Yes, needs repeatable trials |
-| **Respects the likelihood principle?** | ✅ Yes | ❌ No, depends on sampling distributions and hypotheticals |
-| **Requires i.i.d. observations?** | ❌ No, works with dependencies and heterogeneity | ✅ Yes, by definition (but it can be "relaxed") |
-| **Example: P(B \| BBW)** | $\frac{2}{3}$, based on the proportion of possible outcomes | Undefined, unless an infinite number of trials are conducted |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| Probability                            | Logical                                                                        | Frequentist                                                  |
++========================================+================================================================================+==============================================================+
+| **Definition**                         | Strength of inductive argument/Degree of belief based on available information | Long-run relative frequency in infinite trials               |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Computable?**                        | ✅ Yes, by counting possible worlds                                            | ❌ No, requires infinite trials (it can only be estimated)   |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Works for single events?**           | ✅ Yes                                                                         | ❌ No, must assume hypothetical repetition                   |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Requires a physical process?**       | ❌ No, just logic and premises                                                 | ✅ Yes, needs repeatable trials                              |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Respects the likelihood principle?** | ✅ Yes                                                                         | ❌ No, depends on sampling distributions and hypotheticals   |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Requires i.i.d. observations?**      | ❌ No, works with dependencies and heterogeneity                               | ✅ Yes, by definition (but it can be "relaxed")              |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
+| **Example: P(B \| BBW)**               | $\frac{2}{3}$, based on the proportion of possible outcomes                    | Undefined, unless an infinite number of trials are conducted |
++----------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------+
 
 ## What is statistical inference?
 
