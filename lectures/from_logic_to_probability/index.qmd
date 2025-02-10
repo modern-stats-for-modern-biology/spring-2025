@@ -36,7 +36,7 @@ theme_set(theme_minimal())
 
 ## Deductive and inductive reasoning
 
--   The goal of **deductive reasoning** is to determine whether the **conclusion is guaranteed to be true**, assuming the premises are true (i.e., the argument is valid)
+-   The goal of **deductive reasoning** is to determine whether an argument is valid, i.e., the **conclusion is guaranteed to be true**, assuming the premises are true
 
 ::: fragment
 $$
@@ -49,7 +49,7 @@ $$
 $$
 :::
 
--   The goal of **inductive reasoning** is to determine whether the **conclusion is likely to be true**, assuming the premises are true (i.e., the argument is strong)
+-   The goal of **inductive reasoning** is to determine whether an argument is strong, i.e., the **conclusion is likely to be true**, assuming the premises are true
 
 ::: fragment
 $$
@@ -97,14 +97,57 @@ This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/a
 -   Ontological interpretations
 
     -   Limiting relative frequency/proportion ("long-run" = ∞)
-    -   Physical chance/propensity \
-    &nbsp;
+    -   Physical chance/propensity\
+         
 
 -   Epistemological interpretations
 
     -   Degree of belief in the truth of a proposition (subjective Bayesian)
 
-    -   [Measure of the strength of an inductive argument (objective Bayesian)]{.underline}
+    -   Strength of an inductive argument (objective Bayesian) (objective Bayesian)
+
+## What the &#%!\@? is probability?
+
+![](images/clipboard-452697347.png){height="200"}
+
+::: nonincremental
+-   Ontological interpretations
+
+    -   Limiting relative frequency/proportion ("long-run" = ∞)
+    -   Physical chance/propensity\
+         
+
+-   Epistemological interpretations
+
+    -   Degree of belief in the truth of a proposition (subjective Bayesian)
+
+    -   **Strength of an inductive argument (objective Bayesian)**
+:::
+
+## Artificial intelligence
+
+::: nonincremental
+-   Our goal in this series of lectures is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical reasoning (deductive and inductive)
+:::
+
+![](images/How-to-build-a-thinking-AI-model.webp){height="500"}
+
+## Artificial intelligence
+
+::: nonincremental
+-   Our goal in this series of lectures is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical reasoning (deductive and inductive)
+
+-   To achieve this, we need a way to translate a logical argument from English to a language that the computer understands
+:::
+
+-   Specifically, we will use:
+
+    -   **Propositional logic** (mathematical language) to formalize **deductive reasoning**
+
+    -   **Probability theory** (mathematical language) to formalize **inductive reasoning**
+
+    -   **R** (programming language) to translate a deductive or inductive argument written in the language of propositional logic or probability theory into a computer algorithm
+
 
 ## From propositional logic to probability theory
 
@@ -123,6 +166,22 @@ This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/a
 ## From propositional logic to probability theory
 
 ![](images/Slide41.png)
+
+## From propositional logic to probability theory
+
+![](images/Slide42.png)
+
+## From propositional logic to probability theory
+
+![](images/Slide43.png)
+
+## From propositional logic to probability theory
+
+![](images/Slide44.png)
+
+## From propositional logic to probability theory
+
+![](images/Slide45.png)
 
 ## Sample space
 
@@ -368,37 +427,13 @@ ss %>% mutate(X = A & !A) %>% filter(X)
 
 -   A **contingent proposition** is one that is true in some possible worlds and false in others
 
-## Artificial intelligence
-
-::: nonincremental
--   Our goal in this series of lectures is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical reasoning (deductive and inductive)
-:::
-
-![](images/How-to-build-a-thinking-AI-model.webp){height="500"}
-
-## Artificial intelligence
-
-::: nonincremental
--   Our goal in this series of lectures is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical reasoning (deductive and inductive)
-
--   To achieve this, we need a way to translate a logical argument from English to a language that the computer understands
-:::
-
--   Specifically, we will use:
-
-    -   **Propositional logic** (mathematical language) to formalize **deductive reasoning**
-
-    -   **Probability theory** (mathematical language) to formalize **inductive reasoning**
-
-    -   **R** (programming language) to translate a deductive or inductive argument written in the language of propositional logic or probability theory into a computer algorithm
-
 ## From propositional logic to probability theory
 
-![](images/Slide41.png)
+![](images/Slide45.png)
 
 ## Artificial intelligence for inductive reasoning
 
--   Next, we will implement this $P$ function in R to build an AI for deductive reasoning
+-   We will implement this $P$ function in R to build an AI for deductive reasoning
 
     -   **Input**: A deductive argument with one or more premises (`P1`, `P2`, …) and a conclusion (`H`)
 
@@ -566,16 +601,16 @@ Artificial intelligence for inductive reasoning implemented in a single line of 
 expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>% mutate(P1 = B1 | B2 | W, P2 = !((B1 & B2) | (B1 & W) | (B2 & W)), E = P1 & P2, H  = B1 | B2) %>% filter(E) %>% pull(H) %>% mean()
 ```
 
--   In this example with **two blue balls** ($N_B = 2$) and **one white ball** ($N_W = 1$):
+-   In this example with **two (2) blue balls** and **one (1) white ball**:
 
 ::: fragment
-$$P(H \mid E) = \frac{2}{2 + 1} = 0.6667$$
+$$P(H \mid E) = 0.6667 = \frac{2}{2 + 1}$$
 :::
 
--   In general, for any number of blue balls ($N_B = b$) and white balls ($N_W = w$):
+-   In general, for any number of blue balls ($b$) and white balls ($w$):
 
 ::: fragment
-$$P(B \mid N_B = b, N_W = w) = \frac{b}{b + w}$$
+$$P(H \mid E) = \frac{b}{b + w}$$
 :::
 
 -   This formula reflects the logic of a [Bernoulli trial](https://en.wikipedia.org/wiki/Bernoulli_trial): the probability of success is the proportion of favorable outcomes
@@ -1312,21 +1347,3 @@ run_probability_function_tests <- function() {
 # Run the probability function tests
 run_probability_function_tests()
 ```
-
-## The golden rules of statistics
-
-::::: columns
-::: {.column width="50%"}
--   Know thy question
-
--   Know thy data
-
--   Know thy tools
-:::
-
-::: {.column .fragment width="50%"}
-![](images/chainsaw_birthday_cake.png){height="550"}
-:::
-:::::
-
-[[Everything wrong with statistics (and how to fix it)](https://youtu.be/be2wuOaglFY)]{.fragment}
