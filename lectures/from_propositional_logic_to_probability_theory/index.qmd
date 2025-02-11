@@ -1130,7 +1130,7 @@ See also: https://en.wikipedia.org/wiki/Principle_of_maximum_entropy
 
 -   Probability is a measure of how strongly the premises entail the conclusion
 
--   **All probability is conditional**: There is no such thing as $P(H)$, only $P(H \mid E)$!
+-   **All probability is conditional!** There is no such thing as $P(H)$, only $P(H \mid E)$
 
 -   Once the premises and the conclusion are subjectively chosen, the resulting **probability is entirely objective**: [Probability theory is just counting!](https://youtu.be/_NEMHM1wDfI)
 
@@ -1144,63 +1144,101 @@ From the axioms of probability theory, it can be mathematically proven that:
 
 -   $0 \le P(A \mid C) \le 1$
 
-::: {.fragment .nonincremental}
-Product rule/Bayes' theorem:
-
--   $P(A, B \mid C) = P(A \mid C) \cdot P(B \mid A, C)$
-:::
+-   $P(A \land B \mid C) = P(A \mid C) \cdot P(B \mid A \land C)$
 
 
 ## Probability theory: Negation rule
 
-NOT
+**Negation (NOT) operator**, also known as the "*complement rule*"
+
+$$P(\lnot A \mid C) = 1 - P(A \mid C)$$
+
+::: fragment
+$$P(\lnot A) = 1 - P(A)$$
+:::
 
 ## Probability theory: Conjunction rule
 
-### [Product rule (AND)]{.fragment}
+**Conjunction (AND) operator**, also known as the "*product rule*" or Bayes' theorem
 
-::: nonincremental
--   $P(A, B \mid K) = P(A \mid K) \cdot P(B \mid A, K)$
+$$P(A \land B \mid C) = P(A \mid C) \cdot P(B \mid A \land C)$$
 
--   $P(B, A \mid K) = P(B \mid K) \cdot P(A \mid B, K)$
-
-    ::: incremental
-    -   $P(A \mid B \land K) = \frac{P(A \land B \mid K)}{P(B \mid K)}$
-
-    -   $P(A \mid B \land K) = \frac{P(A \mid K) \cdot P(B \mid A \land K)}{P(B \mid K)}$
-    :::
+::: fragment
+$$P(A \land B) = P(A) \cdot P(B \mid A)$$
 :::
+
+::: fragment
+$$P(B \land A) = P(B) \cdot P(A \mid B)$$
+:::
+
+::: fragment
+$$P(A \land B) = P(B \land A)$$
+:::
+
+::: fragment
+$$P(A) \cdot P(B \mid A) = P(B) \cdot P(A \mid B)$$
+:::
+
+::: fragment
+$$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}$$
+:::
+
+## Probability theory: Bayes' rule
+
+&nbsp;
+
+$$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}$$
+
+-   This theorem is the single most fundamental equation in probability theory and inductive reasoning, including statistical inference and scientific reasoning
+
+-   For example, in neuroscience, it provides a foundation for modeling and understanding how the brain works
+
+-   In particular, Bayes’ theorem is central to [active inference models](https://en.wikipedia.org/wiki/Free_energy_principle), where the brain is viewed as a Bayesian engine that continuously updates its internal representation of external reality based on new sensory evidence
+
+-   In this way, the same equation that underpins statistical inference also helps explain perception, learning, and decision-making in the brain
+
+-   Bayes’ theorem is undoubtedly one of the most revolutionary ideas in human history!
+
+## Probability theory: Conjunction rule
+
+**Conjunction (AND) operator**, also known as the "*product rule*" or Bayes' theorem
+
+$$P(A \land B \mid C) = P(A \mid C) \cdot P(B \mid A \land C)$$
+
+::: fragment
+$$P(A \land B) = P(A) \cdot P(B \mid A)$$
+:::
+
+::: fragment
+$$P(B \land A) = P(B) \cdot P(A \mid B)$$
+:::
+
+::: fragment
+$$P(A \mid B) = \frac{P(A \land B)}{P(B)}$$
+:::
+
+## Probability theory: Conditional probability
+
+&nbsp;
+
+$$P(A \mid B) = \frac{P(A \land B)}{P(B)}$$
 
 ## Probability theory: Disjunction rule
 
-### [Sum rule (OR)]{.fragment}
+**Disjunction (OR) operator**, also known as the "*sum rule*"
 
--   $P(A \lor B \mid K) = P(A \mid K) + P(B \mid K) - P(A \land B \mid K)$
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
 
-### [Negation rule (NOT)]{.fragment}
+::: fragment
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+:::
 
--   $P(\lnot A \mid K) = 1 - P(A \mid K)$
 
 
-## Rules of probability theory/inductive reasoning
+##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
-### [Product rule (AND) - Bayes' theorem]{.fragment}
 
--   $P(A \land B) = P(A) \cdot P(B \mid A) = P(B) \cdot P(A \mid B) = P(B \land A)$
-
-    -   $P(A \mid B) = \frac{P(A \land B)}{P(B)} \quad \text{“conditional probability”}$
-
-    -   $P(A \mid B) = \frac{P(A) \cdot P(B \mid A)}{P(B)} \quad \text{Bayes' theorem}$
-
-### [Sum rule (OR)]{.fragment}
-
--   $P(A \lor B) = P(A) + P(B) - P(A \land B)$
-
-### [Negation rule (NOT)]{.fragment}
-
--   $P(\lnot A) = 1 - P(A)$
-
-### [Law of total probability]{.fragment}
+## Law of total probability
 
 -   $P(B) = \sum_{i=1}^n P(B \land A_i) \text{ where } \{A_1, A_2, \ldots, A_n\} \text{ are mutually exclusive and exhaustive propositions}$
 
@@ -1580,7 +1618,6 @@ All three examples (base-rate fallacy, prosecutor's fallacy, and the scientific 
 ::::
 :::::::
 
-##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
 ## Valid and invalid deductive arguments as inductive arguments
 
