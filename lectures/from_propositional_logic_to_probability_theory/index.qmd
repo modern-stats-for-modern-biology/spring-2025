@@ -34,6 +34,12 @@ theme_set(theme_minimal())
 }
 ```
 
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide1.png){fig-align="center" width="979"}
+
+[Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
+
 ## Deductive and inductive reasoning
 
 -   The goal of **deductive reasoning** is to determine whether an argument is valid, i.e., the **conclusion is guaranteed to be true**, assuming the premises are true
@@ -624,7 +630,7 @@ $$P(H \mid E) = 0.6667 = \frac{2}{2 + 1}$$
 $$P(H \mid E) = \frac{b}{b + w}$$
 :::
 
--   This mathematical formula captures the logic of the [Bernoulli trial](https://en.wikipedia.org/wiki/Bernoulli_trial)
+-   This mathematical formula captures the logic of the proportional syllogism, which also gives the probability of success in a [Bernoulli trial](https://en.wikipedia.org/wiki/Bernoulli_trial)
 
 -   This logic is fundamental to probability theory and inductive reasoning
 
@@ -1086,21 +1092,33 @@ P(P1 = R %=>% W,
 
 -   Desiderata of probability theory ([Cox's theorem](https://en.wikipedia.org/wiki/Cox%27s_theorem))
 
-    -   Probability theory must obey the rules of propositional logic
+    -   Probability theory must be consistent with propositional logic
     
-    -   Probability theory must obey common-sense directional rules
+    -   Probability theory must respect common-sense reasoning
     
-    -   Probability theory should enable us to reason quantitatively about the plausibility of propositions
+    -   Probability theory must provide a quantitative measure of inductive strength
 
-
+::: notes
+-   Probability theory must generalize propositional logic to handle degrees of plausibility
+-   Probability theory must preserve qualitative consistency (e.g., stronger evidence should not decrease probability)
+-   Probability theory must assign numerical values to plausibility, enabling quantitative inductive reasoning
+:::
 
 -   Axioms of probability theory
 
-    -   The plausability of a proposition is a real number: $\: P(H \mid E) \in \mathbb{R}$
+    -   Inductive strength is a real number: $\: P(H \mid E) \in \mathbb{R}$
 
-    -   XXX
+    -   All available background information must be considered
 
-    -   XXX
+    -   [Principle of equivalence](https://en.wikipedia.org/wiki/Principle_of_indifference): Equal ignorance implies equal probability
+    
+::: notes
+A longer definition of the principle of indifference (also called the principle of insufficient reason):
+
+“When there is no available evidence or rational basis to favor one possibility over another, all possibilities should be assigned equal probability. That is, if a set of mutually exclusive and exhaustive outcomes are indistinguishable given the known information, they must be treated as equally probable.”
+
+See also: https://en.wikipedia.org/wiki/Principle_of_maximum_entropy
+:::
 
 [For more information:]{.fragment}
 
@@ -1110,36 +1128,41 @@ P(P1 = R %=>% W,
 
 ## From propositional logic to probability theory
 
--   Probability theory extends propositional logic (deductive reasoning) to reasoning under uncertainty (inductive reasoning)
+-   Probability is a measure of how strongly the premises entail the conclusion
 
--   Probability is a measure of how strongly a conclusion is entailed by the premises
+-   **All probability is conditional**: There is no such thing as $P(H)$, only $P(H \mid E)$!
 
--   Once the premises and the conclusion are subjectively chosen, probability is entirely objective
+-   Once the premises and the conclusion are subjectively chosen, the resulting **probability is entirely objective**: [Probability theory is just counting!](https://youtu.be/_NEMHM1wDfI)
 
--   All probability is conditional
+## Probability theory: Fundamental theorems
 
- 
+From the axioms of probability theory, it can be mathematically proven that:
 
-### Rules of probability theory {.fragment}
+-   $P(A \mid C) = 1$ iff $A$ is certainly true ($\top$), given $C$
 
-::: fragment
-Cox's theorem implies that
+-   $P(A \mid C) = 0$ iff $A$ is certainly false ($\bot$), given $C$
+
+-   $0 \le P(A \mid C) \le 1$
+
+::: {.fragment .nonincremental}
+Product rule/Bayes' theorem:
+
+-   $P(A, B \mid C) = P(A \mid C) \cdot P(B \mid A, C)$
 :::
 
--   $0 \le P(A \mid K) \le 1$
 
--   $P(A \mid K) = 0$ iff hypothesis $A$ given evidence $K$ is a contradiction ($P(F) = P(\emptyset) = 0$)
+## Probability theory: Negation rule
 
--   $P(A \mid K) = 1$ iff hypothesis $A$ given evidence $K$ is a tautology ($P(T) = P(\Omega) = 1$)
+NOT
 
--   $P(A \land B \mid K) = P(A \mid K) \cdot P(B \mid A \land K) = P(B \mid K) \cdot P(A \mid B \land K)$
+## Probability theory: Conjunction rule
 
-## From propositional logic to probability theory
-
-### Product rule (AND) - Bayes' theorem
+### [Product rule (AND)]{.fragment}
 
 ::: nonincremental
--   $P(A \land B \mid K) = P(A \mid K) \cdot P(B \mid A \land K) = P(B \mid K) \cdot P(A \mid B \land K) = P(B \land A \mid K)$
+-   $P(A, B \mid K) = P(A \mid K) \cdot P(B \mid A, K)$
+
+-   $P(B, A \mid K) = P(B \mid K) \cdot P(A \mid B, K)$
 
     ::: incremental
     -   $P(A \mid B \land K) = \frac{P(A \land B \mid K)}{P(B \mid K)}$
@@ -1148,6 +1171,8 @@ Cox's theorem implies that
     :::
 :::
 
+## Probability theory: Disjunction rule
+
 ### [Sum rule (OR)]{.fragment}
 
 -   $P(A \lor B \mid K) = P(A \mid K) + P(B \mid K) - P(A \land B \mid K)$
@@ -1155,6 +1180,7 @@ Cox's theorem implies that
 ### [Negation rule (NOT)]{.fragment}
 
 -   $P(\lnot A \mid K) = 1 - P(A \mid K)$
+
 
 ## Rules of probability theory/inductive reasoning
 
