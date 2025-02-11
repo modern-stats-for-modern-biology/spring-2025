@@ -156,9 +156,12 @@ This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/a
 
 ## From propositional logic to probability theory
 
--   **Propositional logic** is a mathematical language that we use to 1) **represent knowledge** with logical variables/propositions and 2) **reason** about the **truth** of propositions, given the knowledge base (*deductive reasoning*)
+-   **Propositional logic** is a mathematical language that we use to:
 
--   **Probability theory** extends propositional logic to reason about the **plausibility** of propositions, given the knowledge base (*inductive reasoning*)
+    1.  **represent knowledge** with propositions, and
+    2.  **reason** about the **truth** of propositions, given the knowledge base
+
+-   **Probability theory** extends propositional logic to **reason** about the **plausibility** of propositions, given the knowledge base
 
 ## From propositional logic to probability theory
 
@@ -315,38 +318,6 @@ ss %>% mutate(X = !A) %>% filter(X)
 ## Propositions and events
 
 ::: nonincremental
--   Proposition $X$: $\: \lnot A \lor B$
-:::
-
-::: fragment
-```{r}
-#| output-location: default
-ss
-```
-:::
-
-## Propositions and events
-
-::: nonincremental
--   Proposition $X$: $\: \lnot A \lor B$
-:::
-
-```{r}
-#| output-location: default
-ss %>% mutate(X = !A | B)
-```
-
--   Event $X$: the subset of $\Omega$ where $X$ is true
-
-::: fragment
-```{r}
-ss %>% mutate(X = !A | B) %>% filter(X)
-```
-:::
-
-## Propositions and events
-
-::: nonincremental
 -   Proposition $X$: $\: A \implies B$
 :::
 
@@ -373,6 +344,38 @@ ss %>% mutate(X = A %=>% B)
 ::: fragment
 ```{r}
 ss %>% mutate(X = A %=>% B) %>% filter(X)
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   Proposition $X$: $\: \lnot A \lor B$
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+ss
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   Proposition $X$: $\: \lnot A \lor B$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(X = !A | B)
+```
+
+-   Event $X$: the subset of $\Omega$ where $X$ is true
+
+::: fragment
+```{r}
+ss %>% mutate(X = !A | B) %>% filter(X)
 ```
 :::
 
@@ -931,7 +934,7 @@ $$
 $$
 ::::
 
-::: column
+::: {.column .fragment}
 ```{r}
 #| echo: false
 #| output-location: default
@@ -1050,8 +1053,8 @@ P(P1 = R %=>% W,
 
 A logical argument that denies the antecedent to conclude the consequent
 
-::::::::: columns
-::::: column
+:::::: columns
+:::: column
 ::: nonincremental
 **Premises**
 
@@ -1071,9 +1074,9 @@ $$
 \therefore & W
 \end{array}
 $$
-:::::
+::::
 
-::::: column
+::: {.column .fragment}
 ```{r}
 #| echo: false
 #| output-location: default
@@ -1085,17 +1088,17 @@ P.flex(P1 = R %=>% W, H = W)
 P(P1 = R %=>% W,
   H  = W)
 ```
-:::::
-:::::::::
+:::
+::::::
 
 ## From propositional logic to probability theory
 
 -   Desiderata of probability theory ([Cox's theorem](https://en.wikipedia.org/wiki/Cox%27s_theorem))
 
     -   Probability theory must be consistent with propositional logic
-    
-    -   Probability theory must respect common-sense reasoning
-    
+
+    -   Probability theory must respect common-sense directional rules
+
     -   Probability theory must provide a quantitative measure of inductive strength
 
 ::: notes
@@ -1111,7 +1114,7 @@ P(P1 = R %=>% W,
     -   All available background information must be considered
 
     -   [Principle of equivalence](https://en.wikipedia.org/wiki/Principle_of_indifference): Equal ignorance implies equal probability
-    
+
 ::: notes
 A longer definition of the principle of indifference (also called the principle of insufficient reason):
 
@@ -1128,7 +1131,11 @@ See also: https://en.wikipedia.org/wiki/Principle_of_maximum_entropy
 
 ## From propositional logic to probability theory
 
--   Probability is a measure of how strongly the premises entail the conclusion
+-   Probability measures how strongly the premises entail the conclusion
+
+-   Probability measures the inductive strength of an argument
+
+-   Probability measures the plausibility of the conclusion, given the premises
 
 -   **All probability is conditional!** There is no such thing as $P(H)$, only $P(H \mid E)$
 
@@ -1145,7 +1152,6 @@ From the axioms of probability theory, it can be mathematically proven that:
 -   $0 \le P(A \mid C) \le 1$
 
 -   $P(A \land B \mid C) = P(A \mid C) \cdot P(B \mid A \land C)$
-
 
 ## Probability theory: Negation rule
 
@@ -1185,11 +1191,23 @@ $$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}$$
 
 ## Probability theory: Bayes' rule
 
-&nbsp;
+ 
 
 $$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}$$
 
+::: fragment
+![](images/jaws.png){fig-align="center" height="400"}
+:::
+
+## Probability theory: Bayes' rule
+
+ 
+
+$$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}$$
+
+::: nonincremental
 -   This theorem is the single most fundamental equation in probability theory and inductive reasoning, including statistical inference and scientific reasoning
+:::
 
 -   For example, in neuroscience, it provides a foundation for modeling and understanding how the brain works
 
@@ -1214,14 +1232,110 @@ $$P(B \land A) = P(B) \cdot P(A \mid B)$$
 :::
 
 ::: fragment
+$$P(A \land B) = P(B \land A)$$
+:::
+
+::: fragment
+$$P(B \mid A) = \frac{P(A \land B)}{P(A)}$$
+:::
+
+::: fragment
+$$P(A \mid B) = \frac{P(B \land A)}{P(B)}$$
+:::
+
+## Probability theory: Conjunction rule
+
+**Conjunction (AND) operator**, also known as the "*product rule*" or Bayes' theorem
+
+$$P(A \land B \mid C) = P(A \mid C) \cdot P(B \mid A \land C)$$
+
+$$P(A \land B) = P(A) \cdot P(B \mid A)$$
+
+$$P(B \land A) = P(B) \cdot P(A \mid B)$$
+
+$$P(A \land B) = P(B \land A)$$
+
+$$P(B \mid A) = \frac{P(A \land B)}{P(A)}$$
+
 $$P(A \mid B) = \frac{P(A \land B)}{P(B)}$$
+
+
+## Probability theory: Conditional probability
+
+&nbsp;
+
+::: columns
+
+::: column
+$$P(A \mid B) = \frac{P(A \land B)}{P(B)}$$
+:::
+
+::: column
+$$P(B \mid A) = \frac{P(A \land B)}{P(A)}$$
+:::
+
+:::
+
+- Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
+
+::: fragment
+::: columns
+
+::: column
+$$P(A \mid B) = P(A)$$
+:::
+
+::: column
+$$P(B \mid A) = P(B)$$
+:::
+
+:::
+:::
+
+- If events $A$ and $B$ are independent, then the product rule simplifies to:
+
+::: fragment
+$$P(A \land B) = P(A) \cdot P(B \mid A)$$
 :::
 
 ## Probability theory: Conditional probability
 
 &nbsp;
 
+::: columns
+
+::: column
 $$P(A \mid B) = \frac{P(A \land B)}{P(B)}$$
+:::
+
+::: column
+$$P(B \mid A) = \frac{P(A \land B)}{P(A)}$$
+:::
+
+:::
+
+::: nonincremental
+- Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
+:::
+
+::: columns
+
+::: column
+$$P(A \mid B) = P(A)$$
+:::
+
+::: column
+$$P(B \mid A) = P(B)$$
+:::
+
+:::
+
+::: nonincremental
+- If events $A$ and $B$ are independent, then the product rule simplifies to:
+:::
+
+$$P(A \land B) = P(A) \cdot P(B)$$
+
 
 ## Probability theory: Disjunction rule
 
@@ -1233,102 +1347,398 @@ $$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
 $$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
 :::
 
+-   Two events (or propositions) $A$ and $B$ are **mutually exclusive** iff they cannot occur simultaneously (or they cannot both be true)
 
+::: fragment
+$$
+P(A \land B) = 0
+$$
+:::
+
+- If events $A$ and $B$ are mutually exclusive, then the sum rule simplifies to:
+
+::: fragment
+$$
+P(A \lor B) = P(A) + P(B) - P(A \land B)
+$$
+:::
+
+
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **mutually exclusive** iff they cannot occur simultaneously (or they cannot both be true)
+:::
+
+$$
+P(A \land B) = 0
+$$
+
+::: nonincremental
+- If events $A$ and $B$ are mutually exclusive, then the sum rule simplifies to:
+:::
+
+$$
+P(A \lor B) = P(A) + P(B)
+$$
+
+
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true)
+
+::: fragment
+$$
+P(A \lor B) = 1
+$$
+:::
+
+-   Moreover, if events $A$ and $B$ are both mutually exclusive and exhaustive, then:
+
+::: fragment
+$$
+P(A \lor B) = P(A) + P(B) - P(A \land B)
+$$
+:::
+
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true)
+:::
+
+$$
+P(A \lor B) = 1
+$$
+
+::: nonincremental
+-   Moreover, if events $A$ and $B$ are both mutually exclusive and exhaustive, then:
+:::
+
+$$
+P(A \lor B) = P(A) + P(B)
+$$
+
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true)
+:::
+
+$$
+P(A \lor B) = 1
+$$
+
+::: nonincremental
+-   Moreover, if events $A$ and $B$ are both mutually exclusive and exhaustive, then:
+:::
+
+$$
+1 = P(A) + P(B)
+$$
+
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true)
+:::
+
+$$
+P(A \lor B) = 1
+$$
+
+::: nonincremental
+-   Moreover, if events $A$ and $B$ are both mutually exclusive and exhaustive, then:
+:::
+
+$$
+P(A) + P(B) = 1
+$$
+
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true)
+:::
+
+$$
+P(A \lor \lnot A) = 1
+$$
+
+::: nonincremental
+-   Moreover, if events $A$ and $B$ are both mutually exclusive and exhaustive, then:
+:::
+
+$$
+P(A) + P(\lnot A) = 1
+$$
+
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true)
+:::
+
+$$
+P(A \lor \lnot A) = 1
+$$
+
+::: nonincremental
+-   Moreover, if events $A$ and $B$ are both mutually exclusive and exhaustive, then:
+:::
+
+$$
+P(\lnot A) = 1 - P(A)
+$$
+
+## Probability theory: Law of total probability
+
+- Let $\{X_1, X_2, \ldots, X_n\}$ be a set of mutually exclusive and exhaustive events (i.e., a partition of the sample space).
+
+- Then, for any event $A$, the law of total probability states that:
+
+::: fragment
+$$P(A) = \sum_{i=1}^n P(X_i) \cdot P(A \mid X_i)$$
+:::
+
+- Since events $B$ and $\lnot B$ are mutually exclusive and exhaustive, we have:
+
+::: fragment
+$$P(A) = P(B) \cdot P(A \mid B) + P(\lnot B) \cdot P(A \mid \lnot B)$$
+:::
+
+-   Thus, Bayes' theorem becomes:
+
+::: fragment
+$$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)} = \frac{P(B) \cdot P(A \mid B)}{P(B) \cdot P(A \mid B) + P(\lnot B) \cdot P(A \mid \lnot B)}$$
+:::
+
+## Bayes' theorem in action
+
+-   Suppose we define:
+    -   $D$: The event that a woman has breast cancer
+    -   $T$: The event that a diagnostic test for breast cancer is positive
+
+-   Given:
+
+- **Prevalence (prior probability):**  
+  $P(D) = 0.001$ (i.e., a 0.1% chance of having breast cancer)
+- **Sensitivity:**  
+  $P(T \mid D) = 0.90$ (i.e., 90% chance the test is positive if the woman has breast cancer)
+- **Specificity:**  
+  $P(\lnot T \mid \lnot D) = 0.90$ (i.e., 90% chance the test is negative if the woman does not have breast cancer)
+- **False Positive Rate:**  
+  $P(T \mid \lnot D) = 1 - P(\lnot T \mid \lnot D) = 1 - 0.90 = 0.10$  
+  (i.e., 10% chance the test is positive if the woman does not have breast cancer)
+
+## Bayes' theorem in action
+
+-   By Bayes' theorem:
+
+::: fragment
+$$
+P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) \cdot P(T \mid \lnot D)}
+$$
+:::
+
+-   Substituting the given values:
+
+::: fragment
+$$
+P(D \mid T) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)} = \frac{0.0009}{0.0009 + 0.0999} \approx \frac{0.0009}{0.1008} \approx 0.00893
+$$
+:::
+
+-   Thus, even with a positive test, the probability that the woman actually has breast cancer is only about 0.9%
+
+-   This example highlights the critical role of the base rate (prevalence) in interpreting diagnostic tests for diseases with low prevalence
+
+-   Failure to take the base rate (prior probability) into account is known (and hopefully taught in medical schools across the world) as the **base rate fallacy**
+
+## Base rate fallacy
+
+![](images/Base_rate_fallacy_with_vaccines.svg){height="400"}
+
+## Prosecutor's fallacy
+
+[![](images/sally_clark.avif){.fragment height="250"}](https://www.theguardian.com/world/2021/apr/18/obscure-maths-bayes-theorem-reliability-covid-lateral-flow-tests-probability)
+
+-   Sally Clark was found guilty of the murder of her two infant sons
+
+-   The defense argued that both children had died of sudden infant death syndrome
+
+-   The prosecution relied on flawed statistical evidence presented by a paediatrician who testified that the probability of two infants dying of SIDS in the same family is 1 in 73M
+
+-   The jury mistakenly interpreted this probability (of the evidence given the presumption of innocence) with the probability of Sally Clark's innocence given the evidence
+
+::: notes
+-   Sally Clark's first son died within a few weeks of his birth, and her second son died in similar circumstances two years later
+-   Soon after, Sally Clark was arrested and tried for both deaths
+-   The defense argued that the children had died of sudden infant death syndrome (SIDS)
+-   The prosecution relied on flawed statistical evidence presented by a paediatrician who testified that the probability of two infants dying of SIDS in the same family was 1 in 73 million
+-   Sally Clark was convicted and spent three years in prison before being released on second appeal (not because of the flawed stats but because it emerged that the prosecution forensic pathologist had failed to disclose microbiological reports that suggested the second of Sally Clark's sons had died of natural causes)
+-   Soon after she was convicted, the Royal Statistical Society issued a statement arguing that there was no statistical basis for the paediatrician's claim
+-   Sally Clark's experience caused her to develop severe psychiatric problems and she died four years later of alcohol poisoning
+:::
+
+## A typical study in the social/biomedical sciences
+
+-   A group of 62 subjects was randomly split into two groups of 31 and 31 subjects
+-   Each subject in the first group looked at a picture of Rodin's *The Thinker* for 30 seconds (*treatment group*)
+-   Each subject in the second group looked at a picture of the *Discobulus of Myron* for 30 seconds (*control group*)
+
+:::: fragment
+::: text-align-center
+![](images/the_thinker_and_discobolus.jpg){width="550"}
+:::
+::::
+
+## A typical study in the social/biomedical sciences
+
+::: nonincremental
+-   A group of 62 subjects was randomly split into two groups of 31 and 31 subjects
+-   Each subject in the first group looked at a picture of Rodin's *The Thinker* for 30 seconds (*treatment group*)
+-   Each subject in the second group looked at a picture of the *Discobulus of Myron* for 30 seconds (*control group*)
+-   All subjects then rated their belief in the existence of God on a scale from 0 to 100
+:::
+
+-   The mean belief in the existence of God was 41.5 for the treatment group and 61.5 for the control group
+-   **Is there an effect of the treatment on the belief in the existence of God?**
+-   If there were no effect (*null hypothesis*), then the probability of observing a difference this large or larger is 3% \[**P = 0.03**, t(55) = 2.24, Cohen’s d = 0.60\]
+-   Therefore, looking at the picture of *The Thinker* for 30 seconds significantly promotes religious disbelief!
+
+## The fallacy of the transposed conditional
+
+::: fragment
+All three examples (base-rate fallacy, prosecutor's fallacy, and the scientific study) commit the **fallacy of the transposed conditional**, i.e., confuse the probability of the evidence given the hypothesis ("*sampling probability*") with the probability of the hypothesis given the evidence ("*inferential probability*")
+:::
+
+::: fragment
+[P(]{.orange}[evidence]{.green} [\|]{.orange} [hypothesis]{.blue}[)]{.orange} = [P(]{.orange}[hypothesis]{.blue} [\|]{.orange} [evidence]{.green}[)]{.orange}
+:::
+
+ 
+
+::: fragment
+**Base-rate fallacy**<br/> [P(]{.orange}[vaccinated]{.green} [\|]{.orange} [hospitalized]{.blue}[)]{.orange} = [P(]{.orange}[hospitalized]{.blue} [\|]{.orange} [vaccinated]{.green}[)]{.orange}
+:::
+
+ 
+
+::: fragment
+**Prosecutor's fallacy**<br/> [P(]{.orange}[two deaths]{.green} [\|]{.orange} [innocent]{.blue}[)]{.orange} = [P(]{.orange}[innocent]{.blue} [\|]{.orange} [two deaths]{.green}[)]{.orange}
+:::
+
+ 
+
+::: fragment
+**Scientific study**<br/> [P(]{.orange}[same or larger effect]{.green} [\|]{.orange} [null hypothesis]{.blue}[)]{.orange} = [P(]{.orange}[null hypothesis]{.blue} [\|]{.orange} [same or larger effect]{.green}[)]{.orange}
+:::
+
+## The fallacy of the transposed conditional
+
+::: text-align-center
+![](images/the_thinker_science_article.png){height="550"}
+
+<https://doi.org/10.1126/science.1215647>
+:::
+
+## The fallacy of the transposed conditional
+
+::: text-align-center
+![](images/bernoullis_fallacy.jpg){height="550"}
+
+<https://cup.columbia.edu/book/bernoullis-fallacy/9780231199957>
+:::
+
+## Logical probability textbooks
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/probability_and_inductive_logic.jpg){height="550"}
+
+<https://doi.org/10.1017/CBO9780511801297>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/probability_theory-logic_of_science.jpg){height="550"}
+
+<https://doi.org/10.1017/CBO9780511790423>
+:::
+::::
+:::::::
+
+## Probability theory textbooks and online courses
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/tsitsiklis_intro_to_prob.jpg){height="500"}
+
+<https://youtube.com/playlist?list=PLUl4u3cNGP60hI9ATjSFgLZpbNJ7myAg6>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/blitzstein_intro_to_prob.jpg){height="500"}
+
+<https://projects.iq.harvard.edu/stat110>
+:::
+::::
+:::::::
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
+## Gambler's fallacy
 
-## Law of total probability
-
--   $P(B) = \sum_{i=1}^n P(B \land A_i) \text{ where } \{A_1, A_2, \ldots, A_n\} \text{ are mutually exclusive and exhaustive propositions}$
-
-## Mutually exclusive and exhaustive propositions
-
-::: fragment
-### Mutually exclusive propositions
-:::
-
-::: fragment
-Two propositions/events $A$ and $B$ are mutually exclusive iff
-:::
-
--   $P(A \land B) = 0 \quad A \land B \equiv F \quad A \cap B = \emptyset$
-
-::: fragment
-If two propositions/events $A$ and $B$ are mutually exclusive, then the sum rule simplifies from
-:::
-
--   $P(A \lor B) = P(A) + P(B) - P(A \land B)$
-
-::: fragment
-to
-:::
-
--   $P(A \lor B) = P(A) + P(B)$
-
-::: fragment
-### Exhaustive propositions
-:::
-
-::: fragment
-Two propositions/events $A$ and $B$ are exhaustive iff
-:::
-
--   $P(A \lor B) = 1 \quad A \lor B \equiv T \quad A \cup B = \Omega$
-
-## Mutually exclusive and exhaustive propositions
-
-::: fragment
-For example, $A$ and $\lnot A$ are mutually exclusive and exhaustive propositions/events
-:::
-
--   $A$ and $\lnot A$ are mutually exclusive propositions because $P(A \land \lnot A) = P(F) = P(\emptyset) = 0$
-
--   $A$ and $\lnot A$ are exhaustive propositions because $P(A \lor \lnot A) = P(T) = P(\Omega) = 1$
-
- 
-
-::: fragment
-### Law of total probability
-:::
-
--   $P(B) = \sum_{i=1}^n P(B \land A_i) \text{ where } \{A_1, A_2, \ldots, A_n\} \text{ are mutually exclusive and exhaustive propositions}$
-
--   $P(B) = P(B \land A) + P(B \land \lnot A)$
-
- 
-
-::: fragment
-### Bayes' theorem
-:::
-
--   $P(A \mid B) = \frac{P(A \land B)}{P(B)} = \frac{P(A) \cdot P(B \mid A)}{P(B)} = \frac{P(A) \cdot P(B \mid A)}{P(B \land A) + P(B \land \lnot A)} = \frac{P(A) \cdot P(B \mid A)}{P(A) \cdot P(B \mid A) + P(\lnot A) \cdot P(B \mid \lnot A)}$
-
-## Independent propositions
-
-::: fragment
-Two propositions/events $A$ and $B$ are independent iff
-:::
-
--   $P(A \mid B) = P(A)$
-
-::: fragment
-or, equivalently
-:::
-
--   $P(B \mid A) = P(B)$
-
-::: fragment
-If two propositions/events $A$ and $B$ are independent, then the product rule simplifies from
-:::
-
--   $P(A \land B) = P(A) \cdot P(B \mid A)$
-
-::: fragment
-to
-:::
-
--   $P(A \land B) = P(A) \cdot P(B)$
+![](images/gamblers-fallacy.png){height="280"}
 
 ## Association does not imply causation
 
@@ -1468,228 +1878,7 @@ ss %>%
 ```
 :::
 
-## Humans often fail when reasoning with probabilities!
 
-[**Gambler's fallacy**]{.fragment}
-
-::: fragment
-![](images/gamblers-fallacy.png){height="280"}
-:::
-
-## Humans often fail when reasoning with probabilities!
-
-**Base rate fallacy**
-
-::: fragment
-![](images/Base_rate_fallacy_with_vaccines.svg){height="400"}
-:::
-
-## Humans often fail when reasoning with probabilities!
-
-**Prosecutor's fallacy**
-
-[![](images/sally_clark.avif){.fragment height="250"}](https://www.theguardian.com/world/2021/apr/18/obscure-maths-bayes-theorem-reliability-covid-lateral-flow-tests-probability)
-
--   Sally Clark was found guilty of the murder of her two infant sons
-
--   The defense argued that both children had died of sudden infant death syndrome
-
--   The prosecution relied on flawed statistical evidence presented by a paediatrician who testified that the probability of two infants dying of SIDS in the same family is 1 in 73M
-
--   The jury mistakenly interpreted this probability (of the evidence given the presumption of innocence) with the probability of Sally Clark's innocence given the evidence
-
-::: notes
--   Sally Clark's first son died within a few weeks of his birth, and her second son died in similar circumstances two years later
--   Soon after, Sally Clark was arrested and tried for both deaths
--   The defense argued that the children had died of sudden infant death syndrome (SIDS)
--   The prosecution relied on flawed statistical evidence presented by a paediatrician who testified that the probability of two infants dying of SIDS in the same family was 1 in 73 million
--   Sally Clark was convicted and spent three years in prison before being released on second appeal (not because of the flawed stats but because it emerged that the prosecution forensic pathologist had failed to disclose microbiological reports that suggested the second of Sally Clark's sons had died of natural causes)
--   Soon after she was convicted, the Royal Statistical Society issued a statement arguing that there was no statistical basis for the paediatrician's claim
--   Sally Clark's experience caused her to develop severe psychiatric problems and she died four years later of alcohol poisoning
-:::
-
-## A typical study in the social/biomedical sciences
-
--   A group of 62 subjects was randomly split into two groups of 31 and 31 subjects
--   Each subject in the first group looked at a picture of Rodin's *The Thinker* for 30 seconds (*treatment group*)
--   Each subject in the second group looked at a picture of the *Discobulus of Myron* for 30 seconds (*control group*)
-
-:::: fragment
-::: text-align-center
-![](images/the_thinker_and_discobolus.jpg){width="550"}
-:::
-::::
-
-## A typical study in the social/biomedical sciences
-
-::: nonincremental
--   A group of 62 subjects was randomly split into two groups of 31 and 31 subjects
--   Each subject in the first group looked at a picture of Rodin's *The Thinker* for 30 seconds (*treatment group*)
--   Each subject in the second group looked at a picture of the *Discobulus of Myron* for 30 seconds (*control group*)
--   All subjects then rated their belief in the existence of God on a scale from 0 to 100
-:::
-
--   The mean belief in the existence of God was 41.5 for the treatment group and 61.5 for the control group
--   **Is there an effect of the treatment on the belief in the existence of God?**
--   If there were no effect (*null hypothesis*), then the probability of observing a difference this large or larger is 3% \[**P = 0.03**, t(55) = 2.24, Cohen’s d = 0.60\]
--   Therefore, looking at the picture of *The Thinker* for 30 seconds significantly promotes religious disbelief!
-
-## The fallacy of the transposed conditional
-
-::: fragment
-All three examples (base-rate fallacy, prosecutor's fallacy, and the scientific study) commit the **fallacy of the transposed conditional**, i.e., confuse the probability of the evidence given the hypothesis ("*sampling probability*") with the probability of the hypothesis given the evidence ("*inferential probability*")
-:::
-
-::: fragment
-[P(]{.orange}[evidence]{.green} [\|]{.orange} [hypothesis]{.blue}[)]{.orange} = [P(]{.orange}[hypothesis]{.blue} [\|]{.orange} [evidence]{.green}[)]{.orange}
-:::
-
- 
-
-::: fragment
-**Base-rate fallacy**<br/> [P(]{.orange}[vaccinated]{.green} [\|]{.orange} [hospitalized]{.blue}[)]{.orange} = [P(]{.orange}[hospitalized]{.blue} [\|]{.orange} [vaccinated]{.green}[)]{.orange}
-:::
-
- 
-
-::: fragment
-**Prosecutor's fallacy**<br/> [P(]{.orange}[two deaths]{.green} [\|]{.orange} [innocent]{.blue}[)]{.orange} = [P(]{.orange}[innocent]{.blue} [\|]{.orange} [two deaths]{.green}[)]{.orange}
-:::
-
- 
-
-::: fragment
-**Scientific study**<br/> [P(]{.orange}[same or larger effect]{.green} [\|]{.orange} [null hypothesis]{.blue}[)]{.orange} = [P(]{.orange}[null hypothesis]{.blue} [\|]{.orange} [same or larger effect]{.green}[)]{.orange}
-:::
-
-## The fallacy of the transposed conditional
-
-::: text-align-center
-![](images/the_thinker_science_article.png){height="550"}
-
-<https://doi.org/10.1126/science.1215647>
-:::
-
-## The fallacy of the transposed conditional
-
-::: text-align-center
-![](images/bernoullis_fallacy.jpg){height="550"}
-
-<https://cup.columbia.edu/book/bernoullis-fallacy/9780231199957>
-:::
-
-## Logical probability textbooks
-
-::::::: columns
-:::: {.column width="50%"}
-::: text-align-center
-![](images/probability_and_inductive_logic.jpg){height="550"}
-
-<https://doi.org/10.1017/CBO9780511801297>
-:::
-::::
-
-:::: {.column width="50%"}
-::: text-align-center
-![](images/probability_theory-logic_of_science.jpg){height="550"}
-
-<https://doi.org/10.1017/CBO9780511790423>
-:::
-::::
-:::::::
-
-## Probability theory textbooks and online courses
-
-::::::: columns
-:::: {.column width="50%"}
-::: text-align-center
-![](images/tsitsiklis_intro_to_prob.jpg){height="500"}
-
-<https://youtube.com/playlist?list=PLUl4u3cNGP60hI9ATjSFgLZpbNJ7myAg6>
-:::
-::::
-
-:::: {.column width="50%"}
-::: text-align-center
-![](images/blitzstein_intro_to_prob.jpg){height="500"}
-
-<https://projects.iq.harvard.edu/stat110>
-:::
-::::
-:::::::
-
-
-## Valid and invalid deductive arguments as inductive arguments
-
-::: text-align-center
-![](images/valid_and_invalid_deductive_arguments.webp){height="100"}
-:::
-
-**Modus ponens (MP)**
-
-```{r}
-expand_grid(p = c(TRUE, FALSE), q = c(TRUE, FALSE)) %>%
-  mutate(
-    E = (!p | q) & p,
-    H = q    
-  ) %>% 
-  filter(E) %>%
-  summarize(`P(H | E)` = mean(H))
-```
-
-## Valid and invalid deductive arguments as inductive arguments
-
-::: text-align-center
-![](images/valid_and_invalid_deductive_arguments.webp){height="100"}
-:::
-
-**Modus tollens (MT)**
-
-```{r}
-expand_grid(p = c(TRUE, FALSE), q = c(TRUE, FALSE)) %>%
-  mutate(
-    E = (!p | q) & !q,
-    H = !p    
-  ) %>% 
-  filter(E) %>%
-  summarize(`P(H | E)` = mean(H))
-```
-
-## Valid and invalid deductive arguments as inductive arguments
-
-::: text-align-center
-![](images/valid_and_invalid_deductive_arguments.webp){height="100"}
-:::
-
-**Denying the antecedent (DA)**
-
-```{r}
-expand_grid(p = c(TRUE, FALSE), q = c(TRUE, FALSE)) %>%
-  mutate(
-    E = (!p | q) & !p,
-    H = !q    
-  ) %>% 
-  filter(E) %>%
-  summarize(`P(H | E)` = mean(H))
-```
-
-## Valid and invalid deductive arguments as inductive arguments
-
-::: text-align-center
-![](images/valid_and_invalid_deductive_arguments.webp){height="100"}
-:::
-
-**Affirming the consequent (AC)**
-
-```{r}
-expand_grid(p = c(TRUE, FALSE), q = c(TRUE, FALSE)) %>%
-  mutate(
-    E = (!p | q) & q,
-    H = p    
-  ) %>% 
-  filter(E) %>%
-  summarize(`P(H | E)` = mean(H))
-```
 
 ## Probability function in R
 
