@@ -605,7 +605,25 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
   ) %>%
   filter(E) %>%
   pull(H) %>%
-  mean()
+  all() # validity = V(H | E)
+```
+
+## Proportional syllogism
+
+Calculate the proportion of rows where $E$ is true, in which $H$ is also true
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
+    E  = P1 & P2,
+    H  = B1 | B2
+  ) %>%
+  filter(E) %>%
+  pull(H) %>%
+  mean() # probability = P(H | E)
 ```
 
 ::: fragment
@@ -1779,6 +1797,7 @@ P(A \lor B) = P(A) + P(B) - P(A \land B)
 $$
 :::
 
+
 ## Probability theory: Disjunction rule
 
 **Disjunction (OR) operator**, also known as the "*sum rule*"
@@ -1804,6 +1823,53 @@ P(A \lor B) = P(A) + P(B)
 $$
 
 
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true)
+:::
+
+$$
+P(A \lor B) = 1
+$$
+
+::: nonincremental
+-   Moreover, if events $A$ and $B$ are both mutually exclusive and exhaustive, then:
+:::
+
+$$
+1 = P(A) + P(B)
+$$
+
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true)
+:::
+
+$$
+P(A \lor B) = 1
+$$
+
+::: nonincremental
+-   Moreover, if events $A$ and $B$ are both mutually exclusive and exhaustive, then:
+:::
+
+$$
+P(A) + P(B) = 1
+$$
 
 ## Bayes' theorem in action
 
@@ -1989,54 +2055,6 @@ All three examples (base-rate fallacy, prosecutor's fallacy, and the scientific 
 :::::::
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
-
-## Probability theory: Disjunction rule
-
-**Disjunction (OR) operator**, also known as the "*sum rule*"
-
-$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
-
-$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
-
-::: nonincremental
--   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true)
-:::
-
-$$
-P(A \lor B) = 1
-$$
-
-::: nonincremental
--   Moreover, if events $A$ and $B$ are both mutually exclusive and exhaustive, then:
-:::
-
-$$
-1 = P(A) + P(B)
-$$
-
-## Probability theory: Disjunction rule
-
-**Disjunction (OR) operator**, also known as the "*sum rule*"
-
-$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
-
-$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
-
-::: nonincremental
--   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true)
-:::
-
-$$
-P(A \lor B) = 1
-$$
-
-::: nonincremental
--   Moreover, if events $A$ and $B$ are both mutually exclusive and exhaustive, then:
-:::
-
-$$
-P(A) + P(B) = 1
-$$
 
 ## Probability theory: Disjunction rule
 
