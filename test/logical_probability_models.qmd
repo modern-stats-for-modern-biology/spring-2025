@@ -94,6 +94,134 @@ ss
 ss %>% filter((D == 1 & B1 == 1) | (D == 2 & B2 == 1) | (D == 3 & B3 == 1) | (D == 4 & B4 == 1)) %>% summarize(P = sum(p)) %>% pull(P)
 ```
 
+```{r}
+ss %>% filter((D == 1 & B1 == 0) | (D == 2 & B2 == 1) | (D == 3 & B3 == 1) | (D == 4 & B4 == 1)) %>% summarize(P = sum(p)) %>% pull(P)
+```
+
+```{r}
+ss %>% filter((D == 1 & B1 == 0) | (D == 2 & B2 == 0) | (D == 3 & B3 == 1) | (D == 4 & B4 == 1)) %>% summarize(P = sum(p)) %>% pull(P)
+```
+
+```{r}
+ss %>% filter((D == 1 & B1 == 0) | (D == 2 & B2 == 0) | (D == 3 & B3 == 0) | (D == 4 & B4 == 1)) %>% summarize(P = sum(p)) %>% pull(P)
+```
+
+```{r}
+ss %>% filter((D == 1 & B1 == 0) | (D == 2 & B2 == 0) | (D == 3 & B3 == 0) | (D == 4 & B4 == 0)) %>% summarize(P = sum(p)) %>% pull(P)
+```
+
+## Urn model
+
+### Specify argument
+
+```{r}
+# sample space
+
+NB <- 4  # number of balls in bag
+ND <- 3  # number of draws from bag
+
+ball_vars <- list()
+for (i in seq_len(NB)) {
+  ball_vars[[ paste0("B", i) ]] <- 0:1
+}
+
+draw_vars <- list()
+for (i in seq_len(ND)) {
+  draw_vars[[ paste0("D", i) ]] <- 1:NB
+}
+
+ss <-
+  expand_grid(!!!ball_vars, !!!draw_vars) %>% 
+  rowwise() %>%
+  mutate(
+    across(
+      .cols = starts_with("D"),
+      .fns = ~ c_across(starts_with("B"))[.x]
+    )
+  ) %>%
+  mutate(
+    B = sum(across(starts_with("B")))
+  ) %>%
+  ungroup() %>% 
+  select(B, starts_with("D"))
+
+ss
+```
+
+```{r}
+# create truth table
+ss %>%
+  rowwise() %>%
+  mutate(
+    E = (B == 1),
+    H = (D1 == 1) & (D2 == 0) & (D3 == 1)
+  ) %>%
+  ungroup() %>% 
+  summarize(`P(D | B)` = mean(H[E]))
+```
+
+```{r}
+dbinom_sequence <- function(x, sequence, size = 4, log = FALSE) {
+  ND <- length(sequence)  # number of draws
+  
+  # Create ball configuration variables: B1, B2, ..., B_size.
+  ball_vars <- list()
+  for (i in seq_len(size)) {
+    ball_vars[[ paste0("B", i) ]] <- 0:1
+  }
+  
+  # Create draw variables: D1, D2, ..., D_ND, where each draw picks a ball index (1:size)
+  draw_vars <- list()
+  for (i in seq_len(ND)) {
+    draw_vars[[ paste0("D", i) ]] <- 1:size
+  }
+  
+  # Build the full sample space of ball configurations and draw indices.
+  # There are 2^(size) possible ball configurations and size^(ND) draw sequences.
+  ss <- expand_grid(!!!ball_vars, !!!draw_vars) %>% 
+    rowwise() %>%
+    # For each draw variable, replace the drawn index with the corresponding ball value.
+    mutate(
+      across(
+        .cols = starts_with("D"),
+        .fns = ~ c_across(starts_with("B"))[.x]
+      )
+    ) %>%
+    # Compute the total number of blue balls in this configuration.
+    mutate(B_total = sum(c_across(starts_with("B")))) %>%
+    ungroup() %>% 
+    # Retain only the total blue ball count and the draw outcomes.
+    select(B_total, starts_with("D"))
+  
+  # For each row, define:
+  #   E: the event that the bag has exactly x blue balls.
+  #   H: the event that the sequence of draws equals the provided sequence.
+  ss <- ss %>%
+    rowwise() %>%
+    mutate(
+      E = (B_total == x),
+      H = all(c_across(starts_with("D")) == sequence)
+    ) %>%
+    ungroup()
+  
+  # Calculate the conditional probability P(H | E)
+  cond_prob <- ss %>% 
+    summarize(prob = mean(H[E])) %>% 
+    pull(prob)
+  
+  if (log) {
+    return(log(cond_prob))
+  } else {
+    return(cond_prob)
+  }
+}
+```
+
+```{r}
+dbinom_sequence(1, sequence = c(1, 0, 1), size = 4, log = FALSE)
+```
+
+
 ## Linear model
 
 ### Specify variables
@@ -317,6 +445,79 @@ gf_tile(
     scale_fill_gradient(low = "white", high = "blue"),
     scale_x_continuous(breaks = c(0, 1)))
 ```
+
+### Stochastic linear association: fixed slope, intercept, and additive small random error
+
+#### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_fix,
+  s1 = 0:1,
+  s2 = 0:1,
+  s3 = 0:1,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+#### Model specification
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= (s1 + s2 + s3)
+  ) %>%
+  ungroup()
+
+m
+```
+
+#### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+#### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
+  group_by(X, Y) %>%
+  summarize(p = sum(p)) %>% 
+  ungroup()
+
+m
+```
+
+#### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M2",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "p(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
 
 ### Stochastic linear association: fixed intercept and slope, variable error spread
 
