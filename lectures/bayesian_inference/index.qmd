@@ -227,7 +227,7 @@ $$P(B \mid A) = P(B)$$
 :::::
 
 ::: nonincremental
--   Statistical association is this **bidirectional** dependence between logical variables
+-   Statistical **association** is this **bidirectional dependence** between logical variables
 :::
 
 ## Probability theory: Rules of probability calculus
@@ -266,7 +266,7 @@ $$P(B \mid A) = P(B)$$
 :::::
 
 ::: nonincremental
--   **Association is not causation!** (which is unidirectional) $\quad A \leftrightarrow B \; \ne \; A \rightarrow B$ 
+-   **Association is not causation!** (unidirectional dependence) $\quad A \leftrightarrow B \; \ne \; A \rightarrow B$
 :::
 
 ## Probability theory: Rules of probability calculus
@@ -305,7 +305,7 @@ $$P(B \mid A) = P(B)$$
 :::::
 
 ::: nonincremental
--   All statistical models need a causal model: **no causes in, no causes out!**
+-   Causal inference = statistical inference + causal model — **no causes in, no causes out!**
 :::
 
 ## Probability theory: Rules of probability calculus
@@ -406,9 +406,95 @@ $T \:$ "*The diagnostic test for breast cancer is positive.*"
 
 ::: fragment
 $$
-P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(T)} = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) \cdot P(T \mid \lnot D)}
+P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(T)}
 $$
 :::
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+![](images/Akshay.bayes_theorem_the_formula.jpg){fig-align="center" width="703"}
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(T)}
+$$
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) \cdot P(T \mid \lnot D)}
+$$
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+![](images/Akshay.visual_proof_bayes'_theorem.jpg){fig-align="center" width="617"}
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) \cdot P(T \mid \lnot D)}
+$$
+
+## Bayes' theorem in action: Bayesian inference
+
+::::: columns
+::: {.column width="40%"}
+$D \:$ "*The woman has breast cancer.*"
+:::
+
+::: {.column width="60%"}
+$T \:$ "*The diagnostic test for breast cancer is positive.*"
+:::
+:::::
+
+::: nonincremental
+-   Given (known quantities/premises/evidence/knowledge base):
+
+    -   $P(D) = 0.001 \;$ **prior**/prevalence
+
+    -   $P(T \mid D) = 0.90 \;$ **likelihood**/sensitivity
+    
+    -   $P(\lnot T \mid \lnot D) = 0.90 \;$ specificity
+    
+    -   $P(T \mid \lnot D) = 0.10 \;$ (1 - specificity)
+
+    -   $P(\lnot D) = 0.999\;$ (1 - prevalence)
+    
+-   Wanted (unknown quantity/conclusion/hypothesis/query):
+
+    -   $P(D \mid T) =\ ? \;$ **posterior**
+:::
+        
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) \cdot P(T \mid \lnot D)}
+$$
 
 -   Substituting the given values:
 
@@ -566,9 +652,7 @@ All three examples (base-rate fallacy, prosecutor's fallacy, and the scientific 
 
 [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
 
-
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
-
 
 ## Gambler's fallacy
 
@@ -723,5 +807,3 @@ ss %>%
   summarize(`P(X)` = sum(p[X]))
 ```
 :::
-
-
