@@ -342,10 +342,10 @@ Edoardo “Dado” Marcora
 <ul>
 <li class="fragment">The choice of premises and conclusion is subjective, but <strong>probability is objective</strong></li>
 </ul></li>
-<li class="fragment"><p>Probability theory is a very simple language:</p>
+<li class="fragment"><p>Probability theory is a very simple language</p>
 <ul>
 <li class="fragment">One type of variables: <code>Logical</code> (<span class="green">TRUE</span> or <span class="red">FALSE</span>)</li>
-<li class="fragment">The function <span class="math inline">\(V(H \mid E)\)</span> and the 5 functions/operators/rules of propositional logic:
+<li class="fragment">The 5 functions/operators/rules of propositional logic:
 <ul>
 <li class="fragment"><code>NOT</code> (<span class="math inline">\(\lnot A\)</span>), <code>AND</code> (<span class="math inline">\(A \land B\)</span>), <code>OR</code> (<span class="math inline">\(A \lor B\)</span>), <code>IMPLIES</code> (<span class="math inline">\(A \implies B\)</span>), <code>IFF</code> (<span class="math inline">\(A \iff B\)</span>)</li>
 </ul></li>
@@ -389,7 +389,7 @@ P(A \land B) = P(A) \cdot P(B) \quad \text{iff A and B are independent, i.e.,}\ 
 </div></div>
 </div>
 <ul>
-<li class="fragment">If <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are <strong>dependent</strong> events, then <span class="math inline">\(A\)</span> is said to be <strong>associated</strong> with <span class="math inline">\(B\)</span>, and viceversa</li>
+<li class="fragment">If <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are <strong>dependent</strong>, then <span class="math inline">\(A\)</span> is said to be <strong>associated</strong> with <span class="math inline">\(B\)</span>, and viceversa</li>
 </ul>
 </section>
 <section id="probability-theory-rules-of-probability-calculus-1" class="slide level2">
@@ -518,7 +518,7 @@ P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
 \]</span></p>
 <div>
 <ul>
-<li><strong>Conjuction rule (AND)</strong>: Bayes theorem</li>
+<li><strong>Conjuction rule (AND)</strong>: Bayes’ theorem</li>
 </ul>
 </div>
 <p><span class="math display">\[
@@ -574,7 +574,7 @@ P(A \lor B) = P(A) + P(B) \quad \text{iff A and B are mutually exclusive, i.e.,}
 <section id="bayes-theorem-in-action-bayesian-inference-1" class="slide level2">
 <h2>Bayes’ theorem in action: Bayesian inference</h2>
 <div class="columns">
-<div class="column" style="width:40%;">
+<div class="column fragment" style="width:40%;">
 <p><span class="math inline">\(D \:\)</span> “<em>The woman has breast cancer.</em>”</p>
 </div><div class="column fragment" style="width:60%;">
 <p><span class="math inline">\(T \:\)</span> “<em>The diagnostic test for breast cancer is positive.</em>”</p>
@@ -582,18 +582,16 @@ P(A \lor B) = P(A) + P(B) \quad \text{iff A and B are mutually exclusive, i.e.,}
 <ul>
 <li class="fragment"><p>Given (known quantities/premises/evidence/knowledge base):</p>
 <ul>
-<li class="fragment"><strong>Prevalence (prior probability):</strong> <span class="math inline">\(\; P(D) = 0.001\)</span><br>
-(i.e., 0.1% chance the woman has breast cancer)</li>
-<li class="fragment"><strong>Sensitivity:</strong> <span class="math inline">\(\; P(T \mid D) = 0.90\)</span><br>
-(i.e., 90% chance the test is positive if the woman has breast cancer)</li>
-<li class="fragment"><strong>Specificity:</strong> <span class="math inline">\(\; P(\lnot T \mid \lnot D) = 0.90\)</span><br>
-(i.e., 90% chance the test is negative if the woman does not have breast cancer)</li>
-<li class="fragment"><strong>False positive rate:</strong> <span class="math inline">\(\; P(T \mid \lnot D) = 1 - P(\lnot T \mid \lnot D) = 1 - 0.90 = 0.10\)</span><br>
-(i.e., 10% chance the test is positive if the woman does not have breast cancer)</li>
+<li class="fragment"><p><strong>Prevalence:</strong> <span class="math inline">\(\; P(D) = 0.001\)</span><br>
+(i.e., 0.1% chance the woman has breast cancer)</p></li>
+<li class="fragment"><p><strong>Sensitivity:</strong> <span class="math inline">\(\; P(T \mid D) = 0.90\)</span><br>
+(i.e., 90% chance the test is positive if the woman has breast cancer)</p></li>
+<li class="fragment"><p><strong>Specificity:</strong> <span class="math inline">\(\; P(\lnot T \mid \lnot D) = 0.90\)</span><br>
+(i.e., 90% chance the test is negative if the woman does not have breast cancer)</p></li>
 </ul></li>
 <li class="fragment"><p>Wanted (unknown quantity/conclusion/hypothesis/query):</p>
 <ul>
-<li class="fragment"><strong>Positive predictive value (posterior probability):</strong> <span class="math inline">\(\; P(D \mid T)\)</span><br>
+<li class="fragment"><strong>Positive predictive value:</strong> <span class="math inline">\(\; P(D \mid T)\)</span><br>
 (i.e., chance the woman has breast cancer if the test is positive)</li>
 </ul></li>
 </ul>
@@ -677,7 +675,7 @@ P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) 
 <li><p><span class="math inline">\(P(D) = 0.001 \;\)</span> <strong>prior</strong>/prevalence</p></li>
 <li><p><span class="math inline">\(P(T \mid D) = 0.90 \;\)</span> <strong>likelihood</strong>/sensitivity</p></li>
 <li><p><span class="math inline">\(P(\lnot T \mid \lnot D) = 0.90 \;\)</span> specificity</p></li>
-<li><p><span class="math inline">\(P(T \mid \lnot D) = 0.10 \;\)</span> (1 - specificity)</p></li>
+<li><p><span class="math inline">\(P(T \mid \lnot D) = 0.10 \;\)</span> false positive rate = (1 - specificity)</p></li>
 <li><p><span class="math inline">\(P(\lnot D) = 0.999\;\)</span> (1 - prevalence)</p></li>
 </ul></li>
 <li><p>Wanted (unknown quantity/conclusion/hypothesis/query):</p>
@@ -686,6 +684,10 @@ P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) 
 </ul></li>
 </ul>
 </div>
+<ul>
+<li class="fragment"><p><strong>Frequentist inference</strong> emphasizes controlling the <strong>false positive rate</strong> <span class="math inline">\(\; P(T \mid \lnot D)\)</span></p></li>
+<li class="fragment"><p><strong>Bayesian inference</strong> emphasizes estimating the <strong>posterior probability distribution</strong> <span class="math inline">\(\; P(D \mid T)\)</span></p></li>
+</ul>
 </section>
 <section id="bayes-theorem-in-action-bayesian-inference-9" class="slide level2">
 <h2>Bayes’ theorem in action: Bayesian inference</h2>

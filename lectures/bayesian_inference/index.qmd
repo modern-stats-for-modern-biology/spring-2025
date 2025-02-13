@@ -146,10 +146,10 @@ $$
 
     -   The choice of premises and conclusion is subjective, but **probability is objective**
 
--   Probability theory is a very simple language:
+-   Probability theory is a very simple language
 
     -   One type of variables: `Logical` ([TRUE]{.green} or [FALSE]{.red})
-    -   The function $V(H \mid E)$ and the 5 functions/operators/rules of propositional logic:
+    -   The 5 functions/operators/rules of propositional logic:
         -   `NOT` ($\lnot A$), `AND` ($A \land B$), `OR` ($A \lor B$), `IMPLIES` ($A \implies B$), `IFF` ($A \iff B$)
     -   The function $P(H \mid E)$ and the 3 functions/operators/rules of probability theory:
         -   `NOT` (complement rule), `AND` (**Bayes' theorem** a.k.a. product rule), `OR` (sum rule)
@@ -189,7 +189,7 @@ $$P(B \mid A) = P(B)$$
 :::::
 ::::::
 
--   If $A$ and $B$ are **dependent** events, then $A$ is said to be **associated** with $B$, and viceversa
+-   If $A$ and $B$ are **dependent**, then $A$ is said to be **associated** with $B$, and viceversa
 
 ## Probability theory: Rules of probability calculus
 
@@ -319,7 +319,7 @@ P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
 $$
 
 ::: nonincremental
--   **Conjuction rule (AND)**: Bayes theorem
+-   **Conjuction rule (AND)**: Bayes' theorem
 :::
 
 $$
@@ -373,7 +373,7 @@ $$
 ## Bayes' theorem in action: Bayesian inference
 
 ::::: columns
-::: {.column width="40%"}
+::: {.column .fragment width="40%"}
 $D \:$ "*The woman has breast cancer.*"
 :::
 
@@ -384,18 +384,18 @@ $T \:$ "*The diagnostic test for breast cancer is positive.*"
 
 -   Given (known quantities/premises/evidence/knowledge base):
 
-    -   **Prevalence (prior probability):** $\; P(D) = 0.001$\
+    -   **Prevalence:** $\; P(D) = 0.001$\
         (i.e., 0.1% chance the woman has breast cancer)
+
     -   **Sensitivity:** $\; P(T \mid D) = 0.90$\
         (i.e., 90% chance the test is positive if the woman has breast cancer)
+
     -   **Specificity:** $\; P(\lnot T \mid \lnot D) = 0.90$\
         (i.e., 90% chance the test is negative if the woman does not have breast cancer)
-    -   **False positive rate:** $\; P(T \mid \lnot D) = 1 - P(\lnot T \mid \lnot D) = 1 - 0.90 = 0.10$\
-        (i.e., 10% chance the test is positive if the woman does not have breast cancer)
 
 -   Wanted (unknown quantity/conclusion/hypothesis/query):
 
-    -   **Positive predictive value (posterior probability):** $\; P(D \mid T)$\
+    -   **Positive predictive value:** $\; P(D \mid T)$\
         (i.e., chance the woman has breast cancer if the test is positive)
 
 ## Bayes' theorem in action: Bayesian inference
@@ -477,7 +477,7 @@ $T \:$ "*The diagnostic test for breast cancer is positive.*"
     
     -   $P(\lnot T \mid \lnot D) = 0.90 \;$ specificity
     
-    -   $P(T \mid \lnot D) = 0.10 \;$ (1 - specificity)
+    -   $P(T \mid \lnot D) = 0.10 \;$ false positive rate = (1 - specificity)
 
     -   $P(\lnot D) = 0.999\;$ (1 - prevalence)
     
@@ -485,7 +485,12 @@ $T \:$ "*The diagnostic test for breast cancer is positive.*"
 
     -   $P(D \mid T) =\ ? \;$ **posterior**
 :::
-        
+
+-   **Frequentist inference** emphasizes controlling the **false positive rate** $\; P(T \mid \lnot D)$
+
+-   **Bayesian inference** emphasizes estimating the **posterior probability distribution** $\; P(D \mid T)$
+
+
 ## Bayes' theorem in action: Bayesian inference
 
 ::: nonincremental
