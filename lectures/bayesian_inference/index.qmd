@@ -149,9 +149,9 @@ $$
 -   Probability theory is a very simple language
 
     -   One type of variables: `Logical` ([TRUE]{.green} or [FALSE]{.red})
-    -   The 5 functions/operators/rules of propositional logic:
+    -   The five functions/operators/rules of propositional logic:
         -   `NOT` ($\lnot A$), `AND` ($A \land B$), `OR` ($A \lor B$), `IMPLIES` ($A \implies B$), `IFF` ($A \iff B$)
-    -   The function $P(H \mid E)$ and the 3 functions/operators/rules of probability theory:
+    -   The $P(H \mid E)$ function + three functions/operators/rules of probability theory:
         -   `NOT` (complement rule), `AND` (**Bayes' theorem** a.k.a. product rule), `OR` (sum rule)
 
 ## Probability theory: Rules of probability calculus
@@ -357,45 +357,30 @@ $$
 
 ## Bayes' theorem in action: Bayesian inference
 
--   Statistical inference is **logical reasoning** using 1) known (or assumed) quantities and 2) a model, to infer unknown quantities
-
-::: fragment
-$$
-\begin{array}{ll}
-1. & \text{known quantities} \\
-2. & \text{model} \\
-\hline
-\therefore & \text{unknown quantities} \\
-\end{array}
-$$
-:::
-
-## Bayes' theorem in action: Bayesian inference
-
 ::::: columns
 ::: {.column .fragment width="40%"}
-$D \:$ "*The woman has breast cancer.*"
+$H \:$ "*The woman has breast cancer.*"
 :::
 
 ::: {.column .fragment width="60%"}
-$T \:$ "*The diagnostic test for breast cancer is positive.*"
+$E \:$ "*The diagnostic test for breast cancer is positive.*"
 :::
 :::::
 
--   Given (known quantities/premises/evidence/knowledge base):
+-   Given:
 
-    -   **Prevalence:** $\; P(D) = 0.001$\
+    -   **Prevalence:** $\; P(H) = 0.001$\
         (i.e., 0.1% chance the woman has breast cancer)
 
-    -   **Sensitivity:** $\; P(T \mid D) = 0.90$\
+    -   **Sensitivity:** $\; P(E \mid H) = 0.90$\
         (i.e., 90% chance the test is positive if the woman has breast cancer)
 
-    -   **Specificity:** $\; P(\lnot T \mid \lnot D) = 0.90$\
+    -   **Specificity:** $\; P(\lnot E \mid \lnot H) = 0.90$\
         (i.e., 90% chance the test is negative if the woman does not have breast cancer)
 
--   Wanted (unknown quantity/conclusion/hypothesis/query):
+-   Wanted:
 
-    -   **Positive predictive value:** $\; P(D \mid T)$\
+    -   **Positive predictive value:** $\; P(H \mid E)$\
         (i.e., chance the woman has breast cancer if the test is positive)
 
 ## Bayes' theorem in action: Bayesian inference
@@ -406,17 +391,10 @@ $T \:$ "*The diagnostic test for breast cancer is positive.*"
 
 ::: fragment
 $$
-P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(T)}
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(E)}
 $$
 :::
 
-## Bayes' theorem in action: Bayesian inference
-
-::: nonincremental
--   According to Bayes' theorem:
-:::
-
-![](images/Akshay.bayes_theorem_the_formula.jpg){fig-align="center" width="703"}
 
 ## Bayes' theorem in action: Bayesian inference
 
@@ -425,7 +403,7 @@ $$
 :::
 
 $$
-P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(T)}
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H) \cdot P(E \mid H) + P(\lnot H) \cdot P(E \mid \lnot H)}
 $$
 
 ## Bayes' theorem in action: Bayesian inference
@@ -435,25 +413,7 @@ $$
 :::
 
 $$
-P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) \cdot P(T \mid \lnot D)}
-$$
-
-## Bayes' theorem in action: Bayesian inference
-
-::: nonincremental
--   According to Bayes' theorem:
-:::
-
-![](images/Akshay.visual_proof_bayes'_theorem.jpg){fig-align="center" width="617"}
-
-## Bayes' theorem in action: Bayesian inference
-
-::: nonincremental
--   According to Bayes' theorem:
-:::
-
-$$
-P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) \cdot P(T \mid \lnot D)}
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H) \cdot P(E \mid H) + P(\lnot H) \cdot P(E \mid \lnot H)}
 $$
 
 ## Bayes' theorem in action: Bayesian inference
@@ -471,25 +431,24 @@ $T \:$ "*The diagnostic test for breast cancer is positive.*"
 ::: nonincremental
 -   Given (known quantities/premises/evidence/knowledge base):
 
-    -   $P(D) = 0.001 \;$ **prior**/prevalence
+    -   $P(H) = 0.001 \;$ **prior**/prevalence
 
-    -   $P(T \mid D) = 0.90 \;$ **likelihood**/sensitivity
-    
-    -   $P(\lnot T \mid \lnot D) = 0.90 \;$ specificity
-    
-    -   $P(T \mid \lnot D) = 0.10 \;$ false positive rate = (1 - specificity)
+    -   $P(E \mid H) = 0.90 \;$ **likelihood**/sensitivity
 
-    -   $P(\lnot D) = 0.999\;$ (1 - prevalence)
-    
+    -   $P(\lnot E \mid \lnot H) = 0.90 \;$ specificity
+
+    -   $P(E \mid \lnot H) = 0.10 \;$ false positive rate = (1 - specificity)
+
+    -   $P(\lnot H) = 0.999\;$ (1 - prevalence)
+
 -   Wanted (unknown quantity/conclusion/hypothesis/query):
 
-    -   $P(D \mid T) =\ ? \;$ **posterior**
+    -   $P(H \mid E) =\ ? \;$ **posterior**
 :::
 
--   **Frequentist inference** emphasizes controlling the **false positive rate** $\; P(T \mid \lnot D)$
+-   **Frequentist inference** emphasizes controlling the **false positive rate** $\; P(E \mid \lnot H)$
 
--   **Bayesian inference** emphasizes estimating the **posterior probability distribution** $\; P(D \mid T)$
-
+-   **Bayesian inference** emphasizes estimating the **posterior probability distribution** $\; P(H \mid E)$
 
 ## Bayes' theorem in action: Bayesian inference
 
@@ -498,14 +457,14 @@ $T \:$ "*The diagnostic test for breast cancer is positive.*"
 :::
 
 $$
-P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) \cdot P(T \mid \lnot D)}
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H) \cdot P(E \mid H) + P(\lnot H) \cdot P(E \mid \lnot H)}
 $$
 
 -   Substituting the given values:
 
 ::: fragment
 $$
-P(D \mid T) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)} = \frac{0.0009}{0.0009 + 0.0999} \approx \frac{0.0009}{0.1008} \approx 0.00893
+P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)} = \frac{0.0009}{0.0009 + 0.0999} \approx \frac{0.0009}{0.1008} \approx 0.00893
 $$
 :::
 

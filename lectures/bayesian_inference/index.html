@@ -345,11 +345,11 @@ Edoardo “Dado” Marcora
 <li class="fragment"><p>Probability theory is a very simple language</p>
 <ul>
 <li class="fragment">One type of variables: <code>Logical</code> (<span class="green">TRUE</span> or <span class="red">FALSE</span>)</li>
-<li class="fragment">The 5 functions/operators/rules of propositional logic:
+<li class="fragment">The five functions/operators/rules of propositional logic:
 <ul>
 <li class="fragment"><code>NOT</code> (<span class="math inline">\(\lnot A\)</span>), <code>AND</code> (<span class="math inline">\(A \land B\)</span>), <code>OR</code> (<span class="math inline">\(A \lor B\)</span>), <code>IMPLIES</code> (<span class="math inline">\(A \implies B\)</span>), <code>IFF</code> (<span class="math inline">\(A \iff B\)</span>)</li>
 </ul></li>
-<li class="fragment">The function <span class="math inline">\(P(H \mid E)\)</span> and the 3 functions/operators/rules of probability theory:
+<li class="fragment">The <span class="math inline">\(P(H \mid E)\)</span> function + three functions/operators/rules of probability theory:
 <ul>
 <li class="fragment"><code>NOT</code> (complement rule), <code>AND</code> (<strong>Bayes’ theorem</strong> a.k.a. product rule), <code>OR</code> (sum rule)</li>
 </ul></li>
@@ -557,44 +557,41 @@ P(A \lor B) = P(A) + P(B) \quad \text{iff A and B are mutually exclusive, i.e.,}
 </section>
 <section id="bayes-theorem-in-action-bayesian-inference" class="slide level2">
 <h2>Bayes’ theorem in action: Bayesian inference</h2>
-<ul>
-<li class="fragment">Statistical inference is <strong>logical reasoning</strong> using 1) known (or assumed) quantities and 2) a model, to infer unknown quantities</li>
-</ul>
-<div class="fragment">
-<p><span class="math display">\[
-\begin{array}{ll}
-1. &amp; \text{known quantities} \\
-2. &amp; \text{model} \\
-\hline
-\therefore &amp; \text{unknown quantities} \\
-\end{array}
-\]</span></p>
-</div>
-</section>
-<section id="bayes-theorem-in-action-bayesian-inference-1" class="slide level2">
-<h2>Bayes’ theorem in action: Bayesian inference</h2>
 <div class="columns">
 <div class="column fragment" style="width:40%;">
-<p><span class="math inline">\(D \:\)</span> “<em>The woman has breast cancer.</em>”</p>
+<p><span class="math inline">\(H \:\)</span> “<em>The woman has breast cancer.</em>”</p>
 </div><div class="column fragment" style="width:60%;">
-<p><span class="math inline">\(T \:\)</span> “<em>The diagnostic test for breast cancer is positive.</em>”</p>
+<p><span class="math inline">\(E \:\)</span> “<em>The diagnostic test for breast cancer is positive.</em>”</p>
 </div></div>
 <ul>
-<li class="fragment"><p>Given (known quantities/premises/evidence/knowledge base):</p>
+<li class="fragment"><p>Given:</p>
 <ul>
-<li class="fragment"><p><strong>Prevalence:</strong> <span class="math inline">\(\; P(D) = 0.001\)</span><br>
+<li class="fragment"><p><strong>Prevalence:</strong> <span class="math inline">\(\; P(H) = 0.001\)</span><br>
 (i.e., 0.1% chance the woman has breast cancer)</p></li>
-<li class="fragment"><p><strong>Sensitivity:</strong> <span class="math inline">\(\; P(T \mid D) = 0.90\)</span><br>
+<li class="fragment"><p><strong>Sensitivity:</strong> <span class="math inline">\(\; P(E \mid H) = 0.90\)</span><br>
 (i.e., 90% chance the test is positive if the woman has breast cancer)</p></li>
-<li class="fragment"><p><strong>Specificity:</strong> <span class="math inline">\(\; P(\lnot T \mid \lnot D) = 0.90\)</span><br>
+<li class="fragment"><p><strong>Specificity:</strong> <span class="math inline">\(\; P(\lnot E \mid \lnot H) = 0.90\)</span><br>
 (i.e., 90% chance the test is negative if the woman does not have breast cancer)</p></li>
 </ul></li>
-<li class="fragment"><p>Wanted (unknown quantity/conclusion/hypothesis/query):</p>
+<li class="fragment"><p>Wanted:</p>
 <ul>
-<li class="fragment"><strong>Positive predictive value:</strong> <span class="math inline">\(\; P(D \mid T)\)</span><br>
+<li class="fragment"><strong>Positive predictive value:</strong> <span class="math inline">\(\; P(H \mid E)\)</span><br>
 (i.e., chance the woman has breast cancer if the test is positive)</li>
 </ul></li>
 </ul>
+</section>
+<section id="bayes-theorem-in-action-bayesian-inference-1" class="slide level2">
+<h2>Bayes’ theorem in action: Bayesian inference</h2>
+<div>
+<ul>
+<li>According to Bayes’ theorem:</li>
+</ul>
+</div>
+<div class="fragment">
+<p><span class="math display">\[
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(E)}
+\]</span></p>
+</div>
 </section>
 <section id="bayes-theorem-in-action-bayesian-inference-2" class="slide level2">
 <h2>Bayes’ theorem in action: Bayesian inference</h2>
@@ -603,11 +600,9 @@ P(A \lor B) = P(A) + P(B) \quad \text{iff A and B are mutually exclusive, i.e.,}
 <li>According to Bayes’ theorem:</li>
 </ul>
 </div>
-<div class="fragment">
 <p><span class="math display">\[
-P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(T)}
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H) \cdot P(E \mid H) + P(\lnot H) \cdot P(E \mid \lnot H)}
 \]</span></p>
-</div>
 </section>
 <section id="bayes-theorem-in-action-bayesian-inference-3" class="slide level2">
 <h2>Bayes’ theorem in action: Bayesian inference</h2>
@@ -616,51 +611,11 @@ P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(T)}
 <li>According to Bayes’ theorem:</li>
 </ul>
 </div>
-
-<img data-src="images/Akshay.bayes_theorem_the_formula.jpg" class="quarto-figure quarto-figure-center r-stretch" width="703"></section>
+<p><span class="math display">\[
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H) \cdot P(E \mid H) + P(\lnot H) \cdot P(E \mid \lnot H)}
+\]</span></p>
+</section>
 <section id="bayes-theorem-in-action-bayesian-inference-4" class="slide level2">
-<h2>Bayes’ theorem in action: Bayesian inference</h2>
-<div>
-<ul>
-<li>According to Bayes’ theorem:</li>
-</ul>
-</div>
-<p><span class="math display">\[
-P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(T)}
-\]</span></p>
-</section>
-<section id="bayes-theorem-in-action-bayesian-inference-5" class="slide level2">
-<h2>Bayes’ theorem in action: Bayesian inference</h2>
-<div>
-<ul>
-<li>According to Bayes’ theorem:</li>
-</ul>
-</div>
-<p><span class="math display">\[
-P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) \cdot P(T \mid \lnot D)}
-\]</span></p>
-</section>
-<section id="bayes-theorem-in-action-bayesian-inference-6" class="slide level2">
-<h2>Bayes’ theorem in action: Bayesian inference</h2>
-<div>
-<ul>
-<li>According to Bayes’ theorem:</li>
-</ul>
-</div>
-
-<img data-src="images/Akshay.visual_proof_bayes'_theorem.jpg" class="quarto-figure quarto-figure-center r-stretch" width="617"></section>
-<section id="bayes-theorem-in-action-bayesian-inference-7" class="slide level2">
-<h2>Bayes’ theorem in action: Bayesian inference</h2>
-<div>
-<ul>
-<li>According to Bayes’ theorem:</li>
-</ul>
-</div>
-<p><span class="math display">\[
-P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) \cdot P(T \mid \lnot D)}
-\]</span></p>
-</section>
-<section id="bayes-theorem-in-action-bayesian-inference-8" class="slide level2">
 <h2>Bayes’ theorem in action: Bayesian inference</h2>
 <div class="columns">
 <div class="column" style="width:40%;">
@@ -672,24 +627,24 @@ P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) 
 <ul>
 <li><p>Given (known quantities/premises/evidence/knowledge base):</p>
 <ul>
-<li><p><span class="math inline">\(P(D) = 0.001 \;\)</span> <strong>prior</strong>/prevalence</p></li>
-<li><p><span class="math inline">\(P(T \mid D) = 0.90 \;\)</span> <strong>likelihood</strong>/sensitivity</p></li>
-<li><p><span class="math inline">\(P(\lnot T \mid \lnot D) = 0.90 \;\)</span> specificity</p></li>
-<li><p><span class="math inline">\(P(T \mid \lnot D) = 0.10 \;\)</span> false positive rate = (1 - specificity)</p></li>
-<li><p><span class="math inline">\(P(\lnot D) = 0.999\;\)</span> (1 - prevalence)</p></li>
+<li><p><span class="math inline">\(P(H) = 0.001 \;\)</span> <strong>prior</strong>/prevalence</p></li>
+<li><p><span class="math inline">\(P(E \mid H) = 0.90 \;\)</span> <strong>likelihood</strong>/sensitivity</p></li>
+<li><p><span class="math inline">\(P(\lnot E \mid \lnot H) = 0.90 \;\)</span> specificity</p></li>
+<li><p><span class="math inline">\(P(E \mid \lnot H) = 0.10 \;\)</span> false positive rate = (1 - specificity)</p></li>
+<li><p><span class="math inline">\(P(\lnot H) = 0.999\;\)</span> (1 - prevalence)</p></li>
 </ul></li>
 <li><p>Wanted (unknown quantity/conclusion/hypothesis/query):</p>
 <ul>
-<li><span class="math inline">\(P(D \mid T) =\ ? \;\)</span> <strong>posterior</strong></li>
+<li><span class="math inline">\(P(H \mid E) =\ ? \;\)</span> <strong>posterior</strong></li>
 </ul></li>
 </ul>
 </div>
 <ul>
-<li class="fragment"><p><strong>Frequentist inference</strong> emphasizes controlling the <strong>false positive rate</strong> <span class="math inline">\(\; P(T \mid \lnot D)\)</span></p></li>
-<li class="fragment"><p><strong>Bayesian inference</strong> emphasizes estimating the <strong>posterior probability distribution</strong> <span class="math inline">\(\; P(D \mid T)\)</span></p></li>
+<li class="fragment"><p><strong>Frequentist inference</strong> emphasizes controlling the <strong>false positive rate</strong> <span class="math inline">\(\; P(E \mid \lnot H)\)</span></p></li>
+<li class="fragment"><p><strong>Bayesian inference</strong> emphasizes estimating the <strong>posterior probability distribution</strong> <span class="math inline">\(\; P(H \mid E)\)</span></p></li>
 </ul>
 </section>
-<section id="bayes-theorem-in-action-bayesian-inference-9" class="slide level2">
+<section id="bayes-theorem-in-action-bayesian-inference-5" class="slide level2">
 <h2>Bayes’ theorem in action: Bayesian inference</h2>
 <div>
 <ul>
@@ -697,14 +652,14 @@ P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) 
 </ul>
 </div>
 <p><span class="math display">\[
-P(D \mid T) = \frac{P(D) \cdot P(T \mid D)}{P(D) \cdot P(T \mid D) + P(\lnot D) \cdot P(T \mid \lnot D)}
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H) \cdot P(E \mid H) + P(\lnot H) \cdot P(E \mid \lnot H)}
 \]</span></p>
 <ul>
 <li class="fragment">Substituting the given values:</li>
 </ul>
 <div class="fragment">
 <p><span class="math display">\[
-P(D \mid T) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)} = \frac{0.0009}{0.0009 + 0.0999} \approx \frac{0.0009}{0.1008} \approx 0.00893
+P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)} = \frac{0.0009}{0.0009 + 0.0999} \approx \frac{0.0009}{0.1008} \approx 0.00893
 \]</span></p>
 </div>
 <ul>
