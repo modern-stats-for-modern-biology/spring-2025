@@ -1,56 +1,45 @@
 ---
-title: "Frequentist vs Bayesian linear model fit"
+title: "Balls from bag"
 format:
   html:
-    df-print: kable
+    df-print: paged
 execution:
   warning: false
 ---
 
-## Setup environment
-
 ```{r}
 #| output: false
-library(brms)
-library(emmeans)
-
-options(mc.cores = parallel::detectCores())
-options(brms.backend = "cmdstanr")
-```
-
-## Load data
-
-```{r}
-head(iris)
-```
-
-## Fit linear model: Frequentist
-
-```{r}
-lm.fit <- lm(Petal.Length ~ 1 + Species, data = iris)
+library(tidyverse)
 ```
 
 ```{r}
-emmeans(lm.fit, pairwise ~ Species)
+bag <- c("B", "W1", "W2", "W3")
+
+ss <- expand_grid(
+  D1 = bag,
+  D2 = bag,
+  D3 = bag
+)
+
+ss <- ss %>%
+  mutate(
+    D1 = (D1 %in% c("B")),
+    D2 = (D1 %in% c("B")),
+    D3 = (D1 %in% c("B"))
+  )
+
+ss
 ```
 
-## Fit linear model: Bayesian
-
 ```{r}
-#| output: false
-brm.fit <- brm(Petal.Length ~ 1 + Species, data = iris)
-```
-
-```{r}
-plot(brm.fit)
-```
-
-```{r}
-emmeans(brm.fit, pairwise ~ Species)
-```
-
-## Print environment
-
-```{r}
-sessioninfo::session_info()
+ss %>%
+  mutate(
+    E = TRUE,
+    H = (D1 & !D2 & D3)) %>%
+  summarise(
+    p_E       = mean(E),
+    p_H       = mean(H),
+    p_E_and_H = mean(E & H),
+    p_H_given_E = p_E_and_H / p_E
+  )
 ```
