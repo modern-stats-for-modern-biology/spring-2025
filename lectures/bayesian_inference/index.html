@@ -187,6 +187,8 @@
       margin-right: 0; 
     }
   </style>
+  <link href="index_files/libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+  <script src="index_files/libs/tabwid-1.1.3/tabwid.js"></script>
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -251,7 +253,7 @@ Edoardo “Dado” Marcora
 <li class="fragment"><p><strong>Probability theory</strong> is a mathematical language that we use to:</p>
 <ul>
 <li class="fragment"><p><strong>represent knowledge</strong> with propositions (logical variables), and</p></li>
-<li class="fragment"><p><strong>reason</strong> about the plausibility of propositions, given the knowledge base, i.e.,</p></li>
+<li class="fragment"><p><strong>reason</strong> about the plausibility of propositions, given a knowledge base, i.e.,</p></li>
 <li class="fragment"><p><strong>inductive reasoning</strong>: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain</p></li>
 </ul></li>
 </ul>
@@ -270,7 +272,7 @@ Edoardo “Dado” Marcora
 <li><p><strong>Probability theory</strong> is a mathematical language that we use to:</p>
 <ul>
 <li><p><strong>represent knowledge</strong> with propositions (logical variables), and</p></li>
-<li><p><strong>reason</strong> about the plausibility of propositions, given the knowledge base, i.e.,</p></li>
+<li><p><strong>reason</strong> about the plausibility of propositions, given a knowledge base, i.e.,</p></li>
 <li><p><strong>inductive reasoning</strong>: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain</p></li>
 </ul></li>
 <li><p><strong>Inductive reasoning is scientific reasoning</strong>, including statistical inference</p></li>
@@ -284,7 +286,7 @@ Edoardo “Dado” Marcora
 <li><p><strong>Probability theory</strong> is a mathematical language that we use to:</p>
 <ul>
 <li><p><strong>represent knowledge</strong> with propositions (logical variables), and</p></li>
-<li><p><strong>reason</strong> about the plausibility of propositions, given the knowledge base, i.e.,</p></li>
+<li><p><strong>reason</strong> about the plausibility of propositions, given a knowledge base, i.e.,</p></li>
 <li><p><strong>inductive reasoning</strong>: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain</p></li>
 </ul></li>
 <li><p><strong>Inductive reasoning is scientific reasoning</strong>, including statistical inference</p>
@@ -301,7 +303,7 @@ Edoardo “Dado” Marcora
 <li><p><strong>Probability theory</strong> is a mathematical language that we use to:</p>
 <ul>
 <li><p><strong>represent knowledge</strong> with propositions (logical variables), and</p></li>
-<li><p><strong>reason</strong> about the plausibility of propositions, given the knowledge base, i.e.,</p></li>
+<li><p><strong>reason</strong> about the plausibility of propositions, given a knowledge base, i.e.,</p></li>
 <li><p><strong>inductive reasoning</strong>: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain</p></li>
 </ul></li>
 <li><p><strong>Inductive reasoning is scientific reasoning</strong>, including statistical inference</p>
@@ -563,7 +565,7 @@ P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
 </ul>
 </div>
 <p><span class="math display">\[
-P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)} = \frac{P(B) \cdot P(A \mid B)}{P(B) \cdot P(A \mid B) + P(\lnot B) \cdot P(A \mid \lnot B)}
+P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}
 \]</span></p>
 </section>
 <section id="probability-theory-rules-of-probability-calculus-6" class="slide level2">
@@ -1132,7 +1134,7 @@ P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{\int_{i=1}^\infty P(P_i) \cdot P(E \
 </ul>
 </div>
 <ul>
-<li class="fragment">This integral is often very difficult to compute, and that’s why Bayesian inference was relegated to simple cases until the advent of modern computers and <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov Chain Monte Carlo</a> (MCMC) methods</li>
+<li class="fragment">This integral is often very difficult if not impossible to compute, and that’s why Bayesian inference was relegated to simple cases until the advent of modern computers and <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov Chain Monte Carlo</a> (MCMC) methods</li>
 </ul>
 </section>
 <section id="bayes-theorem-in-action-bayesian-inference-13" class="slide level2">
@@ -1293,96 +1295,60 @@ P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)
 
 <img data-src="images/Slide1.png" class="quarto-figure quarto-figure-center r-stretch" width="979"><p><a href="https://doi.org/10.1214/10-STS330">Shmueli (2010)</a> To Explain or to Predict?</p>
 </section>
-<section id="section-1" class="slide level2" data-background-image="images/bayesian_inference_is_just_counting.jpg" data-background-size="contain">
+<section id="section-1" class="slide level2" data-background-image="images/cover-model-september-2004.webp" data-background-size="cover">
 <h2></h2>
+<aside class="notes">
+<p>Fasten your seatblets because we are about to enter the world of statistical models!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="problem-multiple-draws-with-replacement-from-bag-of-balls" class="slide level2">
-<h2>Problem: Multiple draws with replacement from bag of balls</h2>
-<p>XXX</p>
-</section>
-<section id="section-2" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
-<h2></h2>
-</section>
-<section id="law-of-total-probability" class="slide level2">
-<h2>Law of total probability</h2>
-<p>&nbsp;</p>
-<p><span class="math inline">\(\{ P_1, P_2, \ldots, P_n \} = \text{set of partitions/mutually exclusive and exhaustive events}\)</span></p>
-<p>&nbsp;</p>
-<p><span class="math inline">\(P(E) = \sum_{i=1}^n P(P_i \land E)\)</span></p>
-<p>&nbsp;</p>
-<p><span class="math inline">\(P(E) = \sum_{i=1}^n P(P_i) \cdot P(E \mid P_i)\)</span></p>
-</section>
-<section id="gamblers-fallacy" class="slide level2">
-<h2>Gambler’s fallacy</h2>
-<p><img data-src="images/gamblers-fallacy.png" height="280"></p>
-</section>
-<section id="association-does-not-imply-causation" class="slide level2">
-<h2>Association does not imply causation</h2>
-<div class="fragment">
-<p>“Correlation is not causation” - correlation is just a special case of statistical association</p>
-</div>
-<div class="fragment">
-<p>Two propositions/events <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are associated iff they are NOT independent</p>
-</div>
-<ul>
-<li class="fragment"><span class="math inline">\(P(A \mid B) \ne P(A)\)</span></li>
-</ul>
-<div class="fragment">
-<p>or, equivalently</p>
-</div>
-<ul>
-<li class="fragment"><span class="math inline">\(P(B \mid A) \ne P(B)\)</span></li>
-</ul>
-<div class="fragment">
-<p>For example,</p>
-</div>
-<ul>
-<li class="fragment"><p><span class="math inline">\(P(\text{heart attack} \mid \text{high cholesterol levels}) &gt; P(\text{heart attack})\)</span></p></li>
-<li class="fragment"><p><span class="math inline">\(P(\text{shark attack} \mid \text{high ice cream sales}) &gt; P(\text{shark attack})\)</span></p></li>
-</ul>
-<div class="fragment">
-<p>We bring causation to probability; we do not get causation from probability!</p>
-</div>
-</section>
-<section id="association-does-not-imply-causation-1" class="slide level2">
-<h2>Association does not imply causation</h2>
-<p>A statistical association is a logical relationship between two propositions/events and does not imply a causal relationship between them</p>
-<div class="fragment">
-<p>For example,</p>
-</div>
-<ul>
-<li class="fragment"><p>reducing cholesterol levels lowers the risk of a heart attack (causal relationship), however</p></li>
-<li class="fragment"><p>reducing ice cream sales does not lower the risk of a shark attack, even though there is a statistical association between high ice cream sales and shark attacks</p></li>
-</ul>
-<div class="fragment">
+<section id="statistical-models-probability-distributions-of-random-variables" class="slide level2">
+<h2>Statistical models = probability distributions of random variables</h2>
+<div class="columns">
+<div class="column" style="width:30%;">
+<p><img data-src="images/models_80s90s.webp"></p>
+</div><div class="column" style="width:70%;">
 <div class="text-align-center">
-<p><img data-src="images/17009_masters-degrees-awarded-in-biological-and-biomedical-sciences_correlates-with_inflation-in-the-us.svg" height="240"></p>
-<p><a href="https://tylervigen.com/spurious-correlations">Spurious Correlations - Tyler Vigen</a></p>
+<p><img data-src="images/probability_distributions.jpg"></p>
+<p><a href="https://distribution-explorer.github.io/" class="uri">https://distribution-explorer.github.io/</a></p>
 </div>
-</div>
+</div></div>
 </section>
-<section id="the-ladder-of-causation" class="slide level2">
-<h2>The “ladder of causation”</h2>
-<p>From Pearl and Mackenzie (2018) <a href="https://bayes.cs.ucla.edu/WHY/">The Book of Why</a></p>
-<div class="text-align-center">
-<p><img data-src="images/ladder_of_causation2.jpg"></p>
-</div>
+<section id="statistical-models-probability-distributions-of-random-variables-1" class="slide level2">
+<h2>Statistical models = probability distributions of random variables</h2>
+<blockquote>
+<p>It turns out that empirical research questions come down entirely to describing the probability distributions of random variables. That’s, well, that’s really all that quantitative empirical research is. Sorry!</p>
+<p>— Nick Huntington-Klein <a href="https://theeffectbook.net/">The Effect</a> [free online book]</p>
+</blockquote>
+</section>
+<section id="maximum-entropy-probability-distribution" class="slide level2">
+<h2>Maximum entropy probability distribution</h2>
+<p>The maximum entropy principle makes explicit our freedom in using different forms of prior data. As a special case, a uniform prior probability density (Laplace’s principle of indifference, sometimes called the principle of insufficient reason), may be adopted. Thus, the maximum entropy principle is not merely an alternative way to view the usual methods of inference of classical statistics, but represents a significant conceptual generalization of those methods.</p>
+<ul>
+<li class="fragment"><p>Laplace’s principle of indifference (sometimes called the principle of insufficient reason) is a special case</p></li>
+<li class="fragment"><p>Jaynes’ <a href="https://en.wikipedia.org/wiki/Principle_of_maximum_entropy">principle of maximum entropy</a> states that, in the absence of additional information, outcomes in the sample space are equally likely</p></li>
+</ul>
 </section>
 <section id="probability-distribution" class="slide level2">
 <h2>Probability distribution</h2>
-<ul>
-<li class="fragment">Jaynes’ <a href="https://en.wikipedia.org/wiki/Principle_of_maximum_entropy">principle of maximum entropy</a> states that, in the absence of additional information, outcomes in the sample space are equally likely</li>
-</ul>
-<div class="fragment">
-<p><span class="math display">\[\forall \omega \in \Omega \quad p(\omega) = \frac{1}{|\Omega|}\]</span></p>
-<p>where <span class="math inline">\(p(\omega)\)</span> is the probability (or more precisely the <em>probability mass</em>) of <span class="math inline">\(\omega\)</span></p>
-</div>
-<ul>
-<li class="fragment"><p><span class="math inline">\(p\)</span> is also known as <strong>probability distribution</strong> or <em>probability mass function</em> (PMF) of <span class="math inline">\(\Omega\)</span></p></li>
-<li class="fragment"><p>For example, given the following sample space</p></li>
-</ul>
-<div class="fragment">
 <div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>ss <span class="ot">&lt;-</span></span>
+<span id="cb1-2"><a href=""></a>  <span class="fu">expand_grid</span>(<span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">B =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"⍵1"</span>, <span class="st">"⍵2"</span>, <span class="st">"⍵3"</span>, <span class="st">"⍵4"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-4"><a href=""></a>  <span class="fu">select</span>(Ω, A, B)</span>
+<span id="cb1-5"><a href=""></a></span>
+<span id="cb1-6"><a href=""></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top">
@@ -1419,7 +1385,6 @@ P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)
 </div>
 </div>
 </div>
-</div>
 </section>
 <section id="probability-distribution-1" class="slide level2">
 <h2>Probability distribution</h2>
@@ -1428,17 +1393,17 @@ P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)
 <li>Jaynes’ <a href="https://en.wikipedia.org/wiki/Principle_of_maximum_entropy">principle of maximum entropy</a> states that, in the absence of additional information, outcomes in the sample space are equally likely</li>
 </ul>
 </div>
-<p><span class="math display">\[\forall \omega \in \Omega \quad p(\omega) = \frac{1}{|\Omega|}\]</span></p>
+<p><span class="math display">\[\forall \omega_i \in \Omega \quad p(\omega_i) = \frac{1}{|\Omega|}\]</span></p>
 <div>
-<p>where <span class="math inline">\(p(\omega)\)</span> is the probability (or more precisely the <em>probability mass</em>) of <span class="math inline">\(\omega\)</span></p>
+<p>where <span class="math inline">\(p(\omega_i)\)</span> is the probability (or more precisely the <em>probability mass</em>) of <span class="math inline">\(\omega_i\)</span></p>
 <ul>
 <li><p><span class="math inline">\(p\)</span> is also known as <strong>probability distribution</strong> or <em>probability mass function</em> (PMF) of <span class="math inline">\(\Omega\)</span></p></li>
-<li><p>For example, given the following sample space <span class="math inline">\(\quad p(\omega) = \frac{1}{4} = 0.25\)</span></p></li>
+<li><p>For example, given the following sample space <span class="math inline">\(\quad p(\omega_i) = \frac{1}{4} = 0.25\)</span></p></li>
 </ul>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -1490,18 +1455,129 @@ P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)
 <p>The probability of proposition/event <span class="math inline">\(X\)</span> is calculated as</p>
 </div>
 <div class="fragment">
-<p><span class="math display">\[P(X) = \sum_{\omega \in X} p(\omega)\]</span></p>
+<p><span class="math display">\[P(X) = \sum_{\omega_i \in X} p(\omega_i)\]</span></p>
 </div>
 <div class="fragment">
-<p>For example, if proposition <span class="math inline">\(X\)</span> is <span class="math inline">\(A \lor B\)</span>, then <span class="math inline">\(P(X)\)</span> is</p>
+<p>For example, if proposition <span class="math inline">\(X\)</span> is <span class="math inline">\(A \lor B\)</span>, then <span class="math inline">\(P(X) = P(A \lor B)\)</span> is calculated as</p>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb2-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb2-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">X =</span> A <span class="sc">|</span> B) <span class="sc">%&gt;%</span></span>
-<span id="cb2-4"><a href=""></a>  <span class="fu">filter</span>(X) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-5"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(X)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">X =</span> A <span class="sc">|</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">X</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="probability-calculation-1" class="slide level2">
+<h2>Probability calculation</h2>
+<p>The probability of proposition/event <span class="math inline">\(X\)</span> is calculated as</p>
+<p><span class="math display">\[P(X) = \sum_{\omega_i \in X} p(\omega_i)\]</span></p>
+<p>For example, if proposition <span class="math inline">\(X\)</span> is <span class="math inline">\(A \lor B\)</span>, then <span class="math inline">\(P(X) = P(A \lor B)\)</span> is calculated as</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">X =</span> A <span class="sc">|</span> B) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href=""></a>  <span class="fu">filter</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">X</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="probability-calculation-2" class="slide level2">
+<h2>Probability calculation</h2>
+<p>The probability of proposition/event <span class="math inline">\(X\)</span> is calculated as</p>
+<p><span class="math display">\[P(X) = \sum_{\omega_i \in X} p(\omega_i)\]</span></p>
+<p>For example, if proposition <span class="math inline">\(X\)</span> is <span class="math inline">\(A \lor B\)</span>, then <span class="math inline">\(P(X) = P(A \lor B)\)</span> is calculated as</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">X =</span> A <span class="sc">|</span> B) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href=""></a>  <span class="fu">filter</span>(X) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-5"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(X)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -1518,7 +1594,6 @@ P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 </div>
 </div>
@@ -1527,10 +1602,10 @@ P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">X =</span> A <span class="sc">|</span> B) <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(X)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[X]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">X =</span> A <span class="sc">|</span> B) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(X)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[X]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -1550,6 +1625,754 @@ P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)
 </div>
 </div>
 </div>
+</div>
+</section>
+<section id="probability-calculation-3" class="slide level2">
+<h2>Probability calculation</h2>
+<p>The probability of proposition/event <span class="math inline">\(X\)</span> is calculated as</p>
+<p><span class="math display">\[P(X) = \sum_{\omega_i \in X} p(\omega_i)\]</span></p>
+<p>For example, if proposition <span class="math inline">\(X\)</span> is <span class="math inline">\(A \lor B\)</span>, then <span class="math inline">\(P(X) = P(A \lor B)\)</span> is calculated as</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">X =</span> A <span class="sc">|</span> B) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href=""></a>  <span class="fu">filter</span>(X) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-5"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(X)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">P(X)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.75</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>or even more succinctly</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href=""></a>  </span>
+<span id="cb8-4"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(A ∨ B)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[A <span class="sc">|</span> B]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">P(A ∨ B)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.75</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="columns">
+<div class="column" style="width:65%;">
+<p><span class="fragment"><strong>Premises/evidence/knowledge base</strong>:</span></p>
+<ul>
+<li class="fragment">“<em>An urn contains two blue balls and one white ball</em>”</li>
+<li class="fragment">“<em>You draw one ball from the urn</em>”</li>
+</ul>
+<p><span class="fragment"><strong>Conclusion/hypothesis/query</strong>:</span></p>
+<ul>
+<li class="fragment">“<em>You draw a blue ball</em>”</li>
+</ul>
+<p><span class="fragment"><strong>Propositional variables</strong>:</span></p>
+<ul>
+<li class="fragment"><strong>B1</strong> = “<em>You draw blue ball 1</em>”</li>
+<li class="fragment"><strong>B2</strong> = “<em>You draw blue ball 2</em>”</li>
+<li class="fragment"><strong>W</strong> = “<em>You draw the white ball</em>”</li>
+</ul>
+</div><div class="column" style="width:35%;">
+<div class="fragment">
+<p><span class="math display">\[
+\begin{array}{ll}
+1. &amp; B1 \lor B2 \lor W \\
+2. &amp; \lnot(B1 \land W) \\
+3. &amp; \lnot(B2 \land W) \\
+4. &amp; \lnot(B1 \land B2) \\
+\hline
+\therefore &amp; B1 \lor B2
+\end{array}
+\]</span></p>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<p><span class="math display">\[P(H \mid E) = \frac{P(H \land E)}{P(E)}\]</span></p>
+</div>
+</div></div>
+</section>
+<section id="statisticalproportional-syllogism-1" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B1"</span>, <span class="st">"B2"</span>, <span class="st">"W"</span>)</span>
+<span id="cb9-2"><a href=""></a></span>
+<span id="cb9-3"><a href=""></a>ss <span class="ot">&lt;-</span></span>
+<span id="cb9-4"><a href=""></a>  <span class="fu">expand.grid</span>(<span class="fu">map</span>(vars, <span class="sc">~</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href=""></a>  <span class="fu">set_names</span>(vars) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-6"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>())</span>
+<span id="cb9-8"><a href=""></a></span>
+<span id="cb9-9"><a href=""></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">B1</th>
+<th style="text-align: left;">B2</th>
+<th style="text-align: left;">W</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-2" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">B1</th>
+<th style="text-align: left;">B2</th>
+<th style="text-align: left;">W</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.125</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.125</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.125</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.125</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-3" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb11-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb11-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb11-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb11-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb11-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb11-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">B1</th>
+<th style="text-align: left;">B2</th>
+<th style="text-align: left;">W</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+<th style="text-align: left;">H</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-4" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb12-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb12-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb12-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb12-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb12-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb12-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div>
+<ul>
+<li><span class="math inline">\(P(H \mid E) = \frac{P(H \land E)}{P(E)}\)</span></li>
+</ul>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-5" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb13-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb13-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb13-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb13-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb13-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb13-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-11"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H <span class="sc">&amp;</span> E]) <span class="sc">/</span> <span class="fu">sum</span>(p[E]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">P(H | E)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.6667</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<p>For an urn with N balls M of which are blue, the probability of drawing a blue ball is <span class="math inline">\(M/N\)</span>!</p>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-6" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb14-2"><a href=""></a><span class="fu">library</span>(flextable)</span>
+<span id="cb14-3"><a href=""></a><span class="fu">library</span>(officer)</span>
+<span id="cb14-4"><a href=""></a><span class="fu">library</span>(scales)</span>
+<span id="cb14-5"><a href=""></a></span>
+<span id="cb14-6"><a href=""></a>p_bg <span class="ot">&lt;-</span> <span class="fu">col_numeric</span>(<span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"transparent"</span>, <span class="st">"blue"</span>), <span class="at">domain =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb14-7"><a href=""></a></span>
+<span id="cb14-8"><a href=""></a></span>
+<span id="cb14-9"><a href=""></a></span>
+<span id="cb14-10"><a href=""></a></span>
+<span id="cb14-11"><a href=""></a></span>
+<span id="cb14-12"><a href=""></a></span>
+<span id="cb14-13"><a href=""></a></span>
+<span id="cb14-14"><a href=""></a></span>
+<span id="cb14-15"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb14-16"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb14-17"><a href=""></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-18"><a href=""></a>  <span class="fu">bold</span>(<span class="at">part =</span> <span class="st">"header"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-19"><a href=""></a>  <span class="fu">bg</span>(<span class="at">j =</span> <span class="sc">~</span> p, <span class="at">bg =</span> p_bg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-a1a5727c{}.cl-a1a20be6{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1a20be7{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1a371fc{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1a371fd{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1a38020{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1a3802a{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1a3802b{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1a3802c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1a3802d{width:0.75in;background-color:rgba(238, 226, 255, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1a38034{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1a38035{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1a38036{width:0.75in;background-color:rgba(238, 226, 255, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a1a5727c"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a1a38020"><p class="cl-a1a371fc"><span class="cl-a1a20be6">Ω</span></p></th><th class="cl-a1a3802a"><p class="cl-a1a371fd"><span class="cl-a1a20be6">B1</span></p></th><th class="cl-a1a3802a"><p class="cl-a1a371fd"><span class="cl-a1a20be6">B2</span></p></th><th class="cl-a1a3802a"><p class="cl-a1a371fd"><span class="cl-a1a20be6">W</span></p></th><th class="cl-a1a3802a"><p class="cl-a1a371fd"><span class="cl-a1a20be6">p</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a1a3802b"><p class="cl-a1a371fc"><span class="cl-a1a20be7">⍵1</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802d"><p class="cl-a1a371fd"><span class="cl-a1a20be7">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1a3802b"><p class="cl-a1a371fc"><span class="cl-a1a20be7">⍵2</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802d"><p class="cl-a1a371fd"><span class="cl-a1a20be7">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1a3802b"><p class="cl-a1a371fc"><span class="cl-a1a20be7">⍵3</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802d"><p class="cl-a1a371fd"><span class="cl-a1a20be7">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1a3802b"><p class="cl-a1a371fc"><span class="cl-a1a20be7">⍵4</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802d"><p class="cl-a1a371fd"><span class="cl-a1a20be7">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1a3802b"><p class="cl-a1a371fc"><span class="cl-a1a20be7">⍵5</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a3802d"><p class="cl-a1a371fd"><span class="cl-a1a20be7">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1a3802b"><p class="cl-a1a371fc"><span class="cl-a1a20be7">⍵6</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a3802d"><p class="cl-a1a371fd"><span class="cl-a1a20be7">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1a3802b"><p class="cl-a1a371fc"><span class="cl-a1a20be7">⍵7</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">TRUE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a3802c"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a3802d"><p class="cl-a1a371fd"><span class="cl-a1a20be7">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1a38034"><p class="cl-a1a371fc"><span class="cl-a1a20be7">⍵8</span></p></td><td class="cl-a1a38035"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a38035"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a38035"><p class="cl-a1a371fd"><span class="cl-a1a20be7">FALSE</span></p></td><td class="cl-a1a38036"><p class="cl-a1a371fd"><span class="cl-a1a20be7">0.125</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-7" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
+<span id="cb15-3"><a href=""></a>  </span>
+<span id="cb15-4"><a href=""></a>  </span>
+<span id="cb15-5"><a href=""></a>  </span>
+<span id="cb15-6"><a href=""></a>  </span>
+<span id="cb15-7"><a href=""></a>  </span>
+<span id="cb15-8"><a href=""></a>  </span>
+<span id="cb15-9"><a href=""></a>  </span>
+<span id="cb15-10"><a href=""></a>  </span>
+<span id="cb15-11"><a href=""></a>  </span>
+<span id="cb15-12"><a href=""></a>  </span>
+<span id="cb15-13"><a href=""></a>  </span>
+<span id="cb15-14"><a href=""></a>  </span>
+<span id="cb15-15"><a href=""></a>  </span>
+<span id="cb15-16"><a href=""></a>  </span>
+<span id="cb15-17"><a href=""></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-18"><a href=""></a>  <span class="fu">bold</span>(<span class="at">part =</span> <span class="st">"header"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-19"><a href=""></a>  <span class="fu">bg</span>(<span class="at">j =</span> <span class="sc">~</span> p, <span class="at">bg =</span> p_bg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-a1ae749e{}.cl-a1abbab0{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1abbab1{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1acd0f8{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1acd102{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1acdcec{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1acdcf6{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1acdcf7{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1acdcf8{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1acdcf9{width:0.75in;background-color:rgba(238, 226, 255, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1acdd00{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1acdd01{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1acdd02{width:0.75in;background-color:rgba(238, 226, 255, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a1ae749e"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a1acdcec"><p class="cl-a1acd0f8"><span class="cl-a1abbab0">Ω</span></p></th><th class="cl-a1acdcf6"><p class="cl-a1acd102"><span class="cl-a1abbab0">B1</span></p></th><th class="cl-a1acdcf6"><p class="cl-a1acd102"><span class="cl-a1abbab0">B2</span></p></th><th class="cl-a1acdcf6"><p class="cl-a1acd102"><span class="cl-a1abbab0">W</span></p></th><th class="cl-a1acdcf6"><p class="cl-a1acd102"><span class="cl-a1abbab0">p</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a1acdcf7"><p class="cl-a1acd0f8"><span class="cl-a1abbab1">⍵1</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf9"><p class="cl-a1acd102"><span class="cl-a1abbab1">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1acdcf7"><p class="cl-a1acd0f8"><span class="cl-a1abbab1">⍵2</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf9"><p class="cl-a1acd102"><span class="cl-a1abbab1">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1acdcf7"><p class="cl-a1acd0f8"><span class="cl-a1abbab1">⍵3</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf9"><p class="cl-a1acd102"><span class="cl-a1abbab1">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1acdcf7"><p class="cl-a1acd0f8"><span class="cl-a1abbab1">⍵4</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf9"><p class="cl-a1acd102"><span class="cl-a1abbab1">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1acdcf7"><p class="cl-a1acd0f8"><span class="cl-a1abbab1">⍵5</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdcf9"><p class="cl-a1acd102"><span class="cl-a1abbab1">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1acdcf7"><p class="cl-a1acd0f8"><span class="cl-a1abbab1">⍵6</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdcf9"><p class="cl-a1acd102"><span class="cl-a1abbab1">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1acdcf7"><p class="cl-a1acd0f8"><span class="cl-a1abbab1">⍵7</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">TRUE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdcf8"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdcf9"><p class="cl-a1acd102"><span class="cl-a1abbab1">0.125</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1acdd00"><p class="cl-a1acd0f8"><span class="cl-a1abbab1">⍵8</span></p></td><td class="cl-a1acdd01"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdd01"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdd01"><p class="cl-a1acd102"><span class="cl-a1abbab1">FALSE</span></p></td><td class="cl-a1acdd02"><p class="cl-a1acd102"><span class="cl-a1abbab1">0.125</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-8" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
+<span id="cb16-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb16-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb16-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb16-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb16-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb16-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb16-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
+<span id="cb16-11"><a href=""></a></span>
+<span id="cb16-12"><a href=""></a>  </span>
+<span id="cb16-13"><a href=""></a>  </span>
+<span id="cb16-14"><a href=""></a>  </span>
+<span id="cb16-15"><a href=""></a>  </span>
+<span id="cb16-16"><a href=""></a>    </span>
+<span id="cb16-17"><a href=""></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb16-18"><a href=""></a>  <span class="fu">bold</span>(<span class="at">part =</span> <span class="st">"header"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-19"><a href=""></a>  <span class="fu">bg</span>(<span class="at">j =</span> <span class="sc">~</span> p, <span class="at">bg =</span> p_bg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-a1b7d67e{}.cl-a1b50f3e{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1b50f48{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1b62eb4{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1b62ebe{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1b639b8{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1b639c2{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1b639c3{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1b639c4{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1b639c5{width:0.75in;background-color:rgba(238, 226, 255, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1b639cc{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1b639cd{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1b639ce{width:0.75in;background-color:rgba(238, 226, 255, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a1b7d67e"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a1b639b8"><p class="cl-a1b62eb4"><span class="cl-a1b50f3e">Ω</span></p></th><th class="cl-a1b639c2"><p class="cl-a1b62ebe"><span class="cl-a1b50f3e">B1</span></p></th><th class="cl-a1b639c2"><p class="cl-a1b62ebe"><span class="cl-a1b50f3e">B2</span></p></th><th class="cl-a1b639c2"><p class="cl-a1b62ebe"><span class="cl-a1b50f3e">W</span></p></th><th class="cl-a1b639c2"><p class="cl-a1b62ebe"><span class="cl-a1b50f3e">p</span></p></th><th class="cl-a1b639c2"><p class="cl-a1b62ebe"><span class="cl-a1b50f3e">E</span></p></th><th class="cl-a1b639c2"><p class="cl-a1b62ebe"><span class="cl-a1b50f3e">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a1b639c3"><p class="cl-a1b62eb4"><span class="cl-a1b50f48">⍵1</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c5"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">0.125</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1b639c3"><p class="cl-a1b62eb4"><span class="cl-a1b50f48">⍵2</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c5"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">0.125</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1b639c3"><p class="cl-a1b62eb4"><span class="cl-a1b50f48">⍵3</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c5"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">0.125</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1b639c3"><p class="cl-a1b62eb4"><span class="cl-a1b50f48">⍵4</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c5"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">0.125</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1b639c3"><p class="cl-a1b62eb4"><span class="cl-a1b50f48">⍵5</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c5"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">0.125</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1b639c3"><p class="cl-a1b62eb4"><span class="cl-a1b50f48">⍵6</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c5"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">0.125</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1b639c3"><p class="cl-a1b62eb4"><span class="cl-a1b50f48">⍵7</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639c5"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">0.125</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td><td class="cl-a1b639c4"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1b639cc"><p class="cl-a1b62eb4"><span class="cl-a1b50f48">⍵8</span></p></td><td class="cl-a1b639cd"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639cd"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639cd"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639ce"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">0.125</span></p></td><td class="cl-a1b639cd"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td><td class="cl-a1b639cd"><p class="cl-a1b62ebe"><span class="cl-a1b50f48">FALSE</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-9" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
+<span id="cb17-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb17-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb17-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb17-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb17-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb17-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb17-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb17-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
+<span id="cb17-11"><a href=""></a></span>
+<span id="cb17-12"><a href=""></a>  </span>
+<span id="cb17-13"><a href=""></a>  </span>
+<span id="cb17-14"><a href=""></a>    </span>
+<span id="cb17-15"><a href=""></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb17-16"><a href=""></a>  <span class="fu">bold</span>(<span class="at">part =</span> <span class="st">"header"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-17"><a href=""></a>  <span class="fu">bg</span>(<span class="at">j =</span> <span class="sc">~</span> p, <span class="at">bg =</span> p_bg) <span class="sc">%&gt;%</span></span>
+<span id="cb17-18"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> E <span class="sc">==</span> <span class="cn">TRUE</span>, <span class="at">j =</span> <span class="st">"E"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"forestgreen"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-19"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> E <span class="sc">==</span> <span class="cn">FALSE</span>, <span class="at">j =</span> <span class="st">"E"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"firebrick"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-a1c13098{}.cl-a1be6192{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1be6193{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1be619c{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-a1bf8cb6{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1bf8cb7{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1bf9990{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1bf9991{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1bf9992{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1bf9993{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1bf999a{width:0.75in;background-color:rgba(238, 226, 255, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1bf999b{width:0.75in;background-color:rgba(178, 34, 34, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1bf999c{width:0.75in;background-color:rgba(34, 139, 34, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1bf99a4{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1bf99b8{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1bf99b9{width:0.75in;background-color:rgba(238, 226, 255, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a1c13098"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a1bf9990"><p class="cl-a1bf8cb6"><span class="cl-a1be6192">Ω</span></p></th><th class="cl-a1bf9991"><p class="cl-a1bf8cb7"><span class="cl-a1be6192">B1</span></p></th><th class="cl-a1bf9991"><p class="cl-a1bf8cb7"><span class="cl-a1be6192">B2</span></p></th><th class="cl-a1bf9991"><p class="cl-a1bf8cb7"><span class="cl-a1be6192">W</span></p></th><th class="cl-a1bf9991"><p class="cl-a1bf8cb7"><span class="cl-a1be6192">p</span></p></th><th class="cl-a1bf9991"><p class="cl-a1bf8cb7"><span class="cl-a1be6192">E</span></p></th><th class="cl-a1bf9991"><p class="cl-a1bf8cb7"><span class="cl-a1be6192">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a1bf9992"><p class="cl-a1bf8cb6"><span class="cl-a1be6193">⍵1</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf999a"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">0.125</span></p></td><td class="cl-a1bf999b"><p class="cl-a1bf8cb7"><span class="cl-a1be619c">FALSE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1bf9992"><p class="cl-a1bf8cb6"><span class="cl-a1be6193">⍵2</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf999a"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">0.125</span></p></td><td class="cl-a1bf999b"><p class="cl-a1bf8cb7"><span class="cl-a1be619c">FALSE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1bf9992"><p class="cl-a1bf8cb6"><span class="cl-a1be6193">⍵3</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf999a"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">0.125</span></p></td><td class="cl-a1bf999b"><p class="cl-a1bf8cb7"><span class="cl-a1be619c">FALSE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1bf9992"><p class="cl-a1bf8cb6"><span class="cl-a1be6193">⍵4</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf999a"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">0.125</span></p></td><td class="cl-a1bf999c"><p class="cl-a1bf8cb7"><span class="cl-a1be619c">TRUE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1bf9992"><p class="cl-a1bf8cb6"><span class="cl-a1be6193">⍵5</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf999a"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">0.125</span></p></td><td class="cl-a1bf999b"><p class="cl-a1bf8cb7"><span class="cl-a1be619c">FALSE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1bf9992"><p class="cl-a1bf8cb6"><span class="cl-a1be6193">⍵6</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf999a"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">0.125</span></p></td><td class="cl-a1bf999c"><p class="cl-a1bf8cb7"><span class="cl-a1be619c">TRUE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1bf9992"><p class="cl-a1bf8cb6"><span class="cl-a1be6193">⍵7</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf999a"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">0.125</span></p></td><td class="cl-a1bf999c"><p class="cl-a1bf8cb7"><span class="cl-a1be619c">TRUE</span></p></td><td class="cl-a1bf9993"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1bf99a4"><p class="cl-a1bf8cb6"><span class="cl-a1be6193">⍵8</span></p></td><td class="cl-a1bf99b8"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf99b8"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf99b8"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td><td class="cl-a1bf99b9"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">0.125</span></p></td><td class="cl-a1bf999b"><p class="cl-a1bf8cb7"><span class="cl-a1be619c">FALSE</span></p></td><td class="cl-a1bf99b8"><p class="cl-a1bf8cb7"><span class="cl-a1be6193">FALSE</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-10" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
+<span id="cb18-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb18-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb18-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb18-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb18-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb18-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb18-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
+<span id="cb18-11"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="cn">NA</span>)) <span class="sc">%&gt;%</span> <span class="co"># urn model</span></span>
+<span id="cb18-12"><a href=""></a>  </span>
+<span id="cb18-13"><a href=""></a>  </span>
+<span id="cb18-14"><a href=""></a>  </span>
+<span id="cb18-15"><a href=""></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb18-16"><a href=""></a>  <span class="fu">bold</span>(<span class="at">part =</span> <span class="st">"header"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-17"><a href=""></a>  <span class="fu">bg</span>(<span class="at">j =</span> <span class="sc">~</span> p, <span class="at">bg =</span> p_bg) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-18"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> E <span class="sc">==</span> <span class="cn">TRUE</span>, <span class="at">j =</span> <span class="st">"E"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"forestgreen"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-19"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> E <span class="sc">==</span> <span class="cn">FALSE</span>, <span class="at">j =</span> <span class="st">"E"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"firebrick"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-a1cabd8e{}.cl-a1c7c480{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1c7c481{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1c7c48a{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-a1c90598{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1c905a2{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1c91128{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1c91129{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1c9112a{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1c91132{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1c91133{width:0.75in;background-color:rgba(128, 128, 128, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1c9113c{width:0.75in;background-color:rgba(178, 34, 34, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1c9113d{width:0.75in;background-color:rgba(207, 177, 255, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1c91146{width:0.75in;background-color:rgba(34, 139, 34, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1c91147{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1c91148{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1c91150{width:0.75in;background-color:rgba(128, 128, 128, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a1cabd8e"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a1c91128"><p class="cl-a1c90598"><span class="cl-a1c7c480">Ω</span></p></th><th class="cl-a1c91129"><p class="cl-a1c905a2"><span class="cl-a1c7c480">B1</span></p></th><th class="cl-a1c91129"><p class="cl-a1c905a2"><span class="cl-a1c7c480">B2</span></p></th><th class="cl-a1c91129"><p class="cl-a1c905a2"><span class="cl-a1c7c480">W</span></p></th><th class="cl-a1c91129"><p class="cl-a1c905a2"><span class="cl-a1c7c480">p</span></p></th><th class="cl-a1c91129"><p class="cl-a1c905a2"><span class="cl-a1c7c480">E</span></p></th><th class="cl-a1c91129"><p class="cl-a1c905a2"><span class="cl-a1c7c480">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a1c9112a"><p class="cl-a1c90598"><span class="cl-a1c7c481">⍵1</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c91133"><p class="cl-a1c905a2"><span class="cl-a1c7c481"></span></p></td><td class="cl-a1c9113c"><p class="cl-a1c905a2"><span class="cl-a1c7c48a">FALSE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1c9112a"><p class="cl-a1c90598"><span class="cl-a1c7c481">⍵2</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c91133"><p class="cl-a1c905a2"><span class="cl-a1c7c481"></span></p></td><td class="cl-a1c9113c"><p class="cl-a1c905a2"><span class="cl-a1c7c48a">FALSE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1c9112a"><p class="cl-a1c90598"><span class="cl-a1c7c481">⍵3</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c91133"><p class="cl-a1c905a2"><span class="cl-a1c7c481"></span></p></td><td class="cl-a1c9113c"><p class="cl-a1c905a2"><span class="cl-a1c7c48a">FALSE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1c9112a"><p class="cl-a1c90598"><span class="cl-a1c7c481">⍵4</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c9113d"><p class="cl-a1c905a2"><span class="cl-a1c7c481">0.3333</span></p></td><td class="cl-a1c91146"><p class="cl-a1c905a2"><span class="cl-a1c7c48a">TRUE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1c9112a"><p class="cl-a1c90598"><span class="cl-a1c7c481">⍵5</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c91133"><p class="cl-a1c905a2"><span class="cl-a1c7c481"></span></p></td><td class="cl-a1c9113c"><p class="cl-a1c905a2"><span class="cl-a1c7c48a">FALSE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1c9112a"><p class="cl-a1c90598"><span class="cl-a1c7c481">⍵6</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c9113d"><p class="cl-a1c905a2"><span class="cl-a1c7c481">0.3333</span></p></td><td class="cl-a1c91146"><p class="cl-a1c905a2"><span class="cl-a1c7c48a">TRUE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1c9112a"><p class="cl-a1c90598"><span class="cl-a1c7c481">⍵7</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c9113d"><p class="cl-a1c905a2"><span class="cl-a1c7c481">0.3333</span></p></td><td class="cl-a1c91146"><p class="cl-a1c905a2"><span class="cl-a1c7c48a">TRUE</span></p></td><td class="cl-a1c91132"><p class="cl-a1c905a2"><span class="cl-a1c7c481">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1c91147"><p class="cl-a1c90598"><span class="cl-a1c7c481">⍵8</span></p></td><td class="cl-a1c91148"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c91148"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c91148"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td><td class="cl-a1c91150"><p class="cl-a1c905a2"><span class="cl-a1c7c481"></span></p></td><td class="cl-a1c9113c"><p class="cl-a1c905a2"><span class="cl-a1c7c48a">FALSE</span></p></td><td class="cl-a1c91148"><p class="cl-a1c905a2"><span class="cl-a1c7c481">FALSE</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-11" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
+<span id="cb19-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb19-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb19-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb19-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb19-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb19-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb19-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
+<span id="cb19-11"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span> <span class="co"># urn model</span></span>
+<span id="cb19-12"><a href=""></a>  </span>
+<span id="cb19-13"><a href=""></a>  </span>
+<span id="cb19-14"><a href=""></a>  </span>
+<span id="cb19-15"><a href=""></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-16"><a href=""></a>  <span class="fu">bold</span>(<span class="at">part =</span> <span class="st">"header"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-17"><a href=""></a>  <span class="fu">bg</span>(<span class="at">j =</span> <span class="sc">~</span> p, <span class="at">bg =</span> p_bg) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-18"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> E <span class="sc">==</span> <span class="cn">TRUE</span>, <span class="at">j =</span> <span class="st">"E"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"forestgreen"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-19"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> E <span class="sc">==</span> <span class="cn">FALSE</span>, <span class="at">j =</span> <span class="st">"E"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"firebrick"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-a1d58854{}.cl-a1d1fe64{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1d1fe6e{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1d1fe6f{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-a1d340ee{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1d340f8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1d34ff8{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1d34ff9{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1d35002{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1d35003{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1d3500c{width:0.75in;background-color:rgba(255, 255, 255, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1d3500d{width:0.75in;background-color:rgba(178, 34, 34, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1d35016{width:0.75in;background-color:rgba(207, 177, 255, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1d35017{width:0.75in;background-color:rgba(34, 139, 34, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1d35018{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1d35020{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1d35021{width:0.75in;background-color:rgba(255, 255, 255, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a1d58854"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a1d34ff8"><p class="cl-a1d340ee"><span class="cl-a1d1fe64">Ω</span></p></th><th class="cl-a1d34ff9"><p class="cl-a1d340f8"><span class="cl-a1d1fe64">B1</span></p></th><th class="cl-a1d34ff9"><p class="cl-a1d340f8"><span class="cl-a1d1fe64">B2</span></p></th><th class="cl-a1d34ff9"><p class="cl-a1d340f8"><span class="cl-a1d1fe64">W</span></p></th><th class="cl-a1d34ff9"><p class="cl-a1d340f8"><span class="cl-a1d1fe64">p</span></p></th><th class="cl-a1d34ff9"><p class="cl-a1d340f8"><span class="cl-a1d1fe64">E</span></p></th><th class="cl-a1d34ff9"><p class="cl-a1d340f8"><span class="cl-a1d1fe64">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a1d35002"><p class="cl-a1d340ee"><span class="cl-a1d1fe6e">⍵1</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d3500c"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">0.0000</span></p></td><td class="cl-a1d3500d"><p class="cl-a1d340f8"><span class="cl-a1d1fe6f">FALSE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1d35002"><p class="cl-a1d340ee"><span class="cl-a1d1fe6e">⍵2</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d3500c"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">0.0000</span></p></td><td class="cl-a1d3500d"><p class="cl-a1d340f8"><span class="cl-a1d1fe6f">FALSE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1d35002"><p class="cl-a1d340ee"><span class="cl-a1d1fe6e">⍵3</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d3500c"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">0.0000</span></p></td><td class="cl-a1d3500d"><p class="cl-a1d340f8"><span class="cl-a1d1fe6f">FALSE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1d35002"><p class="cl-a1d340ee"><span class="cl-a1d1fe6e">⍵4</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d35016"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">0.3333</span></p></td><td class="cl-a1d35017"><p class="cl-a1d340f8"><span class="cl-a1d1fe6f">TRUE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1d35002"><p class="cl-a1d340ee"><span class="cl-a1d1fe6e">⍵5</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d3500c"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">0.0000</span></p></td><td class="cl-a1d3500d"><p class="cl-a1d340f8"><span class="cl-a1d1fe6f">FALSE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1d35002"><p class="cl-a1d340ee"><span class="cl-a1d1fe6e">⍵6</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d35016"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">0.3333</span></p></td><td class="cl-a1d35017"><p class="cl-a1d340f8"><span class="cl-a1d1fe6f">TRUE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1d35002"><p class="cl-a1d340ee"><span class="cl-a1d1fe6e">⍵7</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d35016"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">0.3333</span></p></td><td class="cl-a1d35017"><p class="cl-a1d340f8"><span class="cl-a1d1fe6f">TRUE</span></p></td><td class="cl-a1d35003"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1d35018"><p class="cl-a1d340ee"><span class="cl-a1d1fe6e">⍵8</span></p></td><td class="cl-a1d35020"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d35020"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d35020"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td><td class="cl-a1d35021"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">0.0000</span></p></td><td class="cl-a1d3500d"><p class="cl-a1d340f8"><span class="cl-a1d1fe6f">FALSE</span></p></td><td class="cl-a1d35020"><p class="cl-a1d340f8"><span class="cl-a1d1fe6e">FALSE</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-12" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
+<span id="cb20-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb20-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb20-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb20-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb20-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb20-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb20-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
+<span id="cb20-11"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span> <span class="co"># urn model</span></span>
+<span id="cb20-12"><a href=""></a>  </span>
+<span id="cb20-13"><a href=""></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-14"><a href=""></a>  <span class="fu">bold</span>(<span class="at">part =</span> <span class="st">"header"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-15"><a href=""></a>  <span class="fu">bg</span>(<span class="at">j =</span> <span class="sc">~</span> p, <span class="at">bg =</span> p_bg) <span class="sc">%&gt;%</span></span>
+<span id="cb20-16"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> E <span class="sc">==</span> <span class="cn">TRUE</span>, <span class="at">j =</span> <span class="st">"E"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"forestgreen"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-17"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> E <span class="sc">==</span> <span class="cn">FALSE</span>, <span class="at">j =</span> <span class="st">"E"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"firebrick"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-18"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> H <span class="sc">==</span> <span class="cn">TRUE</span>, <span class="at">j =</span> <span class="st">"H"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"forestgreen"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-19"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> H <span class="sc">==</span> <span class="cn">FALSE</span>, <span class="at">j =</span> <span class="st">"H"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"firebrick"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-a1dffd7a{}.cl-a1dc6afc{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1dc6b06{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1dc6b07{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-a1de3526{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1de3530{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1de467e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1de4688{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1de4689{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1de468a{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1de468b{width:0.75in;background-color:rgba(255, 255, 255, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1de468c{width:0.75in;background-color:rgba(178, 34, 34, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1de4692{width:0.75in;background-color:rgba(34, 139, 34, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1de4693{width:0.75in;background-color:rgba(207, 177, 255, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1de4694{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1de4695{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1de469c{width:0.75in;background-color:rgba(255, 255, 255, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a1dffd7a"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a1de467e"><p class="cl-a1de3526"><span class="cl-a1dc6afc">Ω</span></p></th><th class="cl-a1de4688"><p class="cl-a1de3530"><span class="cl-a1dc6afc">B1</span></p></th><th class="cl-a1de4688"><p class="cl-a1de3530"><span class="cl-a1dc6afc">B2</span></p></th><th class="cl-a1de4688"><p class="cl-a1de3530"><span class="cl-a1dc6afc">W</span></p></th><th class="cl-a1de4688"><p class="cl-a1de3530"><span class="cl-a1dc6afc">p</span></p></th><th class="cl-a1de4688"><p class="cl-a1de3530"><span class="cl-a1dc6afc">E</span></p></th><th class="cl-a1de4688"><p class="cl-a1de3530"><span class="cl-a1dc6afc">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a1de4689"><p class="cl-a1de3526"><span class="cl-a1dc6b06">⍵1</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de468b"><p class="cl-a1de3530"><span class="cl-a1dc6b06">0.0000</span></p></td><td class="cl-a1de468c"><p class="cl-a1de3530"><span class="cl-a1dc6b07">FALSE</span></p></td><td class="cl-a1de4692"><p class="cl-a1de3530"><span class="cl-a1dc6b07">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1de4689"><p class="cl-a1de3526"><span class="cl-a1dc6b06">⍵2</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de468b"><p class="cl-a1de3530"><span class="cl-a1dc6b06">0.0000</span></p></td><td class="cl-a1de468c"><p class="cl-a1de3530"><span class="cl-a1dc6b07">FALSE</span></p></td><td class="cl-a1de4692"><p class="cl-a1de3530"><span class="cl-a1dc6b07">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1de4689"><p class="cl-a1de3526"><span class="cl-a1dc6b06">⍵3</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de468b"><p class="cl-a1de3530"><span class="cl-a1dc6b06">0.0000</span></p></td><td class="cl-a1de468c"><p class="cl-a1de3530"><span class="cl-a1dc6b07">FALSE</span></p></td><td class="cl-a1de4692"><p class="cl-a1de3530"><span class="cl-a1dc6b07">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1de4689"><p class="cl-a1de3526"><span class="cl-a1dc6b06">⍵4</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de4693"><p class="cl-a1de3530"><span class="cl-a1dc6b06">0.3333</span></p></td><td class="cl-a1de4692"><p class="cl-a1de3530"><span class="cl-a1dc6b07">TRUE</span></p></td><td class="cl-a1de468c"><p class="cl-a1de3530"><span class="cl-a1dc6b07">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1de4689"><p class="cl-a1de3526"><span class="cl-a1dc6b06">⍵5</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de468b"><p class="cl-a1de3530"><span class="cl-a1dc6b06">0.0000</span></p></td><td class="cl-a1de468c"><p class="cl-a1de3530"><span class="cl-a1dc6b07">FALSE</span></p></td><td class="cl-a1de4692"><p class="cl-a1de3530"><span class="cl-a1dc6b07">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1de4689"><p class="cl-a1de3526"><span class="cl-a1dc6b06">⍵6</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de4693"><p class="cl-a1de3530"><span class="cl-a1dc6b06">0.3333</span></p></td><td class="cl-a1de4692"><p class="cl-a1de3530"><span class="cl-a1dc6b07">TRUE</span></p></td><td class="cl-a1de4692"><p class="cl-a1de3530"><span class="cl-a1dc6b07">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1de4689"><p class="cl-a1de3526"><span class="cl-a1dc6b06">⍵7</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">TRUE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de468a"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de4693"><p class="cl-a1de3530"><span class="cl-a1dc6b06">0.3333</span></p></td><td class="cl-a1de4692"><p class="cl-a1de3530"><span class="cl-a1dc6b07">TRUE</span></p></td><td class="cl-a1de4692"><p class="cl-a1de3530"><span class="cl-a1dc6b07">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1de4694"><p class="cl-a1de3526"><span class="cl-a1dc6b06">⍵8</span></p></td><td class="cl-a1de4695"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de4695"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de4695"><p class="cl-a1de3530"><span class="cl-a1dc6b06">FALSE</span></p></td><td class="cl-a1de469c"><p class="cl-a1de3530"><span class="cl-a1dc6b06">0.0000</span></p></td><td class="cl-a1de468c"><p class="cl-a1de3530"><span class="cl-a1dc6b07">FALSE</span></p></td><td class="cl-a1de468c"><p class="cl-a1de3530"><span class="cl-a1dc6b07">FALSE</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-13" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
+<span id="cb21-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb21-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb21-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb21-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb21-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb21-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb21-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb21-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
+<span id="cb21-11"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span> <span class="co"># urn model</span></span>
+<span id="cb21-12"><a href=""></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-13"><a href=""></a>  <span class="fu">bold</span>(<span class="at">part =</span> <span class="st">"header"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-14"><a href=""></a>  <span class="fu">bg</span>(<span class="at">j =</span> <span class="sc">~</span> p, <span class="at">bg =</span> p_bg) <span class="sc">%&gt;%</span></span>
+<span id="cb21-15"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> E <span class="sc">==</span> <span class="cn">TRUE</span>, <span class="at">j =</span> <span class="st">"E"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"forestgreen"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-16"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> E <span class="sc">==</span> <span class="cn">FALSE</span>, <span class="at">j =</span> <span class="st">"E"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"firebrick"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-17"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> H <span class="sc">==</span> <span class="cn">TRUE</span>, <span class="at">j =</span> <span class="st">"H"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"forestgreen"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-18"><a href=""></a>  <span class="fu">style</span>(<span class="at">i =</span> <span class="sc">~</span> H <span class="sc">==</span> <span class="cn">FALSE</span>, <span class="at">j =</span> <span class="st">"H"</span>, <span class="at">pr_t =</span> <span class="fu">fp_text</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>), <span class="at">pr_c =</span> <span class="fu">fp_cell</span>(<span class="at">background.color =</span> <span class="st">"firebrick"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-19"><a href=""></a>  <span class="fu">bold</span>(<span class="at">i =</span> <span class="sc">~</span> H <span class="sc">==</span> <span class="cn">TRUE</span>, <span class="at">j =</span> <span class="st">"p"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-a1ea65ee{}.cl-a1e794ae{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1e794b8{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a1e794b9{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-a1e8bc26{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1e8bc27{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a1e8c734{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1e8c73e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1e8c73f{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1e8c740{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1e8c741{width:0.75in;background-color:rgba(255, 255, 255, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1e8c748{width:0.75in;background-color:rgba(178, 34, 34, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1e8c749{width:0.75in;background-color:rgba(34, 139, 34, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1e8c74a{width:0.75in;background-color:rgba(207, 177, 255, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1e8c752{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1e8c753{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a1e8c754{width:0.75in;background-color:rgba(255, 255, 255, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a1ea65ee"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a1e8c734"><p class="cl-a1e8bc26"><span class="cl-a1e794ae">Ω</span></p></th><th class="cl-a1e8c73e"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">B1</span></p></th><th class="cl-a1e8c73e"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">B2</span></p></th><th class="cl-a1e8c73e"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">W</span></p></th><th class="cl-a1e8c73e"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">p</span></p></th><th class="cl-a1e8c73e"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">E</span></p></th><th class="cl-a1e8c73e"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a1e8c73f"><p class="cl-a1e8bc26"><span class="cl-a1e794b8">⍵1</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c741"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">0.0000</span></p></td><td class="cl-a1e8c748"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">FALSE</span></p></td><td class="cl-a1e8c749"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1e8c73f"><p class="cl-a1e8bc26"><span class="cl-a1e794b8">⍵2</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c741"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">0.0000</span></p></td><td class="cl-a1e8c748"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">FALSE</span></p></td><td class="cl-a1e8c749"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1e8c73f"><p class="cl-a1e8bc26"><span class="cl-a1e794b8">⍵3</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c741"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">0.0000</span></p></td><td class="cl-a1e8c748"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">FALSE</span></p></td><td class="cl-a1e8c749"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1e8c73f"><p class="cl-a1e8bc26"><span class="cl-a1e794b8">⍵4</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c74a"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">0.3333</span></p></td><td class="cl-a1e8c749"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">TRUE</span></p></td><td class="cl-a1e8c748"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">FALSE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1e8c73f"><p class="cl-a1e8bc26"><span class="cl-a1e794b8">⍵5</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c741"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">0.0000</span></p></td><td class="cl-a1e8c748"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">FALSE</span></p></td><td class="cl-a1e8c749"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1e8c73f"><p class="cl-a1e8bc26"><span class="cl-a1e794b8">⍵6</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c74a"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">0.3333</span></p></td><td class="cl-a1e8c749"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">TRUE</span></p></td><td class="cl-a1e8c749"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1e8c73f"><p class="cl-a1e8bc26"><span class="cl-a1e794b8">⍵7</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">TRUE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c740"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c74a"><p class="cl-a1e8bc27"><span class="cl-a1e794ae">0.3333</span></p></td><td class="cl-a1e8c749"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">TRUE</span></p></td><td class="cl-a1e8c749"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a1e8c752"><p class="cl-a1e8bc26"><span class="cl-a1e794b8">⍵8</span></p></td><td class="cl-a1e8c753"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c753"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c753"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">FALSE</span></p></td><td class="cl-a1e8c754"><p class="cl-a1e8bc27"><span class="cl-a1e794b8">0.0000</span></p></td><td class="cl-a1e8c748"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">FALSE</span></p></td><td class="cl-a1e8c748"><p class="cl-a1e8bc27"><span class="cl-a1e794b9">FALSE</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-14" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
+<span id="cb22-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb22-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb22-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb22-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb22-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb22-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb22-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb22-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
+<span id="cb22-11"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span> <span class="co"># urn model</span></span>
+<span id="cb22-12"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">P(H | E)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.6667</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="statisticalproportional-syllogism-15" class="slide level2">
+<h2>Statistical/proportional syllogism</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
+<span id="cb23-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb23-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb23-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb23-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb23-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb23-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb23-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
+<span id="cb23-11"><a href=""></a></span>
+<span id="cb23-12"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H <span class="sc">&amp;</span> E]) <span class="sc">/</span> <span class="fu">sum</span>(p[E])) <span class="co"># Bayes' rule</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">P(H | E)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.6667</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="section-2" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
+<h2></h2>
+</section>
+<section id="section-3" class="slide level2" data-background-image="images/bayesian_inference_is_just_counting.jpg" data-background-size="contain">
+<h2></h2>
+</section>
+<section id="bayesian-inference-workflow" class="slide level2">
+<h2>Bayesian inference workflow</h2>
+<p>XXX</p>
+</section>
+<section id="problem-multiple-draws-with-replacement-from-bag-of-balls" class="slide level2">
+<h2>Problem: Multiple draws with replacement from bag of balls</h2>
+<p>XXX</p>
+</section>
+<section id="section-4" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
+<h2></h2>
+</section>
+<section id="section-5" class="slide level2" data-background-image="images/briggs2.png" data-background-size="contain">
+<h2></h2>
+</section>
+<section id="law-of-total-probability" class="slide level2">
+<h2>Law of total probability</h2>
+<p>&nbsp;</p>
+<p><span class="math inline">\(\{ P_1, P_2, \ldots, P_n \} = \text{set of partitions/mutually exclusive and exhaustive events}\)</span></p>
+<p>&nbsp;</p>
+<p><span class="math inline">\(P(E) = \sum_{i=1}^n P(P_i \land E)\)</span></p>
+<p>&nbsp;</p>
+<p><span class="math inline">\(P(E) = \sum_{i=1}^n P(P_i) \cdot P(E \mid P_i)\)</span></p>
+</section>
+<section id="gamblers-fallacy" class="slide level2">
+<h2>Gambler’s fallacy</h2>
+<p><img data-src="images/gamblers-fallacy.png" height="280"></p>
+</section>
+<section id="association-does-not-imply-causation" class="slide level2">
+<h2>Association does not imply causation</h2>
+<p>A statistical association is a logical relationship between two propositions/events and does not imply a causal relationship between them</p>
+<p><img data-src="images/17009_masters-degrees-awarded-in-biological-and-biomedical-sciences_correlates-with_inflation-in-the-us.svg" height="240"></p>
+<p><a href="https://tylervigen.com/spurious-correlations">Spurious Correlations - Tyler Vigen</a></p>
+</section>
+<section id="the-ladder-of-causation" class="slide level2">
+<h2>The “ladder of causation”</h2>
+<p>From Pearl and Mackenzie (2018) <a href="https://bayes.cs.ucla.edu/WHY/">The Book of Why</a></p>
+<div class="text-align-center">
+<p><img data-src="images/ladder_of_causation2.jpg"></p>
 </div>
 
 </section>

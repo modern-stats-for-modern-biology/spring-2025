@@ -76,7 +76,7 @@ theme_set(theme_minimal())
 
     -   **represent knowledge** with propositions (logical variables), and
 
-    -   **reason** about the plausibility of propositions, given the knowledge base, i.e.,
+    -   **reason** about the plausibility of propositions, given a knowledge base, i.e.,
     
     -   **inductive reasoning**: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain
 
@@ -95,7 +95,7 @@ theme_set(theme_minimal())
 
     -   **represent knowledge** with propositions (logical variables), and
 
-    -   **reason** about the plausibility of propositions, given the knowledge base, i.e.,
+    -   **reason** about the plausibility of propositions, given a knowledge base, i.e.,
     
     -   **inductive reasoning**: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain
 
@@ -109,7 +109,7 @@ theme_set(theme_minimal())
 
     -   **represent knowledge** with propositions (logical variables), and
 
-    -   **reason** about the plausibility of propositions, given the knowledge base, i.e.,
+    -   **reason** about the plausibility of propositions, given a knowledge base, i.e.,
     
     -   **inductive reasoning**: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain
 
@@ -125,7 +125,7 @@ theme_set(theme_minimal())
 
     -   **represent knowledge** with propositions (logical variables), and
 
-    -   **reason** about the plausibility of propositions, given the knowledge base, i.e.,
+    -   **reason** about the plausibility of propositions, given a knowledge base, i.e.,
     
     -   **inductive reasoning**: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain
 
@@ -383,7 +383,7 @@ $$
 :::
 
 $$
-P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)} = \frac{P(B) \cdot P(A \mid B)}{P(B) \cdot P(A \mid B) + P(\lnot B) \cdot P(A \mid \lnot B)}
+P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}
 $$
 
 ## Probability theory: Rules of probability calculus
@@ -949,7 +949,7 @@ $$
 -   The denominator $P(E)$ is the probability of evidence $E$ (a.k.a the **marginal likelihood**)
 :::
 
--   This integral is often very difficult to compute, and that's why Bayesian inference was relegated to simple cases until the advent of modern computers and [Markov Chain Monte Carlo](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo) (MCMC) methods
+-   This integral is often very difficult if not impossible to compute, and that's why Bayesian inference was relegated to simple cases until the advent of modern computers and [Markov Chain Monte Carlo](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo) (MCMC) methods
 
 
 ## Bayes' theorem in action: Bayesian inference
@@ -1108,7 +1108,544 @@ All three examples (base-rate fallacy, prosecutor's fallacy, and the scientific 
 
 [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
 
+
+##  {background-image="images/cover-model-september-2004.webp" background-size="cover"}
+
+::: notes
+Fasten your seatblets because we are about to enter the world of statistical models!
+:::
+
+## Statistical models = probability distributions of random variables
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+:::
+::::
+::::::
+
+## Statistical models = probability distributions of random variables
+
+> It turns out that empirical research questions come down entirely to describing the probability distributions of random variables. That’s, well, that’s really all that quantitative empirical research is. Sorry!
+>
+> — Nick Huntington-Klein [The Effect](https://theeffectbook.net/) \[free online book\]
+
+
+## Maximum entropy probability distribution
+
+The maximum entropy principle makes explicit our freedom in using different forms of prior data. As a special case, a uniform prior probability density (Laplace's principle of indifference, sometimes called the principle of insufficient reason), may be adopted. Thus, the maximum entropy principle is not merely an alternative way to view the usual methods of inference of classical statistics, but represents a significant conceptual generalization of those methods.
+
+
+-   Laplace's principle of indifference (sometimes called the principle of insufficient reason) is a special case
+
+-   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
+
+
+## Probability distribution
+
+```{r}
+ss <-
+  expand_grid(A = c(TRUE, FALSE), B = c(TRUE, FALSE)) %>%
+  mutate(Ω = c("⍵1", "⍵2", "⍵3", "⍵4")) %>%
+  select(Ω, A, B)
+
+ss
+```
+
+## Probability distribution
+
+::: nonincremental
+-   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
+:::
+
+$$\forall \omega_i \in \Omega \quad p(\omega_i) = \frac{1}{|\Omega|}$$
+
+::: nonincremental
+where $p(\omega_i)$ is the probability (or more precisely the *probability mass*) of $\omega_i$
+
+-   $p$ is also known as **probability distribution** or *probability mass function* (PMF) of $\Omega$
+
+-   For example, given the following sample space $\quad p(\omega_i) = \frac{1}{4} = 0.25$
+:::
+
+::: fragment
+```{r}
+ss %>% mutate(p = 1 / n())
+```
+:::
+
+
+
+## Probability calculation
+
+::: fragment
+The probability of proposition/event $X$ is calculated as
+:::
+
+::: fragment
+$$P(X) = \sum_{\omega_i \in X} p(\omega_i)$$
+:::
+
+::: fragment
+For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+:::
+
+::: fragment
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B)
+```
+:::
+
+## Probability calculation
+
+The probability of proposition/event $X$ is calculated as
+
+$$P(X) = \sum_{\omega_i \in X} p(\omega_i)$$
+
+For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  filter(X)
+```
+
+## Probability calculation
+
+The probability of proposition/event $X$ is calculated as
+
+$$P(X) = \sum_{\omega_i \in X} p(\omega_i)$$
+
+For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  filter(X) %>% 
+  summarize(`P(X)` = sum(p))
+```
+
+::: fragment
+or more succinctly
+:::
+
+::: fragment
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  summarize(`P(X)` = sum(p[X]))
+```
+:::
+
+## Probability calculation
+
+The probability of proposition/event $X$ is calculated as
+
+$$P(X) = \sum_{\omega_i \in X} p(\omega_i)$$
+
+For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  filter(X) %>% 
+  summarize(`P(X)` = sum(p))
+```
+
+or even more succinctly
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  
+  summarize(`P(A ∨ B)` = sum(p[A | B]))
+```
+
+## Statistical/proportional syllogism
+
+::::::: columns
+::: {.column width="65%"}
+[**Premises/evidence/knowledge base**:]{.fragment}
+
+-   "*An urn contains two blue balls and one white ball*"
+-   "*You draw one ball from the urn*"
+
+[**Conclusion/hypothesis/query**:]{.fragment}
+
+-   "*You draw a blue ball*"
+
+[**Propositional variables**:]{.fragment}
+
+-   **B1** = "*You draw blue ball 1*"
+-   **B2** = "*You draw blue ball 2*"
+-   **W** = "*You draw the white ball*"
+:::
+
+::::: {.column width="35%"}
+::: fragment
+$$
+\begin{array}{ll}
+1. & B1 \lor B2 \lor W \\
+2. & \lnot(B1 \land W) \\
+3. & \lnot(B2 \land W) \\
+4. & \lnot(B1 \land B2) \\
+\hline
+\therefore & B1 \lor B2
+\end{array}
+$$
+:::
+
+ 
+
+::: fragment
+$$P(H \mid E) = \frac{P(H \land E)}{P(E)}$$
+:::
+:::::
+:::::::
+
+## Statistical/proportional syllogism
+
+```{r}
+vars <- c("B1", "B2", "W")
+
+ss <-
+  expand.grid(map(vars, ~ c(TRUE, FALSE))) %>%
+  set_names(vars) %>% 
+  mutate(Ω = paste0("⍵", 1:n())) %>%
+  select(Ω, everything())
+
+ss
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+ss %>%
+  mutate(p = 1 / n())
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !(B1 & W),
+    P3 = !(B2 & W),
+    P4 = !(B1 & B2),
+    E  = P1 & P2 & P3 & P4,
+    H  = B1 | B2) %>%
+  select(Ω, B1, B2, W, p, E, H)
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+#| eval: false
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !(B1 & W),
+    P3 = !(B2 & W),
+    P4 = !(B1 & B2),
+    E  = P1 & P2 & P3 & P4,
+    H  = B1 | B2) %>%
+  select(Ω, B1, B2, W, p, E, H)
+```
+
+::: nonincremental
+-   $P(H \mid E) = \frac{P(H \land E)}{P(E)}$
+:::
+
+## Statistical/proportional syllogism
+
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !(B1 & W),
+    P3 = !(B2 & W),
+    P4 = !(B1 & B2),
+    E  = P1 & P2 & P3 & P4,
+    H  = B1 | B2) %>%
+  select(Ω, B1, B2, W, p, E, H) %>% 
+  summarize(`P(H | E)` = sum(p[H & E]) / sum(p[E]))
+```
+
+ 
+
+::: fragment
+For an urn with N balls M of which are blue, the probability of drawing a blue ball is $M/N$!
+:::
+
+## Statistical/proportional syllogism
+
+```{r}
+library(tidyverse)
+library(flextable)
+library(officer)
+library(scales)
+
+p_bg <- col_numeric(palette = c("transparent", "blue"), domain = c(0, 1))
+
+
+
+
+
+
+
+
+ss %>%
+  mutate(p = 1 / n()) %>%
+  flextable() %>%
+  bold(part = "header") %>% 
+  bg(j = ~ p, bg = p_bg)
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>% # max entropy model
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  flextable() %>%
+  bold(part = "header") %>% 
+  bg(j = ~ p, bg = p_bg)
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>% # max entropy model
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !(B1 & W),
+    P3 = !(B2 & W),
+    P4 = !(B1 & B2),
+    E  = P1 & P2 & P3 & P4,
+    H  = B1 | B2) %>%
+  select(Ω, B1, B2, W, p, E, H) %>%
+
+  
+  
+  
+  
+    
+  flextable() %>%
+  bold(part = "header") %>% 
+  bg(j = ~ p, bg = p_bg)
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>% # max entropy model
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !(B1 & W),
+    P3 = !(B2 & W),
+    P4 = !(B1 & B2),
+    E  = P1 & P2 & P3 & P4,
+    H  = B1 | B2) %>%
+  select(Ω, B1, B2, W, p, E, H) %>%
+
+  
+  
+    
+  flextable() %>%
+  bold(part = "header") %>% 
+  bg(j = ~ p, bg = p_bg) %>%
+  style(i = ~ E == TRUE, j = "E", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "forestgreen")) %>%
+  style(i = ~ E == FALSE, j = "E", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "firebrick"))
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>% # max entropy model
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !(B1 & W),
+    P3 = !(B2 & W),
+    P4 = !(B1 & B2),
+    E  = P1 & P2 & P3 & P4,
+    H  = B1 | B2) %>%
+  select(Ω, B1, B2, W, p, E, H) %>%
+  mutate(p = ifelse(E, p / sum(p[E]), NA)) %>% # urn model
+  
+  
+  
+  flextable() %>%
+  bold(part = "header") %>% 
+  bg(j = ~ p, bg = p_bg) %>% 
+  style(i = ~ E == TRUE, j = "E", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "forestgreen")) %>%
+  style(i = ~ E == FALSE, j = "E", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "firebrick"))
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>% # max entropy model
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !(B1 & W),
+    P3 = !(B2 & W),
+    P4 = !(B1 & B2),
+    E  = P1 & P2 & P3 & P4,
+    H  = B1 | B2) %>%
+  select(Ω, B1, B2, W, p, E, H) %>%
+  mutate(p = ifelse(E, p / sum(p[E]), 0)) %>% # urn model
+  
+  
+  
+  flextable() %>%
+  bold(part = "header") %>% 
+  bg(j = ~ p, bg = p_bg) %>% 
+  style(i = ~ E == TRUE, j = "E", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "forestgreen")) %>%
+  style(i = ~ E == FALSE, j = "E", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "firebrick"))
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>% # max entropy model
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !(B1 & W),
+    P3 = !(B2 & W),
+    P4 = !(B1 & B2),
+    E  = P1 & P2 & P3 & P4,
+    H  = B1 | B2) %>%
+  select(Ω, B1, B2, W, p, E, H) %>%
+  mutate(p = ifelse(E, p / sum(p[E]), 0)) %>% # urn model
+  
+  flextable() %>%
+  bold(part = "header") %>% 
+  bg(j = ~ p, bg = p_bg) %>%
+  style(i = ~ E == TRUE, j = "E", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "forestgreen")) %>%
+  style(i = ~ E == FALSE, j = "E", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "firebrick")) %>% 
+  style(i = ~ H == TRUE, j = "H", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "forestgreen")) %>%
+  style(i = ~ H == FALSE, j = "H", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "firebrick"))
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>% # max entropy model
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !(B1 & W),
+    P3 = !(B2 & W),
+    P4 = !(B1 & B2),
+    E  = P1 & P2 & P3 & P4,
+    H  = B1 | B2) %>%
+  select(Ω, B1, B2, W, p, E, H) %>%
+  mutate(p = ifelse(E, p / sum(p[E]), 0)) %>% # urn model
+  flextable() %>%
+  bold(part = "header") %>% 
+  bg(j = ~ p, bg = p_bg) %>%
+  style(i = ~ E == TRUE, j = "E", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "forestgreen")) %>%
+  style(i = ~ E == FALSE, j = "E", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "firebrick")) %>% 
+  style(i = ~ H == TRUE, j = "H", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "forestgreen")) %>%
+  style(i = ~ H == FALSE, j = "H", pr_t = fp_text(color = "white", bold = TRUE), pr_c = fp_cell(background.color = "firebrick")) %>% 
+  bold(i = ~ H == TRUE, j = "p")
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>% # max entropy model
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !(B1 & W),
+    P3 = !(B2 & W),
+    P4 = !(B1 & B2),
+    E  = P1 & P2 & P3 & P4,
+    H  = B1 | B2) %>%
+  select(Ω, B1, B2, W, p, E, H) %>%
+  mutate(p = ifelse(E, p / sum(p[E]), 0)) %>% # urn model
+  summarize(`P(H | E)` = sum(p[H]))
+```
+
+## Statistical/proportional syllogism
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>% # max entropy model
+  mutate(
+    P1 = B1 | B2 | W,
+    P2 = !(B1 & W),
+    P3 = !(B2 & W),
+    P4 = !(B1 & B2),
+    E  = P1 & P2 & P3 & P4,
+    H  = B1 | B2) %>%
+  select(Ω, B1, B2, W, p, E, H) %>%
+
+  summarize(`P(H | E)` = sum(p[H & E]) / sum(p[E])) # Bayes' rule
+```
+
+
+
+##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
+
+
+
+
 ##  {background-image="images/bayesian_inference_is_just_counting.jpg" background-size="contain"}
+
+##  Bayesian inference workflow
+
+XXX
+
+
 
 ##  Problem: Multiple draws with replacement from bag of balls
 
@@ -1116,6 +1653,8 @@ XXX
 
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
+
+##  {background-image="images/briggs2.png" background-size="contain"}
 
 ## Law of total probability
 
@@ -1139,53 +1678,11 @@ $P(E) = \sum_{i=1}^n P(P_i) \cdot P(E \mid P_i)$
 
 ## Association does not imply causation
 
-::: fragment
-"Correlation is not causation" - correlation is just a special case of statistical association
-:::
-
-::: fragment
-Two propositions/events $A$ and $B$ are associated iff they are NOT independent
-:::
-
--   $P(A \mid B) \ne P(A)$
-
-::: fragment
-or, equivalently
-:::
-
--   $P(B \mid A) \ne P(B)$
-
-::: fragment
-For example,
-:::
-
--   $P(\text{heart attack} \mid \text{high cholesterol levels}) > P(\text{heart attack})$
-
--   $P(\text{shark attack} \mid \text{high ice cream sales}) > P(\text{shark attack})$
-
-::: fragment
-We bring causation to probability; we do not get causation from probability!
-:::
-
-## Association does not imply causation
-
 A statistical association is a logical relationship between two propositions/events and does not imply a causal relationship between them
 
-::: fragment
-For example,
-:::
-
--   reducing cholesterol levels lowers the risk of a heart attack (causal relationship), however
-
--   reducing ice cream sales does not lower the risk of a shark attack, even though there is a statistical association between high ice cream sales and shark attacks
-
-:::: fragment
-::: text-align-center
 ![](images/17009_masters-degrees-awarded-in-biological-and-biomedical-sciences_correlates-with_inflation-in-the-us.svg){height="240"}
 
 [Spurious Correlations - Tyler Vigen](https://tylervigen.com/spurious-correlations)
-:::
-::::
 
 ## The "ladder of causation"
 
@@ -1195,94 +1692,4 @@ From Pearl and Mackenzie (2018) [The Book of Why](https://bayes.cs.ucla.edu/WHY/
 ![](images/ladder_of_causation2.jpg)
 :::
 
-## Probability distribution
 
--   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
-
-::: fragment
-$$\forall \omega \in \Omega \quad p(\omega) = \frac{1}{|\Omega|}$$
-
-where $p(\omega)$ is the probability (or more precisely the *probability mass*) of $\omega$
-:::
-
--   $p$ is also known as **probability distribution** or *probability mass function* (PMF) of $\Omega$
-
--   For example, given the following sample space
-
-```{r}
-#| include: false
-vars <- c("A", "B")
-
-ss <-
-  expand_grid(!!!set_names(map(vars, ~ c(TRUE, FALSE)), vars)) %>%
-  mutate(Ω = paste0("⍵", 1:n())) %>%
-  select(Ω, everything())
-
-ss
-```
-
-::: fragment
-```{r}
-#| echo: false
-ss
-```
-:::
-
-## Probability distribution
-
-::: nonincremental
--   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
-:::
-
-$$\forall \omega \in \Omega \quad p(\omega) = \frac{1}{|\Omega|}$$
-
-::: nonincremental
-where $p(\omega)$ is the probability (or more precisely the *probability mass*) of $\omega$
-
--   $p$ is also known as **probability distribution** or *probability mass function* (PMF) of $\Omega$
-
--   For example, given the following sample space $\quad p(\omega) = \frac{1}{4} = 0.25$
-:::
-
-::: fragment
-```{r}
-ss %>% mutate(p = 1 / n())
-```
-:::
-
-## Probability calculation
-
-::: fragment
-The probability of proposition/event $X$ is calculated as
-:::
-
-::: fragment
-$$P(X) = \sum_{\omega \in X} p(\omega)$$
-:::
-
-::: fragment
-For example, if proposition $X$ is $A \lor B$, then $P(X)$ is
-:::
-
-::: fragment
-```{r}
-ss %>%
-  mutate(p = 1 / n()) %>%
-  mutate(X = A | B) %>%
-  filter(X) %>% 
-  summarize(`P(X)` = sum(p))
-```
-:::
-
-::: fragment
-or more succinctly
-:::
-
-::: fragment
-```{r}
-ss %>%
-  mutate(p = 1 / n()) %>%
-  mutate(X = A | B) %>%
-  summarize(`P(X)` = sum(p[X]))
-```
-:::
