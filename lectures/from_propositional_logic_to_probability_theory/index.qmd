@@ -102,7 +102,7 @@ This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/a
 
 -   Ontological interpretations
 
-    -   Limiting relative frequency/proportion (frequentists say "long-run" but mean ∞ 🤯)
+    -   Limiting relative frequency/proportion (frequentists say "*long-run*" but mean ∞ 🤯)
     -   Physical chance/propensity\
          
 
@@ -158,7 +158,7 @@ This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/a
 
 -   **Propositional logic** is a mathematical language that we use to:
 
-    -   **represent knowledge** with propositions, and
+    -   **represent knowledge** with propositions (logical variables), and
     -   **reason** about the **truth** of propositions, given the knowledge base
 
 -   **Probability theory** extends propositional logic to **reason** about the **plausibility** of propositions, given the knowledge base
@@ -485,8 +485,8 @@ The proportional syllogism is a logical argument that draws a conclusion based o
 ::: {.column .fragment .nonincremental}
 $$
 \begin{array}{ll}
-1. & B1 \lor B2 \lor W \\
-2. & \neg((B1 \land B2) \lor (B1 \land W) \lor (B2 \land W)) \\
+1. & B1 \lor B2 \lor W1 \\
+2. & \neg((B1 \land B2) \lor (B1 \land W1) \lor (B2 \land W1)) \\
 \hline
 \therefore & B1 \lor B2
 \end{array}
@@ -500,8 +500,8 @@ The proportional syllogism is a logical argument that draws a conclusion based o
 
 $$
 \begin{array}{ll}
-1. & B1 \lor B2 \lor W \\
-2. & \neg((B1 \land B2) \lor (B1 \land W) \lor (B2 \land W)) \\
+1. & B1 \lor B2 \lor W1 \\
+2. & \neg((B1 \land B2) \lor (B1 \land W1) \lor (B2 \land W1)) \\
 \hline
 \therefore & B1 \lor B2
 \end{array}
@@ -524,7 +524,7 @@ Create a data frame with all possible combinations of atomic variables
 expand_grid(
   B1 = c(TRUE, FALSE),
   B2 = c(TRUE, FALSE),
-  W  = c(TRUE, FALSE))
+  W1 = c(TRUE, FALSE))
 ```
 
 ## Proportional syllogism
@@ -533,11 +533,11 @@ Add columns for premises ($E = P1, P2$) and conclusion ($H$)
 
 ```{r}
 #| output-location: default
-expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
   mutate(
-    P1 = B1 | B2 | W,
-    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    E  = P1 & P2,
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
     H  = B1 | B2
   )
 ```
@@ -548,11 +548,11 @@ Calculate the proportion of rows where $E$ is true, in which $H$ is also true
 
 ```{r}
 #| output-location: default
-expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
   mutate(
-    P1 = B1 | B2 | W,
-    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    E  = P1 & P2,
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
     H  = B1 | B2
   )
 ```
@@ -563,11 +563,11 @@ Calculate the proportion of rows where $E$ is true, in which $H$ is also true
 
 ```{r}
 #| output-location: default
-expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
   mutate(
-    P1 = B1 | B2 | W,
-    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    E  = P1 & P2,
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
     H  = B1 | B2
   ) %>%
   filter(E)
@@ -579,11 +579,11 @@ Calculate the proportion of rows where $E$ is true, in which $H$ is also true
 
 ```{r}
 #| output-location: default
-expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
   mutate(
-    P1 = B1 | B2 | W,
-    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    E  = P1 & P2,
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
     H  = B1 | B2
   ) %>%
   filter(E) %>%
@@ -596,11 +596,11 @@ Calculate the proportion of rows where $E$ is true, in which $H$ is also true
 
 ```{r}
 #| output-location: default
-expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
   mutate(
-    P1 = B1 | B2 | W,
-    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    E  = P1 & P2,
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
     H  = B1 | B2
   ) %>%
   filter(E) %>%
@@ -614,11 +614,11 @@ Calculate the proportion of rows where $E$ is true, in which $H$ is also true
 
 ```{r}
 #| output-location: default
-expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>%
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
   mutate(
-    P1 = B1 | B2 | W,
-    P2 = !((B1 & B2) | (B1 & W) | (B2 & W)),
-    E  = P1 & P2,
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
     H  = B1 | B2
   ) %>%
   filter(E) %>%
@@ -636,7 +636,7 @@ Artificial intelligence for inductive reasoning implemented in a single line of 
 
 ```{r}
 #| output-location: default
-expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W  = c(TRUE, FALSE)) %>% mutate(P1 = B1 | B2 | W, P2 = !((B1 & B2) | (B1 & W) | (B2 & W)), E = P1 & P2, H  = B1 | B2) %>% filter(E) %>% pull(H) %>% mean()
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>% mutate(P1 = B1 | B2 | W1, P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)), E = P1 & P2, H  = B1 | B2) %>% filter(E) %>% pull(H) %>% mean()
 ```
 
 -   In this example with **two (2) blue balls** and **one (1) white ball**:
@@ -1149,11 +1149,17 @@ See also: https://en.wikipedia.org/wiki/Principle_of_maximum_entropy
 
 ## From propositional logic to probability theory
 
--   Probability measures how strongly the premises entail the conclusion
+-   Probability measures:
 
--   Probability measures the inductive strength of an argument
+    -   how strongly the premises entail the conclusion
 
--   Probability measures the plausibility of the conclusion, given the premises
+    -   the inductive strength of an argument
+
+    -   the degree of entailment of an argument
+
+    -   the plausibility of the conclusion, given the premises
+
+    -   how likely the conclusion is to be true, assuming the premises are true
 
 -   **All probability is conditional!** There is no such thing as $P(H)$, only $P(H \mid E)$
 
@@ -1499,11 +1505,9 @@ $$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}$$
 
 -   This theorem is the single most fundamental equation in probability theory and inductive reasoning, including statistical inference and scientific reasoning
 
--   For example, in neuroscience, it provides a foundation for modeling and understanding how the brain works
+-   Bayes’ theorem is more than just a formula: It captures the *mathematical shape* of uncertainty, or more precisely, the *dynamics* of how uncertainty updates in response to new information
 
--   In particular, Bayes’ theorem is fundamental to the [free energy principle](https://en.wikipedia.org/wiki/Free_energy_principle), which conceptualizes the brain as a Bayesian engine that continuously updates its internal model of reality based on incoming sensory information
-
--   In this way, the same equation that underpins statistical inference also helps explain perception, learning, and decision-making in the brain
+-   For example, in cognitive neuroscience and AI, it provides a foundation for modeling and understanding how the brain works
 
 -   Bayes’ theorem is undoubtedly one of the most revolutionary ideas in human history!
 
@@ -1728,7 +1732,7 @@ $$P(A \mid B) = 0.33 \quad \ne \quad P(A) = 0.5$$
 :::
 
 ::: {.fragment .text-align-center}
-Events $A$ and $B$ are **dependent**, i.e., **associated** (association is not causation)!
+Events $A$ and $B$ are **dependent**, i.e., **associated**
 :::
 
 ## Probability theory: Independent events
@@ -1760,7 +1764,7 @@ $$P(B \mid A) = \frac{2}{5} = 0.4$$
 $$P(B \mid A) = 0.4 \quad \ne \quad P(B) = 0.6$$
 
 ::: text-align-center
-Events $A$ and $B$ are **dependent**, i.e., **associated** (association is not causation)!
+Events $A$ and $B$ are **dependent**, i.e., **associated**
 :::
 
 ## Probability theory: Independent events
@@ -1792,7 +1796,7 @@ $$P(B \mid A) = \frac{2}{5} = 0.4$$
 $$P(A \land B) = 0.2 \quad \ne \quad P(A) \cdot P(B) = 0.5 \times 0.6 = 0.3$$
 
 ::: text-align-center
-Events $A$ and $B$ are **dependent**, i.e., **associated** (association is not causation)!
+Events $A$ and $B$ are **dependent**, i.e., **associated**
 :::
 
 ## Probability theory: Independent events
@@ -1826,7 +1830,7 @@ $$P(A \mid B) = 0 \quad \ne \quad P(A) = 0.3$$
 :::
 
 ::: {.fragment .text-align-center}
-Events $A$ and $B$ are **dependent**, i.e., **associated** (association is not causation)!
+Events $A$ and $B$ are **dependent**, i.e., **associated**
 :::
 
 ## Probability theory: Independent events
@@ -1858,7 +1862,7 @@ $$P(B \mid A) = \frac{0}{3} = 0$$
 $$P(B \mid A) = 0 \quad \ne \quad P(B) = 0.6$$
 
 ::: text-align-center
-Events $A$ and $B$ are **dependent**, i.e., **associated** (association is not causation)!
+Events $A$ and $B$ are **dependent**, i.e., **associated**
 :::
 
 ## Probability theory: Independent events
@@ -1890,7 +1894,7 @@ $$P(B \mid A) = \frac{0}{3} = 0$$
 $$P(A \land B) = 0 \quad \ne \quad P(A) \cdot P(B) = 0.3 \times 0.6 = 0.18$$
 
 ::: text-align-center
-Events $A$ and $B$ are **dependent**, i.e., **associated** (association is not causation)!
+Events $A$ and $B$ are **dependent**, i.e., **associated**
 :::
 
 ## Probability theory: Independent events
@@ -2140,7 +2144,7 @@ $$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
 $$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
 
 ::: nonincremental
--   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true), i.e., their union is the sample space ($\Omega$)
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or at least one of them must be true), i.e., their union is the sample space ($\Omega$)
 :::
 
 ::: fragment
@@ -2149,7 +2153,7 @@ P(A \lor B) = P(\Omega) = 1
 $$
 :::
 
--   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events, then the sum rule simplifies to:
+-   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events (a.k.a. partitions), then the sum rule simplifies to:
 
 ::: fragment
 $$
@@ -2166,7 +2170,7 @@ $$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
 $$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
 
 ::: nonincremental
--   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true), i.e., their union is the sample space ($\Omega$)
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or at least one of them must be true), i.e., their union is the sample space ($\Omega$)
 :::
 
 $$
@@ -2174,7 +2178,7 @@ P(A \lor B) = P(\Omega) = 1
 $$
 
 ::: nonincremental
--   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events, then the sum rule simplifies to:
+-   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events (a.k.a. partitions), then the sum rule simplifies to:
 :::
 
 $$
@@ -2190,7 +2194,7 @@ $$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
 $$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
 
 ::: nonincremental
--   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true), i.e., their union is the sample space ($\Omega$)
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or at least one of them must be true), i.e., their union is the sample space ($\Omega$)
 :::
 
 $$
@@ -2198,7 +2202,7 @@ P(A \lor B) = P(\Omega) = 1
 $$
 
 ::: nonincremental
--   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events, then the sum rule simplifies to:
+-   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events (a.k.a. partitions), then the sum rule simplifies to:
 :::
 
 $$
@@ -2214,7 +2218,7 @@ $$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
 $$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
 
 ::: nonincremental
--   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or be true), i.e., their union is the sample space ($\Omega$)
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or at least one of them must be true), i.e., their union is the sample space ($\Omega$)
 :::
 
 $$
@@ -2222,7 +2226,7 @@ P(A \lor B) = P(\Omega) = 1
 $$
 
 ::: nonincremental
--   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events, then the sum rule simplifies to:
+-   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events (a.k.a. partitions), then the sum rule simplifies to:
 :::
 
 $$
@@ -2261,7 +2265,7 @@ $$P(A \lor B) = P(A) + P(B) = 0.3 + 0.7 = 1$$
 
 ## Probability theory: Law of total probability
 
--   **Mutually exclusive and exhaustive** events divide the sample space into **partitions**
+-   **Mutually exclusive and exhaustive** events are **partitions** of the sample space
 
 -   Let $\{X_1, X_2, \ldots, X_n\}$ be a set of mutually exclusive and exhaustive events/partitions
 
@@ -2275,7 +2279,7 @@ $$P(A) = \sum_{i=1}^n P(A \land X_i)$$
 $$P(A) = \sum_{i=1}^n P(X_i) \cdot P(A \mid X_i)$$
 :::
 
--   **Outcomes are partitions of the sample space!**
+-   **Outcomes** (a.k.a. atomic events) **are partitions** of the sample space!
 
 ## Probability theory: Law of total probability
 

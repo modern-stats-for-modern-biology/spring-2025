@@ -12,6 +12,27 @@ execution:
 library(tidyverse)
 ```
 
+## Proportional syllogism
+
+```{r}
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
+    H  = B1 | B2
+  ) %>%
+  filter(E)
+```
+```{r}
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    E  = (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1),
+    H  = B1 | B2
+  ) %>%
+  filter(E)
+```
+
 ## The question
 
 -   **Knowledge base**:
