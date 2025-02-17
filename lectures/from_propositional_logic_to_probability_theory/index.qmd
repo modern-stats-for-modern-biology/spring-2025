@@ -100,34 +100,30 @@ This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/a
 
 ![](images/clipboard-452697347.png){height="200"}
 
--   Ontological interpretations
-
-    -   Limiting relative frequency/proportion (frequentists say "*long-run*" but mean ∞ 🤯)
-    -   Physical chance/propensity\
-         
-
--   Epistemological interpretations
-
-    -   Degree of belief in the truth of a proposition (subjective Bayesian)
-
-    -   Strength of an inductive argument (objective Bayesian)
-
 ## What the &#%! is probability?
 
-![](images/clipboard-452697347.png){height="200"}
+-   **Ontological interpretations** (probability as a feature of reality; *objective*)
 
-::: nonincremental
--   Ontological interpretations
+    -   **Limiting relative frequency** (frequentist): The proportion of times an event occurs in an infinite sequence of trials (a.k.a. “long-run” relative frequency)
 
-    -   Limiting relative frequency/proportion (frequentists say "long-run" but mean ∞ 🤯)
-    -   Physical chance/propensity\
-         
+    -   **Physical chance/propensity**: The inherent tendency or disposition of a physical system to produce a particular outcome
 
--   Epistemological interpretations
+-   **Epistemological interpretations** (probability as a measure of uncertainty; *subjective*)
 
-    -   Degree of belief in the truth of a proposition (subjective Bayesian)
+    -   **Rational degree of belief** in the truth of a proposition (subjective Bayesian): A personal but coherent assignment of probabilities to possible worlds, updated via Bayes' rule
 
-    -   **Strength of an inductive argument (objective Bayesian)**
+    -   **Rational degree of evidential support/strength of an inductive argument** (objective Bayesian): The proportion of possible worlds where both the hypothesis and the evidence are true, relative to the possible worlds where the evidence is true
+
+-   In this series of lectures, we focus on the **objective Bayesian** interpretation of probability, because it incorporates all the others–except when probability measures fundamental randomness (quantum mechanics)
+
+::: notes
+Objective Bayesianism, in the absence of additional evidence, must agree with the classical interpretation. This is because objective Bayesians use principles like maximum entropy, which leads to the Principle of Indifference when no additional constraints are available.
+
+Key Relationship Between Classical and Objective Bayesian Probability
+
+✅ Classical probability is a special case of objective Bayesianism when no extra evidence is available.
+
+✅ Objective Bayesianism extends classical probability by allowing non-uniform priors when justified by additional evidence or logical constraints.
 :::
 
 ## Artificial intelligence
@@ -1136,7 +1132,7 @@ P(P1 = R %=>% W,
 ::: notes
 A longer definition of the principle of indifference (also called the principle of insufficient reason):
 
-“When there is no available evidence or rational basis to favor one possibility over another, all possibilities should be assigned equal probability. That is, if a set of mutually exclusive and exhaustive outcomes are indistinguishable given the known information, they must be treated as equally probable.”
+“When there is no available evidence or rational basis to favor one possibility over another, all possibilities should be assigned equal probability. That is, if a set of disjoint and exhaustive outcomes are indistinguishable given the known information, they must be treated as equally probable.”
 
 See also: https://en.wikipedia.org/wiki/Principle_of_maximum_entropy
 :::
@@ -2047,7 +2043,7 @@ $$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
 
 $$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
 
-## Probability theory: Mutually exclusive events
+## Probability theory: Disjoint events
 
 **Disjunction (OR) operator**, also known as the "*sum rule*"
 
@@ -2056,7 +2052,7 @@ $$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
 $$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
 
 ::: nonincremental
--   Two events (or propositions) $A$ and $B$ are **mutually exclusive** iff they cannot occur simultaneously (or they cannot both be true), i.e., their intersection is the empty set ($\emptyset$)
+-   Two events (or propositions) $A$ and $B$ are **disjoint**/mutually exclusive iff they cannot occur simultaneously (or they cannot both be true), i.e., their intersection is the empty set ($\emptyset$)
 :::
 
 ::: fragment
@@ -2065,7 +2061,7 @@ P(A \land B) = 0 \quad (A \land B) \equiv \bot \quad (A \cap B) = \emptyset
 $$
 :::
 
--   If $A$ and $B$ are mutually exclusive events, then the sum rule simplifies to:
+-   If $A$ and $B$ are disjoint events, then the sum rule simplifies to:
 
 ::: fragment
 $$
@@ -2073,7 +2069,7 @@ P(A \lor B) = P(A) + P(B) - P(A \land B)
 $$
 :::
 
-## Probability theory: Mutually exclusive events
+## Probability theory: Disjoint events
 
 **Disjunction (OR) operator**, also known as the "*sum rule*"
 
@@ -2082,7 +2078,7 @@ $$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
 $$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
 
 ::: nonincremental
--   Two events (or propositions) $A$ and $B$ are **mutually exclusive** iff they cannot occur simultaneously (or they cannot both be true), i.e., their intersection is the empty set ($\emptyset$)
+-   Two events (or propositions) $A$ and $B$ are **disjoint**/mutually exclusive iff they cannot occur simultaneously (or they cannot both be true), i.e., their intersection is the empty set ($\emptyset$)
 :::
 
 $$
@@ -2090,14 +2086,14 @@ P(A \land B) = 0 \quad (A \land B) \equiv \bot \quad (A \cap B) = \emptyset
 $$
 
 ::: nonincremental
--   If $A$ and $B$ are mutually exclusive events, then the sum rule simplifies to:
+-   If $A$ and $B$ are disjoint events, then the sum rule simplifies to:
 :::
 
 $$
 P(A \lor B) = P(A) + P(B)
 $$
 
-## Probability theory: Mutually exclusive events
+## Probability theory: Disjoint events
 
 ![](proportional_syllogism_on_steroids/Slide3.png){fig-align="center" height="50"}
 
@@ -2153,7 +2149,7 @@ P(A \lor B) = 1 \quad (A \lor B) \equiv \top \quad (A \cup B) = \Omega
 $$
 :::
 
--   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events (a.k.a. partitions), then the sum rule simplifies to:
+-   If $A$ and $B$ are **disjoint** (i.e., $P(A \land B) = 0$) **and exhaustive** events (i.e., partitions of the sample space), then the sum rule simplifies to:
 
 ::: fragment
 $$
@@ -2178,7 +2174,7 @@ P(A \lor B) = 1 \quad (A \lor B) \equiv \top \quad (A \cup B) = \Omega
 $$
 
 ::: nonincremental
--   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events (a.k.a. partitions), then the sum rule simplifies to:
+-   If $A$ and $B$ are **disjoint** (i.e., $P(A \land B) = 0$) **and exhaustive** events (i.e., partitions of the sample space), then the sum rule simplifies to:
 :::
 
 $$
@@ -2202,7 +2198,7 @@ P(A \lor B) = 1 \quad (A \lor B) \equiv \top \quad (A \cup B) = \Omega
 $$
 
 ::: nonincremental
--   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events (a.k.a. partitions), then the sum rule simplifies to:
+-   If $A$ and $B$ are **disjoint** (i.e., $P(A \land B) = 0$) **and exhaustive** events (i.e., partitions of the sample space), then the sum rule simplifies to:
 :::
 
 $$
@@ -2226,7 +2222,7 @@ P(A \lor B) = 1 \quad (A \lor B) \equiv \top \quad (A \cup B) = \Omega
 $$
 
 ::: nonincremental
--   If $A$ and $B$ are **mutually exclusive** (i.e., $P(A \land B) = 0$) **and exhaustive** events (a.k.a. partitions), then the sum rule simplifies to:
+-   If $A$ and $B$ are **disjoint** (i.e., $P(A \land B) = 0$) **and exhaustive** events (i.e., partitions of the sample space), then the sum rule simplifies to:
 :::
 
 $$
@@ -2265,9 +2261,9 @@ $$P(A \lor B) = P(A) + P(B) = 0.3 + 0.7 = 1$$
 
 ## Probability theory: Law of total probability
 
--   **Mutually exclusive and exhaustive** events are **partitions** of the sample space
+-   **Disjoint and exhaustive** events are **partitions** of the sample space
 
--   Let $\{X_1, X_2, \ldots, X_n\}$ be a set of mutually exclusive and exhaustive events/partitions
+-   Let $\{X_1, X_2, \ldots, X_n\}$ be a set of disjoint and exhaustive events/partitions
 
 -   Then, for any event $A$, the law of total probability states that:
 
@@ -2284,7 +2280,7 @@ $$P(A) = \sum_{i=1}^n P(X_i) \cdot P(A \mid X_i)$$
 ## Probability theory: Law of total probability
 
 ::: nonincremental
--   $B$ and $\lnot B$ are mutually exclusive and exhaustive events, therefore:
+-   $B$ and $\lnot B$ are disjoint and exhaustive events, therefore:
 :::
 
 ::: fragment
@@ -2364,7 +2360,7 @@ $$P(A) = P(B) \cdot P(A \mid B) + P(\lnot B) \cdot P(A \mid \lnot B) = 0.7 \time
 ## Probability theory: Law of total probability
 
 ::: nonincremental
--   $B$ and $\lnot B$ are mutually exclusive and exhaustive events, therefore:
+-   $B$ and $\lnot B$ are disjoint and exhaustive events, therefore:
 :::
 
 $$P(A) = P(A \land B) + P(A \land \lnot B)$$
@@ -2380,7 +2376,7 @@ $$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}$$
 ## Probability theory: Law of total probability
 
 ::: nonincremental
--   $B$ and $\lnot B$ are mutually exclusive and exhaustive events, therefore:
+-   $B$ and $\lnot B$ are disjoint and exhaustive events, therefore:
 :::
 
 $$P(A) = P(A \land B) + P(A \land \lnot B)$$
@@ -2456,7 +2452,7 @@ $$
 $$
 \begin{array}{l}
 P(A \lor B) = P(A) + P(B) - P(A \land B) \\
-P(A \lor B) = P(A) + P(B) \quad \text{iff A and B are mutually exclusive, i.e.,}\ P(A \land B) = 0
+P(A \lor B) = P(A) + P(B) \quad \text{iff A and B are disjoint/mutually exclusive, i.e.,}\ P(A \land B) = 0
 \end{array}
 $$
 :::
