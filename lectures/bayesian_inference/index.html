@@ -187,6 +187,8 @@
       margin-right: 0; 
     }
   </style>
+  <link href="index_files/libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+  <script src="index_files/libs/tabwid-1.1.3/tabwid.js"></script>
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -1455,7 +1457,7 @@ P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)
 <div>
 <ul>
 <li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
-<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
 </ul>
 </div>
 <div class="fragment">
@@ -1469,7 +1471,7 @@ p: \Omega \to [0, 1]
 <div>
 <ul>
 <li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
-<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
 </ul>
 </div>
 <div class="cell">
@@ -1521,11 +1523,11 @@ p: \Omega \to [0, 1]
 <div>
 <ul>
 <li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
-<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
 </ul>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="co"># uniform probability distribution</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top">
@@ -1577,18 +1579,18 @@ p: \Omega \to [0, 1]
 <section id="from-probability-distribution-to-probability" class="slide level2">
 <h2>From probability distribution to probability</h2>
 <div class="fragment">
-<p>The probability of proposition/event <span class="math inline">\(X\)</span> can therefore be calculated as:</p>
+<p>Given a probability distribution <span class="math inline">\(p\)</span>, the probability of proposition/event <span class="math inline">\(X\)</span> is:</p>
 </div>
 <div class="fragment">
 <p><span class="math display">\[P(X) = \sum_{\omega \in X} p(\omega)\]</span></p>
 </div>
 <div class="fragment">
-<p>For example, given a probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is calculated as:</p>
+<p>For example, given the uniform probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is:</p>
 </div>
 <div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top">
@@ -1605,25 +1607,25 @@ p: \Omega \to [0, 1]
 <td style="text-align: left;">⍵1</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.25</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">⍵2</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">0.25</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">⍵3</td>
 <td style="text-align: left;">FALSE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">0.25</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">⍵4</td>
 <td style="text-align: left;">FALSE</td>
 <td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">0.25</td>
 </tr>
 </tbody>
 </table>
@@ -1634,12 +1636,12 @@ p: \Omega \to [0, 1]
 </section>
 <section id="from-probability-distribution-to-probability-1" class="slide level2">
 <h2>From probability distribution to probability</h2>
-<p>The probability of proposition/event <span class="math inline">\(X\)</span> can therefore be calculated as:</p>
+<p>Given a probability distribution <span class="math inline">\(p\)</span>, the probability of proposition/event <span class="math inline">\(X\)</span> is:</p>
 <p><span class="math display">\[P(X) = \sum_{\omega \in X} p(\omega)\]</span></p>
-<p>For example, given a probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is calculated as:</p>
+<p>For example, given the uniform probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
 <span id="cb5-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">X =</span> A <span class="sc">|</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -1658,28 +1660,28 @@ p: \Omega \to [0, 1]
 <td style="text-align: left;">⍵1</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.25</td>
 <td style="text-align: left;">TRUE</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">⍵2</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">0.25</td>
 <td style="text-align: left;">TRUE</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">⍵3</td>
 <td style="text-align: left;">FALSE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">0.25</td>
 <td style="text-align: left;">TRUE</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">⍵4</td>
 <td style="text-align: left;">FALSE</td>
 <td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">0.25</td>
 <td style="text-align: left;">FALSE</td>
 </tr>
 </tbody>
@@ -1690,12 +1692,12 @@ p: \Omega \to [0, 1]
 </section>
 <section id="from-probability-distribution-to-probability-2" class="slide level2">
 <h2>From probability distribution to probability</h2>
-<p>The probability of proposition/event <span class="math inline">\(X\)</span> can therefore be calculated as:</p>
+<p>Given a probability distribution <span class="math inline">\(p\)</span>, the probability of proposition/event <span class="math inline">\(X\)</span> is:</p>
 <p><span class="math display">\[P(X) = \sum_{\omega \in X} p(\omega)\]</span></p>
-<p>For example, given a probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is calculated as:</p>
+<p>For example, given the uniform probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
 <span id="cb6-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">X =</span> A <span class="sc">|</span> B) <span class="sc">%&gt;%</span></span>
 <span id="cb6-4"><a href=""></a>  <span class="fu">filter</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -1715,21 +1717,21 @@ p: \Omega \to [0, 1]
 <td style="text-align: left;">⍵1</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.25</td>
 <td style="text-align: left;">TRUE</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">⍵2</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">0.25</td>
 <td style="text-align: left;">TRUE</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">⍵3</td>
 <td style="text-align: left;">FALSE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">0.25</td>
 <td style="text-align: left;">TRUE</td>
 </tr>
 </tbody>
@@ -1740,50 +1742,67 @@ p: \Omega \to [0, 1]
 </section>
 <section id="from-probability-distribution-to-probability-3" class="slide level2">
 <h2>From probability distribution to probability</h2>
-<p>The probability of proposition/event <span class="math inline">\(X\)</span> can therefore be calculated as:</p>
+<p>Given a probability distribution <span class="math inline">\(p\)</span>, the probability of proposition/event <span class="math inline">\(X\)</span> is:</p>
 <p><span class="math display">\[P(X) = \sum_{\omega \in X} p(\omega)\]</span></p>
-<p>For example, given a probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is calculated as:</p>
+<p>For example, given the uniform probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
 <span id="cb7-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">X =</span> A <span class="sc">|</span> B) <span class="sc">%&gt;%</span></span>
 <span id="cb7-4"><a href=""></a>  <span class="fu">filter</span>(X) <span class="sc">%&gt;%</span> </span>
 <span id="cb7-5"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> </span>
 <span id="cb7-6"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.6</code></pre>
+<pre><code>[1] 0.75</code></pre>
 </div>
 </div>
 </section>
 <section id="from-probability-distribution-to-probability-4" class="slide level2">
 <h2>From probability distribution to probability</h2>
-<p>The probability of proposition/event <span class="math inline">\(X\)</span> can therefore be calculated as:</p>
+<p>Given a probability distribution <span class="math inline">\(p\)</span>, the probability of proposition/event <span class="math inline">\(X\)</span> is:</p>
 <p><span class="math display">\[P(X) = \sum_{\omega \in X} p(\omega)\]</span></p>
-<p>For example, given a probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is calculated as:</p>
+<p>For example, given the uniform probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
 <span id="cb9-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">X =</span> A <span class="sc">|</span> B) <span class="sc">%&gt;%</span></span>
 <span id="cb9-4"><a href=""></a>  </span>
 <span id="cb9-5"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p[X])) <span class="sc">%&gt;%</span> </span>
 <span id="cb9-6"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.6</code></pre>
+<pre><code>[1] 0.75</code></pre>
 </div>
 </div>
 </section>
 <section id="from-probability-distribution-to-probability-5" class="slide level2">
 <h2>From probability distribution to probability</h2>
-<p>The probability of proposition/event <span class="math inline">\(X\)</span> can therefore be calculated as:</p>
+<p>Given a probability distribution <span class="math inline">\(p\)</span>, the probability of proposition/event <span class="math inline">\(X\)</span> is:</p>
 <p><span class="math display">\[P(X) = \sum_{\omega \in X} p(\omega)\]</span></p>
-<p>For example, given a probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is calculated as:</p>
+<p>For example, given the uniform probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
 <span id="cb11-3"><a href=""></a></span>
 <span id="cb11-4"><a href=""></a>  </span>
 <span id="cb11-5"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p[A <span class="sc">|</span> B])) <span class="sc">%&gt;%</span> </span>
 <span id="cb11-6"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.75</code></pre>
+</div>
+</div>
+</section>
+<section id="from-probability-distribution-to-probability-6" class="slide level2">
+<h2>From probability distribution to probability</h2>
+<p>Given a probability distribution <span class="math inline">\(p\)</span>, the probability of proposition/event <span class="math inline">\(X\)</span> is:</p>
+<p><span class="math display">\[P(X) = \sum_{\omega \in X} p(\omega)\]</span></p>
+<p>For example, given the uniform probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-3"><a href=""></a></span>
+<span id="cb13-4"><a href=""></a>  </span>
+<span id="cb13-5"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p[A <span class="sc">|</span> B])) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-6"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.6</code></pre>
 </div>
@@ -1794,11 +1813,11 @@ p: \Omega \to [0, 1]
 <div>
 <ul>
 <li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
-<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
 </ul>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top">
@@ -1841,13 +1860,1185 @@ p: \Omega \to [0, 1]
 </div>
 </div>
 </section>
-<section id="maximum-entropy-probability-distribution" class="slide level2">
-<h2>Maximum entropy probability distribution</h2>
-<p>The maximum entropy principle makes explicit our freedom in using different forms of prior data. As a special case, a uniform prior probability density (Laplace’s principle of indifference, sometimes called the principle of insufficient reason), may be adopted. Thus, the maximum entropy principle is not merely an alternative way to view the usual methods of inference of classical statistics, but represents a significant conceptual generalization of those methods.</p>
+<section id="what-is-a-probability-distribution-5" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
 <ul>
-<li class="fragment"><p>Laplace’s principle of indifference (sometimes called the principle of insufficient reason) is a special case</p></li>
-<li class="fragment"><p>Jaynes’ <a href="https://en.wikipedia.org/wiki/Principle_of_maximum_entropy">principle of maximum entropy</a> states that, in the absence of additional information, outcomes in the sample space are equally likely</p></li>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
 </ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: left;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-6" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: left;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> A <span class="sc">&amp;</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.25</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-7" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> A <span class="sc">&amp;</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.25</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-8" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> A <span class="sc">&amp;</span> <span class="sc">!</span>B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.25</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-9" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="cn">NA</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> A <span class="sc">&amp;</span> <span class="sc">!</span>B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.25</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-10" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="cn">NA</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> <span class="sc">!</span>A <span class="sc">&amp;</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.25</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-11" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> <span class="sc">!</span>A <span class="sc">&amp;</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.25</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-12" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> <span class="sc">!</span>A <span class="sc">&amp;</span> <span class="sc">!</span>B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.25</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-13" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> <span class="sc">!</span>A <span class="sc">&amp;</span> <span class="sc">!</span>B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.25</code></pre>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>In the absence of additional information, outcomes in the sample space are equally likely (Laplace’s <a href="https://en.wikipedia.org/wiki/Principle_of_indifference">principle of indifference</a>)</p></li>
+<li class="fragment"><p>Laplace’s principle of indifference is a special case of Jayne’s <a href="https://en.wikipedia.org/wiki/Principle_of_maximum_entropy">principle of maximum entropy</a></p></li>
+</ul>
+</section>
+<section id="what-is-a-probability-distribution-14" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: left;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-15" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">E =</span> <span class="sc">!</span>A) <span class="co"># A is known or assumed to be `FALSE`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: left;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-16" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">E =</span> <span class="sc">!</span>A) <span class="co"># A is known or assumed to be `FALSE`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: left;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> A <span class="sc">&amp;</span> B, <span class="at">E =</span> <span class="sc">!</span>A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-17" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">E =</span> <span class="sc">!</span>A) <span class="co"># A is known or assumed to be `FALSE`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> A <span class="sc">&amp;</span> B, <span class="at">E =</span> <span class="sc">!</span>A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-18" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">E =</span> <span class="sc">!</span>A) <span class="co"># A is known or assumed to be `FALSE`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> A <span class="sc">&amp;</span> <span class="sc">!</span>B, <span class="at">E =</span> <span class="sc">!</span>A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-19" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="cn">NA</span>, <span class="cn">NA</span>)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">E =</span> <span class="sc">!</span>A) <span class="co"># A is known or assumed to be `FALSE`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> A <span class="sc">&amp;</span> <span class="sc">!</span>B, <span class="at">E =</span> <span class="sc">!</span>A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-20" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="cn">NA</span>, <span class="cn">NA</span>)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">E =</span> <span class="sc">!</span>A) <span class="co"># A is known or assumed to be `FALSE`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> <span class="sc">!</span>A <span class="sc">&amp;</span> B, <span class="at">E =</span> <span class="sc">!</span>A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-21" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>, <span class="cn">NA</span>)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">E =</span> <span class="sc">!</span>A) <span class="co"># A is known or assumed to be `FALSE`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> <span class="sc">!</span>A <span class="sc">&amp;</span> B, <span class="at">E =</span> <span class="sc">!</span>A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-22" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>, <span class="cn">NA</span>)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">E =</span> <span class="sc">!</span>A) <span class="co"># A is known or assumed to be `FALSE`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> <span class="sc">!</span>A <span class="sc">&amp;</span> <span class="sc">!</span>B, <span class="at">E =</span> <span class="sc">!</span>A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-23" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><p>Given a universe/sample space <span class="math inline">\(\Omega\)</span></p></li>
+<li><p>A probability distribution is a function <span class="math inline">\(p\)</span> that assigns a probability (mass) to each possible world/outcome <span class="math inline">\(\omega\)</span></p></li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">E =</span> <span class="sc">!</span>A) <span class="co"># A is known or assumed to be `FALSE`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> <span class="sc">!</span>A <span class="sc">&amp;</span> <span class="sc">!</span>B, <span class="at">E =</span> <span class="sc">!</span>A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5</code></pre>
+</div>
+</div>
+</section>
+<section id="what-is-a-probability-distribution-24" class="slide level2">
+<h2>What is a probability distribution?</h2>
+<div>
+<ul>
+<li><span class="math inline">\(p\)</span> encodes our premises/assumptions/evidence/knowledge base: each assigned probability reflects what we know (or assume) about each possible world/outcome <span class="math inline">\(\omega\)</span></li>
+</ul>
+</div>
+<ul>
+<li class="fragment">In the absence of additional information, the principle of indifference (or maximum entropy) dictates that all outcomes are equally likely, resulting in a uniform distribution</li>
+</ul>
+<div class="fragment">
+<p><span class="math display">\[p(w) = \frac{1}{|\Omega|}\]</span></p>
+</div>
+<ul>
+<li class="fragment"><p>Several other mathematical equations have been developed to capture different sets of premises/assumptions (e.g., binomial, Poisson, normal, and beta distributions)</p></li>
+<li class="fragment"><p>Rather than enumerating each probability or specifying every premise/assumption, these probability distributions provide compact representations of the evidence/knowledge base underlying common scenarios</p></li>
+</ul>
+</section>
+<section id="statistical-models-2" class="slide level2">
+<h2>Statistical models</h2>
+<p>Statistical models = <strong>probability distributions</strong> of <strong>random variables</strong></p>
+<div class="columns">
+<div class="column" style="width:30%;">
+<p><img data-src="images/models_80s90s.webp"></p>
+</div><div class="column" style="width:70%;">
+<div class="text-align-center">
+<p><img data-src="images/probability_distributions.jpg"></p>
+<p><a href="https://distribution-explorer.github.io/" class="uri">https://distribution-explorer.github.io/</a></p>
+</div>
+</div></div>
 </section>
 <section id="what-is-a-random-variable" class="slide level2">
 <h2>What is a random variable?</h2>
@@ -1894,15 +3085,15 @@ p: \Omega \to [0, 1]
 <section id="statisticalproportional-syllogism-1" class="slide level2">
 <h2>Statistical/proportional syllogism</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B1"</span>, <span class="st">"B2"</span>, <span class="st">"W"</span>)</span>
-<span id="cb14-2"><a href=""></a></span>
-<span id="cb14-3"><a href=""></a>ss <span class="ot">&lt;-</span></span>
-<span id="cb14-4"><a href=""></a>  <span class="fu">expand.grid</span>(<span class="fu">map</span>(vars, <span class="sc">~</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb14-5"><a href=""></a>  <span class="fu">set_names</span>(vars) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-6"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span></span>
-<span id="cb14-7"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>())</span>
-<span id="cb14-8"><a href=""></a></span>
-<span id="cb14-9"><a href=""></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href=""></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B1"</span>, <span class="st">"B2"</span>, <span class="st">"W"</span>)</span>
+<span id="cb67-2"><a href=""></a></span>
+<span id="cb67-3"><a href=""></a>ss <span class="ot">&lt;-</span></span>
+<span id="cb67-4"><a href=""></a>  <span class="fu">expand.grid</span>(<span class="fu">map</span>(vars, <span class="sc">~</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb67-5"><a href=""></a>  <span class="fu">set_names</span>(vars) <span class="sc">%&gt;%</span> </span>
+<span id="cb67-6"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span></span>
+<span id="cb67-7"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>())</span>
+<span id="cb67-8"><a href=""></a></span>
+<span id="cb67-9"><a href=""></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -1974,8 +3165,8 @@ p: \Omega \to [0, 1]
 <section id="statisticalproportional-syllogism-2" class="slide level2">
 <h2>Statistical/proportional syllogism</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb68-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -2056,16 +3247,16 @@ p: \Omega \to [0, 1]
 <section id="statisticalproportional-syllogism-3" class="slide level2">
 <h2>Statistical/proportional syllogism</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb16-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
-<span id="cb16-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
-<span id="cb16-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
-<span id="cb16-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
-<span id="cb16-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
-<span id="cb16-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
-<span id="cb16-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb69-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb69-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb69-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb69-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb69-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb69-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb69-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb69-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb69-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -2164,16 +3355,16 @@ p: \Omega \to [0, 1]
 <section id="statisticalproportional-syllogism-4" class="slide level2">
 <h2>Statistical/proportional syllogism</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb17-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb17-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
-<span id="cb17-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
-<span id="cb17-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
-<span id="cb17-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
-<span id="cb17-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
-<span id="cb17-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
-<span id="cb17-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb70-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb70-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb70-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb70-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb70-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb70-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb70-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb70-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb70-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div>
 <ul>
@@ -2184,17 +3375,17 @@ p: \Omega \to [0, 1]
 <section id="statisticalproportional-syllogism-5" class="slide level2">
 <h2>Statistical/proportional syllogism</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb18-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb18-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb18-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
-<span id="cb18-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
-<span id="cb18-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
-<span id="cb18-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
-<span id="cb18-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
-<span id="cb18-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
-<span id="cb18-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-11"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H <span class="sc">&amp;</span> E]) <span class="sc">/</span> <span class="fu">sum</span>(p[E]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb71-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb71-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb71-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb71-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb71-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb71-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb71-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb71-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb71-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span> </span>
+<span id="cb71-11"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H <span class="sc">&amp;</span> E]) <span class="sc">/</span> <span class="fu">sum</span>(p[E]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -2222,18 +3413,18 @@ p: \Omega \to [0, 1]
 <section id="statisticalproportional-syllogism-6" class="slide level2">
 <h2>Statistical/proportional syllogism</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb19-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
-<span id="cb19-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb19-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
-<span id="cb19-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
-<span id="cb19-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
-<span id="cb19-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
-<span id="cb19-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
-<span id="cb19-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
-<span id="cb19-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
-<span id="cb19-11"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span> <span class="co"># urn model</span></span>
-<span id="cb19-12"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb72-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
+<span id="cb72-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb72-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb72-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb72-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb72-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb72-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb72-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb72-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
+<span id="cb72-11"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span> <span class="co"># urn model</span></span>
+<span id="cb72-12"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top">
@@ -2255,18 +3446,18 @@ p: \Omega \to [0, 1]
 <section id="statisticalproportional-syllogism-7" class="slide level2">
 <h2>Statistical/proportional syllogism</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb20-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
-<span id="cb20-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
-<span id="cb20-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
-<span id="cb20-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
-<span id="cb20-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
-<span id="cb20-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
-<span id="cb20-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
-<span id="cb20-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
-<span id="cb20-11"><a href=""></a></span>
-<span id="cb20-12"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H <span class="sc">&amp;</span> E]) <span class="sc">/</span> <span class="fu">sum</span>(p[E])) <span class="co"># Bayes' rule</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb73-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
+<span id="cb73-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb73-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
+<span id="cb73-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
+<span id="cb73-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
+<span id="cb73-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
+<span id="cb73-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
+<span id="cb73-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
+<span id="cb73-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
+<span id="cb73-11"><a href=""></a></span>
+<span id="cb73-12"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H <span class="sc">&amp;</span> E]) <span class="sc">/</span> <span class="fu">sum</span>(p[E])) <span class="co"># Bayes' rule</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top">
@@ -2331,6 +3522,29 @@ p: \Omega \to [0, 1]
 <p>From Pearl and Mackenzie (2018) <a href="https://bayes.cs.ucla.edu/WHY/">The Book of Why</a></p>
 <div class="text-align-center">
 <p><img data-src="images/ladder_of_causation2.jpg"></p>
+</div>
+</section>
+<section id="from-probability-distribution-to-probability-7" class="slide level2">
+<h2>From probability distribution to probability</h2>
+<p>Given a probability distribution <span class="math inline">\(p\)</span>, the probability of proposition/event <span class="math inline">\(X\)</span> is:</p>
+<p><span class="math display">\[P(X) = \sum_{\omega \in X} p(\omega)\]</span></p>
+<p>For example, given the uniform probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> A <span class="sc">|</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.75</code></pre>
+</div>
+</div>
+</section>
+<section id="from-probability-distribution-to-probability-8" class="slide level2">
+<h2>From probability distribution to probability</h2>
+<p>Given a probability distribution <span class="math inline">\(p\)</span>, the probability of proposition/event <span class="math inline">\(X\)</span> is:</p>
+<p><span class="math display">\[P(X) = \sum_{\omega \in X} p(\omega)\]</span></p>
+<p>For example, given the uniform probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-0df570ba{}.cl-0df25e48{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-0df25e52{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-0df25e53{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-0df25e54{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-0df3a9c4{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-0df3b69e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0df3b6a8{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0df3b6a9{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0df3b6aa{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-0df570ba"><thead><tr style="overflow-wrap:break-word;"><th class="cl-0df3b69e"><p class="cl-0df3a9c4"><span class="cl-0df25e48">A</span></p></th><th class="cl-0df3b69e"><p class="cl-0df3a9c4"><span class="cl-0df25e48">B</span></p></th><th class="cl-0df3b69e"><p class="cl-0df3a9c4"><span class="cl-0df25e48">E</span></p></th><th class="cl-0df3b69e"><p class="cl-0df3a9c4"><span class="cl-0df25e48">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e53">FALSE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e53">FALSE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-0df3b6a9"><p class="cl-0df3a9c4"><span class="cl-0df25e53">FALSE</span></p></td><td class="cl-0df3b6a9"><p class="cl-0df3a9c4"><span class="cl-0df25e53">FALSE</span></p></td><td class="cl-0df3b6a9"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a9"><p class="cl-0df3a9c4"><span class="cl-0df25e53">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="4" class="cl-0df3b6aa"><p class="cl-0df3a9c4"><span class="cl-0df25e54">P(H | E) = 0.75</span></p></td></tr></tfoot></table></div>
+</div>
 </div>
 
 </section>

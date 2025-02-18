@@ -34,6 +34,116 @@ theme_set(theme_minimal())
 }
 ```
 
+```{r}
+#| include: false
+library(rlang)
+```
+
+```{r}
+#| include: false
+P <- function(..., H) {
+  # capture premises as a list of quosures
+  premises <- enquos(...)
+
+  # capture conclusion (H) as a quosure
+  H <- enquo(H)
+
+  if (length(premises) == 0) {
+    # if no premises are provided, set evidence (E) to TRUE (tautology)
+    E <- expr(TRUE)
+  } else {
+    # else set evidence (E) to conjunction of all premises
+    E <- reduce(premises, ~ expr((!! .x) & (!! .y)))
+  }
+    
+  # extract atomic variables from E and H
+  vars <- unique(c(all.vars(E), all.vars(H)))
+  
+  # build truth table and calculate proportion of rows where E is true, in which H is also true
+  expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars)) %>%
+    mutate(E = !!E, H = !!H) %>%
+    filter(E) %>%
+    pull(H) %>%
+    mean()
+}
+```
+
+```{r}
+#| include: false
+library(flextable)
+
+P.flex <- function(..., H, table = TRUE, flex = TRUE) {
+  # capture premises as a list of quosures
+  premises <- enquos(...)
+  
+  # capture conclusion (H) as a quosure
+  H <- enquo(H)
+  
+  # extract atomic variables from premises and H
+  vars <- unique(c(unlist(lapply(premises, all.vars)), all.vars(H)))
+  
+  # create data frame with all possible combinations of atomic variables/worlds (universe)
+  tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars))
+
+  # add columns for premises
+  for (i in seq_along(premises)) {
+    tt[[paste0("P", i)]] <- eval_tidy(premises[[i]], data = tt)
+  }
+  
+  # add columns for conjunction of all premises (E) and H
+  tt <- tt %>%
+    mutate(
+      E = if_all(starts_with("P"), identity),
+      H = eval_tidy(H, data = tt)
+    )
+  
+  # calculate P(H | E) by checking whether in every possible world/row where E is true, H is also true
+  P <- tt %>%
+    filter(E) %>%
+    pull(H) %>%
+    mean()
+  
+  # return P(H | E) if truth table output is not requested
+  if (!table) {
+    return(P)
+  }
+  
+  # return truth table if formatted truth table output is not requested
+  if (!flex) {
+    return(tt)
+  }
+  
+  # define colors
+  highlight_color <- "beige"  # Standard HTML color name
+  true_color <- "darkgreen"
+  false_color <- "darkred"
+  
+  # convert the truth table into a flextable
+  tt.formatted <- flextable(tt) %>%
+    bold(part = "header") %>%  # Bold the header
+    bold(part = "footer") %>%  # Bold the footer
+    bg(i = which(tt$E == TRUE), bg = highlight_color, part = "body")  # Highlight E = TRUE rows
+  
+  # apply text colors
+  for (col in colnames(tt)) {
+    tt.formatted <- tt.formatted %>%
+      color(i = which(tt[[col]] == TRUE), j = col, color = true_color) %>%
+      color(i = which(tt[[col]] == FALSE), j = col, color = false_color)
+  }
+  
+  # add footer with the calculated P(C | K) value
+  tt.formatted <- tt.formatted %>%
+    add_footer_row(
+      values = paste("P(H | E) =", round(P, 3)),
+      colwidths = ncol(tt)
+    ) %>%
+    align(align = "right", part = "footer")
+
+  # return formatted truth table
+  return(tt.formatted)
+}
+```
+
 ##  {background-image="images/last_week_tonight.jpg" background-size="contain"}
 
 ## What the &#%! is probability?
@@ -1207,7 +1317,7 @@ ss
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
 :::
 
 ::: fragment
@@ -1221,7 +1331,7 @@ $$
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1234,12 +1344,12 @@ ss %>% mutate(p = c(0.1, 0.2, 0.3, 0.4))
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
 :::
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = 1 / n())
+ss %>% mutate(p = 1 / n()) # uniform probability distribution
 ```
 
 -   Since outcomes are partitions of the sample space, their probabilities must sum to 1
@@ -1251,7 +1361,7 @@ $$\sum_{\omega \in \Omega} p(\omega) = 1$$
 ## From probability distribution to probability
 
 ::: fragment
-The probability of proposition/event $X$ can therefore be calculated as:
+Given a probability distribution $p$, the probability of proposition/event $X$ is:
 :::
 
 ::: fragment
@@ -1259,60 +1369,60 @@ $$P(X) = \sum_{\omega \in X} p(\omega)$$
 :::
 
 ::: fragment
-For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
+For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
 :::
 
 ::: fragment
 ```{r}
 #| output-location: default
 ss %>%
-  mutate(p = c(0.1, 0.2, 0.3, 0.4))
+  mutate(p = 1 / n())
 ```
 :::
 
 ## From probability distribution to probability
 
-The probability of proposition/event $X$ can therefore be calculated as:
+Given a probability distribution $p$, the probability of proposition/event $X$ is:
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
+For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
 
 ```{r}
 #| output-location: default
 ss %>%
-  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>%
+  mutate(p = 1 / n()) %>%
   mutate(X = A | B)
 ```
 
 ## From probability distribution to probability
 
-The probability of proposition/event $X$ can therefore be calculated as:
+Given a probability distribution $p$, the probability of proposition/event $X$ is:
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
+For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
 
 ```{r}
 #| output-location: default
 ss %>%
-  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>%
+  mutate(p = 1 / n()) %>%
   mutate(X = A | B) %>%
   filter(X)
 ```
 
 ## From probability distribution to probability
 
-The probability of proposition/event $X$ can therefore be calculated as:
+Given a probability distribution $p$, the probability of proposition/event $X$ is:
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
+For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
 
 ```{r}
 #| output-location: default
 ss %>%
-  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>%
+  mutate(p = 1 / n()) %>%
   mutate(X = A | B) %>%
   filter(X) %>% 
   summarize(P = sum(p)) %>% 
@@ -1321,16 +1431,16 @@ ss %>%
 
 ## From probability distribution to probability
 
-The probability of proposition/event $X$ can therefore be calculated as:
+Given a probability distribution $p$, the probability of proposition/event $X$ is:
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
+For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
 
 ```{r}
 #| output-location: default
 ss %>%
-  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>%
+  mutate(p = 1 / n()) %>%
   mutate(X = A | B) %>%
   
   summarize(P = sum(p[X])) %>% 
@@ -1339,16 +1449,34 @@ ss %>%
 
 ## From probability distribution to probability
 
-The probability of proposition/event $X$ can therefore be calculated as:
+Given a probability distribution $p$, the probability of proposition/event $X$ is:
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
+For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
 
 ```{r}
 #| output-location: default
 ss %>%
-  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>%
+  mutate(p = 1 / n()) %>%
+
+  
+  summarize(P = sum(p[A | B])) %>% 
+  pull(P)
+```
+
+## From probability distribution to probability
+
+Given a probability distribution $p$, the probability of proposition/event $X$ is:
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>% 
 
   
   summarize(P = sum(p[A | B])) %>% 
@@ -1360,7 +1488,7 @@ ss %>%
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1368,15 +1496,362 @@ ss %>%
 ss %>% mutate(p = c(0.1, 0.2, 0.3, 0.4))
 ```
 
+## What is a probability distribution?
 
-## Maximum entropy probability distribution
+::: nonincremental
+-   Given a universe/sample space $\Omega$
 
-The maximum entropy principle makes explicit our freedom in using different forms of prior data. As a special case, a uniform prior probability density (Laplace's principle of indifference, sometimes called the principle of insufficient reason), may be adopted. Thus, the maximum entropy principle is not merely an alternative way to view the usual methods of inference of classical statistics, but represents a significant conceptual generalization of those methods.
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
 
--   Laplace's principle of indifference (sometimes called the principle of insufficient reason) is a special case
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(NA, NA, NA, NA))
+```
 
--   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
+## What is a probability distribution?
 
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(NA, NA, NA, NA))
+```
+
+```{r}
+P(H = A & B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, NA, NA, NA))
+```
+
+```{r}
+#| output-location: default
+P(H = A & B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, NA, NA, NA))
+```
+
+```{r}
+P(H = A & !B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, 0.25, NA, NA))
+```
+
+```{r}
+#| output-location: default
+P(H = A & !B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, 0.25, NA, NA))
+```
+
+```{r}
+P(H = !A & B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, 0.25, 0.25, NA))
+```
+
+```{r}
+#| output-location: default
+P(H = !A & B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, 0.25, 0.25, NA))
+```
+
+```{r}
+P(H = !A & !B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, 0.25, 0.25, 0.25))
+```
+
+```{r}
+#| output-location: default
+P(H = !A & !B)
+```
+
+-   In the absence of additional information, outcomes in the sample space are equally likely (Laplace's [principle of indifference](https://en.wikipedia.org/wiki/Principle_of_indifference))
+
+-   Laplace's principle of indifference is a special case of Jayne's [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy)
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(NA, NA, NA, NA))
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+P(H = A & B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+#| output-location: default
+P(H = A & B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+P(H = A & !B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+#| output-location: default
+P(H = A & !B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+P(H = !A & B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+#| output-location: default
+P(H = !A & B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+P(H = !A & !B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, 0.5, 0.5)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+#| output-location: default
+P(H = !A & !B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   $p$ encodes our premises/assumptions/evidence/knowledge base: each assigned probability reflects what we know (or assume) about each possible world/outcome $\omega$
+:::
+
+-   In the absence of additional information, the principle of indifference (or maximum entropy) dictates that all outcomes are equally likely, resulting in a uniform distribution
+
+::: fragment
+$$p(w) = \frac{1}{|\Omega|}$$
+:::
+
+-   Several other mathematical equations have been developed to capture different sets of premises/assumptions (e.g., binomial, Poisson, normal, and beta distributions)
+
+-   Rather than enumerating each probability or specifying every premise/assumption, these probability distributions provide compact representations of the evidence/knowledge base underlying common scenarios
+
+## Statistical models
+
+Statistical models = **probability distributions** of **random variables**
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+:::
+::::
+::::::
 
 ## What is a random variable?
 
@@ -1592,3 +2067,30 @@ From Pearl and Mackenzie (2018) [The Book of Why](https://bayes.cs.ucla.edu/WHY/
 ::: text-align-center
 ![](images/ladder_of_causation2.jpg)
 :::
+
+## From probability distribution to probability
+
+Given a probability distribution $p$, the probability of proposition/event $X$ is:
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+
+```{r}
+#| output-location: default
+P(H = A | B)
+```
+
+## From probability distribution to probability
+
+Given a probability distribution $p$, the probability of proposition/event $X$ is:
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(H = A | B)
+```
