@@ -391,42 +391,6 @@ $$P(B \mid A) = P(B)$$
 -   **Association is not causation!** (unidirectional dependence) $\quad A \leftrightarrow B \; \ne \; A \rightarrow B$
 :::
 
-## Probability theory: Rules of probability calculus
-
-::: nonincremental
--   **Negation rule (NOT)**
-:::
-
-$$
-P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
-$$
-
-::: nonincremental
--   **Conjuction rule (AND)**: Product rule
-
-    -   $P(A \land B) = P(A) \cdot P(B \mid A)$
-
-    -   Iff $A$ and $B$ are independent, i.e., $P(B \mid A) = P(B)$:
-
-    -   $P(A \land B) = P(A) \cdot P(B)$
-
--   Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
-:::
-
-::::: columns
-::: column
-$$P(A \mid B) = P(A)$$
-:::
-
-::: column
-$$P(B \mid A) = P(B)$$
-:::
-:::::
-
-::: nonincremental
--   Causal inference = statistical inference + causal model — **no causes in, no causes out!**
-:::
-
 ## Association is not causation!
 
 ![](images/Slide114.png){fig-align="center"}
@@ -481,6 +445,42 @@ $$P(B \mid A) = P(B)$$
 
 ::: nonincremental
 -   **Association is not causation!** (unidirectional dependence) $\quad A \leftrightarrow B \; \ne \; A \rightarrow B$
+:::
+
+## Probability theory: Rules of probability calculus
+
+::: nonincremental
+-   **Negation rule (NOT)**
+:::
+
+$$
+P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
+$$
+
+::: nonincremental
+-   **Conjuction rule (AND)**: Product rule
+
+    -   $P(A \land B) = P(A) \cdot P(B \mid A)$
+
+    -   Iff $A$ and $B$ are independent, i.e., $P(B \mid A) = P(B)$:
+
+    -   $P(A \land B) = P(A) \cdot P(B)$
+
+-   Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
+:::
+
+::::: columns
+::: column
+$$P(A \mid B) = P(A)$$
+:::
+
+::: column
+$$P(B \mid A) = P(B)$$
+:::
+:::::
+
+::: nonincremental
+-   Causal inference = statistical inference + causal model — **no causes in, no causes out!**
 :::
 
 ## Probability theory: Rules of probability calculus
@@ -613,7 +613,9 @@ $$
 -   According to Bayes' theorem:
 :::
 
-$P(H \mid E, K) = \frac{P(H \mid K) \cdot P(E \mid H, K)}{P(E \mid K)}$
+$$P(H \mid E, K) = \frac{P(H \mid K) \cdot P(E \mid H, K)}{P(E \mid K)}$$  
+
+[**Don't forget the background information (**$K$) and that all probabilities are conditional!]{.red}
 
 ## Bayes' theorem in action: Bayesian inference
 
@@ -1169,7 +1171,7 @@ $$
 
 :::: fragment
 ::: text-align-center
-![](images/the_thinker_and_discobolus.jpg){width="550"}
+![](images/Slide137.png){fig-align="center" width="711"}
 :::
 ::::
 
@@ -1318,7 +1320,7 @@ ss
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ::: fragment
@@ -1332,7 +1334,7 @@ $$
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1345,7 +1347,7 @@ ss %>% mutate(p = c(0.1, 0.2, 0.3, 0.4))
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1353,7 +1355,7 @@ ss %>% mutate(p = c(0.1, 0.2, 0.3, 0.4))
 ss %>% mutate(p = 1 / n()) # uniform probability distribution
 ```
 
--   Since outcomes are partitions of the sample space, their probabilities must sum to 1
+-   Since outcomes are partitions of the sample space, their probabilities must sum\* to 1
 
 ::: fragment
 $$\sum_{\omega \in \Omega} p(\omega) = 1$$
@@ -1489,7 +1491,7 @@ ss %>%
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1502,7 +1504,7 @@ ss %>% mutate(p = c(0.1, 0.2, 0.3, 0.4))
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1515,7 +1517,7 @@ ss %>% mutate(p = c(NA, NA, NA, NA))
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1532,7 +1534,7 @@ P(H = A & B)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1550,7 +1552,7 @@ P(H = A & B)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1567,7 +1569,7 @@ P(H = A & !B)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1585,7 +1587,7 @@ P(H = A & !B)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1602,7 +1604,7 @@ P(H = !A & B)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1620,7 +1622,7 @@ P(H = !A & B)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1637,7 +1639,7 @@ P(H = !A & !B)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1659,7 +1661,7 @@ P(H = !A & !B)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1672,7 +1674,7 @@ ss %>% mutate(p = c(NA, NA, NA, NA))
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1685,7 +1687,7 @@ ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed 
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1702,7 +1704,7 @@ P(H = A & B, E = !A)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1720,7 +1722,7 @@ P(H = A & B, E = !A)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1737,7 +1739,7 @@ P(H = A & !B, E = !A)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1755,7 +1757,7 @@ P(H = A & !B, E = !A)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1772,7 +1774,7 @@ P(H = !A & B, E = !A)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1790,7 +1792,7 @@ P(H = !A & B, E = !A)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1807,7 +1809,7 @@ P(H = !A & !B, E = !A)
 ::: nonincremental
 -   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability (mass) to each possible world/outcome $\omega$
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
 :::
 
 ```{r}
@@ -1823,7 +1825,7 @@ P(H = !A & !B, E = !A)
 ## What is a probability distribution?
 
 ::: nonincremental
--   $p$ encodes our premises/assumptions/evidence/knowledge base: each assigned probability reflects what we know (or assume) about each possible world/outcome $\omega$
+-   $p$ encodes our premises/assumptions/evidence/knowledge base
 :::
 
 -   In the absence of additional information, the principle of indifference (or maximum entropy) dictates that all outcomes are equally likely, resulting in a uniform distribution
@@ -1877,7 +1879,6 @@ $$X(\omega) = x$$
 ## What is a random variable?
 
 ::: nonincremental
-
 ![](images/random_variable_tweet.png){height="200"}
 
 -   A random variable $X$ is a function that assigns a real number $x$ to each possible world/outcome $\omega$
@@ -1888,11 +1889,8 @@ $$
 
 -   Alternatively, think of a random variable as a **question** about each possible world, where the **answer is a number**
 
-
 $$X(\omega) = x$$
-
 :::
-
 
 ## What is a random variable?
 
@@ -2037,6 +2035,7 @@ ss %>% gf_col(p ~ S, data = ., fill = ~ S) %>% gf_lims(y = c(0, 1))
 #| output-location: default
 ss %>% gf_col(p ~ H, data = ., fill = ~ H) %>% gf_lims(y = c(0, 1)) %>% gf_refine(scale_fill_gradient(low = "lightblue", high = "darkblue"))
 ```
+
 ## What is a random variable?
 
 ::: nonincremental
@@ -2113,6 +2112,7 @@ ss %>% gf_col(p ~ S, data = ., fill = ~ S) %>% gf_lims(y = c(0, 1))
 #| output-location: default
 ss %>% gf_col(p ~ H, data = ., fill = ~ H) %>% gf_lims(y = c(0, 1)) %>% gf_refine(scale_fill_gradient(low = "lightblue", high = "darkblue"))
 ```
+
 ## What is a random variable?
 
 ::: nonincremental
@@ -2206,8 +2206,6 @@ For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \
 #| output-location: default
 P.flex(H = A | B)
 ```
-
-
 
 ## Robot random variables
 
