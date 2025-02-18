@@ -187,6 +187,16 @@
       margin-right: 0; 
     }
   </style>
+  <link href="index_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+  <script src="index_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+  <link href="index_files/libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+  <script src="index_files/libs/datatables-binding-0.33/datatables.js"></script>
+  <script src="index_files/libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <link href="index_files/libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="index_files/libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+  <script src="index_files/libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+  <link href="index_files/libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+  <script src="index_files/libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
   <link href="index_files/libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
   <script src="index_files/libs/tabwid-1.1.3/tabwid.js"></script>
 </head>
@@ -1410,8 +1420,8 @@ P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>ss <span class="ot">&lt;-</span></span>
 <span id="cb1-2"><a href=""></a>  <span class="fu">expand_grid</span>(<span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">B =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb1-3"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"⍵1"</span>, <span class="st">"⍵2"</span>, <span class="st">"⍵3"</span>, <span class="st">"⍵4"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb1-4"><a href=""></a>  <span class="fu">select</span>(Ω, A, B)</span>
+<span id="cb1-3"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-4"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>())</span>
 <span id="cb1-5"><a href=""></a></span>
 <span id="cb1-6"><a href=""></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -3042,440 +3052,297 @@ p: \Omega \to [0, 1]
 </section>
 <section id="what-is-a-random-variable" class="slide level2">
 <h2>What is a random variable?</h2>
+<div class="fragment">
 <p><img data-src="images/random_variable_tweet.png" height="200"></p>
-</section>
-<section id="statisticalproportional-syllogism" class="slide level2">
-<h2>Statistical/proportional syllogism</h2>
-<div class="columns">
-<div class="column" style="width:65%;">
-<p><span class="fragment"><strong>Premises/evidence/knowledge base</strong>:</span></p>
+</div>
 <ul>
-<li class="fragment">“<em>An urn contains two blue balls and one white ball</em>”</li>
-<li class="fragment">“<em>You draw one ball from the urn</em>”</li>
+<li class="fragment">A random variable <span class="math inline">\(X\)</span> is a function that assigns a real number <span class="math inline">\(x\)</span> to each possible world/outcome <span class="math inline">\(\omega\)</span></li>
 </ul>
-<p><span class="fragment"><strong>Conclusion/hypothesis/query</strong>:</span></p>
-<ul>
-<li class="fragment">“<em>You draw a blue ball</em>”</li>
-</ul>
-<p><span class="fragment"><strong>Propositional variables</strong>:</span></p>
-<ul>
-<li class="fragment"><strong>B1</strong> = “<em>You draw blue ball 1</em>”</li>
-<li class="fragment"><strong>B2</strong> = “<em>You draw blue ball 2</em>”</li>
-<li class="fragment"><strong>W</strong> = “<em>You draw the white ball</em>”</li>
-</ul>
-</div><div class="column" style="width:35%;">
 <div class="fragment">
 <p><span class="math display">\[
-\begin{array}{ll}
-1. &amp; B1 \lor B2 \lor W \\
-2. &amp; \lnot(B1 \land W) \\
-3. &amp; \lnot(B2 \land W) \\
-4. &amp; \lnot(B1 \land B2) \\
-\hline
-\therefore &amp; B1 \lor B2
-\end{array}
+X: \Omega \to \mathbb{R}
 \]</span></p>
 </div>
-<p>&nbsp;</p>
+<ul>
+<li class="fragment">Think of a random variable as a way to <strong>measure</strong> or <strong>observe</strong> something in each possible world</li>
+</ul>
 <div class="fragment">
-<p><span class="math display">\[P(H \mid E) = \frac{P(H \land E)}{P(E)}\]</span></p>
-</div>
-</div></div>
-</section>
-<section id="statisticalproportional-syllogism-1" class="slide level2">
-<h2>Statistical/proportional syllogism</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href=""></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B1"</span>, <span class="st">"B2"</span>, <span class="st">"W"</span>)</span>
-<span id="cb67-2"><a href=""></a></span>
-<span id="cb67-3"><a href=""></a>ss <span class="ot">&lt;-</span></span>
-<span id="cb67-4"><a href=""></a>  <span class="fu">expand.grid</span>(<span class="fu">map</span>(vars, <span class="sc">~</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb67-5"><a href=""></a>  <span class="fu">set_names</span>(vars) <span class="sc">%&gt;%</span> </span>
-<span id="cb67-6"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span></span>
-<span id="cb67-7"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>())</span>
-<span id="cb67-8"><a href=""></a></span>
-<span id="cb67-9"><a href=""></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment">
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Ω</th>
-<th style="text-align: left;">B1</th>
-<th style="text-align: left;">B2</th>
-<th style="text-align: left;">W</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">⍵1</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵2</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">⍵3</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵4</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">⍵5</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵6</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">⍵7</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵8</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><span class="math display">\[X(\omega) = x\]</span></p>
 </div>
 </section>
-<section id="statisticalproportional-syllogism-2" class="slide level2">
-<h2>Statistical/proportional syllogism</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb68-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment">
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Ω</th>
-<th style="text-align: left;">B1</th>
-<th style="text-align: left;">B2</th>
-<th style="text-align: left;">W</th>
-<th style="text-align: right;">p</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">⍵1</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵2</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">⍵3</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵4</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">⍵5</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵6</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">⍵7</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵8</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<section id="what-is-a-random-variable-1" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<p><img data-src="images/random_variable_tweet.png" height="200"></p>
+<ul>
+<li>A random variable <span class="math inline">\(X\)</span> is a function that assigns a real number <span class="math inline">\(x\)</span> to each possible world/outcome <span class="math inline">\(\omega\)</span></li>
+</ul>
+<p><span class="math display">\[
+X: \Omega \to \mathbb{R}
+\]</span></p>
+<ul>
+<li>Alternatively, think of a random variable as a <strong>question</strong> about each possible world, where the <strong>answer is a number</strong></li>
+</ul>
+<p><span class="math display">\[X(\omega) = x\]</span></p>
 </div>
 </section>
-<section id="statisticalproportional-syllogism-3" class="slide level2">
-<h2>Statistical/proportional syllogism</h2>
+<section id="what-is-a-random-variable-2" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide121.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-3" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide122.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-4" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide123.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-5" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide124.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-6" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide125.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-7" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide126.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-8" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide127.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-9" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide128.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-10" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide129.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-11" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide130.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-12" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide131.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-13" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide132.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-14" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide133.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-15" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide134.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-16" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide135.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-17" class="slide level2">
+<h2>What is a random variable?</h2>
+<p><img data-src="images/Slide136.png" height="550"></p>
+</section>
+<section id="what-is-a-random-variable-18" class="slide level2">
+<h2>What is a random variable?</h2>
+<ul>
+<li class="fragment">Another way of thinking about a random variable is simply as a variable in R that can take on different values of different types</li>
+</ul>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb69-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb69-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb69-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
-<span id="cb69-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
-<span id="cb69-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
-<span id="cb69-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
-<span id="cb69-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
-<span id="cb69-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
-<span id="cb69-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href=""></a>ss <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(</span>
+<span id="cb67-2"><a href=""></a>  <span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb67-3"><a href=""></a>  <span class="at">B =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb67-4"><a href=""></a>  <span class="at">S =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"♂"</span>, <span class="st">"♀"</span>, <span class="st">"⚥"</span>)),</span>
+<span id="cb67-5"><a href=""></a>  <span class="at">H =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>),</span>
+<span id="cb67-6"><a href=""></a>  <span class="at">W =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">40</span>, <span class="dv">60</span>)</span>
+<span id="cb67-7"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb67-8"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span> </span>
+<span id="cb67-9"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>())</span>
+<span id="cb67-10"><a href=""></a></span>
+<span id="cb67-11"><a href=""></a>ss <span class="sc">%&gt;%</span> DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">8</span>), <span class="at">rownames =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell fragment">
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Ω</th>
-<th style="text-align: left;">B1</th>
-<th style="text-align: left;">B2</th>
-<th style="text-align: left;">W</th>
-<th style="text-align: right;">p</th>
-<th style="text-align: left;">E</th>
-<th style="text-align: left;">H</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">⍵1</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.125</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵2</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.125</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">⍵3</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.125</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵4</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">0.125</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">⍵5</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.125</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵6</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.125</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">⍵7</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.125</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">⍵8</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">0.125</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+
 </div>
 </section>
-<section id="statisticalproportional-syllogism-4" class="slide level2">
-<h2>Statistical/proportional syllogism</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb70-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb70-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb70-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
-<span id="cb70-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
-<span id="cb70-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
-<span id="cb70-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
-<span id="cb70-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
-<span id="cb70-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
-<span id="cb70-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="what-is-a-random-variable-18-output" class="slide level2 output-location-slide"><h2>What is a random variable?</h2><div class="cell output-location-slide">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0150ce2afc03a6c5ec1b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0150ce2afc03a6c5ec1b">{"x":{"filter":"none","vertical":false,"data":[["⍵1","⍵2","⍵3","⍵4","⍵5","⍵6","⍵7","⍵8","⍵9","⍵10","⍵11","⍵12","⍵13","⍵14","⍵15","⍵16","⍵17","⍵18","⍵19","⍵20","⍵21","⍵22","⍵23","⍵24","⍵25","⍵26","⍵27","⍵28","⍵29","⍵30","⍵31","⍵32","⍵33","⍵34","⍵35","⍵36","⍵37","⍵38","⍵39","⍵40","⍵41","⍵42","⍵43","⍵44","⍵45","⍵46","⍵47","⍵48","⍵49","⍵50","⍵51","⍵52","⍵53","⍵54","⍵55","⍵56","⍵57","⍵58","⍵59","⍵60","⍵61","⍵62","⍵63","⍵64","⍵65","⍵66","⍵67","⍵68","⍵69","⍵70","⍵71","⍵72","⍵73","⍵74","⍵75","⍵76","⍵77","⍵78","⍵79","⍵80","⍵81","⍵82","⍵83","⍵84","⍵85","⍵86","⍵87","⍵88","⍵89","⍵90","⍵91","⍵92","⍵93","⍵94","⍵95","⍵96","⍵97","⍵98","⍵99","⍵100","⍵101","⍵102","⍵103","⍵104","⍵105","⍵106","⍵107","⍵108"],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],["♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥"],[10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30],[20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Ω<\/th>\n      <th>A<\/th>\n      <th>B<\/th>\n      <th>S<\/th>\n      <th>H<\/th>\n      <th>W<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":8,"columnDefs":[{"className":"dt-right","targets":[4,5]},{"name":"Ω","targets":0},{"name":"A","targets":1},{"name":"B","targets":2},{"name":"S","targets":3},{"name":"H","targets":4},{"name":"W","targets":5}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[8,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div></section><section id="what-is-a-random-variable-19" class="slide level2">
+<h2>What is a random variable?</h2>
 <div>
 <ul>
-<li><span class="math inline">\(P(H \mid E) = \frac{P(H \land E)}{P(E)}\)</span></li>
+<li>Without additional background information, the probability distribution is uniform</li>
 </ul>
 </div>
-</section>
-<section id="statisticalproportional-syllogism-5" class="slide level2">
-<h2>Statistical/proportional syllogism</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb71-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb71-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb71-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
-<span id="cb71-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
-<span id="cb71-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
-<span id="cb71-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
-<span id="cb71-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
-<span id="cb71-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
-<span id="cb71-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span> </span>
-<span id="cb71-11"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H <span class="sc">&amp;</span> E]) <span class="sc">/</span> <span class="fu">sum</span>(p[E]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href=""></a>ss <span class="ot">&lt;-</span> ss <span class="sc">%&gt;%</span></span>
+<span id="cb68-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span>
+<span id="cb68-3"><a href=""></a>  </span>
+<span id="cb68-4"><a href=""></a>ss <span class="sc">%&gt;%</span> DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">8</span>), <span class="at">rownames =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell fragment">
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th style="text-align: right;">P(H | E)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">0.6667</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<p>&nbsp;</p>
-<div class="fragment">
-<p>For an urn with N balls M of which are blue, the probability of drawing a blue ball is <span class="math inline">\(M/N\)</span>!</p>
-</div>
+
 </section>
-<section id="statisticalproportional-syllogism-6" class="slide level2">
-<h2>Statistical/proportional syllogism</h2>
+<section id="what-is-a-random-variable-19-output" class="slide level2 output-location-slide"><h2>What is a random variable?</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-965c0a022e29f51f29ba" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-965c0a022e29f51f29ba">{"x":{"filter":"none","vertical":false,"data":[["⍵1","⍵2","⍵3","⍵4","⍵5","⍵6","⍵7","⍵8","⍵9","⍵10","⍵11","⍵12","⍵13","⍵14","⍵15","⍵16","⍵17","⍵18","⍵19","⍵20","⍵21","⍵22","⍵23","⍵24","⍵25","⍵26","⍵27","⍵28","⍵29","⍵30","⍵31","⍵32","⍵33","⍵34","⍵35","⍵36","⍵37","⍵38","⍵39","⍵40","⍵41","⍵42","⍵43","⍵44","⍵45","⍵46","⍵47","⍵48","⍵49","⍵50","⍵51","⍵52","⍵53","⍵54","⍵55","⍵56","⍵57","⍵58","⍵59","⍵60","⍵61","⍵62","⍵63","⍵64","⍵65","⍵66","⍵67","⍵68","⍵69","⍵70","⍵71","⍵72","⍵73","⍵74","⍵75","⍵76","⍵77","⍵78","⍵79","⍵80","⍵81","⍵82","⍵83","⍵84","⍵85","⍵86","⍵87","⍵88","⍵89","⍵90","⍵91","⍵92","⍵93","⍵94","⍵95","⍵96","⍵97","⍵98","⍵99","⍵100","⍵101","⍵102","⍵103","⍵104","⍵105","⍵106","⍵107","⍵108"],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],["♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥"],[10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30],[20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60],[0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259,0.009259259259259259]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Ω<\/th>\n      <th>A<\/th>\n      <th>B<\/th>\n      <th>S<\/th>\n      <th>H<\/th>\n      <th>W<\/th>\n      <th>p<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":8,"columnDefs":[{"className":"dt-right","targets":[4,5,6]},{"name":"Ω","targets":0},{"name":"A","targets":1},{"name":"B","targets":2},{"name":"S","targets":3},{"name":"H","targets":4},{"name":"W","targets":5},{"name":"p","targets":6}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[8,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div></section><section id="what-is-a-random-variable-20" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<ul>
+<li>Without additional background information, the probability distribution is uniform</li>
+</ul>
+</div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb72-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
-<span id="cb72-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb72-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
-<span id="cb72-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
-<span id="cb72-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
-<span id="cb72-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
-<span id="cb72-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
-<span id="cb72-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
-<span id="cb72-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
-<span id="cb72-11"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span> <span class="co"># urn model</span></span>
-<span id="cb72-12"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th style="text-align: right;">P(H | E)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">0.6667</td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">gf_col</span>(p <span class="sc">~</span> A, <span class="at">data =</span> ., <span class="at">fill =</span> <span class="sc">~</span> A) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-53-1.png" width="960" class="r-stretch"></section>
+<section id="what-is-a-random-variable-21" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<ul>
+<li>Without additional background information, the probability distribution is uniform</li>
+</ul>
 </div>
-</div>
-</section>
-<section id="statisticalproportional-syllogism-7" class="slide level2">
-<h2>Statistical/proportional syllogism</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb73-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># max entropy model</span></span>
-<span id="cb73-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb73-4"><a href=""></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W,</span>
-<span id="cb73-5"><a href=""></a>    <span class="at">P2 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> W),</span>
-<span id="cb73-6"><a href=""></a>    <span class="at">P3 =</span> <span class="sc">!</span>(B2 <span class="sc">&amp;</span> W),</span>
-<span id="cb73-7"><a href=""></a>    <span class="at">P4 =</span> <span class="sc">!</span>(B1 <span class="sc">&amp;</span> B2),</span>
-<span id="cb73-8"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3 <span class="sc">&amp;</span> P4,</span>
-<span id="cb73-9"><a href=""></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2) <span class="sc">%&gt;%</span></span>
-<span id="cb73-10"><a href=""></a>  <span class="fu">select</span>(Ω, B1, B2, W, p, E, H) <span class="sc">%&gt;%</span></span>
-<span id="cb73-11"><a href=""></a></span>
-<span id="cb73-12"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H <span class="sc">&amp;</span> E]) <span class="sc">/</span> <span class="fu">sum</span>(p[E])) <span class="co"># Bayes' rule</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th style="text-align: right;">P(H | E)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">0.6667</td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">gf_col</span>(p <span class="sc">~</span> B, <span class="at">data =</span> ., <span class="at">fill =</span> <span class="sc">~</span> B) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-54-1.png" width="960" class="r-stretch"></section>
+<section id="what-is-a-random-variable-22" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<ul>
+<li>Without additional background information, the probability distribution is uniform</li>
+</ul>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">gf_col</span>(p <span class="sc">~</span> S, <span class="at">data =</span> ., <span class="at">fill =</span> <span class="sc">~</span> S) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-55-1.png" width="960" class="r-stretch"></section>
+<section id="what-is-a-random-variable-23" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<ul>
+<li>Without additional background information, the probability distribution is uniform</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">gf_col</span>(p <span class="sc">~</span> H, <span class="at">data =</span> ., <span class="at">fill =</span> <span class="sc">~</span> H) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span> <span class="fu">gf_refine</span>(<span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"lightblue"</span>, <span class="at">high =</span> <span class="st">"darkblue"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-56-1.png" width="960" class="r-stretch"></section>
+<section id="what-is-a-random-variable-24" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<ul>
+<li>Without additional background information, the probability distribution is uniform</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">gf_col</span>(p <span class="sc">~</span> W, <span class="at">data =</span> ., <span class="at">fill =</span> <span class="sc">~</span> W) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span> <span class="fu">gf_refine</span>(<span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"tan"</span>, <span class="at">high =</span> <span class="st">"saddlebrown"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-57-1.png" width="960" class="r-stretch"></section>
+<section id="what-is-a-random-variable-25" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<ul>
+<li>Adding premises/assumptions to the evidence/knowledge base changes the probability distribution</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href=""></a>ss <span class="ot">&lt;-</span> ss <span class="sc">%&gt;%</span></span>
+<span id="cb74-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb74-3"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb74-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb74-5"><a href=""></a>    <span class="at">P1 =</span> H <span class="sc">==</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">10</span> <span class="sc">*</span> <span class="fu">as.integer</span>(S),</span>
+<span id="cb74-6"><a href=""></a>    <span class="at">P2 =</span> W <span class="sc">==</span> H <span class="sc">*</span> <span class="dv">2</span>,</span>
+<span id="cb74-7"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2</span>
+<span id="cb74-8"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb74-9"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb74-10"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>)) <span class="co"># update probability distribution using Bayes' theorem</span></span>
+<span id="cb74-11"><a href=""></a>  </span>
+<span id="cb74-12"><a href=""></a>ss <span class="sc">%&gt;%</span> DT<span class="sc">::</span><span class="fu">datatable</span>(<span class="at">options =</span> <span class="fu">list</span>(<span class="at">pageLength =</span> <span class="dv">8</span>), <span class="at">rownames =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
 </section>
+<section id="what-is-a-random-variable-25-output" class="slide level2 output-location-slide"><h2>What is a random variable?</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-3770faef412a4cb7a4ee" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-3770faef412a4cb7a4ee">{"x":{"filter":"none","vertical":false,"data":[["⍵1","⍵2","⍵3","⍵4","⍵5","⍵6","⍵7","⍵8","⍵9","⍵10","⍵11","⍵12","⍵13","⍵14","⍵15","⍵16","⍵17","⍵18","⍵19","⍵20","⍵21","⍵22","⍵23","⍵24","⍵25","⍵26","⍵27","⍵28","⍵29","⍵30","⍵31","⍵32","⍵33","⍵34","⍵35","⍵36","⍵37","⍵38","⍵39","⍵40","⍵41","⍵42","⍵43","⍵44","⍵45","⍵46","⍵47","⍵48","⍵49","⍵50","⍵51","⍵52","⍵53","⍵54","⍵55","⍵56","⍵57","⍵58","⍵59","⍵60","⍵61","⍵62","⍵63","⍵64","⍵65","⍵66","⍵67","⍵68","⍵69","⍵70","⍵71","⍵72","⍵73","⍵74","⍵75","⍵76","⍵77","⍵78","⍵79","⍵80","⍵81","⍵82","⍵83","⍵84","⍵85","⍵86","⍵87","⍵88","⍵89","⍵90","⍵91","⍵92","⍵93","⍵94","⍵95","⍵96","⍵97","⍵98","⍵99","⍵100","⍵101","⍵102","⍵103","⍵104","⍵105","⍵106","⍵107","⍵108"],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],["♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","♂","♂","♂","♂","♂","♂","♂","♂","♂","♀","♀","♀","♀","♀","♀","♀","♀","♀","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥","⚥"],[10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30,10,10,10,20,20,20,30,30,30],[20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60,20,40,60],[0,0,0,0,0,0,0,0,0.125,0,0,0,0,0.125,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.125,0,0,0,0,0.125,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.125,0,0,0,0,0.125,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.125,0,0,0,0,0.125,0,0,0,0,0,0,0,0,0,0,0,0,0],[false,false,false,false,false,false,true,true,true,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false],[true,false,false,false,true,false,false,false,true,true,false,false,false,true,false,false,false,true,true,false,false,false,true,false,false,false,true,true,false,false,false,true,false,false,false,true,true,false,false,false,true,false,false,false,true,true,false,false,false,true,false,false,false,true,true,false,false,false,true,false,false,false,true,true,false,false,false,true,false,false,false,true,true,false,false,false,true,false,false,false,true,true,false,false,false,true,false,false,false,true,true,false,false,false,true,false,false,false,true,true,false,false,false,true,false,false,false,true],[false,false,false,false,false,false,false,false,true,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Ω<\/th>\n      <th>A<\/th>\n      <th>B<\/th>\n      <th>S<\/th>\n      <th>H<\/th>\n      <th>W<\/th>\n      <th>p<\/th>\n      <th>P1<\/th>\n      <th>P2<\/th>\n      <th>E<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":8,"columnDefs":[{"className":"dt-right","targets":[4,5,6]},{"name":"Ω","targets":0},{"name":"A","targets":1},{"name":"B","targets":2},{"name":"S","targets":3},{"name":"H","targets":4},{"name":"W","targets":5},{"name":"p","targets":6},{"name":"P1","targets":7},{"name":"P2","targets":8},{"name":"E","targets":9}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[8,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div></section><section id="what-is-a-random-variable-26" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<ul>
+<li>Adding premises/assumptions to the evidence/knowledge base changes the probability distribution</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">gf_col</span>(p <span class="sc">~</span> A, <span class="at">data =</span> ., <span class="at">fill =</span> <span class="sc">~</span> A) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-59-1.png" width="960" class="r-stretch"></section>
+<section id="what-is-a-random-variable-27" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<ul>
+<li>Adding premises/assumptions to the evidence/knowledge base changes the probability distribution</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">gf_col</span>(p <span class="sc">~</span> B, <span class="at">data =</span> ., <span class="at">fill =</span> <span class="sc">~</span> B) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-60-1.png" width="960" class="r-stretch"></section>
+<section id="what-is-a-random-variable-28" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<ul>
+<li>Adding premises/assumptions to the evidence/knowledge base changes the probability distribution</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">gf_col</span>(p <span class="sc">~</span> S, <span class="at">data =</span> ., <span class="at">fill =</span> <span class="sc">~</span> S) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-61-1.png" width="960" class="r-stretch"></section>
+<section id="what-is-a-random-variable-29" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<ul>
+<li>Adding premises/assumptions to the evidence/knowledge base changes the probability distribution</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">gf_col</span>(p <span class="sc">~</span> H, <span class="at">data =</span> ., <span class="at">fill =</span> <span class="sc">~</span> H) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span> <span class="fu">gf_refine</span>(<span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"lightblue"</span>, <span class="at">high =</span> <span class="st">"darkblue"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-62-1.png" width="960" class="r-stretch"></section>
+<section id="what-is-a-random-variable-30" class="slide level2">
+<h2>What is a random variable?</h2>
+<div>
+<ul>
+<li>Adding premises/assumptions to the evidence/knowledge base changes the probability distribution</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href=""></a>ss <span class="sc">%&gt;%</span> <span class="fu">gf_col</span>(p <span class="sc">~</span> W, <span class="at">data =</span> ., <span class="at">fill =</span> <span class="sc">~</span> W) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span> <span class="fu">gf_refine</span>(<span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"tan"</span>, <span class="at">high =</span> <span class="st">"saddlebrown"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-63-1.png" width="960" class="r-stretch"></section>
 <section id="section-2" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
 <h2></h2>
 </section>
@@ -3530,7 +3397,7 @@ p: \Omega \to [0, 1]
 <p><span class="math display">\[P(X) = \sum_{\omega \in X} p(\omega)\]</span></p>
 <p>For example, given the uniform probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> A <span class="sc">|</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href=""></a><span class="fu">P</span>(<span class="at">H =</span> A <span class="sc">|</span> B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.75</code></pre>
 </div>
@@ -3543,7 +3410,1353 @@ p: \Omega \to [0, 1]
 <p>For example, given the uniform probability distribution <span class="math inline">\(p\)</span>, <span class="math inline">\(P(X)\)</span> for <span class="math inline">\(X = A \lor B\)</span> is:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-0df570ba{}.cl-0df25e48{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-0df25e52{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-0df25e53{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-0df25e54{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-0df3a9c4{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-0df3b69e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0df3b6a8{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0df3b6a9{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0df3b6aa{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-0df570ba"><thead><tr style="overflow-wrap:break-word;"><th class="cl-0df3b69e"><p class="cl-0df3a9c4"><span class="cl-0df25e48">A</span></p></th><th class="cl-0df3b69e"><p class="cl-0df3a9c4"><span class="cl-0df25e48">B</span></p></th><th class="cl-0df3b69e"><p class="cl-0df3a9c4"><span class="cl-0df25e48">E</span></p></th><th class="cl-0df3b69e"><p class="cl-0df3a9c4"><span class="cl-0df25e48">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e53">FALSE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e53">FALSE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a8"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-0df3b6a9"><p class="cl-0df3a9c4"><span class="cl-0df25e53">FALSE</span></p></td><td class="cl-0df3b6a9"><p class="cl-0df3a9c4"><span class="cl-0df25e53">FALSE</span></p></td><td class="cl-0df3b6a9"><p class="cl-0df3a9c4"><span class="cl-0df25e52">TRUE</span></p></td><td class="cl-0df3b6a9"><p class="cl-0df3a9c4"><span class="cl-0df25e53">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="4" class="cl-0df3b6aa"><p class="cl-0df3a9c4"><span class="cl-0df25e54">P(H | E) = 0.75</span></p></td></tr></tfoot></table></div>
+<div class="tabwid"><style>.cl-8f06e288{}.cl-8f038002{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8f03800c{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 100, 0, 1.00);background-color:transparent;}.cl-8f03800d{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(139, 0, 0, 1.00);background-color:transparent;}.cl-8f038016{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8f050148{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8f05114c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8f05114d{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8f051156{width:0.75in;background-color:rgba(245, 245, 220, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8f051157{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-8f06e288"><thead><tr style="overflow-wrap:break-word;"><th class="cl-8f05114c"><p class="cl-8f050148"><span class="cl-8f038002">A</span></p></th><th class="cl-8f05114c"><p class="cl-8f050148"><span class="cl-8f038002">B</span></p></th><th class="cl-8f05114c"><p class="cl-8f050148"><span class="cl-8f038002">E</span></p></th><th class="cl-8f05114c"><p class="cl-8f050148"><span class="cl-8f038002">H</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800c">TRUE</span></p></td><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800c">TRUE</span></p></td><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800c">TRUE</span></p></td><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800c">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800c">TRUE</span></p></td><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800d">FALSE</span></p></td><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800c">TRUE</span></p></td><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800c">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800d">FALSE</span></p></td><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800c">TRUE</span></p></td><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800c">TRUE</span></p></td><td class="cl-8f05114d"><p class="cl-8f050148"><span class="cl-8f03800c">TRUE</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8f051156"><p class="cl-8f050148"><span class="cl-8f03800d">FALSE</span></p></td><td class="cl-8f051156"><p class="cl-8f050148"><span class="cl-8f03800d">FALSE</span></p></td><td class="cl-8f051156"><p class="cl-8f050148"><span class="cl-8f03800c">TRUE</span></p></td><td class="cl-8f051156"><p class="cl-8f050148"><span class="cl-8f03800d">FALSE</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="4" class="cl-8f051157"><p class="cl-8f050148"><span class="cl-8f038016">P(H | E) = 0.75</span></p></td></tr></tfoot></table></div>
+</div>
+</div>
+</section>
+<section id="robot-random-variables" class="slide level2">
+<h2>Robot random variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href=""></a>H <span class="ot">=</span> (<span class="dv">10</span> <span class="sc">+</span> <span class="dv">10</span> <span class="sc">*</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb82-2"><a href=""></a></span>
+<span id="cb82-3"><a href=""></a>W <span class="ot">=</span> H <span class="sc">*</span> <span class="dv">2</span></span>
+<span id="cb82-4"><a href=""></a></span>
+<span id="cb82-5"><a href=""></a><span class="fu">expand.grid</span>(</span>
+<span id="cb82-6"><a href=""></a>  <span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb82-7"><a href=""></a>  <span class="at">B =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb82-8"><a href=""></a>  <span class="at">S =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"N"</span>)),</span>
+<span id="cb82-9"><a href=""></a>  <span class="at">H =</span> H,</span>
+<span id="cb82-10"><a href=""></a>  <span class="at">W =</span> W</span>
+<span id="cb82-11"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb82-12"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span> </span>
+<span id="cb82-13"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb82-14"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb82-15"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb82-16"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb82-17"><a href=""></a>    <span class="at">P1 =</span> H <span class="sc">==</span> (<span class="dv">10</span> <span class="sc">+</span> <span class="dv">10</span> <span class="sc">*</span> <span class="fu">as.integer</span>(S)),</span>
+<span id="cb82-18"><a href=""></a>    <span class="at">P2 =</span> W <span class="sc">==</span> H <span class="sc">*</span> <span class="dv">2</span>,</span>
+<span id="cb82-19"><a href=""></a>    <span class="at">E =</span> P1 <span class="sc">&amp;</span> P2) <span class="sc">%&gt;%</span></span>
+<span id="cb82-20"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb82-21"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: left;">S</th>
+<th style="text-align: right;">H</th>
+<th style="text-align: right;">W</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">P1</th>
+<th style="text-align: left;">P2</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵10</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵11</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵12</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵13</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵14</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵15</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵16</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵17</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵18</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵19</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵20</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵21</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵22</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵23</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵24</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵25</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵26</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵27</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵28</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵29</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵30</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵31</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵32</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵33</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵34</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵35</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵36</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵37</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵38</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵39</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵40</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵41</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵42</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵43</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵44</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵45</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵46</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵47</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵48</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵49</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵50</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵51</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵52</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵53</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵54</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵55</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵56</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵57</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵58</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵59</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵60</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵61</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵62</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵63</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵64</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵65</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵66</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵67</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵68</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵69</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵70</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵71</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵72</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵73</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵74</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵75</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵76</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵77</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵78</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵79</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵80</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵81</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵82</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵83</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵84</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵85</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵86</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵87</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵88</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵89</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵90</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵91</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵92</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵93</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵94</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵95</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵96</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵97</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵98</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵99</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵100</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵101</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵102</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵103</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵104</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵105</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵106</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵107</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵108</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 

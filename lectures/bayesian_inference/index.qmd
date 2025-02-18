@@ -20,6 +20,7 @@ df-print: kable
 ```{r}
 #| include: false
 library(tidyverse)
+library(ggformula)
 theme_set(theme_minimal())
 
 #| output-location: default
@@ -1305,8 +1306,8 @@ Statistical models = **probability distributions** of **random variables**
 #| output-location: default
 ss <-
   expand_grid(A = c(TRUE, FALSE), B = c(TRUE, FALSE)) %>%
-  mutate(Ω = c("⍵1", "⍵2", "⍵3", "⍵4")) %>%
-  select(Ω, A, B)
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
 
 ss
 ```
@@ -1855,164 +1856,274 @@ Statistical models = **probability distributions** of **random variables**
 
 ## What is a random variable?
 
+::: fragment
 ![](images/random_variable_tweet.png){height="200"}
-
-## Statistical/proportional syllogism
-
-::::::: columns
-::: {.column width="65%"}
-[**Premises/evidence/knowledge base**:]{.fragment}
-
--   "*An urn contains two blue balls and one white ball*"
--   "*You draw one ball from the urn*"
-
-[**Conclusion/hypothesis/query**:]{.fragment}
-
--   "*You draw a blue ball*"
-
-[**Propositional variables**:]{.fragment}
-
--   **B1** = "*You draw blue ball 1*"
--   **B2** = "*You draw blue ball 2*"
--   **W** = "*You draw the white ball*"
 :::
 
-::::: {.column width="35%"}
+-   A random variable $X$ is a function that assigns a real number $x$ to each possible world/outcome $\omega$
+
 ::: fragment
 $$
-\begin{array}{ll}
-1. & B1 \lor B2 \lor W \\
-2. & \lnot(B1 \land W) \\
-3. & \lnot(B2 \land W) \\
-4. & \lnot(B1 \land B2) \\
-\hline
-\therefore & B1 \lor B2
-\end{array}
+X: \Omega \to \mathbb{R}
 $$
 :::
 
- 
+-   Think of a random variable as a way to **measure** or **observe** something in each possible world
 
 ::: fragment
-$$P(H \mid E) = \frac{P(H \land E)}{P(E)}$$
+$$X(\omega) = x$$
 :::
-:::::
-:::::::
 
-## Statistical/proportional syllogism
-
-```{r}
-vars <- c("B1", "B2", "W")
-
-ss <-
-  expand.grid(map(vars, ~ c(TRUE, FALSE))) %>%
-  set_names(vars) %>% 
-  mutate(Ω = paste0("⍵", 1:n())) %>%
-  select(Ω, everything())
-
-ss
-```
-
-## Statistical/proportional syllogism
-
-```{r}
-ss %>%
-  mutate(p = 1 / n())
-```
-
-## Statistical/proportional syllogism
-
-```{r}
-ss %>%
-  mutate(p = 1 / n()) %>%
-  mutate(
-    P1 = B1 | B2 | W,
-    P2 = !(B1 & W),
-    P3 = !(B2 & W),
-    P4 = !(B1 & B2),
-    E  = P1 & P2 & P3 & P4,
-    H  = B1 | B2) %>%
-  select(Ω, B1, B2, W, p, E, H)
-```
-
-## Statistical/proportional syllogism
-
-```{r}
-#| eval: false
-#| output-location: default
-ss %>%
-  mutate(p = 1 / n()) %>%
-  mutate(
-    P1 = B1 | B2 | W,
-    P2 = !(B1 & W),
-    P3 = !(B2 & W),
-    P4 = !(B1 & B2),
-    E  = P1 & P2 & P3 & P4,
-    H  = B1 | B2) %>%
-  select(Ω, B1, B2, W, p, E, H)
-```
+## What is a random variable?
 
 ::: nonincremental
--   $P(H \mid E) = \frac{P(H \land E)}{P(E)}$
+
+![](images/random_variable_tweet.png){height="200"}
+
+-   A random variable $X$ is a function that assigns a real number $x$ to each possible world/outcome $\omega$
+
+$$
+X: \Omega \to \mathbb{R}
+$$
+
+-   Alternatively, think of a random variable as a **question** about each possible world, where the **answer is a number**
+
+
+$$X(\omega) = x$$
+
 :::
 
-## Statistical/proportional syllogism
 
-```{r}
-ss %>%
-  mutate(p = 1 / n()) %>%
-  mutate(
-    P1 = B1 | B2 | W,
-    P2 = !(B1 & W),
-    P3 = !(B2 & W),
-    P4 = !(B1 & B2),
-    E  = P1 & P2 & P3 & P4,
-    H  = B1 | B2) %>%
-  select(Ω, B1, B2, W, p, E, H) %>% 
-  summarize(`P(H | E)` = sum(p[H & E]) / sum(p[E]))
-```
+## What is a random variable?
 
- 
+![](images/Slide121.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide122.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide123.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide124.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide125.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide126.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide127.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide128.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide129.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide130.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide131.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide132.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide133.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide134.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide135.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide136.png){height="550"}
+
+## What is a random variable?
+
+-   Another way of thinking about a random variable is simply as a variable in R that can take on different values of different types
 
 ::: fragment
-For an urn with N balls M of which are blue, the probability of drawing a blue ball is $M/N$!
+```{r}
+#| output: asis
+#| output-location: slide
+ss <- expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE),
+  S = factor(c("♂", "♀", "⚥")),
+  H = c(10, 20, 30),
+  W = c(20, 40, 60)
+  ) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss %>% DT::datatable(options = list(pageLength = 8), rownames = FALSE)
+```
 :::
 
-## Statistical/proportional syllogism
+## What is a random variable?
+
+::: nonincremental
+-   Without additional background information, the probability distribution is uniform
+:::
+
+```{r}
+#| output-location: slide
+ss <- ss %>%
+  mutate(p = 1 / n())
+  
+ss %>% DT::datatable(options = list(pageLength = 8), rownames = FALSE)
+```
+
+## What is a random variable?
+
+::: nonincremental
+-   Without additional background information, the probability distribution is uniform
+:::
 
 ```{r}
 #| output-location: default
-ss %>%
-  mutate(p = 1 / n()) %>% # max entropy model
-  mutate(
-    P1 = B1 | B2 | W,
-    P2 = !(B1 & W),
-    P3 = !(B2 & W),
-    P4 = !(B1 & B2),
-    E  = P1 & P2 & P3 & P4,
-    H  = B1 | B2) %>%
-  select(Ω, B1, B2, W, p, E, H) %>%
-  mutate(p = ifelse(E, p / sum(p[E]), 0)) %>% # urn model
-  summarize(`P(H | E)` = sum(p[H]))
+ss %>% gf_col(p ~ A, data = ., fill = ~ A) %>% gf_lims(y = c(0, 1))
 ```
 
-## Statistical/proportional syllogism
+## What is a random variable?
+
+::: nonincremental
+-   Without additional background information, the probability distribution is uniform
+:::
 
 ```{r}
 #| output-location: default
-ss %>%
-  mutate(p = 1 / n()) %>% # max entropy model
-  mutate(
-    P1 = B1 | B2 | W,
-    P2 = !(B1 & W),
-    P3 = !(B2 & W),
-    P4 = !(B1 & B2),
-    E  = P1 & P2 & P3 & P4,
-    H  = B1 | B2) %>%
-  select(Ω, B1, B2, W, p, E, H) %>%
-
-  summarize(`P(H | E)` = sum(p[H & E]) / sum(p[E])) # Bayes' rule
+ss %>% gf_col(p ~ B, data = ., fill = ~ B) %>% gf_lims(y = c(0, 1))
 ```
+
+## What is a random variable?
+
+::: nonincremental
+-   Without additional background information, the probability distribution is uniform
+:::
+
+```{r}
+#| output-location: default
+ss %>% gf_col(p ~ S, data = ., fill = ~ S) %>% gf_lims(y = c(0, 1))
+```
+
+## What is a random variable?
+
+::: nonincremental
+-   Without additional background information, the probability distribution is uniform
+:::
+
+```{r}
+#| output-location: default
+ss %>% gf_col(p ~ H, data = ., fill = ~ H) %>% gf_lims(y = c(0, 1)) %>% gf_refine(scale_fill_gradient(low = "lightblue", high = "darkblue"))
+```
+## What is a random variable?
+
+::: nonincremental
+-   Without additional background information, the probability distribution is uniform
+:::
+
+```{r}
+#| output-location: default
+ss %>% gf_col(p ~ W, data = ., fill = ~ W) %>% gf_lims(y = c(0, 1)) %>% gf_refine(scale_fill_gradient(low = "tan", high = "saddlebrown"))
+```
+
+## What is a random variable?
+
+::: nonincremental
+-   Adding premises/assumptions to the evidence/knowledge base changes the probability distribution
+:::
+
+```{r}
+#| output-location: slide
+ss <- ss %>%
+  mutate(p = 1 / n()) %>% 
+  rowwise() %>% 
+  mutate(
+    P1 = H == 10 + 10 * as.integer(S),
+    P2 = W == H * 2,
+    E  = P1 & P2
+  ) %>%
+  ungroup() %>% 
+  mutate(p = ifelse(E, p / sum(p[E]), 0)) # update probability distribution using Bayes' theorem
+  
+ss %>% DT::datatable(options = list(pageLength = 8), rownames = FALSE)
+```
+
+## What is a random variable?
+
+::: nonincremental
+-   Adding premises/assumptions to the evidence/knowledge base changes the probability distribution
+:::
+
+```{r}
+#| output-location: default
+ss %>% gf_col(p ~ A, data = ., fill = ~ A) %>% gf_lims(y = c(0, 1))
+```
+
+## What is a random variable?
+
+::: nonincremental
+-   Adding premises/assumptions to the evidence/knowledge base changes the probability distribution
+:::
+
+```{r}
+#| output-location: default
+ss %>% gf_col(p ~ B, data = ., fill = ~ B) %>% gf_lims(y = c(0, 1))
+```
+
+## What is a random variable?
+
+::: nonincremental
+-   Adding premises/assumptions to the evidence/knowledge base changes the probability distribution
+:::
+
+```{r}
+#| output-location: default
+ss %>% gf_col(p ~ S, data = ., fill = ~ S) %>% gf_lims(y = c(0, 1))
+```
+
+## What is a random variable?
+
+::: nonincremental
+-   Adding premises/assumptions to the evidence/knowledge base changes the probability distribution
+:::
+
+```{r}
+#| output-location: default
+ss %>% gf_col(p ~ H, data = ., fill = ~ H) %>% gf_lims(y = c(0, 1)) %>% gf_refine(scale_fill_gradient(low = "lightblue", high = "darkblue"))
+```
+## What is a random variable?
+
+::: nonincremental
+-   Adding premises/assumptions to the evidence/knowledge base changes the probability distribution
+:::
+
+```{r}
+#| output-location: default
+ss %>% gf_col(p ~ W, data = ., fill = ~ W) %>% gf_lims(y = c(0, 1)) %>% gf_refine(scale_fill_gradient(low = "tan", high = "saddlebrown"))
+```
+
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
@@ -2093,4 +2204,32 @@ For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \
 #| echo: false
 #| output-location: default
 P.flex(H = A | B)
+```
+
+
+
+## Robot random variables
+
+```{r}
+H = (10 + 10 * c(0, 1, 2))
+
+W = H * 2
+
+expand.grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE),
+  S = factor(c("M", "F", "N")),
+  H = H,
+  W = W
+  ) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything()) %>% 
+  mutate(p = 1 / n()) %>% 
+  rowwise() %>% 
+  mutate(
+    P1 = H == (10 + 10 * as.integer(S)),
+    P2 = W == H * 2,
+    E = P1 & P2) %>%
+  ungroup() %>% 
+  mutate(p = ifelse(E, p / sum(p[E]), 0))
 ```
