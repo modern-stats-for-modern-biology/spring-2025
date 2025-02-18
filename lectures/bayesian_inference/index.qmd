@@ -54,22 +54,22 @@ theme_set(theme_minimal())
 
     -   **Rational degree of evidential support/strength of an inductive argument** (objective Bayesian): The proportion of possible worlds where both the hypothesis and the evidence are true, relative to the possible worlds where the evidence is true
 
--   In this series of lectures, we focus on the **objective Bayesian** interpretation of probability, because it incorporates all the others–except when probability measures fundamental randomness (quantum mechanics)
+-   In this series of lectures, we focus on the **objective Bayesian** interpretation of probability, because it incorporates all the others–except when probability measures true randomness ([quantum randomness](https://quantumphysicslady.org/glossary/quantum-randomness/))
 
 ## What the &#%! is probability?
 
 ::: nonincremental
 -   **Ontological interpretations** (probability as a feature of reality; *objective*)
 
-    -   **Limiting relative frequency**: [Probability as a feature of an infinite sequence of trials]{.blue}
+    -   **Limiting relative frequency**: [Probability as a feature of an infinite sequence of trials]{.orange}
 
-    -   **Physical chance/propensity**: [Probability as a feature of a physical system]{.blue}
+    -   **Physical chance/propensity**: [Probability as a feature of a physical system]{.orange}
 
 -   **Epistemological interpretations** (probability as a measure of uncertainty; *subjective*)
 
-    -   **Rational degree of belief**: [Probability as a feature of a proposition]{.blue}
+    -   **Rational degree of belief**: [Probability as a feature of a proposition]{.orange}
 
-    -   **Rational degree of evidential support**: [Probability as a feature of an argument]{.blue}
+    -   **Rational degree of evidential support**: [Probability as a feature of an argument]{.orange}
 :::
 
 ## Take homes from last week
@@ -316,23 +316,23 @@ $$P(B \mid A) = P(B)$$
 
 ## Association is not causation!
 
-![](images/Slide111.png){fig-align="center"}
-
-## Association is not causation!
-
-![](images/Slide112.png){fig-align="center"}
-
-## Association is not causation!
-
-![](images/Slide113.png){fig-align="center"}
-
-## Association is not causation!
-
 ![](images/Slide114.png){fig-align="center"}
 
 ## Association is not causation!
 
 ![](images/Slide115.png){fig-align="center"}
+
+## Association is not causation!
+
+![](images/Slide116.png){fig-align="center"}
+
+## Association is not causation!
+
+![](images/Slide117.png){fig-align="center"}
+
+## Association is not causation!
+
+![](images/Slide118.png){fig-align="center"}
 
 ## Probability theory: Rules of probability calculus
 
@@ -410,7 +410,7 @@ $$
 
     -   $P(A \lor B) = P(A) + P(B) - P(A \land B)$
 
-    -   Iff A and B are disjoint, i.e., $P(A \land B) = 0$:
+    -   Iff A and B are disjoint/mutually exclusive, i.e., $P(A \land B) = 0$:
 
     -   $P(A \lor B) = P(A) + P(B)$
 
@@ -500,9 +500,7 @@ $$
 -   According to Bayes' theorem:
 :::
 
-$$
-P(H \mid E, K) = \frac{P(H \mid K) \cdot P(E \mid H, K)}{P(E \mid K)}
-$$
+$P(H \mid E, K) = \frac{P(H \mid K) \cdot P(E \mid H, K)}{P(E \mid K)}$
 
 ## Bayes' theorem in action: Bayesian inference
 
@@ -671,6 +669,16 @@ $$
 :::
 
 $$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H \land E) + P(\lnot H \land E)}
+$$
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
 P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H) \cdot P(E \mid H) + P(\lnot H) \cdot P(E \mid \lnot H)}
 $$
 
@@ -748,16 +756,7 @@ $$
 
 ## Visual proof of Bayes' theorem
 
-![](images/Slide104.png){fig-align="center"}
-
-
-## Visual proof of Bayes' theorem
-
 ![](images/Slide107.png){fig-align="center"}
-
-## Visual proof of Bayes' theorem
-
-![](images/Slide105.png){fig-align="center"}
 
 ## Visual proof of Bayes' theorem
 
@@ -770,6 +769,18 @@ $$
 ## Visual proof of Bayes' theorem
 
 ![](images/Slide110.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide111.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide112.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide113.png){fig-align="center"}
 
 ## Bayes' theorem in action: Bayesian inference
 
@@ -936,7 +947,7 @@ $$
 :::
 
 $$
-P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{\int_{i=1}^\infty P(H_i) \cdot P(E \mid H_i)}
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{\int P(H) \cdot P(E \mid H) \,dH }
 $$
 
 ::: nonincremental
@@ -953,7 +964,9 @@ $$
 -   The denominator $P(E)$ is the probability of evidence $E$ (a.k.a the **marginal likelihood**)
 :::
 
--   This integral is often intractable, making analytical solutions difficult or impossible; that's why Bayesian inference remained limited to simple cases until modern computing enabled efficient approximations using [Markov Chain Monte Carlo](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo) (MCMC) methods
+-   In most cases, this integral is intractable, which historically restricted Bayesian inference to simple cases where an exact solution was possible
+
+-   The advent of modern computers and [MCMC](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo) methods enabled efficient and accurate numerical approximations of this integral, making Bayesian inference widely applicable
 
 ## Bayes' theorem in action: Bayesian inference
 
@@ -1119,10 +1132,35 @@ Fasten your seatblets because we are about to enter the world of statistical mod
 
 ## Models vs. reality
 
-XXX
+Models are simplifications, approximations, or abstractions of reality!
 
+![](images/amazing-comparison-before-after-photoshop-celebrities-stars-4.jpg){fig-align="center" height="500"}
 
-## Statistical models = probability distributions of random variables
+## Models vs. reality
+
+Don't fall in love with your models!
+
+![](images/elon_musk_in_love_with_robot.jpg){fig-align="center" height="500"}
+
+## Models vs. reality
+
+Don't fall to the sin of reification!
+
+![](images/elon_musk_in_love_with_robot.jpg){fig-align="center" height="500"}
+
+## Models vs. reality
+
+Don't confuse the map with the territory!
+
+![](images/Slide119.png){fig-align="center"}
+
+## All models are wrong, some are useful!
+
+![](images/Slide120.png){fig-align="center"}
+
+## Statistical models
+
+Statistical models = **probability distributions** of **random variables**
 
 :::::: columns
 ::: {.column width="30%"}
@@ -1138,23 +1176,21 @@ XXX
 ::::
 ::::::
 
-## Statistical models = probability distributions of random variables
+## Statistical models
+
+Statistical models = **probability distributions** of **random variables**
 
 > It turns out that empirical research questions come down entirely to describing the probability distributions of random variables. That’s, well, that’s really all that quantitative empirical research is. Sorry!
 >
 > — Nick Huntington-Klein [The Effect](https://theeffectbook.net/) \[free online book\]
 
-## Maximum entropy probability distribution
+## What is a probability distribution?
 
-The maximum entropy principle makes explicit our freedom in using different forms of prior data. As a special case, a uniform prior probability density (Laplace's principle of indifference, sometimes called the principle of insufficient reason), may be adopted. Thus, the maximum entropy principle is not merely an alternative way to view the usual methods of inference of classical statistics, but represents a significant conceptual generalization of those methods.
+-   Given a sample space/universe $\Omega$
 
--   Laplace's principle of indifference (sometimes called the principle of insufficient reason) is a special case
-
--   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
-
-## Probability distribution
-
+::: fragment
 ```{r}
+#| output-location: default
 ss <-
   expand_grid(A = c(TRUE, FALSE), B = c(TRUE, FALSE)) %>%
   mutate(Ω = c("⍵1", "⍵2", "⍵3", "⍵4")) %>%
@@ -1162,6 +1198,144 @@ ss <-
 
 ss
 ```
+:::
+
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a sample space/universe $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability to each possible outcome/world $\omega$
+:::
+
+::: fragment
+$$
+p: \Omega \to [0, 1]
+$$
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = c(0.1, 0.2, 0.3, 0.4))
+```
+:::
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a sample space/universe $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability to each possible outcome/world $\omega$
+:::
+
+$$
+p: \Omega \to [0, 1]
+$$
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n())
+```
+
+
+-   Since outcomes are partitions of the sample space, their probabilities must sum to 1
+
+## Probability calculation
+
+::: fragment
+The probability of proposition/event $X$ is calculated as
+:::
+
+::: fragment
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+:::
+
+::: fragment
+For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+:::
+
+::: fragment
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B)
+```
+:::
+
+## Probability calculation
+
+The probability of proposition/event $X$ is calculated as
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  filter(X)
+```
+
+## Probability calculation
+
+The probability of proposition/event $X$ is calculated as
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  filter(X) %>% 
+  summarize(P = sum(p)) %>% 
+  pull(P)
+```
+
+## Probability calculation
+
+The probability of proposition/event $X$ is calculated as
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  
+  summarize(P = sum(p[X])) %>% 
+  pull(P)
+```
+:::
+
+## Probability calculation
+
+The probability of proposition/event $X$ is calculated as
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+
+  
+  summarize(P = sum(p[A | B])) %>% 
+  pull(P)
+```
+
+
 
 ## Probability distribution
 
@@ -1185,98 +1359,41 @@ ss %>% mutate(p = 1 / n())
 ```
 :::
 
-## Probability calculation
+## Maximum entropy probability distribution
 
-::: fragment
-The probability of proposition/event $X$ is calculated as
+The maximum entropy principle makes explicit our freedom in using different forms of prior data. As a special case, a uniform prior probability density (Laplace's principle of indifference, sometimes called the principle of insufficient reason), may be adopted. Thus, the maximum entropy principle is not merely an alternative way to view the usual methods of inference of classical statistics, but represents a significant conceptual generalization of those methods.
+
+-   Laplace's principle of indifference (sometimes called the principle of insufficient reason) is a special case
+
+-   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
+
+## Probability distribution
+
+::: nonincremental
+-   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
 :::
 
-::: fragment
-$$P(X) = \sum_{\omega_i \in X} p(\omega_i)$$
-:::
+$$\forall \omega_i \in \Omega \quad p(\omega_i) = \frac{1}{|\Omega|}$$
 
-::: fragment
-For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
-:::
+::: nonincremental
+where $p(\omega_i)$ is the probability (or more precisely the *probability mass*) of $\omega_i$
 
-::: fragment
-```{r}
-ss %>%
-  mutate(p = 1 / n()) %>%
-  mutate(X = A | B)
-```
-:::
+-   $p$ is also known as **probability distribution** or *probability mass function* (PMF) of $\Omega$
 
-## Probability calculation
-
-The probability of proposition/event $X$ is calculated as
-
-$$P(X) = \sum_{\omega_i \in X} p(\omega_i)$$
-
-For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
-
-```{r}
-ss %>%
-  mutate(p = 1 / n()) %>%
-  mutate(X = A | B) %>%
-  filter(X)
-```
-
-## Probability calculation
-
-The probability of proposition/event $X$ is calculated as
-
-$$P(X) = \sum_{\omega_i \in X} p(\omega_i)$$
-
-For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
-
-```{r}
-ss %>%
-  mutate(p = 1 / n()) %>%
-  mutate(X = A | B) %>%
-  filter(X) %>% 
-  summarize(`P(X)` = sum(p))
-```
-
-::: fragment
-or more succinctly
+-   For example, given the following sample space $\quad p(\omega_i) = \frac{1}{4} = 0.25$
 :::
 
 ::: fragment
 ```{r}
-ss %>%
-  mutate(p = 1 / n()) %>%
-  mutate(X = A | B) %>%
-  summarize(`P(X)` = sum(p[X]))
+ss %>% mutate(p = 1 / n())
 ```
 :::
 
-## Probability calculation
 
-The probability of proposition/event $X$ is calculated as
 
-$$P(X) = \sum_{\omega_i \in X} p(\omega_i)$$
+## What is a random variable?
 
-For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
-
-```{r}
-#| output-location: default
-ss %>%
-  mutate(p = 1 / n()) %>%
-  mutate(X = A | B) %>%
-  filter(X) %>% 
-  summarize(`P(X)` = sum(p))
-```
-
-or even more succinctly
-
-```{r}
-#| output-location: default
-ss %>%
-  mutate(p = 1 / n()) %>%
-  
-  summarize(`P(A ∨ B)` = sum(p[A | B]))
-```
+![](images/random_variable_tweet.png){height="200"}
 
 ## Statistical/proportional syllogism
 
@@ -1399,7 +1516,6 @@ ss %>%
 For an urn with N balls M of which are blue, the probability of drawing a blue ball is $M/N$!
 :::
 
-
 ## Statistical/proportional syllogism
 
 ```{r}
@@ -1465,6 +1581,10 @@ $P(E) = \sum_{i=1}^n P(P_i \land E)$
  
 
 $P(E) = \sum_{i=1}^n P(P_i) \cdot P(E \mid P_i)$
+
+ 
+
+$P(E) = \int P(H) P(E \mid H) \, dH$
 
 ## Gambler's fallacy
 
