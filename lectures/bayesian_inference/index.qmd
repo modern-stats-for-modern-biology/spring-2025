@@ -1146,7 +1146,7 @@ Don't fall in love with your models!
 
 ## Models vs. reality
 
-Don't fall to the sin of reification!
+Don't fall for the sin of reification!
 
 ![](images/elon_musk_in_love_with_robot.jpg){fig-align="center" height="500"}
 
@@ -1188,7 +1188,7 @@ Statistical models = **probability distributions** of **random variables**
 
 ## What is a probability distribution?
 
--   Given a sample space/universe $\Omega$
+-   Given a universe/sample space $\Omega$
 
 ::: fragment
 ```{r}
@@ -1205,49 +1205,53 @@ ss
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a sample space/universe $\Omega$
+-   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability to each possible outcome/world $\omega$
+-   A probability distribution is a function $p$ that assigns a probability to each possible world/outcome $\omega$
 :::
 
 ::: fragment
 $$
 p: \Omega \to [0, 1]
 $$
-:::
-
-::: fragment
-```{r}
-#| output-location: default
-ss %>% 
-  mutate(p = c(0.1, 0.2, 0.3, 0.4))
-```
 :::
 
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a sample space/universe $\Omega$
+-   Given a universe/sample space $\Omega$
 
--   A probability distribution is a function $p$ that assigns a probability to each possible outcome/world $\omega$
+-   A probability distribution is a function $p$ that assigns a probability to each possible world/outcome $\omega$
 :::
-
-$$
-p: \Omega \to [0, 1]
-$$
 
 ```{r}
 #| output-location: default
-ss %>% 
-  mutate(p = 1 / n())
+ss %>% mutate(p = c(0.1, 0.2, 0.3, 0.4))
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = 1 / n())
 ```
 
 -   Since outcomes are partitions of the sample space, their probabilities must sum to 1
 
-## Probability calculation
+::: fragment
+$$\sum_{\omega \in \Omega} p(\omega) = 1$$
+:::
+
+## From probability distribution to probability
 
 ::: fragment
-The probability of proposition/event $X$ is calculated as
+The probability of proposition/event $X$ can therefore be calculated as:
 :::
 
 ::: fragment
@@ -1255,108 +1259,115 @@ $$P(X) = \sum_{\omega \in X} p(\omega)$$
 :::
 
 ::: fragment
-For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
 :::
 
 ::: fragment
 ```{r}
+#| output-location: default
 ss %>%
-  mutate(p = 1 / n()) %>%
-  mutate(X = A | B)
+  mutate(p = c(0.1, 0.2, 0.3, 0.4))
 ```
 :::
 
-## Probability calculation
+## From probability distribution to probability
 
-The probability of proposition/event $X$ is calculated as
+The probability of proposition/event $X$ can therefore be calculated as:
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
 
 ```{r}
+#| output-location: default
 ss %>%
-  mutate(p = 1 / n()) %>%
+  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>%
+  mutate(X = A | B)
+```
+
+## From probability distribution to probability
+
+The probability of proposition/event $X$ can therefore be calculated as:
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>%
   mutate(X = A | B) %>%
   filter(X)
 ```
 
-## Probability calculation
+## From probability distribution to probability
 
-The probability of proposition/event $X$ is calculated as
+The probability of proposition/event $X$ can therefore be calculated as:
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
 
 ```{r}
+#| output-location: default
 ss %>%
-  mutate(p = 1 / n()) %>%
+  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>%
   mutate(X = A | B) %>%
   filter(X) %>% 
   summarize(P = sum(p)) %>% 
   pull(P)
 ```
 
-## Probability calculation
+## From probability distribution to probability
 
-The probability of proposition/event $X$ is calculated as
+The probability of proposition/event $X$ can therefore be calculated as:
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
 
 ```{r}
 #| output-location: default
 ss %>%
-  mutate(p = 1 / n()) %>%
+  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>%
   mutate(X = A | B) %>%
   
   summarize(P = sum(p[X])) %>% 
   pull(P)
 ```
 
-:::
+## From probability distribution to probability
 
-## Probability calculation
-
-The probability of proposition/event $X$ is calculated as
+The probability of proposition/event $X$ can therefore be calculated as:
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, if proposition $X$ is $A \lor B$, then $P(X) = P(A \lor B)$ is calculated as
+For example, given a probability distribution $p$, $P(X)$ for $X = A \lor B$ is calculated as:
 
 ```{r}
 #| output-location: default
 ss %>%
-  mutate(p = 1 / n()) %>%
+  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>%
 
   
   summarize(P = sum(p[A | B])) %>% 
   pull(P)
 ```
 
-## Probability distribution
+## What is a probability distribution?
 
 ::: nonincremental
--   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability to each possible world/outcome $\omega$
 :::
 
-$$\forall \omega_i \in \Omega \quad p(\omega_i) = \frac{1}{|\Omega|}$$
-
-::: nonincremental
-where $p(\omega_i)$ is the probability (or more precisely the *probability mass*) of $\omega_i$
-
--   $p$ is also known as **probability distribution** or *probability mass function* (PMF) of $\Omega$
-
--   For example, given the following sample space $\quad p(\omega_i) = \frac{1}{4} = 0.25$
-:::
-
-::: fragment
 ```{r}
-ss %>% mutate(p = 1 / n())
+#| output-location: default
+ss %>% mutate(p = c(0.1, 0.2, 0.3, 0.4))
 ```
-:::
+
 
 ## Maximum entropy probability distribution
 
@@ -1366,27 +1377,6 @@ The maximum entropy principle makes explicit our freedom in using different form
 
 -   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
 
-## Probability distribution
-
-::: nonincremental
--   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
-:::
-
-$$\forall \omega_i \in \Omega \quad p(\omega_i) = \frac{1}{|\Omega|}$$
-
-::: nonincremental
-where $p(\omega_i)$ is the probability (or more precisely the *probability mass*) of $\omega_i$
-
--   $p$ is also known as **probability distribution** or *probability mass function* (PMF) of $\Omega$
-
--   For example, given the following sample space $\quad p(\omega_i) = \frac{1}{4} = 0.25$
-:::
-
-::: fragment
-```{r}
-ss %>% mutate(p = 1 / n())
-```
-:::
 
 ## What is a random variable?
 
