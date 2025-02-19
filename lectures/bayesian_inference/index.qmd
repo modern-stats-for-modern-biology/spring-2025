@@ -1241,23 +1241,6 @@ All three examples (base-rate fallacy, prosecutor's fallacy, and the scientific 
 
 ## Statistical inference
 
-::: fragment
-$$
-\begin{array}{ll}
-1. & \text{known quantities} \\
-2. & \text{model} \\
-\hline
-\therefore & \text{unknown quantities} \\
-\end{array}
-$$
-:::
-
-::: fragment
-$$\text{known quantities} \xrightarrow{\text{model}} \text{unknown quantities}$$
-:::
-
-## Statistical inference
-
 $$
 \begin{array}{ll}
 1. & \text{data (observations/measurements)} \\
@@ -1337,7 +1320,7 @@ Statistical models = **probability distributions** of **random variables**
 
 -   A statistical model is a **probability distribution** of **random variables** chosen to represent the data generating process (DGP)
 
--   Standard probability distributions (e.g., uniform, binomial, normal) encode different assumptions about the DGP; if one is a useful abstraction of the real process, that distribution becomes the statistical model
+-   Standard probability distributions (e.g., uniform, binomial, normal) encode different assumptions about the DGP; if one is a useful abstraction of the real process, then it is chosen to be the statistical model
 
 -   Standard probability distributions serve as ready-made "*data stories*"
 
@@ -1345,11 +1328,29 @@ Statistical models = **probability distributions** of **random variables**
 -   The choice of probability distribution is guided by the research question and an understanding of the DGP
 :::
 
+## Statistical models
 
+Statistical models = **probability distributions** of **random variables**
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
+:::
+::::
+::::::
 
 ## What is a probability distribution?
 
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
 ::: fragment
 ```{r}
@@ -1366,9 +1367,9 @@ ss
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ::: fragment
@@ -1380,14 +1381,14 @@ $$
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0.1, 0.2, 0.3, 0.4))
+ss %>% mutate(p = c(0.2, 0.4, 0.1, 0.3))
 ```
 
 -   Since outcomes are partitions of the sample space, their probabilities must sum\* to 1
@@ -1399,9 +1400,9 @@ $$\sum_{\omega \in \Omega} p(\omega) = 1$$
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
@@ -1417,7 +1418,56 @@ $$\sum_{\omega \in \Omega} p(\omega) = 1$$
 
 ## From probability distribution to probability
 
+-   An **event** is a subset of the sample space, including the empty set ($\emptyset$) and the sample space itself ($\Omega$)
+
+-   Event $X$: the subset of the sample space where proposition $X$ is true
+
+-   The terms **proposition** and **event** are often used interchangeably
+
+-   Probability applies to propositions/events
+
+    -   $P(X)$ = probability that proposition $X$ is true
+
+    -   $P(X)$ = probability that event $X$ occurs
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Proposition $X$: $\: A \lor B$
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+ss
+```
+:::
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Proposition $X$: $\: A \lor B$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(X = A | B)
+```
+
+-   Event $X$: the subset of $\Omega$ where $X$ is true
+
+::: fragment
+```{r}
+ss %>% mutate(X = A | B) %>% filter(X)
+```
+:::
+
+
+## From probability distribution to probability
+
+::: nonincremental
 -   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
 
 ::: fragment
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
@@ -1511,6 +1561,56 @@ $$P(X) = \sum_{\omega \in X} p(\omega)$$
 ss %>%
   mutate(p = 1 / n()) %>%
   mutate(X = A | B) %>%
+  filter(X) %>% 
+  summarize(P = sum(p)) %>% 
+  pull(P)
+```
+
+&nbsp;
+
+```{r}
+P(H = A | B)
+```
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  filter(X) %>% 
+  summarize(P = sum(p)) %>% 
+  pull(P)
+```
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
   
   summarize(P = sum(p[X])) %>% 
   pull(P)
@@ -1553,7 +1653,7 @@ $$P(X) = \sum_{\omega \in X} p(\omega)$$
 ```{r}
 #| output-location: default
 ss %>%
-  mutate(p = c(0.1, 0.2, 0.3, 0.4)) %>% 
+  mutate(p = c(0.2, 0.4, 0.1, 0.3)) %>% 
 
   
   summarize(P = sum(p[A | B])) %>% 
@@ -1563,22 +1663,22 @@ ss %>%
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0.1, 0.2, 0.3, 0.4))
+ss %>% mutate(p = c(0.2, 0.4, 0.1, 0.3))
 ```
 
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
@@ -1589,9 +1689,9 @@ ss %>% mutate(p = c(NA, NA, NA, NA))
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
@@ -1606,9 +1706,9 @@ P(H = A & B)
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
@@ -1624,9 +1724,9 @@ P(H = A & B)
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
@@ -1641,9 +1741,9 @@ P(H = A & !B)
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
@@ -1659,9 +1759,9 @@ P(H = A & !B)
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
@@ -1676,9 +1776,9 @@ P(H = !A & B)
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
@@ -1694,9 +1794,9 @@ P(H = !A & B)
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
@@ -1711,9 +1811,9 @@ P(H = !A & !B)
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
@@ -1733,9 +1833,9 @@ P(H = !A & !B)
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
@@ -1746,161 +1846,162 @@ ss %>% mutate(p = c(NA, NA, NA, NA))
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
 ```
 
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
-P(H = A & B, P1 = !A)
+P(H = A & B, E = !A)
 ```
 
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
 #| output-location: default
-P(H = A & B, P1 = !A)
+P(H = A & B, E = !A)
 ```
 
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
-P(H = A & !B, P1 = !A)
+P(H = A & !B, E = !A)
 ```
 
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
 #| output-location: default
-P(H = A & !B, P1 = !A)
+P(H = A & !B, E = !A)
 ```
 
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
-P(H = !A & B, P1 = !A)
+P(H = !A & B, E = !A)
 ```
 
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
 #| output-location: default
-P(H = !A & B, P1 = !A)
+P(H = !A & B, E = !A)
+```
+
+## What is a probability distribution?
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+P(H = !A & !B, E = !A)
 ```
 
 ## What is a probability distribution?
 
 ::: nonincremental
--   Given a universe/sample space $\Omega$
+-   Given a universe/sample space ($\Omega$)
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
 :::
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(0, 0, 0.5, 0.5)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
-P(H = !A & !B, P1 = !A)
+#| output-location: default
+P(H = !A & !B, E = !A)
 ```
 
 ## What is a probability distribution?
 
-::: nonincremental
--   Given a universe/sample space $\Omega$
+-   $p$ encodes our premises/assumptions/evidence/knowledge about the world in general
 
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
-:::
+-   In the context of statistical inference, $p$ is the statistical model that encodes our knowledge about the DGP
 
-```{r}
-#| output-location: default
-ss %>% mutate(p = c(0, 0, 0.5, 0.5)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
-```
-
-```{r}
-#| output-location: default
-P(H = !A & !B, P1 = !A)
-```
-
-## What is a probability distribution?
-
-::: nonincremental
--   $p$ encodes our premises/assumptions/evidence/knowledge base
-:::
+-   Rather than enumerating each probability or specifying each premise/assumption, $p$ provides a compact and elegant representation of our knowledge about the DGP
 
 -   In the absence of additional information, the principle of indifference (or maximum entropy) dictates that all outcomes are equally likely, resulting in a uniform distribution
 
@@ -1908,9 +2009,7 @@ P(H = !A & !B, P1 = !A)
 $$p(w) = \frac{1}{|\Omega|}$$
 :::
 
--   Several other mathematical equations have been developed to capture different sets of premises/assumptions (e.g., binomial, Poisson, normal, and beta distributions)
-
--   Rather than enumerating each probability or specifying every premise/assumption, these standard probability distributions provide compact representations of the evidence/knowledge base underlying different "*data stories*
+-   Several other mathematical functions (e.g., the binomial and normal distributions) have been developed to capture different sets of premises/assumptions about the DGP of standard "*data stories*"
 
 ## Statistical models
 
@@ -1938,7 +2037,7 @@ Statistical models = **probability distributions** of **random variables**
 ![](images/random_variable_tweet.png){height="200"}
 :::
 
--   A random variable $X$ is a function that assigns a real number $x$ to each possible world/outcome $\omega$
+-   A random variable ($X$) is a function that assigns a real number ($x$) to each possible world/outcome ($\omega$) in the universe/sample space ($\Omega$)
 
 ::: fragment
 $$
@@ -1946,7 +2045,7 @@ X: \Omega \to \mathbb{R}
 $$
 :::
 
--   Think of a random variable as a way to **measure** or **observe** something in each possible world
+-   Think of a random variable ($X$) as a way to **measure** or **observe** something ($x$) in each possible world ($\omega$)
 
 ::: fragment
 $$X(\omega) = x$$
@@ -1957,13 +2056,13 @@ $$X(\omega) = x$$
 ::: nonincremental
 ![](images/random_variable_tweet.png){height="200"}
 
--   A random variable $X$ is a function that assigns a real number $x$ to each possible world/outcome $\omega$
+-   A random variable ($X$) is a function that assigns a real number ($x$) to each possible world/outcome ($\omega$) in the universe/sample space ($\Omega$)
 
 $$
 X: \Omega \to \mathbb{R}
 $$
 
--   Alternatively, think of a random variable as a **question** about each possible world $\omega$, where the **answer is a real number** $x$
+-   Alternatively, think of a random variable ($X$) as a **question** about each possible world ($\omega$), where the **answer is a real number** ($x$)
 
 $$X(\omega) = x$$
 :::
@@ -2034,9 +2133,34 @@ $$X(\omega) = x$$
 
 ## What is a random variable?
 
+![](images/Slide137.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide138.png){height="550"}
+
+## What is a random variable?
+
 -   Another way of thinking about a random variable is simply as a variable in R that can take on different values of different types
 
 ::: fragment
+```{r}
+ss <- expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss
+```
+:::
+
+## What is a random variable?
+
+::: nonincremental
+-   Another way of thinking about a random variable is simply as a variable in R that can take on different values of different types
+:::
+
 ```{r}
 #| output: asis
 #| output-location: slide
@@ -2045,119 +2169,11 @@ ss <- expand_grid(
   B = c(TRUE, FALSE),
   S = factor(c("♂", "♀", "⚥")),
   H = c(10, 20, 30),
-  W = c(20, 40, 60)
-  ) %>%
+  W = c(20, 40, 60)) %>%
   mutate(Ω = paste0("⍵", 1:n())) %>% 
   select(Ω, everything())
 
 ss %>% DT::datatable(options = list(pageLength = 8), rownames = FALSE)
-```
-:::
-
-## What is a random variable?
-
-::: nonincremental
--   Without additional background information, the probability distribution is uniform
-:::
-
-```{r}
-#| output-location: slide
-ss <- ss %>%
-  mutate(p = 1 / n())
-  
-ss %>% DT::datatable(options = list(pageLength = 8), rownames = FALSE)
-```
-
-## What is a random variable?
-
-```{r}
-#| output-location: default
-ss %>% gf_col(p ~ A, data = ., fill = ~ A) %>% gf_lims(y = c(0, 1))
-```
-
-## What is a random variable?
-
-```{r}
-#| output-location: default
-ss %>% gf_col(p ~ B, data = ., fill = ~ B) %>% gf_lims(y = c(0, 1))
-```
-
-## What is a random variable?
-
-```{r}
-#| output-location: default
-ss %>% gf_col(p ~ S, data = ., fill = ~ S) %>% gf_lims(y = c(0, 1))
-```
-
-## What is a random variable?
-
-```{r}
-#| output-location: default
-ss %>% gf_col(p ~ H, data = ., fill = ~ H) %>% gf_lims(y = c(0, 1)) %>% gf_refine(scale_fill_gradient(low = "lightblue", high = "darkblue"))
-```
-
-## What is a random variable?
-
-```{r}
-#| output-location: default
-ss %>% gf_col(p ~ W, data = ., fill = ~ W) %>% gf_lims(y = c(0, 1)) %>% gf_refine(scale_fill_gradient(low = "tan", high = "saddlebrown"))
-```
-
-## What is a random variable?
-
-::: nonincremental
--   Adding premises/assumptions to the evidence/knowledge base changes the probability distribution
-:::
-
-```{r}
-#| output-location: slide
-ss <- ss %>%
-  mutate(p = 1 / n()) %>% 
-  rowwise() %>% 
-  mutate(
-    P1 = H == 10 + 10 * as.integer(S),
-    P2 = W == H * 2,
-    E  = P1 & P2
-  ) %>%
-  ungroup() %>% 
-  mutate(p = ifelse(E, p / sum(p[E]), 0)) # update probability distribution using Bayes' theorem
-  
-ss %>% DT::datatable(options = list(pageLength = 8), rownames = FALSE)
-```
-
-## What is a random variable?
-
-```{r}
-#| output-location: default
-ss %>% gf_col(p ~ A, data = ., fill = ~ A) %>% gf_lims(y = c(0, 1))
-```
-
-## What is a random variable?
-
-```{r}
-#| output-location: default
-ss %>% gf_col(p ~ B, data = ., fill = ~ B) %>% gf_lims(y = c(0, 1))
-```
-
-## What is a random variable?
-
-```{r}
-#| output-location: default
-ss %>% gf_col(p ~ S, data = ., fill = ~ S) %>% gf_lims(y = c(0, 1))
-```
-
-## What is a random variable?
-
-```{r}
-#| output-location: default
-ss %>% gf_col(p ~ H, data = ., fill = ~ H) %>% gf_lims(y = c(0, 1)) %>% gf_refine(scale_fill_gradient(low = "lightblue", high = "darkblue"))
-```
-
-## What is a random variable?
-
-```{r}
-#| output-location: default
-ss %>% gf_col(p ~ W, data = ., fill = ~ W) %>% gf_lims(y = c(0, 1)) %>% gf_refine(scale_fill_gradient(low = "tan", high = "saddlebrown"))
 ```
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
