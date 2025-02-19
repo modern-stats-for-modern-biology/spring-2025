@@ -615,7 +615,7 @@ $$
 
 $$P(H \mid E, K) = \frac{P(H \mid K) \cdot P(E \mid H, K)}{P(E \mid K)}$$  
 
-[**Don't forget the background information (**$K$) and that all probabilities are conditional!]{.red}
+[Don't forget the background information ($K$) and that all probabilities are conditional!]{.red}
 
 ## Bayes' theorem in action: Bayesian inference
 
@@ -1239,6 +1239,34 @@ All three examples (base-rate fallacy, prosecutor's fallacy, and the scientific 
 
 [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
 
+## Statistical inference
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & \text{known quantities} \\
+2. & \text{model} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+:::
+
+::: fragment
+$$\text{known quantities} \xrightarrow{\text{model}} \text{unknown quantities}$$
+:::
+
+## Statistical inference
+
+$$
+\begin{array}{ll}
+1. & \text{data (observations/measurements)} \\
+2. & \text{model (DGP)} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+
 ##  {background-image="images/cover-model-september-2004.webp" background-size="cover"}
 
 ::: notes
@@ -1247,7 +1275,7 @@ Fasten your seatblets because we are about to enter the world of statistical mod
 
 ## Models vs. reality
 
-Models are simplifications, approximations, or abstractions of reality!
+Models are simplified, idealized representations of reality!
 
 ![](images/amazing-comparison-before-after-photoshop-celebrities-stars-4.jpg){fig-align="center" height="500"}
 
@@ -1287,6 +1315,8 @@ Statistical models = **probability distributions** of **random variables**
 ![](images/probability_distributions.jpg)
 
 <https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
 :::
 ::::
 ::::::
@@ -1298,6 +1328,24 @@ Statistical models = **probability distributions** of **random variables**
 > It turns out that empirical research questions come down entirely to describing the probability distributions of random variables. That’s, well, that’s really all that quantitative empirical research is. Sorry!
 >
 > — Nick Huntington-Klein [The Effect](https://theeffectbook.net/) \[free online book\]
+
+## Statistical models
+
+::: notes
+-   A statistical model is a simplified, idealized representation of the data generating process (DGP), focusing on essential features while omitting irrelevant complexity
+:::
+
+-   A statistical model is a **probability distribution** of **random variables** chosen to represent the data generating process (DGP)
+
+-   Standard probability distributions (e.g., uniform, binomial, normal) encode different assumptions about the DGP; if one is a useful abstraction of the real process, that distribution becomes the statistical model
+
+-   Standard probability distributions serve as ready-made "*data stories*"
+
+::: notes
+-   The choice of probability distribution is guided by the research question and an understanding of the DGP
+:::
+
+
 
 ## What is a probability distribution?
 
@@ -1342,6 +1390,12 @@ $$
 ss %>% mutate(p = c(0.1, 0.2, 0.3, 0.4))
 ```
 
+-   Since outcomes are partitions of the sample space, their probabilities must sum\* to 1
+
+::: fragment
+$$\sum_{\omega \in \Omega} p(\omega) = 1$$
+:::
+
 ## What is a probability distribution?
 
 ::: nonincremental
@@ -1355,25 +1409,21 @@ ss %>% mutate(p = c(0.1, 0.2, 0.3, 0.4))
 ss %>% mutate(p = 1 / n()) # uniform probability distribution
 ```
 
+::: nonincremental
 -   Since outcomes are partitions of the sample space, their probabilities must sum\* to 1
-
-::: fragment
-$$\sum_{\omega \in \Omega} p(\omega) = 1$$
 :::
+
+$$\sum_{\omega \in \Omega} p(\omega) = 1$$
 
 ## From probability distribution to probability
 
-::: fragment
-Given a probability distribution $p$, the probability of proposition/event $X$ is:
-:::
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
 
 ::: fragment
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 :::
 
-::: fragment
-For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
-:::
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
 
 ::: fragment
 ```{r}
@@ -1385,11 +1435,15 @@ ss %>%
 
 ## From probability distribution to probability
 
-Given a probability distribution $p$, the probability of proposition/event $X$ is:
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
 
 ```{r}
 #| output-location: default
@@ -1400,11 +1454,15 @@ ss %>%
 
 ## From probability distribution to probability
 
-Given a probability distribution $p$, the probability of proposition/event $X$ is:
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
 
 ```{r}
 #| output-location: default
@@ -1416,11 +1474,15 @@ ss %>%
 
 ## From probability distribution to probability
 
-Given a probability distribution $p$, the probability of proposition/event $X$ is:
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
 
 ```{r}
 #| output-location: default
@@ -1434,11 +1496,15 @@ ss %>%
 
 ## From probability distribution to probability
 
-Given a probability distribution $p$, the probability of proposition/event $X$ is:
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
 
 ```{r}
 #| output-location: default
@@ -1452,11 +1518,15 @@ ss %>%
 
 ## From probability distribution to probability
 
-Given a probability distribution $p$, the probability of proposition/event $X$ is:
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
 
 ```{r}
 #| output-location: default
@@ -1470,11 +1540,15 @@ ss %>%
 
 ## From probability distribution to probability
 
-Given a probability distribution $p$, the probability of proposition/event $X$ is:
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
 
 $$P(X) = \sum_{\omega \in X} p(\omega)$$
 
-For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
 
 ```{r}
 #| output-location: default
@@ -1679,7 +1753,7 @@ ss %>% mutate(p = c(NA, NA, NA, NA))
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
 ```
 
 ## What is a probability distribution?
@@ -1692,29 +1766,11 @@ ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed 
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
-P(H = A & B, E = !A)
-```
-
-## What is a probability distribution?
-
-::: nonincremental
--   Given a universe/sample space $\Omega$
-
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
-:::
-
-```{r}
-#| output-location: default
-ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
-```
-
-```{r}
-#| output-location: default
-P(H = A & B, E = !A)
+P(H = A & B, P1 = !A)
 ```
 
 ## What is a probability distribution?
@@ -1727,11 +1783,12 @@ P(H = A & B, E = !A)
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
-P(H = A & !B, E = !A)
+#| output-location: default
+P(H = A & B, P1 = !A)
 ```
 
 ## What is a probability distribution?
@@ -1744,29 +1801,11 @@ P(H = A & !B, E = !A)
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
-#| output-location: default
-P(H = A & !B, E = !A)
-```
-
-## What is a probability distribution?
-
-::: nonincremental
--   Given a universe/sample space $\Omega$
-
--   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
-:::
-
-```{r}
-#| output-location: default
-ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
-```
-
-```{r}
-P(H = !A & B, E = !A)
+P(H = A & !B, P1 = !A)
 ```
 
 ## What is a probability distribution?
@@ -1779,12 +1818,12 @@ P(H = !A & B, E = !A)
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
 #| output-location: default
-P(H = !A & B, E = !A)
+P(H = A & !B, P1 = !A)
 ```
 
 ## What is a probability distribution?
@@ -1797,11 +1836,11 @@ P(H = !A & B, E = !A)
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
-P(H = !A & !B, E = !A)
+P(H = !A & B, P1 = !A)
 ```
 
 ## What is a probability distribution?
@@ -1814,12 +1853,47 @@ P(H = !A & !B, E = !A)
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0, 0, 0.5, 0.5)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
 ```
 
 ```{r}
 #| output-location: default
-P(H = !A & !B, E = !A)
+P(H = !A & B, P1 = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+P(H = !A & !B, P1 = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space $\Omega$
+
+-   A probability distribution is a function $p$ that assigns a probability\* to each possible world/outcome $\omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, 0.5, 0.5)) %>% mutate(P1 = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+#| output-location: default
+P(H = !A & !B, P1 = !A)
 ```
 
 ## What is a probability distribution?
@@ -1836,7 +1910,7 @@ $$p(w) = \frac{1}{|\Omega|}$$
 
 -   Several other mathematical equations have been developed to capture different sets of premises/assumptions (e.g., binomial, Poisson, normal, and beta distributions)
 
--   Rather than enumerating each probability or specifying every premise/assumption, these probability distributions provide compact representations of the evidence/knowledge base underlying common scenarios
+-   Rather than enumerating each probability or specifying every premise/assumption, these standard probability distributions provide compact representations of the evidence/knowledge base underlying different "*data stories*
 
 ## Statistical models
 
@@ -1852,6 +1926,8 @@ Statistical models = **probability distributions** of **random variables**
 ![](images/probability_distributions.jpg)
 
 <https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
 :::
 ::::
 ::::::
@@ -1887,7 +1963,7 @@ $$
 X: \Omega \to \mathbb{R}
 $$
 
--   Alternatively, think of a random variable as a **question** about each possible world, where the **answer is a number**
+-   Alternatively, think of a random variable as a **question** about each possible world $\omega$, where the **answer is a real number** $x$
 
 $$X(\omega) = x$$
 :::
@@ -2083,8 +2159,6 @@ ss %>% gf_col(p ~ H, data = ., fill = ~ H) %>% gf_lims(y = c(0, 1)) %>% gf_refin
 #| output-location: default
 ss %>% gf_col(p ~ W, data = ., fill = ~ W) %>% gf_lims(y = c(0, 1)) %>% gf_refine(scale_fill_gradient(low = "tan", high = "saddlebrown"))
 ```
-
-##  {background-image="images/cover-model-september-2004.webp" background-size="cover"}
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
