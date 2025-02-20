@@ -1,0 +1,56 @@
+---
+title: "Frequentist vs Bayesian linear model fit"
+format:
+  html:
+    df-print: kable
+execution:
+  warning: false
+---
+
+## Setup environment
+
+```{r}
+#| output: false
+library(brms)
+library(emmeans)
+
+options(mc.cores = parallel::detectCores())
+options(brms.backend = "cmdstanr")
+```
+
+## Load data
+
+```{r}
+head(iris)
+```
+
+## Fit linear model: Frequentist
+
+```{r}
+lm.fit <- lm(Petal.Length ~ 1 + Species, data = iris)
+```
+
+```{r}
+emmeans(lm.fit, pairwise ~ Species)
+```
+
+## Fit linear model: Bayesian
+
+```{r}
+#| output: false
+brm.fit <- brm(Petal.Length ~ 1 + Species, data = iris)
+```
+
+```{r}
+plot(brm.fit)
+```
+
+```{r}
+emmeans(brm.fit, pairwise ~ Species)
+```
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```
