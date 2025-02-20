@@ -1320,9 +1320,9 @@ Statistical models = **probability distributions** of **random variables**
 
 -   A statistical model is a **probability distribution** of one or more **random variables** chosen to represent the data generating process (DGP)
 
--   If one of the [standard probability distributions](https://distribution-explorer.github.io/) (e.g., uniform, binomial, normal) is a useful abstraction of the real process you need to model, then it can be used as the statistical model for your inferential data analysis (if not, you can always [build your own](https://prob.bayesfusion.com/))
+-   If one of the [standard probability distributions](https://distribution-explorer.github.io/) (e.g., uniform, binomial, normal) is a useful abstraction of the real data generating process you need to model, then it can be used as the statistical model for your inferential data analysis (if not, you can always [build your own](https://prob.bayesfusion.com/))
 
--   Standard probability distributions serve as ready-made "*data stories*", i.e., sets of assumptions about the DGP
+-   Standard probability distributions serve as ready-made "*data stories*", i.e., different sets of premises/assumptions about the DGP
 
 ::: notes
 -   The choice of probability distribution is guided by the research question and an understanding of the DGP
@@ -1388,7 +1388,7 @@ $$
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0.2, 0.4, 0.1, 0.3))
+ss %>% mutate(p = c(0.2, 0.3, 0.4, 0.1))
 ```
 
 -   Since outcomes are partitions of the sample space, their probabilities must sum\* to 1
@@ -1653,7 +1653,7 @@ $$P(X) = \sum_{\omega \in X} p(\omega)$$
 ```{r}
 #| output-location: default
 ss %>%
-  mutate(p = c(0.2, 0.4, 0.1, 0.3)) %>% 
+  mutate(p = c(0.2, 0.3, 0.4, 0.1)) %>% 
 
   
   summarize(P = sum(p[A | B])) %>% 
@@ -1670,7 +1670,7 @@ ss %>%
 
 ```{r}
 #| output-location: default
-ss %>% mutate(p = c(0.2, 0.4, 0.1, 0.3))
+ss %>% mutate(p = c(0.2, 0.3, 0.4, 0.1))
 ```
 
 ## What is a probability distribution?
@@ -1997,19 +1997,19 @@ P(H = !A & !B, E = !A)
 
 ## What is a probability distribution?
 
--   $p$ encodes our premises/assumptions/evidence/knowledge about the world in general
+-   $p$ is a model that encodes our premises/assumptions/evidence/knowledge about the world in general
 
--   In the context of statistical inference, $p$ is the statistical model that encodes our knowledge about the DGP
+-   In the context of statistical inference, $p$ is a statistical model that encodes our knowledge about the DGP
 
 -   Rather than enumerating each probability or specifying each premise/assumption, $p$ provides a compact and elegant representation of our knowledge about the DGP
 
--   In the absence of additional information, the principle of indifference (or maximum entropy) dictates that all outcomes are equally likely, resulting in a uniform distribution
+-   In the absence of additional information, the **principle of indifference** (or maximum entropy) dictates that all outcomes are equally likely, resulting in a **uniform distribution**
 
 ::: fragment
 $$p(w) = \frac{1}{|\Omega|}$$
 :::
 
--   Several other mathematical functions (e.g., the binomial and normal distributions) have been developed to capture different sets of premises/assumptions about the DGP of standard "*data stories*"
+-   Several other mathematical functions (e.g., the binomial and normal distributions) have been developed to capture different sets of premises/assumptions about the DGP
 
 ## Statistical models
 
@@ -2141,13 +2141,16 @@ $$X(\omega) = x$$
 
 ## What is a random variable?
 
--   Another way of thinking about a random variable is simply as a variable in R that can take on different values of different types
+-   Another way of thinking about a random variable is simply as a variable (data object) in R that can take on different values of different types
 
 ::: fragment
 ```{r}
 ss <- expand_grid(
   A = c(TRUE, FALSE),
   B = c(TRUE, FALSE)) %>%
+
+  
+  
   mutate(Ω = paste0("⍵", 1:n())) %>% 
   select(Ω, everything())
 
@@ -2158,7 +2161,7 @@ ss
 ## What is a random variable?
 
 ::: nonincremental
--   Another way of thinking about a random variable is simply as a variable in R that can take on different values of different types
+-   Another way of thinking about a random variable is simply as a variable (data object) in R that can take on different values of different types
 :::
 
 ```{r}
