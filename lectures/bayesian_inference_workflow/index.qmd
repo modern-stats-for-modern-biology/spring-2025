@@ -1,5 +1,5 @@
 ---
-title: "Bayesian inference workflow" 
+title: "Bayesian inference: workflow" 
 subtitle: "Statistical inference"
 date: 2025-02-24
 author: "Edoardo \"Dado\" Marcora"
@@ -157,7 +157,48 @@ XXX
 
 ## Problem: Multiple draws with replacement from bag of balls
 
-XXX
+```{r}
+bag <- c("B", "W", "W", "W")
+
+ss <- expand_grid(
+  D1 = bag
+)
+
+ss
+```
+
+```{r}
+ss %>%
+  mutate(
+    E = TRUE,
+    H = D1 == "B"
+  ) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+```{r}
+bag <- c("B", "W", "W", "W")
+
+ss <- expand_grid(
+  D1 = bag,
+  D2 = bag,
+  D3 = bag)
+
+ss
+```
+
+```{r}
+ss %>%
+  mutate(
+    E = TRUE,
+    H = (D1 == "B" & D2 == "W" & D3 == "B")
+  ) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 

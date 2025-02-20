@@ -15,15 +15,20 @@ library(tidyverse)
 ## Proportional syllogism
 
 ```{r}
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE))
+```
+
+```{r}
 expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
   mutate(
     P1 = B1 | B2 | W1,
     P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
-    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
+    E  = P1 & P2,
     H  = B1 | B2
   ) %>%
   filter(E)
 ```
+
 ```{r}
 expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
   mutate(
@@ -33,13 +38,43 @@ expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
   filter(E)
 ```
 
+```{r}
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    E  = (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1),
+    H  = B1 | B2
+  ) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+```{r}
+bag = c("B1", "W1", "W2", "W3")
+
+ss <- expand_grid(D1 = bag)
+
+ss
+```
+
+```{r}
+ss %>%
+  mutate(
+    E  = TRUE,
+    H  = (D1 == "W1") | (D1 == "W2") | (D1 == "W3")
+  ) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
 ## The question
 
 -   **Knowledge base**:
 
     -   Imagine an urn that contains 1 Blue ball and 3 White balls (`BWWW`).
 
-    -   We draw 3 balls with replacement. This means after each draw, we put the ball back in. [i.i.d.]
+    -   We draw 3 balls with replacement. This means after each draw, we put the ball back in. \[i.i.d.\]
 
 -   **Query**:
 
@@ -83,7 +118,6 @@ expand_grid(
   filter(E)
 ```
 
-
 ```{r}
 expand_grid(
   D1_B1 = c(TRUE, FALSE), D1_B2 = c(TRUE, FALSE), D1_B3 = c(TRUE, FALSE), D1_B4 = c(TRUE, FALSE),
@@ -113,28 +147,19 @@ expand_grid(
   filter(E) %>%
   mutate(
     # first draw is B (B1 is B in BWWW bag)
-    D1_B = D1_B1 == TRUE,
+    D1_B = D1_B1,
 
     # second draw is W (B2, B3, and B4 are W in BWWW bag)
-    D2_W = D2_B2 == TRUE | D2_B3 == TRUE | D2_B4 == TRUE, 
+    D2_W = D2_B2 | D2_B3 | D2_B4, 
 
     # third draw is B (B1 is B in BWWW bag)
-    D3_B = D3_B1 == TRUE,
+    D3_B = D3_B1,
 
     # BWB event
     H  = D1_B & D2_W & D3_B) %>%
   filter(E) %>%
   pull(H) %>%
   mean()
-```
-
-```{r}
-dprop <- function(b, w) {
-  n <- b + w
-  return(b / n)
-}
-
-dprop(1, 3) * (1 - dprop(1, 3)) * dprop(1, 3)
 ```
 
 ```{r}
@@ -146,15 +171,27 @@ ss <- expand_grid(
   D2 = bag,
   D3 = bag
 )
+
+ss
 ```
 
 ```{r}
 # Step 2: Define the BWB event
 ss %>%
   mutate(
+    E = TRUE,
     H = (D1 == "B1") & (D2 %in% c("W1", "W2", "W3")) & (D3 == "B1")
   ) %>%
+  filter(E) %>%
   pull(H) %>%
   mean()
 ```
 
+```{r}
+dprop <- function(x, nb, nw) {
+  n <- nb + nw
+  if (x == "b") { nb / n } else if (x == "w") { nw / n } else NA  
+}
+
+dprop("b", nb = 1, nw = 3) * dprop("w", nb = 1, nw = 3) * dprop("b", nb = 1, nw = 3)
+```

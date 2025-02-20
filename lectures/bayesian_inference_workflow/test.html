@@ -104,14 +104,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="proportional-syllogism" class="level2">
 <h2 class="anchored" data-anchor-id="proportional-syllogism">Proportional syllogism</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">W1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W1,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">P2 =</span> <span class="sc">!</span>((B1 <span class="sc">&amp;</span> B2) <span class="sc">|</span> (B1 <span class="sc">&amp;</span> W1) <span class="sc">|</span> (B2 <span class="sc">&amp;</span> W1)),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2, <span class="co"># same as (B1 &amp; !B2 &amp; !W1) | (!B1 &amp; B2 &amp; !W1) | (!B1 &amp; !B2 &amp; W1)</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">W1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["B1"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["B2"],"name":[2],"type":["lgl"],"align":["right"]},{"label":["W1"],"name":[3],"type":["lgl"],"align":["right"]}],"data":[{"1":"TRUE","2":"TRUE","3":"TRUE"},{"1":"TRUE","2":"TRUE","3":"FALSE"},{"1":"TRUE","2":"FALSE","3":"TRUE"},{"1":"TRUE","2":"FALSE","3":"FALSE"},{"1":"FALSE","2":"TRUE","3":"TRUE"},{"1":"FALSE","2":"TRUE","3":"FALSE"},{"1":"FALSE","2":"FALSE","3":"TRUE"},{"1":"FALSE","2":"FALSE","3":"FALSE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">W1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">P1 =</span> B1 <span class="sc">|</span> B2 <span class="sc">|</span> W1,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">P2 =</span> <span class="sc">!</span>((B1 <span class="sc">&amp;</span> B2) <span class="sc">|</span> (B1 <span class="sc">&amp;</span> W1) <span class="sc">|</span> (B2 <span class="sc">&amp;</span> W1)),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -121,18 +131,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">W1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">E  =</span> (B1 <span class="sc">&amp;</span> <span class="sc">!</span>B2 <span class="sc">&amp;</span> <span class="sc">!</span>W1) <span class="sc">|</span> (<span class="sc">!</span>B1 <span class="sc">&amp;</span> B2 <span class="sc">&amp;</span> <span class="sc">!</span>W1) <span class="sc">|</span> (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>B2 <span class="sc">&amp;</span> W1),</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">W1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">E  =</span> (B1 <span class="sc">&amp;</span> <span class="sc">!</span>B2 <span class="sc">&amp;</span> <span class="sc">!</span>W1) <span class="sc">|</span> (<span class="sc">!</span>B1 <span class="sc">&amp;</span> B2 <span class="sc">&amp;</span> <span class="sc">!</span>W1) <span class="sc">|</span> (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>B2 <span class="sc">&amp;</span> W1),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
 {"columns":[{"label":["B1"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["B2"],"name":[2],"type":["lgl"],"align":["right"]},{"label":["W1"],"name":[3],"type":["lgl"],"align":["right"]},{"label":["E"],"name":[4],"type":["lgl"],"align":["right"]},{"label":["H"],"name":[5],"type":["lgl"],"align":["right"]}],"data":[{"1":"TRUE","2":"FALSE","3":"FALSE","4":"TRUE","5":"TRUE"},{"1":"FALSE","2":"TRUE","3":"FALSE","4":"TRUE","5":"TRUE"},{"1":"FALSE","2":"FALSE","3":"TRUE","4":"TRUE","5":"FALSE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">W1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">E  =</span> (B1 <span class="sc">&amp;</span> <span class="sc">!</span>B2 <span class="sc">&amp;</span> <span class="sc">!</span>W1) <span class="sc">|</span> (<span class="sc">!</span>B1 <span class="sc">&amp;</span> B2 <span class="sc">&amp;</span> <span class="sc">!</span>W1) <span class="sc">|</span> (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>B2 <span class="sc">&amp;</span> W1),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">H  =</span> B1 <span class="sc">|</span> B2</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6667</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>bag <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"B1"</span>, <span class="st">"W1"</span>, <span class="st">"W2"</span>, <span class="st">"W3"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>ss <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(<span class="at">D1 =</span> bag)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["D1"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"B1"},{"1":"W1"},{"1":"W2"},{"1":"W3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">E  =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">H  =</span> (D1 <span class="sc">==</span> <span class="st">"W1"</span>) <span class="sc">|</span> (D1 <span class="sc">==</span> <span class="st">"W2"</span>) <span class="sc">|</span> (D1 <span class="sc">==</span> <span class="st">"W3"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.75</code></pre>
 </div>
 </div>
 </section>
@@ -153,10 +203,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="create-sample-space" class="level2">
 <h2 class="anchored" data-anchor-id="create-sample-space">Create sample space</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">D1_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">D2_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">D3_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">D1_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">D2_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">D3_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -166,32 +216,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">D1_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">D2_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">D3_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in first draw</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">P1 =</span> (  D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span>  D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span>  D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span>  D1_B4 ),</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in second draw</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">P2 =</span> (  D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span>  D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span>  D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span>  D2_B4 ),</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in third draw</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">P3 =</span> (  D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span>  D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span>  D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span>  D3_B4 ),</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in each draw</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3) <span class="sc">%&gt;%</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">D1_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">D2_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">D3_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in first draw</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">P1 =</span> (  D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span>  D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span>  D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span>  D1_B4 ),</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in second draw</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">P2 =</span> (  D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span>  D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span>  D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span>  D2_B4 ),</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in third draw</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">P3 =</span> (  D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span>  D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span>  D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span>  D3_B4 ),</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in each draw</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3) <span class="sc">%&gt;%</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -201,80 +251,91 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">D1_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">D2_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">D3_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in first draw</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">P1 =</span> (  D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span>  D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span>  D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span>  D1_B4 ),</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in second draw</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">P2 =</span> (  D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span>  D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span>  D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span>  D2_B4 ),</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in third draw</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">P3 =</span> (  D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span>  D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span>  D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span>  D3_B4 ),</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in each draw</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3) <span class="sc">%&gt;%</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># first draw is B (B1 is B in BWWW bag)</span></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">D1_B =</span> D1_B1 <span class="sc">==</span> <span class="cn">TRUE</span>,</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># second draw is W (B2, B3, and B4 are W in BWWW bag)</span></span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">D2_W =</span> D2_B2 <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">|</span> D2_B3 <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">|</span> D2_B4 <span class="sc">==</span> <span class="cn">TRUE</span>, </span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># third draw is B (B1 is B in BWWW bag)</span></span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">D3_B =</span> D3_B1 <span class="sc">==</span> <span class="cn">TRUE</span>,</span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># BWB event</span></span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">H  =</span> D1_B <span class="sc">&amp;</span> D2_W <span class="sc">&amp;</span> D3_B) <span class="sc">%&gt;%</span></span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">D1_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D1_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">D2_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D2_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">D3_B1 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B2 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B3 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">D3_B4 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in first draw</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">P1 =</span> (  D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span>  D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span>  D1_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B4 ) <span class="sc">|</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D1_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D1_B3 <span class="sc">&amp;</span>  D1_B4 ),</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in second draw</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">P2 =</span> (  D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span>  D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span>  D2_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B4 ) <span class="sc">|</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D2_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D2_B3 <span class="sc">&amp;</span>  D2_B4 ),</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in third draw</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">P3 =</span> (  D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span>  D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span>  D3_B3 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B4 ) <span class="sc">|</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>         ( <span class="sc">!</span>D3_B1 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B2 <span class="sc">&amp;</span> <span class="sc">!</span>D3_B3 <span class="sc">&amp;</span>  D3_B4 ),</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exactly one ball in each draw</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3) <span class="sc">%&gt;%</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># first draw is B (B1 is B in BWWW bag)</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">D1_B =</span> D1_B1,</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># second draw is W (B2, B3, and B4 are W in BWWW bag)</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">D2_W =</span> D2_B2 <span class="sc">|</span> D2_B3 <span class="sc">|</span> D2_B4, </span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># third draw is B (B1 is B in BWWW bag)</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">D3_B =</span> D3_B1,</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># BWB event</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">H  =</span> D1_B <span class="sc">&amp;</span> D2_W <span class="sc">&amp;</span> D3_B) <span class="sc">%&gt;%</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.04688</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dprop <span class="ot">&lt;-</span> <span class="cf">function</span>(b, w) {</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> b <span class="sc">+</span> w</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(b <span class="sc">/</span> n)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">dprop</span>(<span class="dv">1</span>, <span class="dv">3</span>) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">dprop</span>(<span class="dv">1</span>, <span class="dv">3</span>)) <span class="sc">*</span> <span class="fu">dprop</span>(<span class="dv">1</span>, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B1"</span>, <span class="st">"W1"</span>, <span class="st">"W2"</span>, <span class="st">"W3"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Create the sample space using Draw-Ball variables</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>ss <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">D1 =</span> bag,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">D2 =</span> bag,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">D3 =</span> bag</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["D1"],"name":[1],"type":["chr"],"align":["left"]},{"label":["D2"],"name":[2],"type":["chr"],"align":["left"]},{"label":["D3"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"B1","2":"B1","3":"B1"},{"1":"B1","2":"B1","3":"W1"},{"1":"B1","2":"B1","3":"W2"},{"1":"B1","2":"B1","3":"W3"},{"1":"B1","2":"W1","3":"B1"},{"1":"B1","2":"W1","3":"W1"},{"1":"B1","2":"W1","3":"W2"},{"1":"B1","2":"W1","3":"W3"},{"1":"B1","2":"W2","3":"B1"},{"1":"B1","2":"W2","3":"W1"},{"1":"B1","2":"W2","3":"W2"},{"1":"B1","2":"W2","3":"W3"},{"1":"B1","2":"W3","3":"B1"},{"1":"B1","2":"W3","3":"W1"},{"1":"B1","2":"W3","3":"W2"},{"1":"B1","2":"W3","3":"W3"},{"1":"W1","2":"B1","3":"B1"},{"1":"W1","2":"B1","3":"W1"},{"1":"W1","2":"B1","3":"W2"},{"1":"W1","2":"B1","3":"W3"},{"1":"W1","2":"W1","3":"B1"},{"1":"W1","2":"W1","3":"W1"},{"1":"W1","2":"W1","3":"W2"},{"1":"W1","2":"W1","3":"W3"},{"1":"W1","2":"W2","3":"B1"},{"1":"W1","2":"W2","3":"W1"},{"1":"W1","2":"W2","3":"W2"},{"1":"W1","2":"W2","3":"W3"},{"1":"W1","2":"W3","3":"B1"},{"1":"W1","2":"W3","3":"W1"},{"1":"W1","2":"W3","3":"W2"},{"1":"W1","2":"W3","3":"W3"},{"1":"W2","2":"B1","3":"B1"},{"1":"W2","2":"B1","3":"W1"},{"1":"W2","2":"B1","3":"W2"},{"1":"W2","2":"B1","3":"W3"},{"1":"W2","2":"W1","3":"B1"},{"1":"W2","2":"W1","3":"W1"},{"1":"W2","2":"W1","3":"W2"},{"1":"W2","2":"W1","3":"W3"},{"1":"W2","2":"W2","3":"B1"},{"1":"W2","2":"W2","3":"W1"},{"1":"W2","2":"W2","3":"W2"},{"1":"W2","2":"W2","3":"W3"},{"1":"W2","2":"W3","3":"B1"},{"1":"W2","2":"W3","3":"W1"},{"1":"W2","2":"W3","3":"W2"},{"1":"W2","2":"W3","3":"W3"},{"1":"W3","2":"B1","3":"B1"},{"1":"W3","2":"B1","3":"W1"},{"1":"W3","2":"B1","3":"W2"},{"1":"W3","2":"B1","3":"W3"},{"1":"W3","2":"W1","3":"B1"},{"1":"W3","2":"W1","3":"W1"},{"1":"W3","2":"W1","3":"W2"},{"1":"W3","2":"W1","3":"W3"},{"1":"W3","2":"W2","3":"B1"},{"1":"W3","2":"W2","3":"W1"},{"1":"W3","2":"W2","3":"W2"},{"1":"W3","2":"W2","3":"W3"},{"1":"W3","2":"W3","3":"B1"},{"1":"W3","2":"W3","3":"W1"},{"1":"W3","2":"W3","3":"W2"},{"1":"W3","2":"W3","3":"W3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Define the BWB event</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">E =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">H =</span> (D1 <span class="sc">==</span> <span class="st">"B1"</span>) <span class="sc">&amp;</span> (D2 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"W1"</span>, <span class="st">"W2"</span>, <span class="st">"W3"</span>)) <span class="sc">&amp;</span> (D3 <span class="sc">==</span> <span class="st">"B1"</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.04688</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B1"</span>, <span class="st">"W1"</span>, <span class="st">"W2"</span>, <span class="st">"W3"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Create the sample space using Draw-Ball variables</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>ss <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">D1 =</span> bag,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">D2 =</span> bag,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">D3 =</span> bag</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Define the BWB event</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">H =</span> (D1 <span class="sc">==</span> <span class="st">"B1"</span>) <span class="sc">&amp;</span> (D2 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"W1"</span>, <span class="st">"W2"</span>, <span class="st">"W3"</span>)) <span class="sc">&amp;</span> (D3 <span class="sc">==</span> <span class="st">"B1"</span>)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dprop <span class="ot">&lt;-</span> <span class="cf">function</span>(x, nb, nw) {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> nb <span class="sc">+</span> nw</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (x <span class="sc">==</span> <span class="st">"b"</span>) { nb <span class="sc">/</span> n } <span class="cf">else</span> <span class="cf">if</span> (x <span class="sc">==</span> <span class="st">"w"</span>) { nw <span class="sc">/</span> n } <span class="cf">else</span> <span class="cn">NA</span>  </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">dprop</span>(<span class="st">"b"</span>, <span class="at">nb =</span> <span class="dv">1</span>, <span class="at">nw =</span> <span class="dv">3</span>) <span class="sc">*</span> <span class="fu">dprop</span>(<span class="st">"w"</span>, <span class="at">nb =</span> <span class="dv">1</span>, <span class="at">nw =</span> <span class="dv">3</span>) <span class="sc">*</span> <span class="fu">dprop</span>(<span class="st">"b"</span>, <span class="at">nb =</span> <span class="dv">1</span>, <span class="at">nw =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.04688</code></pre>
 </div>
