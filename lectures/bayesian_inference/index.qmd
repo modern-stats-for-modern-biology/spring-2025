@@ -1462,7 +1462,6 @@ ss %>% mutate(X = A | B) %>% filter(X)
 ```
 :::
 
-
 ## From probability distribution to probability
 
 ::: nonincremental
@@ -1566,7 +1565,7 @@ ss %>%
   pull(P)
 ```
 
-&nbsp;
+ 
 
 ```{r}
 P(H = A | B)
@@ -1962,6 +1961,7 @@ P(H = !A & B, E = !A)
 ```
 
 ## What is a probability distribution?
+
 ::: nonincremental
 -   Given a universe/sample space ($\Omega$)
 
@@ -2141,7 +2141,9 @@ $$X(\omega) = x$$
 
 ## What is a random variable?
 
--   Another way of thinking about a random variable is simply as a variable (data object) in R that can take on different values of different types: `Logical`, `Numeric`, `Factor`, etc.
+::: nonincremental
+-   Another way of thinking about a random variable is simply as a variable (data object) in R that can take different values of different types: `Logical`, `Numeric`, `Factor`, etc.
+:::
 
 ::: fragment
 ```{r}
@@ -2161,12 +2163,53 @@ ss
 ## What is a random variable?
 
 ::: nonincremental
--   Another way of thinking about a random variable is simply as a variable (data object) in R that can take on different values of different types: `Logical`, `Numeric`, `Factor`, etc.
+-   Another way of thinking about a random variable is simply as a variable (data object) in R that can take different values of different types: `Logical`, `Numeric`, `Factor`, etc.
 :::
 
 ```{r}
+#| eval: false
+#| output-location: default
+ss <- expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE),
+  S = factor(c("♂", "♀", "⚥")),
+  H = c(10, 20, 30),
+  W = c(20, 40, 60)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss
+```
+
+## What is a random variable?
+
+::: nonincremental
+-   Another way of thinking about a random variable is simply as a variable (data object) in R that can take different values of different types: `Logical`, `Numeric`, `Factor`, etc.
+:::
+
+```{r}
+#| eval: false
+#| output-location: default
+ss <- expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE),
+  S = factor(c("♂", "♀", "⚥")),
+  H = c(10, 20, 30),
+  W = c(20, 40, 60)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss
+```
+
+-   This data frame represents the universe/sample space ($\Omega$), where each column corresponds to a random variable (`A`, `B`, `S`, `H`, `W`) and each row represents a possible world/outcome ($\omega$)
+
+## What is a random variable?
+
+```{r}
+#| echo: false
 #| output: asis
-#| output-location: slide
+#| output-location: default
 ss <- expand_grid(
   A = c(TRUE, FALSE),
   B = c(TRUE, FALSE),
@@ -2182,7 +2225,7 @@ ss %>% DT::datatable(options = list(pageLength = 8), rownames = FALSE)
 ## What is a random variable?
 
 ::: nonincremental
--   Another way of thinking about a random variable is simply as a variable (data object) in R that can take on different values of different types: `Logical`, `Numeric`, `Factor`, etc.
+-   Another way of thinking about a random variable is simply as a variable (data object) in R that can take different values of different types: `Logical`, `Numeric`, `Factor`, etc.
 :::
 
 ```{r}
@@ -2197,13 +2240,16 @@ ss <- expand_grid(
   mutate(Ω = paste0("⍵", 1:n())) %>% 
   select(Ω, everything())
 
-ss %>% DT::datatable(options = list(pageLength = 8), rownames = FALSE)
+ss
 ```
 
+::: nonincremental
 -   This data frame represents the universe/sample space ($\Omega$), where each column corresponds to a random variable (`A`, `B`, `S`, `H`, `W`) and each row represents a possible world/outcome ($\omega$)
+:::
 
--   This is analogous to our earlier, simpler example with only logical variables `A` and `B`, and the same principles and operations apply (including the calculation of probabilities and application of probability distributions) regardless of whether the random variables are logical, numeric, or categorical
+-   This is analogous to our earlier, simpler example with only logical variables `A` and `B`
 
+-   The same principles and operations apply (including the calculation of probabilities and application of probability distributions), regardless of whether the random variables are logical, numeric, or categorical, since they all evaluate to propositions
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
