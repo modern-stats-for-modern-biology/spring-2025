@@ -21,6 +21,9 @@ df-print: kable
 #| include: false
 library(tidyverse)
 library(ggformula)
+library(ggdag)
+library(dagitty)
+
 theme_set(theme_minimal())
 
 #| output-location: default
@@ -147,7 +150,373 @@ P.flex <- function(..., H, table = TRUE, flex = TRUE) {
 
 ##  {background-image="images/last_week_tonight.jpg" background-size="contain"}
 
+## Statistical models
+
+Statistical models = **probability distributions** of **random variables**
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
+:::
+::::
+::::::
+
 ## Take homes from last week
+
+-   Models
+
+-   Probability distributions
+
+-   Random variables
+
+## Models vs. the real world
+
+![](images/Slide20.png){fig-align="center"}
+
+## The real world of robots
+
+![](images/FriendlyRobots.jpg){fig-align="center"}
+
+
+## Causal model
+
+```{r}
+#| echo: false
+dag <- dagify(
+  W ~ H,
+  exposure = "H",
+  outcome = "W"
+)
+
+coordinates(dag) <- list(
+  x = c(H = 0, W = 1),
+  y = c(H = 0, W = 0)
+)
+
+ggdag(dag) + theme_dag()
+```
+
+## Causal model
+
+```{r}
+#| echo: false
+dag <- dagify(
+  W ~ H,
+  H ~ M,
+  W ~ M,
+  exposure = "H",
+  outcome = "W"
+)
+
+coordinates(dag) <- list(
+  x = c(H = 0, M = 1, W = 2),
+  y = c(H = 0, M = 1, W = 0)
+)
+
+ggdag(dag) + theme_dag()
+```
+
+## Causal model
+
+```{r}
+#| echo: false
+dag <- dagify(
+  W ~ H,
+  exposure = "H",
+  outcome = "W"
+)
+
+coordinates(dag) <- list(
+  x = c(H = 0, W = 1),
+  y = c(H = 0, W = 0)
+)
+
+ggdag(dag) + theme_dag()
+```
+
+## Causal model
+
+$$
+\text{Weight} = f(\text{Height})
+$$
+&nbsp;
+
+::: fragment
+$$
+\text{Weight} = \beta_0 + \beta_1 \times \text{Height} + \epsilon
+$$
+:::
+
+&nbsp;
+
+::: fragment
+$$
+\text{Next token} = \text{ChatGPT}\bigl(\text{Prompt}\bigr)
+$$
+:::
+
+::: fragment
+$$
+\text{Next token} = \text{ChatGPT}\bigl(\text{Prompt} + \text{Previous token}\bigr)
+$$
+:::
+
+::: fragment
+$$
+\text{STOP} = \text{ChatGPT}\bigl(\text{Prompt} + \text{Previous tokens}\bigr)
+$$
+:::
+
+::: notes
+ChatGPT 3: 5 million "neurons", 175 billion parameters, 35K parameters per neuron on average
+:::
+
+## Random variables
+
+::: fragment
+$$
+\begin{aligned}[l]
+\text{Height} & = \{ 10, 20, 30 \} \\
+\text{Weight} & = \{ 20, 30, 40 \}
+\end{aligned}
+$$
+:::
+
+&nbsp;
+
+::: fragment
+```{r}
+#| output-location: default
+Height <- c(10, 20, 30)
+
+Weight <- c(20, 30, 40)
+```
+:::
+
+## Universe
+
+::: fragment
+```{r}
+#| output-location: default
+ss <-
+  expand_grid(Height, Weight) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss
+```
+:::
+
+## Argument: Premises/Evidence
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(
+    P1 = (Height == 10) %=>% (Weight == 20),
+    P2 = (Height == 20) %=>% (Weight == 30),
+    P3 = (Height == 30) %=>% (Weight == 40),
+    E  = P1 & P2 & P3)                        # evidence/premises
+```
+
+## Argument: Premises/Evidence 
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(
+    P1 = (Height == 10) %=>% (Weight == 20),
+    P2 = (Height == 20) %=>% (Weight == 30),
+    P3 = (Height == 30) %=>% (Weight == 40),
+    E  = P1 & P2 & P3) %>%                    # evidence/premises
+  filter(E)
+```
+
+## Argument: Inference
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(
+    P1 = (Height == 10) %=>% (Weight == 20),
+    P2 = (Height == 20) %=>% (Weight == 30),
+    P3 = (Height == 30) %=>% (Weight == 40),
+    E  = P1 & P2 & P3,                        # evidence/premises
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion
+  filter(E)
+```
+
+## Argument: Inference
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(
+    P1 = (Height == 10) %=>% (Weight == 20),
+    P2 = (Height == 20) %=>% (Weight == 30),
+    P3 = (Height == 30) %=>% (Weight == 40),
+    E  = P1 & P2 & P3,                        # evidence/premises
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion
+  filter(E) %>% 
+  summarize(`P(H | E)` = mean(H))
+```
+
+## Argument: Inference
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(
+    P1 = (Height == 10) %=>% (Weight == 20),
+    P2 = (Height == 20) %=>% (Weight == 30),
+    P3 = (Height == 30) %=>% (Weight == 40),
+    E  = P1 & P2 & P3,                        # evidence/premises
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion 
+  filter(E)
+```
+
+## Argument: Inference
+
+```{r}
+#| output-location: default
+ss %>% 
+  rowwise() %>% 
+  mutate(
+    #    linear model equivalent to premises P1, P2 and P3
+    E  = (Weight == 10 + 1 * Height),
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion  
+  ungroup() %>% 
+  filter(E)
+```
+
+## Argument: Inference
+
+```{r}
+#| output-location: default
+ss %>% 
+  rowwise() %>% 
+  mutate(
+    #    linear model equivalent to P1, P2 and P3
+    E  = (Weight == 10 + 1 * Height),
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion  
+  ungroup() %>% 
+  filter(E) %>% 
+  summarize(`P(H | E)` = mean(H))
+```
+
+## Probability distribution
+
+```{r}
+#| output-location: default
+ss
+```
+
+## Probability distribution
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n())     # discrete uniform probability distribution (prior)
+```
+
+## Probability distribution
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
+  rowwise() %>% 
+  mutate(
+    E  = (Weight == 10 + 1 * Height)) %>%      # linear model equivalent to premises P1, P2 and P3
+  ungroup()
+```
+
+## Probability distribution
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
+  rowwise() %>% 
+  mutate(
+    E  = (Weight == 10 + 1 * Height)) %>%      # linear model equivalent to premises P1, P2 and P3
+  ungroup() %>%
+  mutate(p = if_else(E, p, 0))
+```
+
+## Probability distribution
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
+  rowwise() %>% 
+  mutate(
+    E  = (Weight == 10 + 1 * Height)) %>%      # linear model equivalent to premises P1, P2 and P3 
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0))     # (posterior)
+```
+
+## Argument: Inference
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
+  rowwise() %>% 
+  mutate(
+    E  = (Weight == 10 + 1 * Height),          # linear model equivalent to premises P1, P2 and P3
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion 
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0))     # (posterior)
+```
+
+## Argument: Inference
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
+  rowwise() %>% 
+  mutate(
+    E  = (Weight == 10 + 1 * Height),          # linear model equivalent to premises P1, P2 and P3
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion  
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0)) %>% # (posterior)
+  summarize(`P(H | E)` = sum(p[H]))
+```
+
+## Argument: Inference
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
+  rowwise() %>% 
+  mutate(
+    E  = (Weight == 10 + 1 * Height),          # linear model equivalent to premises P1, P2 and P3
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion   
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0)) %>% # (posterior) 
+  summarize(`P(H | E)` = sum(p[H]))
+```
 
 ##  {background-image="images/bayesian_inference_is_just_counting.jpg" background-size="contain"}
 

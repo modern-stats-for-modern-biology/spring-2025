@@ -209,8 +209,1174 @@ Edoardo “Dado” Marcora
 <section id="section" class="slide level2" data-background-image="images/last_week_tonight.jpg" data-background-size="contain">
 <h2></h2>
 </section>
+<section id="statistical-models" class="slide level2">
+<h2>Statistical models</h2>
+<p>Statistical models = <strong>probability distributions</strong> of <strong>random variables</strong></p>
+<div class="columns">
+<div class="column" style="width:30%;">
+<p><img data-src="images/models_80s90s.webp"></p>
+</div><div class="column" style="width:70%;">
+<div class="text-align-center">
+<p><img data-src="images/probability_distributions.jpg"></p>
+<p><a href="https://distribution-explorer.github.io/" class="uri">https://distribution-explorer.github.io/</a></p>
+<p><a href="https://prob.bayesfusion.com/" class="uri">https://prob.bayesfusion.com/</a></p>
+</div>
+</div></div>
+</section>
 <section id="take-homes-from-last-week" class="slide level2">
 <h2>Take homes from last week</h2>
+<ul>
+<li class="fragment"><p>Models</p></li>
+<li class="fragment"><p>Probability distributions</p></li>
+<li class="fragment"><p>Random variables</p></li>
+</ul>
+</section>
+<section id="models-vs.-the-real-world" class="slide level2">
+<h2>Models vs.&nbsp;the real world</h2>
+
+<img data-src="images/Slide20.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="the-real-world-of-robots" class="slide level2">
+<h2>The real world of robots</h2>
+
+<img data-src="images/FriendlyRobots.jpg" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="causal-model" class="slide level2">
+<h2>Causal model</h2>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
+<section id="causal-model-1" class="slide level2">
+<h2>Causal model</h2>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"></section>
+<section id="causal-model-2" class="slide level2">
+<h2>Causal model</h2>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
+<section id="causal-model-3" class="slide level2">
+<h2>Causal model</h2>
+<p><span class="math display">\[
+\text{Weight} = f(\text{Height})
+\]</span> &nbsp;</p>
+<div class="fragment">
+<p><span class="math display">\[
+\text{Weight} = \beta_0 + \beta_1 \times \text{Height} + \epsilon
+\]</span></p>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<p><span class="math display">\[
+\text{Next token} = \text{ChatGPT}\bigl(\text{Prompt}\bigr)
+\]</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[
+\text{Next token} = \text{ChatGPT}\bigl(\text{Prompt} + \text{Previous token}\bigr)
+\]</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[
+\text{STOP} = \text{ChatGPT}\bigl(\text{Prompt} + \text{Previous tokens}\bigr)
+\]</span></p>
+</div>
+<aside class="notes">
+<p>ChatGPT 3: 5 million “neurons”, 175 billion parameters, 35K parameters per neuron on average</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="random-variables" class="slide level2">
+<h2>Random variables</h2>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{aligned}[l]
+\text{Height} &amp; = \{ 10, 20, 30 \} \\
+\text{Weight} &amp; = \{ 20, 30, 40 \}
+\end{aligned}
+\]</span></p>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>Height <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>)</span>
+<span id="cb1-2"><a href=""></a></span>
+<span id="cb1-3"><a href=""></a>Weight <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="universe" class="slide level2">
+<h2>Universe</h2>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>ss <span class="ot">&lt;-</span></span>
+<span id="cb2-2"><a href=""></a>  <span class="fu">expand_grid</span>(Height, Weight) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-4"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>())</span>
+<span id="cb2-5"><a href=""></a></span>
+<span id="cb2-6"><a href=""></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="argument-premisesevidence" class="slide level2">
+<h2>Argument: Premises/Evidence</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-3"><a href=""></a>    <span class="at">P1 =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">20</span>),</span>
+<span id="cb3-4"><a href=""></a>    <span class="at">P2 =</span> (Height <span class="sc">==</span> <span class="dv">20</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">30</span>),</span>
+<span id="cb3-5"><a href=""></a>    <span class="at">P3 =</span> (Height <span class="sc">==</span> <span class="dv">30</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">40</span>),</span>
+<span id="cb3-6"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3)                        <span class="co"># evidence/premises</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: left;">P1</th>
+<th style="text-align: left;">P2</th>
+<th style="text-align: left;">P3</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="argument-premisesevidence-1" class="slide level2">
+<h2>Argument: Premises/Evidence</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-3"><a href=""></a>    <span class="at">P1 =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">20</span>),</span>
+<span id="cb4-4"><a href=""></a>    <span class="at">P2 =</span> (Height <span class="sc">==</span> <span class="dv">20</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">30</span>),</span>
+<span id="cb4-5"><a href=""></a>    <span class="at">P3 =</span> (Height <span class="sc">==</span> <span class="dv">30</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">40</span>),</span>
+<span id="cb4-6"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3) <span class="sc">%&gt;%</span>                    <span class="co"># evidence/premises</span></span>
+<span id="cb4-7"><a href=""></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: left;">P1</th>
+<th style="text-align: left;">P2</th>
+<th style="text-align: left;">P3</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="argument-inference" class="slide level2">
+<h2>Argument: Inference</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-3"><a href=""></a>    <span class="at">P1 =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">20</span>),</span>
+<span id="cb5-4"><a href=""></a>    <span class="at">P2 =</span> (Height <span class="sc">==</span> <span class="dv">20</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">30</span>),</span>
+<span id="cb5-5"><a href=""></a>    <span class="at">P3 =</span> (Height <span class="sc">==</span> <span class="dv">30</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">40</span>),</span>
+<span id="cb5-6"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3,                        <span class="co"># evidence/premises</span></span>
+<span id="cb5-7"><a href=""></a>    <span class="co">#    --------------------------------</span></span>
+<span id="cb5-8"><a href=""></a>    <span class="at">H  =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">|</span> (Weight <span class="sc">==</span> <span class="dv">30</span>)) <span class="sc">%&gt;%</span> <span class="co"># hypothesis/conclusion</span></span>
+<span id="cb5-9"><a href=""></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: left;">P1</th>
+<th style="text-align: left;">P2</th>
+<th style="text-align: left;">P3</th>
+<th style="text-align: left;">E</th>
+<th style="text-align: left;">H</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="argument-inference-1" class="slide level2">
+<h2>Argument: Inference</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-3"><a href=""></a>    <span class="at">P1 =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">20</span>),</span>
+<span id="cb6-4"><a href=""></a>    <span class="at">P2 =</span> (Height <span class="sc">==</span> <span class="dv">20</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">30</span>),</span>
+<span id="cb6-5"><a href=""></a>    <span class="at">P3 =</span> (Height <span class="sc">==</span> <span class="dv">30</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">40</span>),</span>
+<span id="cb6-6"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3,                        <span class="co"># evidence/premises</span></span>
+<span id="cb6-7"><a href=""></a>    <span class="co">#    --------------------------------</span></span>
+<span id="cb6-8"><a href=""></a>    <span class="at">H  =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">|</span> (Weight <span class="sc">==</span> <span class="dv">30</span>)) <span class="sc">%&gt;%</span> <span class="co"># hypothesis/conclusion</span></span>
+<span id="cb6-9"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-10"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(H))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">P(H | E)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.6667</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="argument-inference-2" class="slide level2">
+<h2>Argument: Inference</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-3"><a href=""></a>    <span class="at">P1 =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">20</span>),</span>
+<span id="cb7-4"><a href=""></a>    <span class="at">P2 =</span> (Height <span class="sc">==</span> <span class="dv">20</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">30</span>),</span>
+<span id="cb7-5"><a href=""></a>    <span class="at">P3 =</span> (Height <span class="sc">==</span> <span class="dv">30</span>) <span class="sc">%=&gt;%</span> (Weight <span class="sc">==</span> <span class="dv">40</span>),</span>
+<span id="cb7-6"><a href=""></a>    <span class="at">E  =</span> P1 <span class="sc">&amp;</span> P2 <span class="sc">&amp;</span> P3,                        <span class="co"># evidence/premises</span></span>
+<span id="cb7-7"><a href=""></a>    <span class="co">#    --------------------------------</span></span>
+<span id="cb7-8"><a href=""></a>    <span class="at">H  =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">|</span> (Weight <span class="sc">==</span> <span class="dv">30</span>)) <span class="sc">%&gt;%</span> <span class="co"># hypothesis/conclusion </span></span>
+<span id="cb7-9"><a href=""></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: left;">P1</th>
+<th style="text-align: left;">P2</th>
+<th style="text-align: left;">P3</th>
+<th style="text-align: left;">E</th>
+<th style="text-align: left;">H</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="argument-inference-3" class="slide level2">
+<h2>Argument: Inference</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-4"><a href=""></a>    <span class="co">#    linear model equivalent to premises P1, P2 and P3</span></span>
+<span id="cb8-5"><a href=""></a>    <span class="at">E  =</span> (Weight <span class="sc">==</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> Height),</span>
+<span id="cb8-6"><a href=""></a>    <span class="co">#    --------------------------------</span></span>
+<span id="cb8-7"><a href=""></a>    <span class="at">H  =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">|</span> (Weight <span class="sc">==</span> <span class="dv">30</span>)) <span class="sc">%&gt;%</span> <span class="co"># hypothesis/conclusion  </span></span>
+<span id="cb8-8"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb8-9"><a href=""></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: left;">E</th>
+<th style="text-align: left;">H</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="argument-inference-4" class="slide level2">
+<h2>Argument: Inference</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-4"><a href=""></a>    <span class="co">#    linear model equivalent to P1, P2 and P3</span></span>
+<span id="cb9-5"><a href=""></a>    <span class="at">E  =</span> (Weight <span class="sc">==</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> Height),</span>
+<span id="cb9-6"><a href=""></a>    <span class="co">#    --------------------------------</span></span>
+<span id="cb9-7"><a href=""></a>    <span class="at">H  =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">|</span> (Weight <span class="sc">==</span> <span class="dv">30</span>)) <span class="sc">%&gt;%</span> <span class="co"># hypothesis/conclusion  </span></span>
+<span id="cb9-8"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb9-9"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-10"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(H))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">P(H | E)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.6667</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="probability-distribution" class="slide level2">
+<h2>Probability distribution</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="probability-distribution-1" class="slide level2">
+<h2>Probability distribution</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())     <span class="co"># discrete uniform probability distribution (prior)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.1111</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.1111</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.1111</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.1111</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.1111</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.1111</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.1111</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.1111</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.1111</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="probability-distribution-2" class="slide level2">
+<h2>Probability distribution</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># discrete uniform probability distribution (prior)</span></span>
+<span id="cb12-3"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb12-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-5"><a href=""></a>    <span class="at">E  =</span> (Weight <span class="sc">==</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> Height)) <span class="sc">%&gt;%</span>      <span class="co"># linear model equivalent to premises P1, P2 and P3</span></span>
+<span id="cb12-6"><a href=""></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="probability-distribution-3" class="slide level2">
+<h2>Probability distribution</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># discrete uniform probability distribution (prior)</span></span>
+<span id="cb13-3"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb13-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-5"><a href=""></a>    <span class="at">E  =</span> (Weight <span class="sc">==</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> Height)) <span class="sc">%&gt;%</span>      <span class="co"># linear model equivalent to premises P1, P2 and P3</span></span>
+<span id="cb13-6"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(E, p, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.1111</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="probability-distribution-4" class="slide level2">
+<h2>Probability distribution</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># discrete uniform probability distribution (prior)</span></span>
+<span id="cb14-3"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb14-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-5"><a href=""></a>    <span class="at">E  =</span> (Weight <span class="sc">==</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> Height)) <span class="sc">%&gt;%</span>      <span class="co"># linear model equivalent to premises P1, P2 and P3 </span></span>
+<span id="cb14-6"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-7"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>))     <span class="co"># (posterior)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.3333</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.3333</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.3333</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="argument-inference-5" class="slide level2">
+<h2>Argument: Inference</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># discrete uniform probability distribution (prior)</span></span>
+<span id="cb15-3"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb15-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-5"><a href=""></a>    <span class="at">E  =</span> (Weight <span class="sc">==</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> Height),          <span class="co"># linear model equivalent to premises P1, P2 and P3</span></span>
+<span id="cb15-6"><a href=""></a>    <span class="co">#    --------------------------------</span></span>
+<span id="cb15-7"><a href=""></a>    <span class="at">H  =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">|</span> (Weight <span class="sc">==</span> <span class="dv">30</span>)) <span class="sc">%&gt;%</span>  <span class="co"># hypothesis/conclusion </span></span>
+<span id="cb15-8"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-9"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>))     <span class="co"># (posterior)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">Height</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">E</th>
+<th style="text-align: left;">H</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.3333</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.3333</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵6</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵8</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵9</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.3333</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="argument-inference-6" class="slide level2">
+<h2>Argument: Inference</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># discrete uniform probability distribution (prior)</span></span>
+<span id="cb16-3"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb16-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-5"><a href=""></a>    <span class="at">E  =</span> (Weight <span class="sc">==</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> Height),          <span class="co"># linear model equivalent to premises P1, P2 and P3</span></span>
+<span id="cb16-6"><a href=""></a>    <span class="co">#    --------------------------------</span></span>
+<span id="cb16-7"><a href=""></a>    <span class="at">H  =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">|</span> (Weight <span class="sc">==</span> <span class="dv">30</span>)) <span class="sc">%&gt;%</span>  <span class="co"># hypothesis/conclusion  </span></span>
+<span id="cb16-8"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb16-9"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span> <span class="co"># (posterior)</span></span>
+<span id="cb16-10"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">P(H | E)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.6667</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="argument-inference-7" class="slide level2">
+<h2>Argument: Inference</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># discrete uniform probability distribution (prior)</span></span>
+<span id="cb17-3"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb17-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb17-5"><a href=""></a>    <span class="at">E  =</span> (Weight <span class="sc">==</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> Height),          <span class="co"># linear model equivalent to premises P1, P2 and P3</span></span>
+<span id="cb17-6"><a href=""></a>    <span class="co">#    --------------------------------</span></span>
+<span id="cb17-7"><a href=""></a>    <span class="at">H  =</span> (Height <span class="sc">==</span> <span class="dv">10</span>) <span class="sc">|</span> (Weight <span class="sc">==</span> <span class="dv">30</span>)) <span class="sc">%&gt;%</span>  <span class="co"># hypothesis/conclusion   </span></span>
+<span id="cb17-8"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb17-9"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(E, p <span class="sc">/</span> <span class="fu">sum</span>(p[E]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span> <span class="co"># (posterior) </span></span>
+<span id="cb17-10"><a href=""></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">P(H | E)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(p[H]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">P(H | E)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.6667</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
 <section id="section-1" class="slide level2" data-background-image="images/bayesian_inference_is_just_counting.jpg" data-background-size="contain">
 <h2></h2>
@@ -231,7 +1397,7 @@ Edoardo “Dado” Marcora
 \end{array}
 \]</span></p>
 </section>
-<section id="statistical-models" class="slide level2">
+<section id="statistical-models-1" class="slide level2">
 <h2>Statistical models</h2>
 <p>Statistical models = <strong>probability distributions</strong> of <strong>random variables</strong></p>
 <div class="columns">
@@ -253,13 +1419,13 @@ Edoardo “Dado” Marcora
 <h2>Proportional syllogism</h2>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
-<span id="cb1-2"><a href=""></a></span>
-<span id="cb1-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb1-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
-<span id="cb1-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
-<span id="cb1-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
-<span id="cb1-7"><a href=""></a>  <span class="at">W3 =</span> ball)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
+<span id="cb18-2"><a href=""></a></span>
+<span id="cb18-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb18-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
+<span id="cb18-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
+<span id="cb18-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
+<span id="cb18-7"><a href=""></a>  <span class="at">W3 =</span> ball)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div><div class="column">
 <div class="cell-output-display">
 <div class="kable-table">
@@ -379,18 +1545,18 @@ Edoardo “Dado” Marcora
 <h2>Proportional syllogism</h2>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
-<span id="cb2-2"><a href=""></a></span>
-<span id="cb2-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb2-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
-<span id="cb2-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
-<span id="cb2-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
-<span id="cb2-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb2-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb2-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb2-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb2-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
+<span id="cb19-2"><a href=""></a></span>
+<span id="cb19-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb19-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
+<span id="cb19-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
+<span id="cb19-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
+<span id="cb19-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb19-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb19-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb19-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div><div class="column">
 <div class="cell-output-display">
 <div class="kable-table">
@@ -527,19 +1693,19 @@ Edoardo “Dado” Marcora
 <h2>Proportional syllogism</h2>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
-<span id="cb3-2"><a href=""></a></span>
-<span id="cb3-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb3-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
-<span id="cb3-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
-<span id="cb3-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
-<span id="cb3-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb3-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb3-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb3-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb3-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3)) <span class="sc">%&gt;%</span>  </span>
-<span id="cb3-13"><a href=""></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
+<span id="cb20-2"><a href=""></a></span>
+<span id="cb20-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb20-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
+<span id="cb20-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
+<span id="cb20-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
+<span id="cb20-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb20-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb20-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb20-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb20-13"><a href=""></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div><div class="column">
 <div class="cell-output-display">
 <div class="kable-table">
@@ -592,23 +1758,23 @@ Edoardo “Dado” Marcora
 <h2>Proportional syllogism</h2>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
-<span id="cb4-2"><a href=""></a></span>
-<span id="cb4-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb4-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
-<span id="cb4-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
-<span id="cb4-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
-<span id="cb4-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb4-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb4-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb4-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3),</span>
-<span id="cb4-13"><a href=""></a>    <span class="co">#   -----------------------</span></span>
-<span id="cb4-14"><a href=""></a>    <span class="at">H =</span>   B1) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-15"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-16"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-17"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
+<span id="cb21-2"><a href=""></a></span>
+<span id="cb21-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb21-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
+<span id="cb21-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
+<span id="cb21-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
+<span id="cb21-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb21-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb21-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb21-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb21-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3),</span>
+<span id="cb21-13"><a href=""></a>    <span class="co">#   -----------------------</span></span>
+<span id="cb21-14"><a href=""></a>    <span class="at">H =</span>   B1) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-15"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-16"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-17"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div><div class="column">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.25</code></pre>
@@ -619,23 +1785,23 @@ Edoardo “Dado” Marcora
 <h2>Proportional syllogism</h2>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
-<span id="cb6-2"><a href=""></a></span>
-<span id="cb6-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb6-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
-<span id="cb6-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
-<span id="cb6-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
-<span id="cb6-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb6-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb6-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb6-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3),</span>
-<span id="cb6-13"><a href=""></a>    <span class="co">#   -----------------------</span></span>
-<span id="cb6-14"><a href=""></a>    <span class="at">H =</span>   W1 <span class="sc">|</span>  W2 <span class="sc">|</span>  W3) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-15"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-16"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-17"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
+<span id="cb23-2"><a href=""></a></span>
+<span id="cb23-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb23-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
+<span id="cb23-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
+<span id="cb23-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
+<span id="cb23-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb23-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb23-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
+<span id="cb23-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3),</span>
+<span id="cb23-13"><a href=""></a>    <span class="co">#   -----------------------</span></span>
+<span id="cb23-14"><a href=""></a>    <span class="at">H =</span>   W1 <span class="sc">|</span>  W2 <span class="sc">|</span>  W3) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-15"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-16"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-17"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div><div class="column">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.75</code></pre>
@@ -646,11 +1812,11 @@ Edoardo “Dado” Marcora
 <h2>Proportional syllogism</h2>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
-<span id="cb8-2"><a href=""></a></span>
-<span id="cb8-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb8-4"><a href=""></a>  <span class="at">D1 =</span> bag</span>
-<span id="cb8-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
+<span id="cb25-2"><a href=""></a></span>
+<span id="cb25-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb25-4"><a href=""></a>  <span class="at">D1 =</span> bag</span>
+<span id="cb25-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div><div class="column">
 <div class="cell-output-display">
 <div class="kable-table">
@@ -683,16 +1849,16 @@ Edoardo “Dado” Marcora
 <h2>Proportional syllogism</h2>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
-<span id="cb9-2"><a href=""></a></span>
-<span id="cb9-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb9-4"><a href=""></a>  <span class="at">D1 =</span> bag) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-6"><a href=""></a>    <span class="at">E =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb9-7"><a href=""></a>    <span class="at">H =</span> (D1 <span class="sc">==</span> <span class="st">"B"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-8"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-9"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-10"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
+<span id="cb26-2"><a href=""></a></span>
+<span id="cb26-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb26-4"><a href=""></a>  <span class="at">D1 =</span> bag) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-6"><a href=""></a>    <span class="at">E =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-7"><a href=""></a>    <span class="at">H =</span> (D1 <span class="sc">==</span> <span class="st">"B"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb26-8"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-9"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-10"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div><div class="column">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.25</code></pre>
@@ -703,18 +1869,18 @@ Edoardo “Dado” Marcora
 <h2>Proportional syllogism</h2>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
-<span id="cb11-2"><a href=""></a></span>
-<span id="cb11-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb11-4"><a href=""></a>  <span class="at">D1 =</span> bag</span>
-<span id="cb11-5"><a href=""></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb11-6"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb11-7"><a href=""></a>    <span class="at">E =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb11-8"><a href=""></a>    <span class="at">H =</span> (D1 <span class="sc">==</span> <span class="st">"W"</span>)</span>
-<span id="cb11-9"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb11-10"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-11"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-12"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
+<span id="cb28-2"><a href=""></a></span>
+<span id="cb28-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
+<span id="cb28-4"><a href=""></a>  <span class="at">D1 =</span> bag</span>
+<span id="cb28-5"><a href=""></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-6"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb28-7"><a href=""></a>    <span class="at">E =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb28-8"><a href=""></a>    <span class="at">H =</span> (D1 <span class="sc">==</span> <span class="st">"W"</span>)</span>
+<span id="cb28-9"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb28-10"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-11"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-12"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div><div class="column">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.75</code></pre>
@@ -725,15 +1891,15 @@ Edoardo “Dado” Marcora
 <h2>Proportional syllogism</h2>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
-<span id="cb13-2"><a href=""></a></span>
-<span id="cb13-3"><a href=""></a>ss <span class="ot">&lt;-</span></span>
-<span id="cb13-4"><a href=""></a>  <span class="fu">expand_grid</span>(</span>
-<span id="cb13-5"><a href=""></a>    <span class="at">D1 =</span> bag,</span>
-<span id="cb13-6"><a href=""></a>    <span class="at">D2 =</span> bag,</span>
-<span id="cb13-7"><a href=""></a>    <span class="at">D3 =</span> bag)</span>
-<span id="cb13-8"><a href=""></a></span>
-<span id="cb13-9"><a href=""></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
+<span id="cb30-2"><a href=""></a></span>
+<span id="cb30-3"><a href=""></a>ss <span class="ot">&lt;-</span></span>
+<span id="cb30-4"><a href=""></a>  <span class="fu">expand_grid</span>(</span>
+<span id="cb30-5"><a href=""></a>    <span class="at">D1 =</span> bag,</span>
+<span id="cb30-6"><a href=""></a>    <span class="at">D2 =</span> bag,</span>
+<span id="cb30-7"><a href=""></a>    <span class="at">D3 =</span> bag)</span>
+<span id="cb30-8"><a href=""></a></span>
+<span id="cb30-9"><a href=""></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div><div class="column">
 <div class="cell-output-display">
 <div class="kable-table">
@@ -1076,14 +2242,14 @@ Edoardo “Dado” Marcora
 <h2>Proportional syllogism</h2>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb14-3"><a href=""></a>    <span class="at">E =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb14-4"><a href=""></a>    <span class="at">H =</span> (D1 <span class="sc">==</span> <span class="st">"B"</span> <span class="sc">&amp;</span> D2 <span class="sc">==</span> <span class="st">"W"</span> <span class="sc">&amp;</span> D3 <span class="sc">==</span> <span class="st">"B"</span>)</span>
-<span id="cb14-5"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb14-6"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-7"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-8"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb31-3"><a href=""></a>    <span class="at">E =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb31-4"><a href=""></a>    <span class="at">H =</span> (D1 <span class="sc">==</span> <span class="st">"B"</span> <span class="sc">&amp;</span> D2 <span class="sc">==</span> <span class="st">"W"</span> <span class="sc">&amp;</span> D3 <span class="sc">==</span> <span class="st">"B"</span>)</span>
+<span id="cb31-5"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb31-6"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-7"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-8"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div><div class="column">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.04688</code></pre>
