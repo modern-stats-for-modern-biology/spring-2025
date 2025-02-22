@@ -147,49 +147,211 @@ P.flex <- function(..., H, table = TRUE, flex = TRUE) {
 
 ##  {background-image="images/last_week_tonight.jpg" background-size="contain"}
 
-## Recap slides
+## Take homes from last week
 
 ##  {background-image="images/bayesian_inference_is_just_counting.jpg" background-size="contain"}
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide1.png){fig-align="center" width="979"}
+
+[Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
+
+## Statistical inference
+
+$$
+\begin{array}{ll}
+1. & \text{data (observations/measurements)} \\
+2. & \text{model (DGP)} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+
+## Statistical models
+
+Statistical models = **probability distributions** of **random variables**
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
+:::
+::::
+::::::
 
 ## Bayesian inference workflow
 
 XXX
 
-## Problem: Multiple draws with replacement from bag of balls
+## Proportional syllogism {.scrollable}
 
 ```{r}
-bag <- c("B", "W", "W", "W")
+#| output-location: column
+ball <- c(TRUE, FALSE)
 
-ss <- expand_grid(
-  D1 = bag
-)
-
-ss
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball)
 ```
 
+## Proportional syllogism {.scrollable}
+
 ```{r}
-ss %>%
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3))
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3)) %>%  
+  filter(E)
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3),
+    #   -----------------------
+    H =   B1) %>% 
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3),
+    #   -----------------------
+    H =   W1 |  W2 |  W3) %>% 
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+bag <- c("B", "W", "W", "W")
+
+expand_grid(
+  D1 = bag
+)
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+bag <- c("B", "W", "W", "W")
+
+expand_grid(
+  D1 = bag) %>% 
   mutate(
     E = TRUE,
-    H = D1 == "B"
+    H = (D1 == "B")) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+bag <- c("B", "W", "W", "W")
+
+expand_grid(
+  D1 = bag
+) %>%
+  mutate(
+    E = TRUE,
+    H = (D1 == "W")
   ) %>%
   filter(E) %>% 
   pull(H) %>% 
   mean()
 ```
 
+## Proportional syllogism
+
 ```{r}
+#| output-location: column
 bag <- c("B", "W", "W", "W")
 
-ss <- expand_grid(
-  D1 = bag,
-  D2 = bag,
-  D3 = bag)
+ss <-
+  expand_grid(
+    D1 = bag,
+    D2 = bag,
+    D3 = bag)
 
 ss
 ```
 
+## Proportional syllogism
+
 ```{r}
+#| output-location: column
 ss %>%
   mutate(
     E = TRUE,
