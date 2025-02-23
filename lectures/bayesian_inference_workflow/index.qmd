@@ -186,7 +186,6 @@ Statistical models = **probability distributions** of **random variables**
 
 ![](images/FriendlyRobots.jpg){fig-align="center"}
 
-
 ## Causal model
 
 ```{r}
@@ -246,23 +245,52 @@ ggdag(dag) + theme_dag()
 ## Causal model
 
 $$
-\text{Weight} = f(\text{Height})
+\text{W} = f(\text{H})
 $$
+
 &nbsp;
 
 ::: fragment
+$$
+\text{Weight} = \beta_0 + \beta_1 \times \text{Height}
+$$
+:::
+
+## Causal model
+
+$$
+\text{W} = f(\text{H})
+$$
+
+&nbsp;
+
 $$
 \text{Weight} = \beta_0 + \beta_1 \times \text{Height} + \epsilon
 $$
+
+ 
+
+::: fragment
+![](images/ChatGPT-475728009.webp){fig-align="center" height="400"}
 :::
+
+## Causal model
+
+$$
+\text{W} = f(\text{H})
+$$
 
 &nbsp;
 
-::: fragment
+$$
+\text{Weight} = \beta_0 + \beta_1 \times \text{Height} + \epsilon
+$$
+
+ 
+
 $$
 \text{Next token} = \text{ChatGPT}\bigl(\text{Prompt}\bigr)
 $$
-:::
 
 ::: fragment
 $$
@@ -285,13 +313,13 @@ ChatGPT 3: 5 million "neurons", 175 billion parameters, 35K parameters per neuro
 ::: fragment
 $$
 \begin{aligned}[l]
-\text{Height} & = \{ 10, 20, 30 \} \\
-\text{Weight} & = \{ 20, 30, 40 \}
+\text{H} & = \{ 10, 20, 30 \} \\
+\text{W} & = \{ 20, 30, 40 \}
 \end{aligned}
 $$
 :::
 
-&nbsp;
+ 
 
 ::: fragment
 ```{r}
@@ -304,9 +332,7 @@ Weight <- c(20, 30, 40)
 
 ## Universe
 
-::: fragment
 ```{r}
-#| output-location: default
 ss <-
   expand_grid(Height, Weight) %>%
   mutate(Ω = paste0("⍵", 1:n())) %>% 
@@ -314,90 +340,105 @@ ss <-
 
 ss
 ```
+
+## Argument: Evidence
+
+```{r}
+ss %>% 
+  mutate(
+    P1 = (Height == 10) %=>% (Weight == 20),
+    P2 = (Height == 20) %=>% (Weight == 30),
+    P3 = (Height == 30) %=>% (Weight == 40),
+    E  = P1 & P2 & P3)                        # evidence/premises/assumptions/KB
+```
+
+## Argument: Evidence
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(
+    P1 = (Height == 10) %=>% (Weight == 20),
+    P2 = (Height == 20) %=>% (Weight == 30),
+    P3 = (Height == 30) %=>% (Weight == 40),
+    E  = P1 & P2 & P3) %>%                    # evidence/premises/assumptions/KB
+  filter(E)
+```
+
+## Argument: Hypothesis
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(
+    P1 = (Height == 10) %=>% (Weight == 20),
+    P2 = (Height == 20) %=>% (Weight == 30),
+    P3 = (Height == 30) %=>% (Weight == 40),
+    E  = P1 & P2 & P3,                        # evidence/premises/assumptions/KB
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion/query
+  filter(E)
+```
+
+## Argument: Inference
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(
+    P1 = (Height == 10) %=>% (Weight == 20),
+    P2 = (Height == 20) %=>% (Weight == 30),
+    P3 = (Height == 30) %=>% (Weight == 40),
+    E  = P1 & P2 & P3,                        # evidence/premises/assumptions/KB
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion/query
+  filter(E) %>% 
+  summarize(`P(H | E)` = mean(H))
+```
+
+## Argument
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(
+    P1 = (Height == 10) %=>% (Weight == 20),
+    P2 = (Height == 20) %=>% (Weight == 30),
+    P3 = (Height == 30) %=>% (Weight == 40),
+    E  = P1 & P2 & P3,                        # evidence/premises/assumptions/KB
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion/query 
+  filter(E)
+```
+
+::: fragment
+$$
+\text{W} = f(\text{H})
+$$
 :::
 
-## Argument: Premises/Evidence
+::: fragment
+$$
+\text{Weight} = \beta_0 + \beta_1 \times \text{Height}
+$$
+:::
 
-```{r}
-#| output-location: default
-ss %>% 
-  mutate(
-    P1 = (Height == 10) %=>% (Weight == 20),
-    P2 = (Height == 20) %=>% (Weight == 30),
-    P3 = (Height == 30) %=>% (Weight == 40),
-    E  = P1 & P2 & P3)                        # evidence/premises
-```
+::: fragment
+$$
+\text{Weight} = 10 + 1 \times \text{Height}
+$$
+:::
 
-## Argument: Premises/Evidence 
-
-```{r}
-#| output-location: default
-ss %>% 
-  mutate(
-    P1 = (Height == 10) %=>% (Weight == 20),
-    P2 = (Height == 20) %=>% (Weight == 30),
-    P3 = (Height == 30) %=>% (Weight == 40),
-    E  = P1 & P2 & P3) %>%                    # evidence/premises
-  filter(E)
-```
-
-## Argument: Inference
-
-```{r}
-#| output-location: default
-ss %>% 
-  mutate(
-    P1 = (Height == 10) %=>% (Weight == 20),
-    P2 = (Height == 20) %=>% (Weight == 30),
-    P3 = (Height == 30) %=>% (Weight == 40),
-    E  = P1 & P2 & P3,                        # evidence/premises
-    #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion
-  filter(E)
-```
-
-## Argument: Inference
-
-```{r}
-#| output-location: default
-ss %>% 
-  mutate(
-    P1 = (Height == 10) %=>% (Weight == 20),
-    P2 = (Height == 20) %=>% (Weight == 30),
-    P3 = (Height == 30) %=>% (Weight == 40),
-    E  = P1 & P2 & P3,                        # evidence/premises
-    #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion
-  filter(E) %>% 
-  summarize(`P(H | E)` = mean(H))
-```
-
-## Argument: Inference
-
-```{r}
-#| output-location: default
-ss %>% 
-  mutate(
-    P1 = (Height == 10) %=>% (Weight == 20),
-    P2 = (Height == 20) %=>% (Weight == 30),
-    P3 = (Height == 30) %=>% (Weight == 40),
-    E  = P1 & P2 & P3,                        # evidence/premises
-    #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion 
-  filter(E)
-```
-
-## Argument: Inference
+## Argument
 
 ```{r}
 #| output-location: default
 ss %>% 
   rowwise() %>% 
   mutate(
-    #    linear model equivalent to premises P1, P2 and P3
-    E  = (Weight == 10 + 1 * Height),
+    E  = (Weight == 10 + 1 * Height),         # linear function equivalent to premises P1, P2 and P3
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion  
+    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion/query  
   ungroup() %>% 
   filter(E)
 ```
@@ -409,14 +450,30 @@ ss %>%
 ss %>% 
   rowwise() %>% 
   mutate(
-    #    linear model equivalent to P1, P2 and P3
-    E  = (Weight == 10 + 1 * Height),
+    E  = (Weight == 10 + 1 * Height),         # linear function equivalent to premises P1, P2 and P3
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion  
+    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion/query  
   ungroup() %>% 
   filter(E) %>% 
   summarize(`P(H | E)` = mean(H))
 ```
+
+## Probability distribution
+
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability to each possible world/outcome ($\omega$), e.g., the uniform distribution:
+
+::: fragment
+$$p(\omega) = \frac{1}{|\Omega|} = \frac{1}{n}$$
+:::
+
+-   Since outcomes are partitions of the sample space, their probabilities must sum to 1
+
+::: fragment
+$$\sum_{\omega \in \Omega} p(\omega) = 1$$
+:::
+
 
 ## Probability distribution
 
@@ -430,7 +487,7 @@ ss
 ```{r}
 #| output-location: default
 ss %>% 
-  mutate(p = 1 / n())     # discrete uniform probability distribution (prior)
+  mutate(p = 1 / n())                          # uniform probability distribution (prior)
 ```
 
 ## Probability distribution
@@ -438,10 +495,10 @@ ss %>%
 ```{r}
 #| output-location: default
 ss %>% 
-  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
+  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
-    E  = (Weight == 10 + 1 * Height)) %>%      # linear model equivalent to premises P1, P2 and P3
+    E  = (Weight == 10 + 1 * Height)) %>%      # linear function equivalent to premises P1, P2 and P3
   ungroup()
 ```
 
@@ -450,12 +507,12 @@ ss %>%
 ```{r}
 #| output-location: default
 ss %>% 
-  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
+  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
-    E  = (Weight == 10 + 1 * Height)) %>%      # linear model equivalent to premises P1, P2 and P3
+    E  = (Weight == 10 + 1 * Height)) %>%      # linear function equivalent to premises P1, P2 and P3
   ungroup() %>%
-  mutate(p = if_else(E, p, 0))
+  mutate(p = if_else(E, p, 0))                 # if E is true, keep p, otherwise set it to 0
 ```
 
 ## Probability distribution
@@ -463,10 +520,78 @@ ss %>%
 ```{r}
 #| output-location: default
 ss %>% 
-  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
+  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
-    E  = (Weight == 10 + 1 * Height)) %>%      # linear model equivalent to premises P1, P2 and P3 
+    E  = (Weight == 10 + 1 * Height)) %>%      # linear function equivalent to premises P1, P2 and P3 
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0))     # if E is true, normalize p, otherwise set it to 0
+```
+
+## Probability distribution
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+  rowwise() %>% 
+  mutate(
+    E  = (Weight == 10 + 1 * Height)) %>%      # linear function equivalent to premises P1, P2 and P3 
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0))     # (posterior)
+```
+
+## Argument: Hypothesis
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+  rowwise() %>% 
+  mutate(
+    E  = (Weight == 10 + 1 * Height),          # linear function equivalent to premises P1, P2 and P3
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion/query 
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0))     # (posterior)
+```
+
+## Argument: Hypothesis
+
+```{r}
+#| eval: false
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+  rowwise() %>% 
+  mutate(
+    E  = (Weight == 10 + 1 * Height),          # linear function equivalent to premises P1, P2 and P3
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion/query 
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0))     # (posterior)
+```
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $H$ is:
+:::
+
+::: fragment
+$$P(H) = \sum_{\omega \in H} p(\omega)$$
+:::
+
+
+## Argument: Hypothesis
+
+```{r}
+#| output-location: default
+ss %>% 
+  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+  rowwise() %>% 
+  mutate(
+    E  = (Weight == 10 + 1 * Height),          # linear function equivalent to premises P1, P2 and P3
+    #    --------------------------------
+    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion/query 
   ungroup() %>%
   mutate(p = if_else(E, p / sum(p[E]), 0))     # (posterior)
 ```
@@ -476,47 +601,53 @@ ss %>%
 ```{r}
 #| output-location: default
 ss %>% 
-  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
+  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
-    E  = (Weight == 10 + 1 * Height),          # linear model equivalent to premises P1, P2 and P3
+    E  = (Weight == 10 + 1 * Height),          # linear function equivalent to premises P1, P2 and P3
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion 
-  ungroup() %>%
-  mutate(p = if_else(E, p / sum(p[E]), 0))     # (posterior)
-```
-
-## Argument: Inference
-
-```{r}
-#| output-location: default
-ss %>% 
-  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
-  rowwise() %>% 
-  mutate(
-    E  = (Weight == 10 + 1 * Height),          # linear model equivalent to premises P1, P2 and P3
-    #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion  
+    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion/query  
   ungroup() %>%
   mutate(p = if_else(E, p / sum(p[E]), 0)) %>% # (posterior)
   summarize(`P(H | E)` = sum(p[H]))
 ```
 
-## Argument: Inference
 
-```{r}
-#| output-location: default
-ss %>% 
-  mutate(p = 1 / n()) %>% # discrete uniform probability distribution (prior)
-  rowwise() %>% 
-  mutate(
-    E  = (Weight == 10 + 1 * Height),          # linear model equivalent to premises P1, P2 and P3
-    #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion   
-  ungroup() %>%
-  mutate(p = if_else(E, p / sum(p[E]), 0)) %>% # (posterior) 
-  summarize(`P(H | E)` = sum(p[H]))
-```
+## GLM models with a single predictor variable
+
+$$
+\begin{align*}
+p(y \mid x, \beta_0, \beta_1, \sigma, E_{\text{GLM}}) &= \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x)\bigr)^2}{2\sigma^2} \right) \\[1em]
+W \mid H = h &\sim N\bigl(\mu = (\beta_0 + \beta_1 \cdot h), \sigma\bigr)
+\end{align*}
+$$
+
+## Probability distribution function of our GLM model
+
+
+$$
+\begin{align}
+p(w \mid h, \beta_0=10, \beta_1=1, \sigma=2, E_{GLM}) &= \frac{1}{\sqrt{2\pi \cdot 2^2}} \exp\!\left(-\frac{(w - (10 + h))^2}{2\cdot 2^2}\right) \\[1em]
+p(w \mid h) &= \frac{1}{2\sqrt{2\pi}} \exp\!\left(-\frac{(w - (10 + h))^2}{8}\right) \\[1em]
+W \mid H = h &\sim N\Bigl(\mu = (10 + h),\, 2\Bigr)
+\end{align}
+$$
+
+
+## Probability distribution function of our GLM model
+
+$$
+E = \{ \omega \in \Omega : \text{Weight}(\omega) = 10 + 1 \cdot \text{Height}(\omega) \}
+$$
+
+$$
+p(\omega) = 
+\begin{cases}
+  \frac{1}{|E|} & \text{if } \omega \in E \\
+  0 & \text{if } \omega \notin E
+\end{cases}
+$$
+
 
 ##  {background-image="images/bayesian_inference_is_just_counting.jpg" background-size="contain"}
 
