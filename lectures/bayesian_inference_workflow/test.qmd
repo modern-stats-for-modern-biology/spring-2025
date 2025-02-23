@@ -195,3 +195,175 @@ dprop <- function(x, nb, nw) {
 
 dprop("b", nb = 1, nw = 3) * dprop("w", nb = 1, nw = 3) * dprop("b", nb = 1, nw = 3)
 ```
+
+------------------------------------------------------------------------
+
+## Proportional syllogism {.scrollable}
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball)
+```
+
+## Proportional syllogism {.scrollable}
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3))
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3)) %>%  
+  filter(E)
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3),
+    #   -----------------------
+    H =   B1) %>% 
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3),
+    #   -----------------------
+    H =   W1 |  W2 |  W3) %>% 
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+bag <- c("B", "W", "W", "W")
+
+expand_grid(
+  D1 = bag
+)
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+bag <- c("B", "W", "W", "W")
+
+expand_grid(
+  D1 = bag) %>% 
+  mutate(
+    E = TRUE,
+    H = (D1 == "B")) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+bag <- c("B", "W", "W", "W")
+
+expand_grid(
+  D1 = bag
+) %>%
+  mutate(
+    E = TRUE,
+    H = (D1 == "W")
+  ) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+bag <- c("B", "W", "W", "W")
+
+ss <-
+  expand_grid(
+    D1 = bag,
+    D2 = bag,
+    D3 = bag)
+
+ss
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+ss %>%
+  mutate(
+    E = TRUE,
+    H = (D1 == "B" & D2 == "W" & D3 == "B")
+  ) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```

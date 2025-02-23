@@ -19,14 +19,22 @@ df-print: kable
 
 ```{r}
 #| include: false
+#| output-location: default
 library(tidyverse)
 library(ggformula)
 library(ggdag)
 library(dagitty)
+library(rethinking)
+
+set.seed(666)
+
+# def dbern function
+dbern <- function(x, prob) {
+  dbinom(x, size = 1, prob)
+}
 
 theme_set(theme_minimal())
 
-#| output-location: default
 # def conditional operator
 `%=>%` <- function(A, B) {
   !A | B
@@ -147,6 +155,23 @@ P.flex <- function(..., H, table = TRUE, flex = TRUE) {
   return(tt.formatted)
 }
 ```
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide1.png){fig-align="center" width="979"}
+
+[Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
+
+## Statistical inference
+
+$$
+\begin{array}{ll}
+1. & \text{data (observations/measurements)} \\
+2. & \text{model (DGP)} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
 
 ##  {background-image="images/last_week_tonight.jpg" background-size="contain"}
 
@@ -843,6 +868,10 @@ $$
 The discrete uniform distribution is the maximum-entropy distribution over a finite set (no constraints beyond normalization), while the normal distribution is the maximum-entropy continuous distribution when we only know the mean and variance/standard deviation.
 :::
 
+::: notes
+While many well‐known distributions (e.g., Normal, Binomial, Poisson) do have a finite mean and variance, there are also heavy‐tailed distributions (like the Cauchy distribution) whose mean and/or variance do not exist in the usual finite sense. In other words, the integrals that define the mean or variance can diverge. Thus, not every probability distribution has a finite mean and variance.
+:::
+
 ## Statistical models
 
 A convenient way to represent the **premises** of **inductive arguments** about DGPs
@@ -988,252 +1017,560 @@ $$
 :::
 :::::
 
-##  {background-image="images/bayesian_inference_is_just_counting.jpg" background-size="contain"}
+## Bayesian inference: Globe tossing
 
-## Modern science: statistical (+ causal) inference
-
-![](images/Slide1.png){fig-align="center" width="979"}
-
-[Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
+![](statistical-rethinking-2023-lecture-02/slide-002.png)
 
 ## Statistical inference
 
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   Traditional probability (a.k.a. **data probability** or **likelihood**):
+
+    -   $P(X = x \mid M)$ = probability of the data ($x$) given a model of the DGP ($M$)
+
+-   The problem of statistical inference
+
+    -   **Inverse probability**: $P(M \mid X = x)$ = probability of $M$ given $x$
+    -   [It is impossible to calculate the inverse probability!]{.underline}
+
+-   The (more reasonable, limited) goal of statistical inference
+
+    -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+    -   **Inferential probability**: $P(\theta \mid X = x, M^*)$ = probability of $\theta$ given $x$ and $M^*$
+    -   $P(\theta \mid x)$ \[simpler, alternative notation\]
+
+-   [Learning (incl. statistical inference) is impossible without assumptions!]{.underline}
+
+::: notes
+Inference is the process of using facts we know to learn about facts we do not know. A theory of inference gives assumptions necessary to get from the former to the latter, along with a definition for and summary of the resulting uncertainty. Any one theory of inference is neither right nor wrong, but merely an axiom that may or may not be useful. http://tinyurl.com/y3v8nfwh
+:::
+
+## Statistical models: Notation {visibility="hidden"}
+
+-   **Random variable**: $Y$
+
+-   **Realization**: $y$
+
+-   **Statistical model**: $M$
+
+-   **PMF/PDF on S**: $p$
+
+-   **PMF/PDF on X**: $p_Y$ or $p(Y)$ or $f_Y$ or $f(Y)$
+
+    -   $p_Y$ or $p(Y)$ denotes the overall probability distribution of $Y$
+
+    -   $p_Y(y)$, $p(Y = y)$ or $p(y)$ denotes the probability mass/density of a specific value $y$ of $Y$
+
+-   **Parameter**: $\theta$
+
+-   **Data (unobserved)**: $(X_1, X_2, \ldots, X_n)$
+
+-   **Data (observed)**: $(x_1, x_2, \ldots, x_n)$
+
+-   **Function of X**: $g(X)$
+
+-   **Statistic**: $T = h(X) : X \to \mathbb{R}$ (a statistic, being a function of a random variable, is also a random variable)
+
+-   **Statistic**: $t = h(x) : x \to \mathbb{R}$
+
+-   **Parameter**: $\theta$ **Estimator**: $\hat\theta$ **Estimate**: $\hat\theta(y)$
+
+## Bayes' theorem for statistical inference
+
+ 
+
+::: text-align-center
+![](images/Slide38.png)
+:::
+
+## Bayes' theorem for statistical inference
+
+**Bayesian interpretation**: data are fixed, parameters are random
+
+::: text-align-center
+![](images/Slide39.png)
+:::
+
+## Bayes' theorem for statistical inference
+
+**Bayesian interpretation**: data are fixed, parameters are random
+
+::: text-align-center
+![](images/Slide40.png)
+:::
+
+## Globe tossing: Setup
+
+![](statistical-rethinking-2023-lecture-02/slide-002.png)
+
+## Globe tossing: Setup
+
+![](images/Slide43.png)
+
+## Globe tossing: Setup
+
+![](images/Slide44.png)
+
+## Globe tossing: Setup
+
+![](images/Slide45.png)
+
+## Globe tossing: Setup
+
+![](images/Slide46.png)
+
+## Globe tossing: Likelihood
+
+::: fragment
 $$
-\begin{array}{ll}
-1. & \text{data (observations/measurements)} \\
-2. & \text{model (DGP)} \\
-\hline
-\therefore & \text{unknown quantities} \\
+\begin{array}{ r l }
+  1)         & \text{there is a 4-sided globe with 1 side covered in water (blue) and 3 sides covered in land (white)} \\
+  2)         & \text{the globe is tossed 3 times} \\
+  \therefore & \text{2 of the tosses show a blue side}
+\end{array}
+$$
+:::
+
+ 
+
+::: fragment
+$$
+\begin{array}{r l}
+  \pi     & = \text{proportion of blue sides on the globe}\ (0.25) \\
+  n       & = \text{number of globe tosses}\ (3) \\
+  X       & = \text{what is the number of tosses that show a blue side?} \\
+  x       & = \text{number of tosses that show a blue side}\ (2) \\
+\end{array}
+$$
+:::
+
+ 
+
+::: fragment
+$$
+p(X = 2 \mid \pi = 0.25, n = 3, M^*) =\ ?
+$$
+:::
+
+## Globe tossing: Likelihood
+
+$$
+\begin{array}{ r l }
+  1)         & \text{there is a 4-sided globe with 1 side covered in water (blue) and 3 sides covered in land (white)} \\
+  2)         & \text{the globe is tossed 3 times} \\
+  \therefore & \text{2 of the tosses show a blue side}
 \end{array}
 $$
 
-## Statistical models
+ 
 
-Statistical models = **probability distributions** of **random variables**
+$$
+\begin{array}{r l}
+  \pi     & = \text{proportion of blue sides on the globe}\ (0.25) \\
+  n       & = \text{number of globe tosses}\ (3) \\
+  X       & = \text{what is the number of tosses that show a blue side?} \\
+  x       & = \text{number of tosses that show a blue side}\ (2) \\
+\end{array}
+$$
 
-:::::: columns
-::: {.column width="30%"}
-![](images/models_80s90s.webp)
+ 
+
+$$
+p(X = 2 \mid \pi = 0.25, n = 3, M^{\text{Binomial}}) = \binom{n}{k}\pi^k(1-\pi)^{n-k} = 0.14062
+$$
+
+## Globe tossing: Likelihood
+
+```{r}
+# data
+x <- 2
+n <- 3
+
+# possible proportions of blue sides on the globe
+sides <- 4
+π <- seq(0, 1, length.out = sides + 1)
+
+# likelihood of the data given the proportion of blue sides on the globe
+df <- tibble(π, likelihood = dbinom(x, prob = π, size = n))
+
+df
+```
+
+## Globe tossing: Prior
+
+The beta distribution is a family of distributions that describe the probability of continuous random variables within the interval $[0, 1]$, making it particularly useful for modeling proportions, probabilities, and other quantities bounded between 0 and 1
+
+::: columns
+::: {.column width="33%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 0.5
+b = 0.5
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
 :::
 
-:::: {.column width="70%"}
+::: {.column width="34%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 1
+b = 1
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
+:::
+
+::: {.column width="33%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 2
+b = 2
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
+:::
+:::
+
+::: columns
+::: {.column width="33%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 2
+b = 8
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
+:::
+
+::: {.column width="34%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 5
+b = 5
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
+:::
+
+::: {.column width="33%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 8
+b = 2
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
+:::
+:::
+
+## Globe tossing: Prior
+
+```{r}
+#| echo: false
+x <- 2
+n <- 3
+sides <- 4
+π <- seq(0, 1, length.out = sides + 1)
+df <- tibble(π, likelihood = dbinom(x, prob = π, size = n))
+df
+```
+
+::: fragment
+```{r}
+# hyperparameters = parameters of the prior probability distribution
+a = 1
+b = 1
+
+# prior probability of the proportion of blue sides on the globe before observing any data
+df <- df %>% mutate(prior = dbeta(π, a, b))
+
+df
+```
+:::
+
+## Globe tossing: Posterior
+
+::: {.text-align-center style="color: #357EC7"}
+**LIKELIHOOD**
+:::
+
+$$
+p(X = 2 \mid \pi, n = 3) \\
+$$
+
+::: {.text-align-center style="color: #FFA500"}
+**PRIOR**
+:::
+
+$$
+p(\pi \mid a = 1, b = 1) \\
+$$
+
+::: {.text-align-center style="color: #4E9258"}
+**POSTERIOR**
+:::
+
+$$
+p(\pi \mid X = 2, n = 3) \propto p(\pi \mid a = 1, b = 1) \cdot p(X = 2 \mid \pi, n = 3) \\
+$$
+
 ::: text-align-center
-![](images/probability_distributions.jpg)
-
-<https://distribution-explorer.github.io/>
-
-<https://prob.bayesfusion.com/>
+![](images/clipboard-4215830398.png){height="100"}
 :::
-::::
-::::::
 
-## Bayesian inference workflow
-
-XXX
-
-## Proportional syllogism {.scrollable}
+## Globe tossing: Posterior
 
 ```{r}
-#| output-location: column
-ball <- c(TRUE, FALSE)
+# posterior probability of the proportion of blue sides on the globe after observing the data
+df <- df %>% mutate(posterior = prior * likelihood)
 
-expand_grid(
-  B1 = ball,
-  W1 = ball,
-  W2 = ball,
-  W3 = ball)
+df
 ```
 
-## Proportional syllogism {.scrollable}
+## Globe tossing: Posterior
 
 ```{r}
-#| output-location: column
-ball <- c(TRUE, FALSE)
-
-expand_grid(
-  B1 = ball,
-  W1 = ball,
-  W2 = ball,
-  W3 = ball) %>% 
-  mutate(
-    E = ( B1 & !W1 & !W2 & !W3) |
-        (!B1 &  W1 & !W2 & !W3) |
-        (!B1 & !W1 &  W2 & !W3) |
-        (!B1 & !W1 & !W2 &  W3))
+df %>%
+  gf_point(posterior ~ π, color = "#4E9258", alpha = 1) %>%
+  gf_segment(x = ~π, xend = ~π, y = 0, yend = ~posterior, color = "#4E9258", linewidth = 0.5) %>%
+  gf_labs(x = "π", y = "p", title = "Posterior probability distribution of π") %>% gf_theme(plot.title = element_text(size = 20))
 ```
 
-## Proportional syllogism
+## Globe tossing: Setup
+
+![](images/Slide43.png)
+
+## 
+
+![](images/Slide50.png)
+
+## 
+
+![](images/Slide52.png)
+
+## 
+
+![](statistical-rethinking-2023-lecture-02/slide-075.png)
+
+## 
+
+![](images/globe_tossing.gif)
+
+## 
+
+![](statistical-rethinking-2023-lecture-02/slide-076.png)
+
+## 
+
+![](statistical-rethinking-2023-lecture-02/slide-077.png)
+
+## 
+
+![](statistical-rethinking-2023-lecture-02/slide-078.png)
+
+## 
+
+![](statistical-rethinking-2023-lecture-02/slide-079.png)
+
+## 
+
+![](statistical-rethinking-2023-lecture-02/slide-080.png)
+
+## 
+
+![](statistical-rethinking-2023-lecture-02/slide-081.png)
+
+## 
+
+![](statistical-rethinking-2023-lecture-02/slide-082.png)
+
+## 
+
+![](statistical-rethinking-2023-lecture-02/slide-083.png)
+
+## 
+
+![](statistical-rethinking-2023-lecture-02/slide-084.png)
+
+## 
+
+![](statistical-rethinking-2023-lecture-02/slide-085.png)
+
+## Globe tossing experiment
+
+[Bayesian inference using grid approximation](https://www.bayesrulesbook.com/chapter-6)
 
 ```{r}
-#| output-location: column
-ball <- c(TRUE, FALSE)
+globe_tossing_grid_approx <- function(w, l, a = 1, b = 1, grid_size = 1000) {
+  # create grid of proportion of water values
+  prop_w.grid <- seq(from = 0, to = 1, length.out = grid_size + 1)
+  
+  # calculate prior (and normalize for plotting)
+  prior <- dbeta(prop_w.grid, a, b)
+  prior.normalized <- prior / sum(prior)
+  
+  # calculate likelihood (and normalize for plotting)
+  likelihood <- dbinom(w, size = w+l, prob = prop_w.grid)
+  likelihood.normalized <- likelihood / sum(likelihood)
 
-expand_grid(
-  B1 = ball,
-  W1 = ball,
-  W2 = ball,
-  W3 = ball) %>% 
-  mutate(
-    E = ( B1 & !W1 & !W2 & !W3) |
-        (!B1 &  W1 & !W2 & !W3) |
-        (!B1 & !W1 &  W2 & !W3) |
-        (!B1 & !W1 & !W2 &  W3)) %>%  
-  filter(E)
+  # calculate posterior and normalize
+  posterior.unnormalized <- prior * likelihood
+  posterior <- posterior.unnormalized / sum(posterior.unnormalized)
+
+  # plot prior, likelihood, and posterior
+  tibble(prop_w.grid, prior, likelihood.normalized, posterior) %>%
+    gf_line(likelihood.normalized ~ prop_w.grid, color = "#357EC7") %>%
+    gf_line(prior.normalized ~ prop_w.grid, color = "#FFA500") %>%
+    gf_line(posterior ~ prop_w.grid, color = "#4E9258") %>%
+    gf_labs(x = "proportion water (p)", y = "posterior probability")
+}
 ```
-
-## Proportional syllogism
 
 ```{r}
-#| output-location: column
-ball <- c(TRUE, FALSE)
-
-expand_grid(
-  B1 = ball,
-  W1 = ball,
-  W2 = ball,
-  W3 = ball) %>% 
-  mutate(
-    E = ( B1 & !W1 & !W2 & !W3) |
-        (!B1 &  W1 & !W2 & !W3) |
-        (!B1 & !W1 &  W2 & !W3) |
-        (!B1 & !W1 & !W2 &  W3),
-    #   -----------------------
-    H =   B1) %>% 
-  filter(E) %>% 
-  pull(H) %>% 
-  mean()
+#| include: false
+globe_tossing_samples <- function(w, l, a = 1, b = 1, n = 1000) { rbeta(n, w + a, l + b) }
 ```
 
-## Proportional syllogism
+## Globe tossing experiment
 
+Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
+
+::: columns
+::: {.column width="50%"}
+::: fragment
 ```{r}
-#| output-location: column
-ball <- c(TRUE, FALSE)
-
-expand_grid(
-  B1 = ball,
-  W1 = ball,
-  W2 = ball,
-  W3 = ball) %>% 
-  mutate(
-    E = ( B1 & !W1 & !W2 & !W3) |
-        (!B1 &  W1 & !W2 & !W3) |
-        (!B1 & !W1 &  W2 & !W3) |
-        (!B1 & !W1 & !W2 &  W3),
-    #   -----------------------
-    H =   W1 |  W2 |  W3) %>% 
-  filter(E) %>% 
-  pull(H) %>% 
-  mean()
+#| fig-height: 7.5
+globe_tossing_grid_approx(w = 8, l = 2,
+                          a = 1, b = 1) %>% gf_lims(y = c(0, 0.007))
 ```
+:::
 
-## Proportional syllogism
+::: {.fragment .text-align-center}
+[**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
+:::
 
+::: fragment
 ```{r}
-#| output-location: column
-bag <- c("B", "W", "W", "W")
-
-expand_grid(
-  D1 = bag
-)
+#| echo: false
+HPDI(globe_tossing_samples(w = 8, l = 2,
+                           a = 1, b = 1)) %>% round(2)
 ```
+:::
+:::
 
-## Proportional syllogism
-
+::: {.column width="50%"}
+::: fragment
 ```{r}
-#| output-location: column
-bag <- c("B", "W", "W", "W")
-
-expand_grid(
-  D1 = bag) %>% 
-  mutate(
-    E = TRUE,
-    H = (D1 == "B")) %>%
-  filter(E) %>% 
-  pull(H) %>% 
-  mean()
+#| fig-height: 7.5
+globe_tossing_grid_approx(w = 8, l = 2,
+                          a = 29, b = 11) %>% gf_lims(y = c(0, 0.007))
 ```
+:::
 
-## Proportional syllogism
+::: {.fragment .text-align-center}
+[**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
+:::
 
+::: fragment
 ```{r}
-#| output-location: column
-bag <- c("B", "W", "W", "W")
-
-expand_grid(
-  D1 = bag
-) %>%
-  mutate(
-    E = TRUE,
-    H = (D1 == "W")
-  ) %>%
-  filter(E) %>% 
-  pull(H) %>% 
-  mean()
+#| echo: false
+HPDI(globe_tossing_samples(w = 8, l = 2,
+                           a = 29, b = 11)) %>% round(2)
 ```
+:::
+:::
+:::
 
-## Proportional syllogism
+## Globe tossing experiment
 
+Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
+
+::: columns
+::: {.column width="50%"}
+::: fragment
 ```{r}
-#| output-location: column
-bag <- c("B", "W", "W", "W")
-
-ss <-
-  expand_grid(
-    D1 = bag,
-    D2 = bag,
-    D3 = bag)
-
-ss
+#| fig-height: 7.5
+globe_tossing_grid_approx(w = 2, l = 8,
+                          a = 29, b = 11) %>% gf_lims(y = c(0, 0.007))
 ```
+:::
 
-## Proportional syllogism
+::: {.fragment .text-align-center}
+[**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
+:::
 
+::: fragment
 ```{r}
-#| output-location: column
-ss %>%
-  mutate(
-    E = TRUE,
-    H = (D1 == "B" & D2 == "W" & D3 == "B")
-  ) %>%
-  filter(E) %>% 
-  pull(H) %>% 
-  mean()
+#| echo: false
+HPDI(globe_tossing_samples(w = 2, l = 8,
+                           a = 29, b = 11)) %>% round(2)
 ```
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| fig-height: 7.5
+globe_tossing_grid_approx(w = 80, l = 20,
+                          a = 1,  b = 9) %>% gf_lims(y = c(0, 0.011))
+```
+:::
+
+::: {.fragment .text-align-center}
+[**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
+:::
+
+::: fragment
+```{r}
+#| echo: false
+HPDI(globe_tossing_samples(w = 80, l = 20,
+                           a = 1,  b = 9)) %>% round(2)
+```
+:::
+:::
+:::
+
+## References
+
+::: {#refs}
+:::
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
 ##  {background-image="images/briggs2.png" background-size="contain"}
 
-## GLM models with a single predictor variable
+##  {background-image="images/bayesian_inference_is_just_counting.jpg" background-size="contain"}
 
-$$
-\begin{align*}
-p(y \mid x, \beta_0, \beta_1, \sigma, E_{\text{GLM}}) &= \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x)\bigr)^2}{2\sigma^2} \right) \\[1em]
-W \mid H = h &\sim N\bigl(\mu = (\beta_0 + \beta_1 \cdot h), \sigma\bigr)
-\end{align*}
-$$
-
-## Probability distribution function of our GLM model
-
-$$
-\begin{align}
-p(w \mid h, \beta_0=10, \beta_1=1, \sigma=2, E_{GLM}) &= \frac{1}{\sqrt{2\pi \cdot 2^2}} \exp\!\left(-\frac{(w - (10 + h))^2}{2\cdot 2^2}\right) \\[1em]
-p(w \mid h) &= \frac{1}{2\sqrt{2\pi}} \exp\!\left(-\frac{(w - (10 + h))^2}{8}\right) \\[1em]
-W \mid H = h &\sim N\Bigl(\mu = (10 + h),\, 2\Bigr)
-\end{align}
-$$
-
-## Probability distribution function of our GLM model
-
-$$
-E = \{ \omega \in \Omega : \text{Weight}(\omega) = 10 + 1 \cdot \text{Height}(\omega) \}
-$$
-
-$$
-p(\omega) = 
-\begin{cases}
-  \frac{1}{|E|} & \text{if } \omega \in E \\
-  0 & \text{if } \omega \notin E
-\end{cases}
-$$

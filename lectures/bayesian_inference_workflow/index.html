@@ -94,7 +94,26 @@
     code span.va { color: #111111; } /* Variable */
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
-  </style>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-ac83df8bbaea76514c209d3525a3d200.css">
   <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -205,6 +224,22 @@ Edoardo “Dado” Marcora
 </div>
 
   <p class="date">2025-02-24</p>
+</section>
+<section id="modern-science-statistical-causal-inference" class="slide level2">
+<h2>Modern science: statistical (+ causal) inference</h2>
+
+<img data-src="images/Slide1.png" class="quarto-figure quarto-figure-center r-stretch" width="979"><p><a href="https://doi.org/10.1214/10-STS330">Shmueli (2010)</a> To Explain or to Predict?</p>
+</section>
+<section id="statistical-inference" class="slide level2">
+<h2>Statistical inference</h2>
+<p><span class="math display">\[
+\begin{array}{ll}
+1. &amp; \text{data (observations/measurements)} \\
+2. &amp; \text{model (DGP)} \\
+\hline
+\therefore &amp; \text{unknown quantities} \\
+\end{array}
+\]</span></p>
 </section>
 <section id="section" class="slide level2" data-background-image="images/last_week_tonight.jpg" data-background-size="contain">
 <h2></h2>
@@ -1848,6 +1883,19 @@ p(\omega \mid K_0) = \frac{1}{|\Omega|} = \frac{1}{n}
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+<aside class="notes">
+<p>While many well‐known distributions (e.g., Normal, Binomial, Poisson) do have a finite mean and variance, there are also heavy‐tailed distributions (like the Cauchy distribution) whose mean and/or variance do not exist in the usual finite sense. In other words, the integrals that define the mean or variance can diverge. Thus, not every probability distribution has a finite mean and variance.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="statistical-models-11" class="slide level2">
 <h2>Statistical models</h2>
@@ -1953,921 +2001,678 @@ p(\theta \mid d_{\text{obs}}) = \frac{p(\theta) \cdot p(d_{\text{obs}} \mid \the
 \]</span></p>
 </div></div>
 </section>
-<section id="section-1" class="slide level2" data-background-image="images/bayesian_inference_is_just_counting.jpg" data-background-size="contain">
-<h2></h2>
-</section>
-<section id="modern-science-statistical-causal-inference" class="slide level2">
-<h2>Modern science: statistical (+ causal) inference</h2>
+<section id="bayesian-inference-globe-tossing" class="slide level2">
+<h2>Bayesian inference: Globe tossing</h2>
 
-<img data-src="images/Slide1.png" class="quarto-figure quarto-figure-center r-stretch" width="979"><p><a href="https://doi.org/10.1214/10-STS330">Shmueli (2010)</a> To Explain or to Predict?</p>
-</section>
-<section id="statistical-inference" class="slide level2">
+<img data-src="statistical-rethinking-2023-lecture-02/slide-002.png" class="r-stretch"></section>
+<section id="statistical-inference-1" class="slide level2">
 <h2>Statistical inference</h2>
+<ul>
+<li class="fragment"><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
+<li class="fragment"><p>Traditional probability (a.k.a. <strong>data probability</strong> or <strong>likelihood</strong>):</p>
+<ul>
+<li class="fragment"><span class="math inline">\(P(X = x \mid M)\)</span> = probability of the data (<span class="math inline">\(x\)</span>) given a model of the DGP (<span class="math inline">\(M\)</span>)</li>
+</ul></li>
+<li class="fragment"><p>The problem of statistical inference</p>
+<ul>
+<li class="fragment"><strong>Inverse probability</strong>: <span class="math inline">\(P(M \mid X = x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></li>
+<li class="fragment"><u>It is impossible to calculate the inverse probability!</u></li>
+</ul></li>
+<li class="fragment"><p>The (more reasonable, limited) goal of statistical inference</p>
+<ul>
+<li class="fragment">Let <span class="math inline">\(M = \{M^*, \theta\}\)</span>, where <span class="math inline">\(M^*\)</span> (the functional form of <span class="math inline">\(M\)</span>) is assumed and <span class="math inline">\(\theta\)</span> are the parameters of <span class="math inline">\(M^*\)</span> to be learned from <span class="math inline">\(x\)</span></li>
+<li class="fragment"><strong>Inferential probability</strong>: <span class="math inline">\(P(\theta \mid X = x, M^*)\)</span> = probability of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span> and <span class="math inline">\(M^*\)</span></li>
+<li class="fragment"><span class="math inline">\(P(\theta \mid x)\)</span> [simpler, alternative notation]</li>
+</ul></li>
+<li class="fragment"><p><u>Learning (incl.&nbsp;statistical inference) is impossible without assumptions!</u></p></li>
+</ul>
+<aside class="notes">
+<p>Inference is the process of using facts we know to learn about facts we do not know. A theory of inference gives assumptions necessary to get from the former to the latter, along with a definition for and summary of the resulting uncertainty. Any one theory of inference is neither right nor wrong, but merely an axiom that may or may not be useful. http://tinyurl.com/y3v8nfwh</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+
+<section id="bayes-theorem-for-statistical-inference" class="slide level2">
+<h2>Bayes’ theorem for statistical inference</h2>
+<p>&nbsp;</p>
+<div class="text-align-center">
+<p><img data-src="images/Slide38.png"></p>
+</div>
+</section>
+<section id="bayes-theorem-for-statistical-inference-1" class="slide level2">
+<h2>Bayes’ theorem for statistical inference</h2>
+<p><strong>Bayesian interpretation</strong>: data are fixed, parameters are random</p>
+<div class="text-align-center">
+<p><img data-src="images/Slide39.png"></p>
+</div>
+</section>
+<section id="bayes-theorem-for-statistical-inference-2" class="slide level2">
+<h2>Bayes’ theorem for statistical inference</h2>
+<p><strong>Bayesian interpretation</strong>: data are fixed, parameters are random</p>
+<div class="text-align-center">
+<p><img data-src="images/Slide40.png"></p>
+</div>
+</section>
+<section id="globe-tossing-setup" class="slide level2">
+<h2>Globe tossing: Setup</h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-002.png" class="r-stretch"></section>
+<section id="globe-tossing-setup-1" class="slide level2">
+<h2>Globe tossing: Setup</h2>
+
+<img data-src="images/Slide43.png" class="r-stretch"></section>
+<section id="globe-tossing-setup-2" class="slide level2">
+<h2>Globe tossing: Setup</h2>
+
+<img data-src="images/Slide44.png" class="r-stretch"></section>
+<section id="globe-tossing-setup-3" class="slide level2">
+<h2>Globe tossing: Setup</h2>
+
+<img data-src="images/Slide45.png" class="r-stretch"></section>
+<section id="globe-tossing-setup-4" class="slide level2">
+<h2>Globe tossing: Setup</h2>
+
+<img data-src="images/Slide46.png" class="r-stretch"></section>
+<section id="globe-tossing-likelihood" class="slide level2">
+<h2>Globe tossing: Likelihood</h2>
+<div class="fragment">
 <p><span class="math display">\[
-\begin{array}{ll}
-1. &amp; \text{data (observations/measurements)} \\
-2. &amp; \text{model (DGP)} \\
-\hline
-\therefore &amp; \text{unknown quantities} \\
+\begin{array}{ r l }
+  1)         &amp; \text{there is a 4-sided globe with 1 side covered in water (blue) and 3 sides covered in land (white)} \\
+  2)         &amp; \text{the globe is tossed 3 times} \\
+  \therefore &amp; \text{2 of the tosses show a blue side}
 \end{array}
 \]</span></p>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{array}{r l}
+  \pi     &amp; = \text{proportion of blue sides on the globe}\ (0.25) \\
+  n       &amp; = \text{number of globe tosses}\ (3) \\
+  X       &amp; = \text{what is the number of tosses that show a blue side?} \\
+  x       &amp; = \text{number of tosses that show a blue side}\ (2) \\
+\end{array}
+\]</span></p>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<p><span class="math display">\[
+p(X = 2 \mid \pi = 0.25, n = 3, M^*) =\ ?
+\]</span></p>
+</div>
 </section>
-<section id="statistical-models-19" class="slide level2">
-<h2>Statistical models</h2>
-<p>Statistical models = <strong>probability distributions</strong> of <strong>random variables</strong></p>
+<section id="globe-tossing-likelihood-1" class="slide level2">
+<h2>Globe tossing: Likelihood</h2>
+<p><span class="math display">\[
+\begin{array}{ r l }
+  1)         &amp; \text{there is a 4-sided globe with 1 side covered in water (blue) and 3 sides covered in land (white)} \\
+  2)         &amp; \text{the globe is tossed 3 times} \\
+  \therefore &amp; \text{2 of the tosses show a blue side}
+\end{array}
+\]</span></p>
+<p>&nbsp;</p>
+<p><span class="math display">\[
+\begin{array}{r l}
+  \pi     &amp; = \text{proportion of blue sides on the globe}\ (0.25) \\
+  n       &amp; = \text{number of globe tosses}\ (3) \\
+  X       &amp; = \text{what is the number of tosses that show a blue side?} \\
+  x       &amp; = \text{number of tosses that show a blue side}\ (2) \\
+\end{array}
+\]</span></p>
+<p>&nbsp;</p>
+<p><span class="math display">\[
+p(X = 2 \mid \pi = 0.25, n = 3, M^{\text{Binomial}}) = \binom{n}{k}\pi^k(1-\pi)^{n-k} = 0.14062
+\]</span></p>
+</section>
+<section id="globe-tossing-likelihood-2" class="slide level2">
+<h2>Globe tossing: Likelihood</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="co"># data</span></span>
+<span id="cb21-2"><a href=""></a>x <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb21-3"><a href=""></a>n <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb21-4"><a href=""></a></span>
+<span id="cb21-5"><a href=""></a><span class="co"># possible proportions of blue sides on the globe</span></span>
+<span id="cb21-6"><a href=""></a>sides <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb21-7"><a href=""></a>π <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> sides <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb21-8"><a href=""></a></span>
+<span id="cb21-9"><a href=""></a><span class="co"># likelihood of the data given the proportion of blue sides on the globe</span></span>
+<span id="cb21-10"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(π, <span class="at">likelihood =</span> <span class="fu">dbinom</span>(x, <span class="at">prob =</span> π, <span class="at">size =</span> n))</span>
+<span id="cb21-11"><a href=""></a></span>
+<span id="cb21-12"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">π</th>
+<th style="text-align: right;">likelihood</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.1406</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.3750</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">0.4219</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="globe-tossing-prior" class="slide level2">
+<h2>Globe tossing: Prior</h2>
+<p>The beta distribution is a family of distributions that describe the probability of continuous random variables within the interval <span class="math inline">\([0, 1]\)</span>, making it particularly useful for modeling proportions, probabilities, and other quantities bounded between 0 and 1</p>
 <div class="columns">
-<div class="column" style="width:30%;">
-<p><img data-src="images/models_80s90s.webp"></p>
-</div><div class="column" style="width:70%;">
+<div class="column" style="width:33%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-29-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:34%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-30-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:33%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-31-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="columns">
+<div class="column" style="width:33%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-32-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:34%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-33-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:33%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-34-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="globe-tossing-prior-1" class="slide level2">
+<h2>Globe tossing: Prior</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">π</th>
+<th style="text-align: right;">likelihood</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.1406</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.3750</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">0.4219</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a><span class="co"># hyperparameters = parameters of the prior probability distribution</span></span>
+<span id="cb22-2"><a href=""></a>a <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb22-3"><a href=""></a>b <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb22-4"><a href=""></a></span>
+<span id="cb22-5"><a href=""></a><span class="co"># prior probability of the proportion of blue sides on the globe before observing any data</span></span>
+<span id="cb22-6"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">prior =</span> <span class="fu">dbeta</span>(π, a, b))</span>
+<span id="cb22-7"><a href=""></a></span>
+<span id="cb22-8"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">π</th>
+<th style="text-align: right;">likelihood</th>
+<th style="text-align: right;">prior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.1406</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.3750</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">0.4219</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="globe-tossing-posterior" class="slide level2">
+<h2>Globe tossing: Posterior</h2>
+<div class="text-align-center" style="color: #357EC7">
+<p><strong>LIKELIHOOD</strong></p>
+</div>
+<p><span class="math display">\[
+p(X = 2 \mid \pi, n = 3) \\
+\]</span></p>
+<div class="text-align-center" style="color: #FFA500">
+<p><strong>PRIOR</strong></p>
+</div>
+<p><span class="math display">\[
+p(\pi \mid a = 1, b = 1) \\
+\]</span></p>
+<div class="text-align-center" style="color: #4E9258">
+<p><strong>POSTERIOR</strong></p>
+</div>
+<p><span class="math display">\[
+p(\pi \mid X = 2, n = 3) \propto p(\pi \mid a = 1, b = 1) \cdot p(X = 2 \mid \pi, n = 3) \\
+\]</span></p>
 <div class="text-align-center">
-<p><img data-src="images/probability_distributions.jpg"></p>
-<p><a href="https://distribution-explorer.github.io/" class="uri">https://distribution-explorer.github.io/</a></p>
-<p><a href="https://prob.bayesfusion.com/" class="uri">https://prob.bayesfusion.com/</a></p>
+<p><img data-src="images/clipboard-4215830398.png" height="100"></p>
 </div>
-</div></div>
 </section>
-<section id="bayesian-inference-workflow" class="slide level2">
-<h2>Bayesian inference workflow</h2>
-<p>XXX</p>
-</section>
-<section id="proportional-syllogism" class="slide level2 scrollable">
-<h2>Proportional syllogism</h2>
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
-<span id="cb21-2"><a href=""></a></span>
-<span id="cb21-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb21-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
-<span id="cb21-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
-<span id="cb21-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
-<span id="cb21-7"><a href=""></a>  <span class="at">W3 =</span> ball)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column">
+<section id="globe-tossing-posterior-1" class="slide level2">
+<h2>Globe tossing: Posterior</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="co"># posterior probability of the proportion of blue sides on the globe after observing the data</span></span>
+<span id="cb23-2"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">posterior =</span> prior <span class="sc">*</span> likelihood)</span>
+<span id="cb23-3"><a href=""></a></span>
+<span id="cb23-4"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top">
 <thead>
 <tr class="header">
-<th style="text-align: left;">B1</th>
-<th style="text-align: left;">W1</th>
-<th style="text-align: left;">W2</th>
-<th style="text-align: left;">W3</th>
+<th style="text-align: right;">π</th>
+<th style="text-align: right;">likelihood</th>
+<th style="text-align: right;">prior</th>
+<th style="text-align: right;">posterior</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0000</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.1406</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.1406</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.3750</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.3750</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">0.4219</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.4219</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0000</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-</div></div>
+</div>
 </section>
-<section id="proportional-syllogism-1" class="slide level2 scrollable">
-<h2>Proportional syllogism</h2>
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
-<span id="cb22-2"><a href=""></a></span>
-<span id="cb22-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb22-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
-<span id="cb22-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
-<span id="cb22-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
-<span id="cb22-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb22-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb22-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb22-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb22-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column">
+<section id="globe-tossing-posterior-2" class="slide level2">
+<h2>Globe tossing: Posterior</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href=""></a>  <span class="fu">gf_point</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"#4E9258"</span>, <span class="at">alpha =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href=""></a>  <span class="fu">gf_segment</span>(<span class="at">x =</span> <span class="sc">~</span>π, <span class="at">xend =</span> <span class="sc">~</span>π, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">yend =</span> <span class="sc">~</span>posterior, <span class="at">color =</span> <span class="st">"#4E9258"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-4"><a href=""></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"π"</span>, <span class="at">y =</span> <span class="st">"p"</span>, <span class="at">title =</span> <span class="st">"Posterior probability distribution of π"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
 <div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th style="text-align: left;">B1</th>
-<th style="text-align: left;">W1</th>
-<th style="text-align: left;">W2</th>
-<th style="text-align: left;">W3</th>
-<th style="text-align: left;">E</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-</tbody>
-</table>
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-38-1.png" width="960"></p>
+</figure>
 </div>
 </div>
-</div></div>
+</div>
 </section>
-<section id="proportional-syllogism-2" class="slide level2">
-<h2>Proportional syllogism</h2>
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
-<span id="cb23-2"><a href=""></a></span>
-<span id="cb23-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb23-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
-<span id="cb23-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
-<span id="cb23-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
-<span id="cb23-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
-<span id="cb23-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb23-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb23-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb23-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb23-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3)) <span class="sc">%&gt;%</span>  </span>
-<span id="cb23-13"><a href=""></a>  <span class="fu">filter</span>(E)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column">
+<section id="globe-tossing-setup-5" class="slide level2">
+<h2>Globe tossing: Setup</h2>
+
+<img data-src="images/Slide43.png" class="r-stretch"></section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+
+<img data-src="images/Slide50.png" class="r-stretch"></section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+
+<img data-src="images/Slide52.png" class="r-stretch"></section>
+<section id="section-3" class="slide level2">
+<h2></h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-075.png" class="r-stretch"></section>
+<section id="section-4" class="slide level2">
+<h2></h2>
+
+<img data-src="images/globe_tossing.gif" class="r-stretch"></section>
+<section id="section-5" class="slide level2">
+<h2></h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-076.png" class="r-stretch"></section>
+<section id="section-6" class="slide level2">
+<h2></h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-077.png" class="r-stretch"></section>
+<section id="section-7" class="slide level2">
+<h2></h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-078.png" class="r-stretch"></section>
+<section id="section-8" class="slide level2">
+<h2></h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-079.png" class="r-stretch"></section>
+<section id="section-9" class="slide level2">
+<h2></h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-080.png" class="r-stretch"></section>
+<section id="section-10" class="slide level2">
+<h2></h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-081.png" class="r-stretch"></section>
+<section id="section-11" class="slide level2">
+<h2></h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-082.png" class="r-stretch"></section>
+<section id="section-12" class="slide level2">
+<h2></h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-083.png" class="r-stretch"></section>
+<section id="section-13" class="slide level2">
+<h2></h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-084.png" class="r-stretch"></section>
+<section id="section-14" class="slide level2">
+<h2></h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-085.png" class="r-stretch"></section>
+<section id="globe-tossing-experiment" class="slide level2">
+<h2>Globe tossing experiment</h2>
+<p><a href="https://www.bayesrulesbook.com/chapter-6">Bayesian inference using grid approximation</a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>globe_tossing_grid_approx <span class="ot">&lt;-</span> <span class="cf">function</span>(w, l, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">grid_size =</span> <span class="dv">1000</span>) {</span>
+<span id="cb25-2"><a href=""></a>  <span class="co"># create grid of proportion of water values</span></span>
+<span id="cb25-3"><a href=""></a>  prop_w.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">1</span>, <span class="at">length.out =</span> grid_size <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb25-4"><a href=""></a>  </span>
+<span id="cb25-5"><a href=""></a>  <span class="co"># calculate prior (and normalize for plotting)</span></span>
+<span id="cb25-6"><a href=""></a>  prior <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(prop_w.grid, a, b)</span>
+<span id="cb25-7"><a href=""></a>  prior.normalized <span class="ot">&lt;-</span> prior <span class="sc">/</span> <span class="fu">sum</span>(prior)</span>
+<span id="cb25-8"><a href=""></a>  </span>
+<span id="cb25-9"><a href=""></a>  <span class="co"># calculate likelihood (and normalize for plotting)</span></span>
+<span id="cb25-10"><a href=""></a>  likelihood <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(w, <span class="at">size =</span> w<span class="sc">+</span>l, <span class="at">prob =</span> prop_w.grid)</span>
+<span id="cb25-11"><a href=""></a>  likelihood.normalized <span class="ot">&lt;-</span> likelihood <span class="sc">/</span> <span class="fu">sum</span>(likelihood)</span>
+<span id="cb25-12"><a href=""></a></span>
+<span id="cb25-13"><a href=""></a>  <span class="co"># calculate posterior and normalize</span></span>
+<span id="cb25-14"><a href=""></a>  posterior.unnormalized <span class="ot">&lt;-</span> prior <span class="sc">*</span> likelihood</span>
+<span id="cb25-15"><a href=""></a>  posterior <span class="ot">&lt;-</span> posterior.unnormalized <span class="sc">/</span> <span class="fu">sum</span>(posterior.unnormalized)</span>
+<span id="cb25-16"><a href=""></a></span>
+<span id="cb25-17"><a href=""></a>  <span class="co"># plot prior, likelihood, and posterior</span></span>
+<span id="cb25-18"><a href=""></a>  <span class="fu">tibble</span>(prop_w.grid, prior, likelihood.normalized, posterior) <span class="sc">%&gt;%</span></span>
+<span id="cb25-19"><a href=""></a>    <span class="fu">gf_line</span>(likelihood.normalized <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#357EC7"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-20"><a href=""></a>    <span class="fu">gf_line</span>(prior.normalized <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#FFA500"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-21"><a href=""></a>    <span class="fu">gf_line</span>(posterior <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#4E9258"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-22"><a href=""></a>    <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"proportion water (p)"</span>, <span class="at">y =</span> <span class="st">"posterior probability"</span>)</span>
+<span id="cb25-23"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+
+</div>
+</section>
+<section id="globe-tossing-experiment-1" class="slide level2">
+<h2>Globe tossing experiment</h2>
+<p>Prior information: About 71% of the Earth’s surface is covered by water [<a href="https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth">usgs.gov</a>]</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
+<span id="cb26-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
 <div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th style="text-align: left;">B1</th>
-<th style="text-align: left;">W1</th>
-<th style="text-align: left;">W2</th>
-<th style="text-align: left;">W3</th>
-<th style="text-align: left;">E</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-</tbody>
-</table>
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-41-1.png" width="960"></p>
+</figure>
 </div>
 </div>
-</div></div>
-</section>
-<section id="proportional-syllogism-3" class="slide level2">
-<h2>Proportional syllogism</h2>
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
-<span id="cb24-2"><a href=""></a></span>
-<span id="cb24-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb24-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
-<span id="cb24-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
-<span id="cb24-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
-<span id="cb24-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb24-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb24-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb24-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb24-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3),</span>
-<span id="cb24-13"><a href=""></a>    <span class="co">#   -----------------------</span></span>
-<span id="cb24-14"><a href=""></a>    <span class="at">H =</span>   B1) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-15"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-16"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-17"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column">
+</div>
+</div>
+<div class="fragment text-align-center">
+<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
+</div>
+<div class="fragment">
+<div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.25</code></pre>
+<pre><code>|0.89 0.89| 
+ 0.58  0.94 </code></pre>
 </div>
-</div></div>
-</section>
-<section id="proportional-syllogism-4" class="slide level2">
-<h2>Proportional syllogism</h2>
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>ball <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
-<span id="cb26-2"><a href=""></a></span>
-<span id="cb26-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb26-4"><a href=""></a>  <span class="at">B1 =</span> ball,</span>
-<span id="cb26-5"><a href=""></a>  <span class="at">W1 =</span> ball,</span>
-<span id="cb26-6"><a href=""></a>  <span class="at">W2 =</span> ball,</span>
-<span id="cb26-7"><a href=""></a>  <span class="at">W3 =</span> ball) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb26-9"><a href=""></a>    <span class="at">E =</span> ( B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb26-10"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span>  W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb26-11"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span>  W2 <span class="sc">&amp;</span> <span class="sc">!</span>W3) <span class="sc">|</span></span>
-<span id="cb26-12"><a href=""></a>        (<span class="sc">!</span>B1 <span class="sc">&amp;</span> <span class="sc">!</span>W1 <span class="sc">&amp;</span> <span class="sc">!</span>W2 <span class="sc">&amp;</span>  W3),</span>
-<span id="cb26-13"><a href=""></a>    <span class="co">#   -----------------------</span></span>
-<span id="cb26-14"><a href=""></a>    <span class="at">H =</span>   W1 <span class="sc">|</span>  W2 <span class="sc">|</span>  W3) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-15"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-16"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-17"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.75</code></pre>
 </div>
-</div></div>
-</section>
-<section id="proportional-syllogism-5" class="slide level2">
-<h2>Proportional syllogism</h2>
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
-<span id="cb28-2"><a href=""></a></span>
-<span id="cb28-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb28-4"><a href=""></a>  <span class="at">D1 =</span> bag</span>
-<span id="cb28-5"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column">
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
+<span id="cb28-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">29</span>, <span class="at">b =</span> <span class="dv">11</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
 <div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th style="text-align: left;">D1</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-</tr>
-</tbody>
-</table>
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-43-1.png" width="960"></p>
+</figure>
 </div>
 </div>
-</div></div>
-</section>
-<section id="proportional-syllogism-6" class="slide level2">
-<h2>Proportional syllogism</h2>
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
-<span id="cb29-2"><a href=""></a></span>
-<span id="cb29-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb29-4"><a href=""></a>  <span class="at">D1 =</span> bag) <span class="sc">%&gt;%</span> </span>
-<span id="cb29-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb29-6"><a href=""></a>    <span class="at">E =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb29-7"><a href=""></a>    <span class="at">H =</span> (D1 <span class="sc">==</span> <span class="st">"B"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb29-8"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
-<span id="cb29-9"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
-<span id="cb29-10"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column">
+</div>
+</div>
+<div class="fragment text-align-center">
+<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
+</div>
+<div class="fragment">
+<div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.25</code></pre>
+<pre><code>|0.89 0.89| 
+ 0.64  0.84 </code></pre>
+</div>
+</div>
 </div>
 </div></div>
 </section>
-<section id="proportional-syllogism-7" class="slide level2">
-<h2>Proportional syllogism</h2>
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
-<span id="cb31-2"><a href=""></a></span>
-<span id="cb31-3"><a href=""></a><span class="fu">expand_grid</span>(</span>
-<span id="cb31-4"><a href=""></a>  <span class="at">D1 =</span> bag</span>
-<span id="cb31-5"><a href=""></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb31-6"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb31-7"><a href=""></a>    <span class="at">E =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb31-8"><a href=""></a>    <span class="at">H =</span> (D1 <span class="sc">==</span> <span class="st">"W"</span>)</span>
-<span id="cb31-9"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb31-10"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
-<span id="cb31-11"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
-<span id="cb31-12"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.75</code></pre>
+<section id="globe-tossing-experiment-2" class="slide level2">
+<h2>Globe tossing experiment</h2>
+<p>Prior information: About 71% of the Earth’s surface is covered by water [<a href="https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth">usgs.gov</a>]</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">2</span>, <span class="at">l =</span> <span class="dv">8</span>,</span>
+<span id="cb30-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">29</span>, <span class="at">b =</span> <span class="dv">11</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div></div>
-</section>
-<section id="proportional-syllogism-8" class="slide level2">
-<h2>Proportional syllogism</h2>
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a>bag <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>, <span class="st">"W"</span>)</span>
-<span id="cb33-2"><a href=""></a></span>
-<span id="cb33-3"><a href=""></a>ss <span class="ot">&lt;-</span></span>
-<span id="cb33-4"><a href=""></a>  <span class="fu">expand_grid</span>(</span>
-<span id="cb33-5"><a href=""></a>    <span class="at">D1 =</span> bag,</span>
-<span id="cb33-6"><a href=""></a>    <span class="at">D2 =</span> bag,</span>
-<span id="cb33-7"><a href=""></a>    <span class="at">D3 =</span> bag)</span>
-<span id="cb33-8"><a href=""></a></span>
-<span id="cb33-9"><a href=""></a>ss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column">
+<div class="cell fragment">
 <div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th style="text-align: left;">D1</th>
-<th style="text-align: left;">D2</th>
-<th style="text-align: left;">D3</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">B</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-<td style="text-align: left;">W</td>
-</tr>
-</tbody>
-</table>
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-45-1.png" width="960"></p>
+</figure>
 </div>
 </div>
-</div></div>
-</section>
-<section id="proportional-syllogism-9" class="slide level2">
-<h2>Proportional syllogism</h2>
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb34-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb34-3"><a href=""></a>    <span class="at">E =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb34-4"><a href=""></a>    <span class="at">H =</span> (D1 <span class="sc">==</span> <span class="st">"B"</span> <span class="sc">&amp;</span> D2 <span class="sc">==</span> <span class="st">"W"</span> <span class="sc">&amp;</span> D3 <span class="sc">==</span> <span class="st">"B"</span>)</span>
-<span id="cb34-5"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb34-6"><a href=""></a>  <span class="fu">filter</span>(E) <span class="sc">%&gt;%</span> </span>
-<span id="cb34-7"><a href=""></a>  <span class="fu">pull</span>(H) <span class="sc">%&gt;%</span> </span>
-<span id="cb34-8"><a href=""></a>  <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column">
+</div>
+</div>
+<div class="fragment text-align-center">
+<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
+</div>
+<div class="fragment">
+<div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.04688</code></pre>
+<pre><code>|0.89 0.89| 
+ 0.50  0.71 </code></pre>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">80</span>, <span class="at">l =</span> <span class="dv">20</span>,</span>
+<span id="cb32-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>,  <span class="at">b =</span> <span class="dv">9</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.011</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-47-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment text-align-center">
+<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>|0.89 0.89| 
+ 0.66  0.80 </code></pre>
+</div>
+</div>
 </div>
 </div></div>
 </section>
-<section id="section-2" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
+<div id="refs" role="list">
+
+</div>
+</section>
+<section id="section-15" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
 <h2></h2>
 </section>
-<section id="section-3" class="slide level2" data-background-image="images/briggs2.png" data-background-size="contain">
+<section id="section-16" class="slide level2" data-background-image="images/briggs2.png" data-background-size="contain">
 <h2></h2>
 </section>
-<section id="glm-models-with-a-single-predictor-variable" class="slide level2">
-<h2>GLM models with a single predictor variable</h2>
-<p><span class="math display">\[
-\begin{align*}
-p(y \mid x, \beta_0, \beta_1, \sigma, E_{\text{GLM}}) &amp;= \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x)\bigr)^2}{2\sigma^2} \right) \\[1em]
-W \mid H = h &amp;\sim N\bigl(\mu = (\beta_0 + \beta_1 \cdot h), \sigma\bigr)
-\end{align*}
-\]</span></p>
-</section>
-<section id="probability-distribution-function-of-our-glm-model" class="slide level2">
-<h2>Probability distribution function of our GLM model</h2>
-<p><span class="math display">\[
-\begin{align}
-p(w \mid h, \beta_0=10, \beta_1=1, \sigma=2, E_{GLM}) &amp;= \frac{1}{\sqrt{2\pi \cdot 2^2}} \exp\!\left(-\frac{(w - (10 + h))^2}{2\cdot 2^2}\right) \\[1em]
-p(w \mid h) &amp;= \frac{1}{2\sqrt{2\pi}} \exp\!\left(-\frac{(w - (10 + h))^2}{8}\right) \\[1em]
-W \mid H = h &amp;\sim N\Bigl(\mu = (10 + h),\, 2\Bigr)
-\end{align}
-\]</span></p>
-</section>
-<section id="probability-distribution-function-of-our-glm-model-1" class="slide level2">
-<h2>Probability distribution function of our GLM model</h2>
-<p><span class="math display">\[
-E = \{ \omega \in \Omega : \text{Weight}(\omega) = 10 + 1 \cdot \text{Height}(\omega) \}
-\]</span></p>
-<p><span class="math display">\[
-p(\omega) =
-\begin{cases}
-  \frac{1}{|E|} &amp; \text{if } \omega \in E \\
-  0 &amp; \text{if } \omega \notin E
-\end{cases}
-\]</span></p>
+<section id="section-17" class="slide level2" data-background-image="images/bayesian_inference_is_just_counting.jpg" data-background-size="contain">
+<h2></h2>
 
 </section>
     </div>
