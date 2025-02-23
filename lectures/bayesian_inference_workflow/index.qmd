@@ -150,6 +150,16 @@ P.flex <- function(..., H, table = TRUE, flex = TRUE) {
 
 ##  {background-image="images/last_week_tonight.jpg" background-size="contain"}
 
+## Take homes from last week
+
+-   Simple example of Bayesian inference (breast cancer diagnotic test)
+
+-   Statistical models
+
+-   Probability distributions
+
+-   Random variables
+
 ## Statistical models
 
 Statistical models = **probability distributions** of **random variables**
@@ -170,85 +180,267 @@ Statistical models = **probability distributions** of **random variables**
 ::::
 ::::::
 
-## Take homes from last week
+## Statistical models
 
--   Models
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
 
--   Probability distributions
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
 
--   Random variables
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
+:::
+::::
+::::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+ 
+
+$$
+p : \Omega \to [0, 1]
+$$
+
+::: fragment
+$$
+\sum_{\omega \in \Omega} p(\omega) = 1
+$$
+:::
+::::
+::::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**Uniform distribution** (discrete) [WP](https://en.wikipedia.org/wiki/Discrete_uniform_distribution) [PDE](https://distribution-explorer.github.io/discrete/discrete_uniform.html)
+
+$$
+p(\omega \mid K_0) = \frac{1}{|\Omega|} = \frac{1}{n}
+$$
+:::
+:::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+**Normal distribution** (continuous) [WP](https://en.wikipedia.org/wiki/Normal_distribution) [PDE](https://distribution-explorer.github.io/continuous/normal.html)
+
+$$
+p(\omega \mid K_{N}) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - \mu \bigr)^2}{2\sigma^2} \right)
+$$
+
+::: fragment
+$$
+\text{GLM} : \mu = \beta_0 + \beta_1 \cdot x
+$$
+:::
+::::
+::::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+**General Linear Models** (continuous) [WP](https://en.wikipedia.org/wiki/General_linear_model)
+
+$$
+p(\omega \mid K_{\text{GLM}}) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x) \bigr)^2}{2\sigma^2} \right)
+$$
+
+::: fragment
+[![](images/linear_tests_cheat_sheet.png){fig-align="center" width="550"}](https://lindeloev.github.io/tests-as-linear/)
+:::
+::::
+::::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**Large Language Models** (discrete, ANN) [WP](https://en.wikipedia.org/wiki/GPT-3)
+
+![](images/Slide22.png){fig-align="center" width="440"}
+:::
+:::::
+
+::: notes
+GPT-3: 175 billion parameters = 5 million "neurons" x 35K parameters per neuron on average
+:::
+
+::: notes
+Large language models ultimately define a probability distribution over a finite set of tokens in their vocabulary, so it is indeed a discrete distribution—even though the vocabulary is usually very large, it’s still a finite (and hence discrete) set of possible tokens
+:::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**The human brain** (continuous, BNN) [WP](https://en.wikipedia.org/wiki/Free_energy_principle)
+
+![](images/Slide23.png){fig-align="center" width="440"}
+:::
+:::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**The human brain** (continuous, BNN) [WP](https://en.wikipedia.org/wiki/Free_energy_principle)
+
+![](images/Slide23_cropped.png){fig-align="center" width="440"}
+
+![](images/airliner_with_birds2.jpg){fig-align="center" width="550"}
+:::
+:::::
 
 ## Models vs. the real world
 
+ 
+
 ![](images/Slide20.png){fig-align="center"}
+
+## Models vs. the real world
+
+In order to reason about the real world, we need a set of premises/assumptions
+
+![](images/Slide20.png){fig-align="center"}
+
+## Models vs. the real world
+
+In order to reason about the real world, we need a KB that we can use to answer a query
+
+![](images/Slide20.png){fig-align="center"}
+
+## Models vs. the real world
+
+In order to reason about the real world, we need a model of it
+
+![](images/Slide20.png){fig-align="center"}
+
+::: notes
+Discuss model and parameter uncertainty (in addition to sampling uncertainty) and how Bayesian inference helps us quantify and propagate these uncertainties, something that frequentist inference cannot do
+:::
 
 ## The real world of robots
 
 ![](images/FriendlyRobots.jpg){fig-align="center"}
 
-## Causal model
+## Causal model: Science before statistics
 
 ```{r}
 #| echo: false
 dag <- dagify(
-  W ~ H,
-  exposure = "H",
-  outcome = "W"
+  Weight ~ Height,
+  exposure = "Height",
+  outcome = "Weight"
 )
 
 coordinates(dag) <- list(
-  x = c(H = 0, W = 1),
-  y = c(H = 0, W = 0)
+  x = c(Height = 0, Weight = 1),
+  y = c(Height = 0, Weight = 0)
 )
 
 ggdag(dag) + theme_dag()
 ```
 
-## Causal model
+## Causal model: Science before statistics
 
 ```{r}
 #| echo: false
 dag <- dagify(
-  W ~ H,
-  H ~ M,
-  W ~ M,
-  exposure = "H",
-  outcome = "W"
+  Weight ~ Height,
+  Height ~ Task,
+  Weight ~ Task,
+  exposure = "Height",
+  outcome = "Weight"
 )
 
 coordinates(dag) <- list(
-  x = c(H = 0, M = 1, W = 2),
-  y = c(H = 0, M = 1, W = 0)
+  x = c(Height = 0, Task = 1, Weight = 2),
+  y = c(Height = 0, Task = 1, Weight = 0)
 )
 
 ggdag(dag) + theme_dag()
 ```
 
-## Causal model
+## Causal model: Science before statistics
 
 ```{r}
 #| echo: false
 dag <- dagify(
-  W ~ H,
-  exposure = "H",
-  outcome = "W"
+  Weight ~ Height,
+  exposure = "Height",
+  outcome = "Weight"
 )
 
 coordinates(dag) <- list(
-  x = c(H = 0, W = 1),
-  y = c(H = 0, W = 0)
+  x = c(Height = 0, Weight = 1),
+  y = c(Height = 0, Weight = 0)
 )
 
 ggdag(dag) + theme_dag()
 ```
 
-## Causal model
+## Causal model: Science before statistics
 
 $$
-\text{W} = f(\text{H})
+\text{Weight} = f(\text{Height})
 $$
 
-&nbsp;
+ 
 
 ::: fragment
 $$
@@ -256,13 +448,13 @@ $$
 $$
 :::
 
-## Causal model
+## Causal model: Science before statistics
 
 $$
-\text{W} = f(\text{H})
+\text{Weight} = f(\text{Height})
 $$
 
-&nbsp;
+ 
 
 $$
 \text{Weight} = \beta_0 + \beta_1 \times \text{Height} + \epsilon
@@ -274,13 +466,13 @@ $$
 ![](images/ChatGPT-475728009.webp){fig-align="center" height="400"}
 :::
 
-## Causal model
+## Causal model: Science before statistics
 
 $$
-\text{W} = f(\text{H})
+\text{Weight} = f(\text{Height})
 $$
 
-&nbsp;
+ 
 
 $$
 \text{Weight} = \beta_0 + \beta_1 \times \text{Height} + \epsilon
@@ -289,23 +481,23 @@ $$
  
 
 $$
-\text{Next token} = \text{ChatGPT}\bigl(\text{Prompt}\bigr)
+\text{Next token} = \text{ChatGPT}\bigl(\text{Prompt tokens}\bigr)
 $$
 
 ::: fragment
 $$
-\text{Next token} = \text{ChatGPT}\bigl(\text{Prompt} + \text{Previous token}\bigr)
+\text{Next token} = \text{ChatGPT}\bigl(\text{Prompt tokens} + \text{Previous token}\bigr)
 $$
 :::
 
 ::: fragment
 $$
-\text{STOP} = \text{ChatGPT}\bigl(\text{Prompt} + \text{Previous tokens}\bigr)
+\text{STOP} = \text{ChatGPT}\bigl(\text{Prompt tokens} + \text{Previous tokens}\bigr)
 $$
 :::
 
 ::: notes
-ChatGPT 3: 5 million "neurons", 175 billion parameters, 35K parameters per neuron on average
+GPT-3: 175 billion parameters = 5 million "neurons" x 35K parameters per neuron on average
 :::
 
 ## Random variables
@@ -313,8 +505,8 @@ ChatGPT 3: 5 million "neurons", 175 billion parameters, 35K parameters per neuro
 ::: fragment
 $$
 \begin{aligned}[l]
-\text{H} & = \{ 10, 20, 30 \} \\
-\text{W} & = \{ 20, 30, 40 \}
+\text{Height} & = \{ 10, 20, 30 \} \\
+\text{Weight} & = \{ 20, 30, 40 \}
 \end{aligned}
 $$
 :::
@@ -330,7 +522,7 @@ Weight <- c(20, 30, 40)
 ```
 :::
 
-## Universe
+## Sample space
 
 ```{r}
 ss <-
@@ -339,6 +531,14 @@ ss <-
   select(Ω, everything())
 
 ss
+```
+
+## Sample space
+
+```{r}
+#| eval: false
+#| output-location: default
+ss %>% ???
 ```
 
 ## Argument: Evidence
@@ -376,7 +576,7 @@ ss %>%
     P3 = (Height == 30) %=>% (Weight == 40),
     E  = P1 & P2 & P3,                        # evidence/premises/assumptions/KB
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion/query
+    H  = (Weight == 20) | (Weight == 40)) %>% # hypothesis/conclusion/query
   filter(E)
 ```
 
@@ -391,7 +591,7 @@ ss %>%
     P3 = (Height == 30) %=>% (Weight == 40),
     E  = P1 & P2 & P3,                        # evidence/premises/assumptions/KB
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion/query
+    H  = (Weight == 20) | (Weight == 40)) %>% # hypothesis/conclusion/query
   filter(E) %>% 
   summarize(`P(H | E)` = mean(H))
 ```
@@ -407,13 +607,13 @@ ss %>%
     P3 = (Height == 30) %=>% (Weight == 40),
     E  = P1 & P2 & P3,                        # evidence/premises/assumptions/KB
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion/query 
+    H  = (Weight == 20) | (Weight == 40)) %>% # hypothesis/conclusion/query
   filter(E)
 ```
 
 ::: fragment
 $$
-\text{W} = f(\text{H})
+\text{Weight} = f(\text{Height})
 $$
 :::
 
@@ -438,7 +638,7 @@ ss %>%
   mutate(
     E  = (Weight == 10 + 1 * Height),         # linear function equivalent to premises P1, P2 and P3
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion/query  
+    H  = (Weight == 20) | (Weight == 40)) %>% # hypothesis/conclusion/query
   ungroup() %>% 
   filter(E)
 ```
@@ -452,7 +652,7 @@ ss %>%
   mutate(
     E  = (Weight == 10 + 1 * Height),         # linear function equivalent to premises P1, P2 and P3
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>% # hypothesis/conclusion/query  
+    H  = (Weight == 20) | (Weight == 40)) %>% # hypothesis/conclusion/query
   ungroup() %>% 
   filter(E) %>% 
   summarize(`P(H | E)` = mean(H))
@@ -474,8 +674,7 @@ $$p(\omega) = \frac{1}{|\Omega|} = \frac{1}{n}$$
 $$\sum_{\omega \in \Omega} p(\omega) = 1$$
 :::
 
-
-## Probability distribution
+## Sample space
 
 ```{r}
 #| output-location: default
@@ -486,16 +685,14 @@ ss
 
 ```{r}
 #| output-location: default
-ss %>% 
-  mutate(p = 1 / n())                          # uniform probability distribution (prior)
+ss %>% mutate(p = 1 / n())                     # uniform probability distribution (prior)
 ```
 
 ## Probability distribution
 
 ```{r}
 #| output-location: default
-ss %>% 
-  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+ss %>% mutate(p = 1 / n()) %>%                 # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
     E  = (Weight == 10 + 1 * Height)) %>%      # linear function equivalent to premises P1, P2 and P3
@@ -506,8 +703,7 @@ ss %>%
 
 ```{r}
 #| output-location: default
-ss %>% 
-  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+ss %>% mutate(p = 1 / n()) %>%                 # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
     E  = (Weight == 10 + 1 * Height)) %>%      # linear function equivalent to premises P1, P2 and P3
@@ -519,8 +715,7 @@ ss %>%
 
 ```{r}
 #| output-location: default
-ss %>% 
-  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+ss %>% mutate(p = 1 / n()) %>%                 # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
     E  = (Weight == 10 + 1 * Height)) %>%      # linear function equivalent to premises P1, P2 and P3 
@@ -532,8 +727,7 @@ ss %>%
 
 ```{r}
 #| output-location: default
-ss %>% 
-  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+ss %>% mutate(p = 1 / n()) %>%                 # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
     E  = (Weight == 10 + 1 * Height)) %>%      # linear function equivalent to premises P1, P2 and P3 
@@ -545,13 +739,12 @@ ss %>%
 
 ```{r}
 #| output-location: default
-ss %>% 
-  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+ss %>% mutate(p = 1 / n()) %>%                 # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
     E  = (Weight == 10 + 1 * Height),          # linear function equivalent to premises P1, P2 and P3
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion/query 
+    H  = (Weight == 20) | (Weight == 40)) %>%  # hypothesis/conclusion/query
   ungroup() %>%
   mutate(p = if_else(E, p / sum(p[E]), 0))     # (posterior)
 ```
@@ -561,13 +754,12 @@ ss %>%
 ```{r}
 #| eval: false
 #| output-location: default
-ss %>% 
-  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+ss %>% mutate(p = 1 / n()) %>%                 # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
     E  = (Weight == 10 + 1 * Height),          # linear function equivalent to premises P1, P2 and P3
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion/query 
+    H  = (Weight == 20) | (Weight == 40)) %>%  # hypothesis/conclusion/query
   ungroup() %>%
   mutate(p = if_else(E, p / sum(p[E]), 0))     # (posterior)
 ```
@@ -580,18 +772,16 @@ ss %>%
 $$P(H) = \sum_{\omega \in H} p(\omega)$$
 :::
 
-
 ## Argument: Hypothesis
 
 ```{r}
 #| output-location: default
-ss %>% 
-  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+ss %>% mutate(p = 1 / n()) %>%                 # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
     E  = (Weight == 10 + 1 * Height),          # linear function equivalent to premises P1, P2 and P3
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion/query 
+    H  = (Weight == 20) | (Weight == 40)) %>%  # hypothesis/conclusion/query
   ungroup() %>%
   mutate(p = if_else(E, p / sum(p[E]), 0))     # (posterior)
 ```
@@ -600,54 +790,204 @@ ss %>%
 
 ```{r}
 #| output-location: default
-ss %>% 
-  mutate(p = 1 / n()) %>%                      # uniform probability distribution (prior)
+ss %>% mutate(p = 1 / n()) %>%                 # uniform probability distribution (prior)
   rowwise() %>% 
   mutate(
     E  = (Weight == 10 + 1 * Height),          # linear function equivalent to premises P1, P2 and P3
     #    --------------------------------
-    H  = (Height == 10) | (Weight == 30)) %>%  # hypothesis/conclusion/query  
+    H  = (Weight == 20) | (Weight == 40)) %>%  # hypothesis/conclusion/query
   ungroup() %>%
   mutate(p = if_else(E, p / sum(p[E]), 0)) %>% # (posterior)
   summarize(`P(H | E)` = sum(p[H]))
 ```
 
+## Statistical models
 
-## GLM models with a single predictor variable
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
+:::
+::::
+::::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**Uniform distribution** (discrete) [WP](https://en.wikipedia.org/wiki/Discrete_uniform_distribution) [PDE](https://distribution-explorer.github.io/discrete/discrete_uniform.html)
 
 $$
-\begin{align*}
-p(y \mid x, \beta_0, \beta_1, \sigma, E_{\text{GLM}}) &= \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x)\bigr)^2}{2\sigma^2} \right) \\[1em]
-W \mid H = h &\sim N\bigl(\mu = (\beta_0 + \beta_1 \cdot h), \sigma\bigr)
-\end{align*}
+p(\omega \mid K_0) = \frac{1}{|\Omega|} = \frac{1}{n}
 $$
+:::
+:::::
 
-## Probability distribution function of our GLM model
+::: notes
+The discrete uniform distribution is the maximum-entropy distribution over a finite set (no constraints beyond normalization), while the normal distribution is the maximum-entropy continuous distribution when we only know the mean and variance/standard deviation.
+:::
 
+## Statistical models
 
-$$
-\begin{align}
-p(w \mid h, \beta_0=10, \beta_1=1, \sigma=2, E_{GLM}) &= \frac{1}{\sqrt{2\pi \cdot 2^2}} \exp\!\left(-\frac{(w - (10 + h))^2}{2\cdot 2^2}\right) \\[1em]
-p(w \mid h) &= \frac{1}{2\sqrt{2\pi}} \exp\!\left(-\frac{(w - (10 + h))^2}{8}\right) \\[1em]
-W \mid H = h &\sim N\Bigl(\mu = (10 + h),\, 2\Bigr)
-\end{align}
-$$
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
 
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
 
-## Probability distribution function of our GLM model
-
-$$
-E = \{ \omega \in \Omega : \text{Weight}(\omega) = 10 + 1 \cdot \text{Height}(\omega) \}
-$$
+::: {.column width="70%"}
+**Normal distribution** (continuous) [WP](https://en.wikipedia.org/wiki/Normal_distribution) [PDE](https://distribution-explorer.github.io/continuous/normal.html)
 
 $$
-p(\omega) = 
-\begin{cases}
-  \frac{1}{|E|} & \text{if } \omega \in E \\
-  0 & \text{if } \omega \notin E
-\end{cases}
+p(\omega \mid K_{\text{GLM}}) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - \mu \bigr)^2}{2\sigma^2} \right)
+$$ $$
+\mu = \beta_0 + \beta_1 \cdot x
 $$
+:::
+:::::
 
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**Normal distribution** (continuous) [WP](https://en.wikipedia.org/wiki/Normal_distribution) [PDE](https://distribution-explorer.github.io/continuous/normal.html)
+
+$$
+p(\omega) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x) \bigr)^2}{2\sigma^2} \right)
+$$
+:::
+:::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**Normal distribution** (continuous) [WP](https://en.wikipedia.org/wiki/Normal_distribution) [PDE](https://distribution-explorer.github.io/continuous/normal.html)
+
+$$
+p(x, y \mid \beta_0, \beta_1, \sigma, E_{\text{GLM}}) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x) \bigr)^2}{2\sigma^2} \right)
+$$
+:::
+:::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+ 
+
+$$
+p(d \mid \theta, E_{\text{M}})
+$$
+:::
+:::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+ 
+
+$$
+p(d \mid \theta)
+$$
+:::
+:::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+ 
+
+$$
+p(\theta \mid d)
+$$
+:::
+:::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+ 
+
+$$
+p(\theta \mid d) = \frac{p(\theta) \cdot p(d \mid \theta)}{p(d)}
+$$
+:::
+:::::
+
+## Statistical models
+
+A convenient way to represent the **premises** of **inductive arguments** about different DGPs
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+ 
+
+$$
+p(\theta \mid d) \propto p(\theta) \cdot p(d \mid \theta)
+$$
+:::
+:::::
 
 ##  {background-image="images/bayesian_inference_is_just_counting.jpg" background-size="contain"}
 
@@ -865,3 +1205,36 @@ ss %>%
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
 ##  {background-image="images/briggs2.png" background-size="contain"}
+
+## GLM models with a single predictor variable
+
+$$
+\begin{align*}
+p(y \mid x, \beta_0, \beta_1, \sigma, E_{\text{GLM}}) &= \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x)\bigr)^2}{2\sigma^2} \right) \\[1em]
+W \mid H = h &\sim N\bigl(\mu = (\beta_0 + \beta_1 \cdot h), \sigma\bigr)
+\end{align*}
+$$
+
+## Probability distribution function of our GLM model
+
+$$
+\begin{align}
+p(w \mid h, \beta_0=10, \beta_1=1, \sigma=2, E_{GLM}) &= \frac{1}{\sqrt{2\pi \cdot 2^2}} \exp\!\left(-\frac{(w - (10 + h))^2}{2\cdot 2^2}\right) \\[1em]
+p(w \mid h) &= \frac{1}{2\sqrt{2\pi}} \exp\!\left(-\frac{(w - (10 + h))^2}{8}\right) \\[1em]
+W \mid H = h &\sim N\Bigl(\mu = (10 + h),\, 2\Bigr)
+\end{align}
+$$
+
+## Probability distribution function of our GLM model
+
+$$
+E = \{ \omega \in \Omega : \text{Weight}(\omega) = 10 + 1 \cdot \text{Height}(\omega) \}
+$$
+
+$$
+p(\omega) = 
+\begin{cases}
+  \frac{1}{|E|} & \text{if } \omega \in E \\
+  0 & \text{if } \omega \notin E
+\end{cases}
+$$
