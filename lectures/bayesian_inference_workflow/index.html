@@ -6,8 +6,8 @@
 <script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="index_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.6.40">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-48ffa3e5b9d089919c6712c39e5b00f2.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.6.41">
 
   <meta name="author" content="Edoardo “Dado” Marcora">
   <meta name="dcterms.date" content="2025-02-24">
@@ -114,7 +114,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-36b9ddd4eeac9d7f1717b51eed3eb672.css">
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-ac83df8bbaea76514c209d3525a3d200.css">
   <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -230,7 +230,10 @@ Edoardo “Dado” Marcora
 
 <img data-src="images/Slide1.png" class="quarto-figure quarto-figure-center r-stretch" width="979"><p><a href="https://doi.org/10.1214/10-STS330">Shmueli (2010)</a> To Explain or to Predict?</p>
 </section>
-<section id="section" class="slide level2" data-background-image="images/last_week_tonight.jpg" data-background-size="contain">
+<section id="section" class="slide level2" data-background-image="images/bayesian_inference_is_just_counting.jpg" data-background-size="contain">
+<h2></h2>
+</section>
+<section id="section-1" class="slide level2" data-background-image="images/last_week_tonight.jpg" data-background-size="contain">
 <h2></h2>
 </section>
 <section id="take-homes-from-last-week" class="slide level2">
@@ -459,6 +462,19 @@ p(x, y \mid M_{\text{GLM}}) = \frac{k}{\sqrt{2\pi \sigma^2}} \cdot \exp \!\left(
 <section id="models-vs.-the-real-world-1" class="slide level2">
 <h2>Models vs.&nbsp;the real world</h2>
 <p>In order to reason about the real world, we need a set of premises/assumptions</p>
+<aside class="notes">
+<p>Learning (incl.&nbsp;statistical inference) is impossible without assumptions!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
 <img data-src="images/Slide20.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="models-vs.-the-real-world-2" class="slide level2">
@@ -1957,7 +1973,7 @@ p(x, y \mid M_{\text{GLM}}) = \frac{k}{\sqrt{2\pi \sigma^2}}\cdot \exp \!\left( 
 </div><div class="column" style="width:70%;">
 <p><strong>Statistical models</strong> (discrete/continuous) <a href="https://en.wikipedia.org/wiki/Statistical_model">WP</a></p>
 <p><span class="math display">\[
-p(d \mid M)
+p(x \mid M)
 \]</span></p>
 </div></div>
 </section>
@@ -1976,41 +1992,6 @@ p(d \mid M)
 \end{array}
 \]</span></p>
 </div>
-</section>
-<section id="statistical-inference-1" class="slide level2">
-<h2>Statistical inference</h2>
-<div>
-<ul>
-<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
-<li><p>Traditional probability (a.k.a. <strong>data</strong> or <strong>sampling probability</strong>):</p></li>
-</ul>
-</div>
-</section>
-<section id="statistical-inference-2" class="slide level2">
-<h2>Statistical inference</h2>
-<div>
-<ul>
-<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
-<li><p>Traditional probability (a.k.a. <strong>data</strong> or <strong>sampling probability</strong>):</p>
-<ul>
-<li><span class="math inline">\(p(d \mid M)\)</span> = probability of the data given a set of DGP model assumptions</li>
-</ul></li>
-</ul>
-</div>
-<ul>
-<li class="fragment"><p>The problem of statistical inference</p>
-<ul>
-<li class="fragment"><strong>Inverse probability</strong>: <span class="math inline">\(P(M \mid d)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(d\)</span></li>
-<li class="fragment"><u>It is impossible to calculate the inverse probability!</u></li>
-</ul></li>
-<li class="fragment"><p>The (more reasonable, limited) goal of statistical inference</p>
-<ul>
-<li class="fragment">Let <span class="math inline">\(M = \{M^*, \theta\}\)</span>, where <span class="math inline">\(M^*\)</span> (the functional form of <span class="math inline">\(M\)</span>) is assumed and <span class="math inline">\(\theta\)</span> are the parameters of <span class="math inline">\(M^*\)</span> to be learned from <span class="math inline">\(d\)</span></li>
-<li class="fragment"><strong>Inferential probability</strong>: <span class="math inline">\(P(\theta \mid d, M^*)\)</span> = probability of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(d\)</span> and <span class="math inline">\(M^*\)</span></li>
-<li class="fragment"><span class="math inline">\(P(\theta \mid d)\)</span> [simpler, alternative notation]</li>
-</ul></li>
-<li class="fragment"><p><u>Learning (incl.&nbsp;statistical inference) is impossible without assumptions!</u></p></li>
-</ul>
 <aside class="notes">
 <p>Inference is the process of using facts we know to learn about facts we do not know. A theory of inference gives assumptions necessary to get from the former to the latter, along with a definition for and summary of the resulting uncertainty. Any one theory of inference is neither right nor wrong, but merely an axiom that may or may not be useful. http://tinyurl.com/y3v8nfwh</p>
 <style type="text/css">
@@ -2024,6 +2005,126 @@ p(d \mid M)
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="statistical-inference-1" class="slide level2">
+<h2>Statistical inference</h2>
+<div>
+<ul>
+<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
+<li><p><strong>Data probability</strong> (a.k.a. likelihood):</p></li>
+</ul>
+</div>
+</section>
+<section id="statistical-inference-2" class="slide level2">
+<h2>Statistical inference</h2>
+<div>
+<ul>
+<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
+<li><p><strong>Data probability</strong> (a.k.a. likelihood):</p>
+<ul>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given a set of DGP model assumptions</li>
+</ul></li>
+</ul>
+</div>
+<ul>
+<li class="fragment"><p><strong>Inverse probability</strong>:</p>
+<ul>
+<li class="fragment"><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li class="fragment"><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
+<li class="fragment"><p>The (more reasonable, limited) goal of statistical inference</p></li>
+<li class="fragment"><p>Let <span class="math inline">\(M = \{M^*, \theta\}\)</span>, where <span class="math inline">\(M^*\)</span> (the functional form of <span class="math inline">\(M\)</span>) is assumed and <span class="math inline">\(\theta\)</span> are the parameters of <span class="math inline">\(M^*\)</span> to be learned from <span class="math inline">\(x\)</span></p></li>
+</ul></li>
+</ul>
+</section>
+<section id="statistical-inference-3" class="slide level2">
+<h2>Statistical inference</h2>
+<div>
+<ul>
+<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
+<li><p><strong>Data probability</strong> (a.k.a. likelihood):</p>
+<ul>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given a set of DGP model assumptions</li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><p><strong>Inverse probability</strong>:</p>
+<ul>
+<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
+<li><p>The (more reasonable, limited) goal of statistical inference</p></li>
+<li><p>Let <span class="math inline">\(M = \{M^*, \theta\}\)</span>, where <span class="math inline">\(M^*\)</span> (the functional form of <span class="math inline">\(M\)</span>) is assumed and <span class="math inline">\(\theta\)</span> are the parameters of <span class="math inline">\(M^*\)</span> to be learned from <span class="math inline">\(x\)</span></p></li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><strong>Inferential probability</strong> (a.k.a. <strong>posterior</strong>):</li>
+</ul>
+</div>
+</section>
+<section id="statistical-inference-4" class="slide level2">
+<h2>Statistical inference</h2>
+<div>
+<ul>
+<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
+<li><p><strong>Data probability</strong> (a.k.a. likelihood):</p>
+<ul>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given a set of DGP model assumptions</li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><p><strong>Inverse probability</strong>:</p>
+<ul>
+<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
+<li><p>The (more reasonable, limited) goal of statistical inference</p></li>
+<li><p>Let <span class="math inline">\(M = \{M^*, \theta\}\)</span>, where <span class="math inline">\(M^*\)</span> (the functional form of <span class="math inline">\(M\)</span>) is assumed and <span class="math inline">\(\theta\)</span> are the parameters of <span class="math inline">\(M^*\)</span> to be learned from <span class="math inline">\(x\)</span></p></li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><p><strong>Inferential probability</strong> (a.k.a. <strong>posterior</strong>):</p>
+<ul>
+<li><span class="math inline">\(p(\theta \mid x, M^*)\)</span> = probability of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span> and <span class="math inline">\(M^*\)</span></li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="statistical-inference-5" class="slide level2">
+<h2>Statistical inference</h2>
+<div>
+<ul>
+<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
+<li><p><strong>Data probability</strong> (a.k.a. likelihood):</p>
+<ul>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given a set of DGP model assumptions</li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><p><strong>Inverse probability</strong>:</p>
+<ul>
+<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
+<li><p>The (more reasonable, limited) goal of statistical inference</p></li>
+<li><p>Let <span class="math inline">\(M = \{M^*, \theta\}\)</span>, where <span class="math inline">\(M^*\)</span> (the functional form of <span class="math inline">\(M\)</span>) is assumed and <span class="math inline">\(\theta\)</span> are the parameters of <span class="math inline">\(M^*\)</span> to be learned from <span class="math inline">\(x\)</span></p></li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><p><strong>Inferential probability</strong> (a.k.a. <strong>posterior</strong>):</p>
+<ul>
+<li><span class="math inline">\(p(\theta \mid x)\)</span> = probability of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span> and <span class="math inline">\(M^*\)</span></li>
+</ul></li>
+</ul>
+</div>
 </section>
 <section id="bayes-theorem-for-statistical-inference" class="slide level2">
 <h2>Bayes’ theorem for statistical inference</h2>
@@ -2063,7 +2164,7 @@ p(d \mid M)
 <h2>Globe tossing: Posterior</h2>
 <div class="fragment">
 <p><span class="math display">\[
-p(\theta \mid d)
+p(\theta \mid x)
 \]</span></p>
 </div>
 <ul>
@@ -2080,7 +2181,7 @@ p(\pi \mid x = 2, n = 3)
 <section id="globe-tossing-posterior-1" class="slide level2">
 <h2>Globe tossing: Posterior</h2>
 <p><span class="math display">\[
-p(\theta \mid d)
+p(\theta \mid x)
 \]</span></p>
 <div>
 <ul>
@@ -2246,6 +2347,10 @@ p(\pi \mid x = 2, n = 3) \propto p(\pi) \cdot p(x = 2, n = 3 \mid \pi)
 <img data-src="images/Slide46.png" class="r-stretch"></section>
 <section id="globe-tossing-likelihood-1" class="slide level2">
 <h2>Globe tossing: Likelihood</h2>
+
+<img data-src="images/Slide47.png" class="r-stretch"></section>
+<section id="globe-tossing-likelihood-2" class="slide level2">
+<h2>Globe tossing: Likelihood</h2>
 <div class="fragment">
 <p><strong>Binomial distribution</strong>: the probability of observing <span class="math inline">\(x\)</span> successes in <span class="math inline">\(n\)</span> trials, given a probability of success <span class="math inline">\(\pi\)</span></p>
 </div>
@@ -2265,7 +2370,7 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 </div>
 </div>
 </section>
-<section id="globe-tossing-likelihood-2" class="slide level2">
+<section id="globe-tossing-likelihood-3" class="slide level2">
 <h2>Globe tossing: Likelihood</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
@@ -2466,7 +2571,8 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 <span id="cb29-4"><a href=""></a>    <span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">2</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">prob =</span> π),</span>
 <span id="cb29-5"><a href=""></a>    <span class="at">posterior.unnorm =</span> prior <span class="sc">*</span> likelihood,</span>
 <span id="cb29-6"><a href=""></a>    <span class="at">posterior =</span> posterior.unnorm <span class="sc">/</span> <span class="fu">sum</span>(posterior.unnorm)) <span class="sc">%&gt;%</span> </span>
-<span id="cb29-7"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-7"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-8"><a href=""></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(pi), <span class="at">y =</span> <span class="st">"p"</span>, <span class="at">title =</span> <span class="st">"Posterior"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -2483,18 +2589,15 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
 <span id="cb30-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb30-3"><a href=""></a>    <span class="at">prior =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.6</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>, <span class="dv">0</span>),</span>
+<span id="cb30-3"><a href=""></a>    <span class="at">prior =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>(),</span>
 <span id="cb30-4"><a href=""></a>    <span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">2</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">prob =</span> π),</span>
 <span id="cb30-5"><a href=""></a>    <span class="at">posterior.unnorm =</span> prior <span class="sc">*</span> likelihood,</span>
 <span id="cb30-6"><a href=""></a>    <span class="at">posterior =</span> posterior.unnorm <span class="sc">/</span> <span class="fu">sum</span>(posterior.unnorm),</span>
 <span id="cb30-7"><a href=""></a>    <span class="at">likelihood.norm =</span> likelihood <span class="sc">/</span> <span class="fu">sum</span>(likelihood)) <span class="sc">%&gt;%</span> </span>
 <span id="cb30-8"><a href=""></a>  <span class="fu">gf_line</span>(prior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb30-9"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb30-10"><a href=""></a>  <span class="fu">gf_line</span>(likelihood.norm <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"green"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb30-11"><a href=""></a>  <span class="fu">gf_labs</span>(</span>
-<span id="cb30-12"><a href=""></a>    <span class="at">x =</span> <span class="fu">expression</span>(pi),</span>
-<span id="cb30-13"><a href=""></a>    <span class="at">y =</span> <span class="st">"P"</span>,</span>
-<span id="cb30-14"><a href=""></a>    <span class="at">title =</span> <span class="st">"Prior (red), likelihood (green) and posterior (orange)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-9"><a href=""></a>  <span class="fu">gf_line</span>(likelihood.norm <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"green"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-10"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-11"><a href=""></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(pi), <span class="at">y =</span> <span class="st">"p"</span>, <span class="at">title =</span> <span class="st">"Prior (red), likelihood (green) and posterior (orange)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -2511,11 +2614,15 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
 <span id="cb31-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb31-3"><a href=""></a>    <span class="at">prior =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>(),</span>
+<span id="cb31-3"><a href=""></a>    <span class="at">prior =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.6</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>, <span class="dv">0</span>),</span>
 <span id="cb31-4"><a href=""></a>    <span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">2</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">prob =</span> π),</span>
 <span id="cb31-5"><a href=""></a>    <span class="at">posterior.unnorm =</span> prior <span class="sc">*</span> likelihood,</span>
-<span id="cb31-6"><a href=""></a>    <span class="at">posterior =</span> posterior.unnorm <span class="sc">/</span> <span class="fu">sum</span>(posterior.unnorm)) <span class="sc">%&gt;%</span> </span>
-<span id="cb31-7"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb31-6"><a href=""></a>    <span class="at">posterior =</span> posterior.unnorm <span class="sc">/</span> <span class="fu">sum</span>(posterior.unnorm),</span>
+<span id="cb31-7"><a href=""></a>    <span class="at">likelihood.norm =</span> likelihood <span class="sc">/</span> <span class="fu">sum</span>(likelihood)) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-8"><a href=""></a>  <span class="fu">gf_line</span>(prior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-9"><a href=""></a>  <span class="fu">gf_line</span>(likelihood.norm <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"green"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-10"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-11"><a href=""></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(pi), <span class="at">y =</span> <span class="st">"p"</span>, <span class="at">title =</span> <span class="st">"Prior (red), likelihood (green) and posterior (orange)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -2527,57 +2634,131 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 </div>
 </div>
 </section>
+<section id="globe-tossing-likelihood-4" class="slide level2">
+<h2>Globe tossing: Likelihood</h2>
+
+<img data-src="images/Slide50.png" class="r-stretch"></section>
+<section id="globe-tossing-likelihood-5" class="slide level2">
+<h2>Globe tossing: Likelihood</h2>
+
+<img data-src="images/Slide52.png" class="r-stretch"></section>
 <section id="globe-tossing-posterior-6" class="slide level2">
 <h2>Globe tossing: Posterior</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a><span class="fu">tibble</span>(π <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.1</span>)) <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>ss <span class="sc">%&gt;%</span></span>
 <span id="cb32-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
 <span id="cb32-3"><a href=""></a>    <span class="at">prior =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>(),</span>
 <span id="cb32-4"><a href=""></a>    <span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">2</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">prob =</span> π),</span>
 <span id="cb32-5"><a href=""></a>    <span class="at">posterior.unnorm =</span> prior <span class="sc">*</span> likelihood,</span>
 <span id="cb32-6"><a href=""></a>    <span class="at">posterior =</span> posterior.unnorm <span class="sc">/</span> <span class="fu">sum</span>(posterior.unnorm)) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-7"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<span id="cb32-7"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-8"><a href=""></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(pi), <span class="at">y =</span> <span class="st">"p"</span>, <span class="at">title =</span> <span class="st">"Posterior"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-38-1.png" width="960" class="r-stretch"></section>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-38-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="globe-tossing-posterior-7" class="slide level2">
 <h2>Globe tossing: Posterior</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a><span class="fu">tibble</span>(π <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.01</span>)) <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a><span class="fu">tibble</span>(π <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.1</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb33-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
 <span id="cb33-3"><a href=""></a>    <span class="at">prior =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>(),</span>
 <span id="cb33-4"><a href=""></a>    <span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">2</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">prob =</span> π),</span>
 <span id="cb33-5"><a href=""></a>    <span class="at">posterior.unnorm =</span> prior <span class="sc">*</span> likelihood,</span>
 <span id="cb33-6"><a href=""></a>    <span class="at">posterior =</span> posterior.unnorm <span class="sc">/</span> <span class="fu">sum</span>(posterior.unnorm)) <span class="sc">%&gt;%</span> </span>
-<span id="cb33-7"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb33-7"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-8"><a href=""></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(pi), <span class="at">y =</span> <span class="st">"p"</span>, <span class="at">title =</span> <span class="st">"Posterior"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="index_files/figure-revealjs/unnamed-chunk-39-1.png" width="960" class="r-stretch"></section>
+<section id="globe-tossing-posterior-8" class="slide level2">
+<h2>Globe tossing: Posterior</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a><span class="fu">tibble</span>(π <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.05</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb34-3"><a href=""></a>    <span class="at">prior =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>(),</span>
+<span id="cb34-4"><a href=""></a>    <span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">2</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">prob =</span> π),</span>
+<span id="cb34-5"><a href=""></a>    <span class="at">posterior.unnorm =</span> prior <span class="sc">*</span> likelihood,</span>
+<span id="cb34-6"><a href=""></a>    <span class="at">posterior =</span> posterior.unnorm <span class="sc">/</span> <span class="fu">sum</span>(posterior.unnorm)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-7"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-8"><a href=""></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(pi), <span class="at">y =</span> <span class="st">"p"</span>, <span class="at">title =</span> <span class="st">"Posterior"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-40-1.png" width="960" class="r-stretch"></section>
+<section id="globe-tossing-posterior-9" class="slide level2">
+<h2>Globe tossing: Posterior</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a><span class="fu">tibble</span>(π <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.01</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb35-3"><a href=""></a>    <span class="at">prior =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>(),</span>
+<span id="cb35-4"><a href=""></a>    <span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="at">x =</span> <span class="dv">2</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">prob =</span> π),</span>
+<span id="cb35-5"><a href=""></a>    <span class="at">posterior.unnorm =</span> prior <span class="sc">*</span> likelihood,</span>
+<span id="cb35-6"><a href=""></a>    <span class="at">posterior =</span> posterior.unnorm <span class="sc">/</span> <span class="fu">sum</span>(posterior.unnorm)) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-7"><a href=""></a>  <span class="fu">gf_line</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-8"><a href=""></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(pi), <span class="at">y =</span> <span class="st">"p"</span>, <span class="at">title =</span> <span class="st">"Posterior"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-41-1.png" width="960" class="r-stretch"></section>
+<section id="globe-tossing" class="slide level2">
+<h2>Globe tossing</h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-075.png" class="r-stretch"></section>
+<section id="globe-tossing-1" class="slide level2">
+<h2>Globe tossing</h2>
+
+<img data-src="images/globe_tossing.gif" class="r-stretch"></section>
+<section id="globe-tossing-2" class="slide level2">
+<h2>Globe tossing</h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-076.png" class="r-stretch"></section>
+<section id="globe-tossing-3" class="slide level2">
+<h2>Globe tossing</h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-077.png" class="r-stretch"></section>
+<section id="globe-tossing-4" class="slide level2">
+<h2>Globe tossing</h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-078.png" class="r-stretch"></section>
+<section id="globe-tossing-5" class="slide level2">
+<h2>Globe tossing</h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-079.png" class="r-stretch"></section>
+<section id="globe-tossing-6" class="slide level2">
+<h2>Globe tossing</h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-080.png" class="r-stretch"></section>
+<section id="globe-tossing-7" class="slide level2">
+<h2>Globe tossing</h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-081.png" class="r-stretch"></section>
+<section id="globe-tossing-8" class="slide level2">
+<h2>Globe tossing</h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-082.png" class="r-stretch"></section>
+<section id="globe-tossing-9" class="slide level2">
+<h2>Globe tossing</h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-083.png" class="r-stretch"></section>
+<section id="globe-tossing-10" class="slide level2">
+<h2>Globe tossing</h2>
+
+<img data-src="statistical-rethinking-2023-lecture-02/slide-084.png" class="r-stretch"></section>
+<section id="letter-from-my-reviewers" class="slide level2">
+<h2>Letter from my reviewers</h2>
+
+<img data-src="images/letters_from_my_reviewers.png" class="r-stretch"></section>
 <section id="globe-tossing-prior-2" class="slide level2">
 <h2>Globe tossing: Prior</h2>
-<p>The beta distribution is a family of distributions that describe the probability of continuous random variables within the interval <span class="math inline">\([0, 1]\)</span>, making it particularly useful for modeling proportions, probabilities, and other quantities bounded between 0 and 1</p>
+<p>The <a href="https://distribution-explorer.github.io/continuous/beta.html">beta distribution</a> describes the probability of a continuous random variable within the interval <span class="math inline">\([0, 1]\)</span>, making it particularly useful for modeling proportions, probabilities, and other quantities bounded between 0 and 1</p>
 <div class="columns">
 <div class="column" style="width:33%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-40-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:34%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-41-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:33%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -2587,9 +2768,7 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 </div>
 </div>
 </div>
-</div></div>
-<div class="columns">
-<div class="column" style="width:33%;">
+</div><div class="column" style="width:34%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -2599,7 +2778,7 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 </div>
 </div>
 </div>
-</div><div class="column" style="width:34%;">
+</div><div class="column" style="width:33%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -2609,7 +2788,9 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 </div>
 </div>
 </div>
-</div><div class="column" style="width:33%;">
+</div></div>
+<div class="columns">
+<div class="column" style="width:33%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -2619,8 +2800,265 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 </div>
 </div>
 </div>
+</div><div class="column" style="width:34%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-46-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:33%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-47-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
 </div></div>
 </section>
+<section id="globe-tossing-experiment" class="slide level2">
+<h2>Globe tossing experiment</h2>
+<p><a href="https://www.bayesrulesbook.com/chapter-6">Bayesian inference using grid approximation</a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a>globe_tossing_grid_approx <span class="ot">&lt;-</span> <span class="cf">function</span>(w, l, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">grid_size =</span> <span class="dv">1000</span>) {</span>
+<span id="cb36-2"><a href=""></a>  <span class="co"># create grid of proportion of water values</span></span>
+<span id="cb36-3"><a href=""></a>  prop_w.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">1</span>, <span class="at">length.out =</span> grid_size <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb36-4"><a href=""></a>  </span>
+<span id="cb36-5"><a href=""></a>  <span class="co"># calculate prior (and normalize for plotting)</span></span>
+<span id="cb36-6"><a href=""></a>  prior <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(prop_w.grid, a, b)</span>
+<span id="cb36-7"><a href=""></a>  prior.normalized <span class="ot">&lt;-</span> prior <span class="sc">/</span> <span class="fu">sum</span>(prior)</span>
+<span id="cb36-8"><a href=""></a>  </span>
+<span id="cb36-9"><a href=""></a>  <span class="co"># calculate likelihood (and normalize for plotting)</span></span>
+<span id="cb36-10"><a href=""></a>  likelihood <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(w, <span class="at">size =</span> w<span class="sc">+</span>l, <span class="at">prob =</span> prop_w.grid)</span>
+<span id="cb36-11"><a href=""></a>  likelihood.norm <span class="ot">&lt;-</span> likelihood <span class="sc">/</span> <span class="fu">sum</span>(likelihood)</span>
+<span id="cb36-12"><a href=""></a></span>
+<span id="cb36-13"><a href=""></a>  <span class="co"># calculate posterior and normalize</span></span>
+<span id="cb36-14"><a href=""></a>  posterior.unnorm <span class="ot">&lt;-</span> prior <span class="sc">*</span> likelihood</span>
+<span id="cb36-15"><a href=""></a>  posterior <span class="ot">&lt;-</span> posterior.unnorm <span class="sc">/</span> <span class="fu">sum</span>(posterior.unnorm)</span>
+<span id="cb36-16"><a href=""></a></span>
+<span id="cb36-17"><a href=""></a>  <span class="co"># plot prior, likelihood, and posterior</span></span>
+<span id="cb36-18"><a href=""></a>  <span class="fu">tibble</span>(prop_w.grid, prior, likelihood.norm, posterior) <span class="sc">%&gt;%</span></span>
+<span id="cb36-19"><a href=""></a>    <span class="fu">gf_line</span>(likelihood.norm <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#357EC7"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-20"><a href=""></a>    <span class="fu">gf_line</span>(prior.normalized <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#FFA500"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-21"><a href=""></a>    <span class="fu">gf_line</span>(posterior <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#4E9258"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-22"><a href=""></a>    <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"proportion water (p)"</span>, <span class="at">y =</span> <span class="st">"posterior probability"</span>)</span>
+<span id="cb36-23"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+
+</div>
+</section>
+<section id="globe-tossing-experiment-1" class="slide level2">
+<h2>Globe tossing experiment</h2>
+<p>Prior information: About 71% of the Earth’s surface is covered by water [<a href="https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth">usgs.gov</a>]</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">5</span>, <span class="at">l =</span> <span class="dv">5</span>,</span>
+<span id="cb37-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-50-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="text-align-center">
+<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>|0.89 0.89| 
+ 0.28  0.71 </code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p>&nbsp;</p>
+</div></div>
+</section>
+<section id="globe-tossing-experiment-2" class="slide level2">
+<h2>Globe tossing experiment</h2>
+<p>Prior information: About 71% of the Earth’s surface is covered by water [<a href="https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth">usgs.gov</a>]</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">5</span>, <span class="at">l =</span> <span class="dv">5</span>,</span>
+<span id="cb39-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-52-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="text-align-center">
+<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>|0.89 0.89| 
+ 0.27  0.73 </code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">5</span>, <span class="at">l =</span> <span class="dv">5</span>,</span>
+<span id="cb41-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">7</span>, <span class="at">b =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-54-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="text-align-center">
+<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>|0.89 0.89| 
+ 0.41  0.74 </code></pre>
+</div>
+</div>
+</div></div>
+</section>
+<section id="globe-tossing-experiment-3" class="slide level2">
+<h2>Globe tossing experiment</h2>
+<p>Prior information: About 71% of the Earth’s surface is covered by water [<a href="https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth">usgs.gov</a>]</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">5</span>, <span class="at">l =</span> <span class="dv">5</span>,</span>
+<span id="cb43-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-56-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="text-align-center">
+<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>|0.89 0.89| 
+ 0.30  0.75 </code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">5</span>, <span class="at">l =</span> <span class="dv">5</span>,</span>
+<span id="cb45-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">3</span>, <span class="at">b =</span> <span class="dv">7</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-58-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="text-align-center">
+<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>|0.89 0.89| 
+ 0.21  0.54 </code></pre>
+</div>
+</div>
+</div></div>
+</section>
+<section id="globe-tossing-experiment-4" class="slide level2">
+<h2>Globe tossing experiment</h2>
+<p>Prior information: About 71% of the Earth’s surface is covered by water [<a href="https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth">usgs.gov</a>]</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">70</span>, <span class="at">l =</span> <span class="dv">30</span>,</span>
+<span id="cb47-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-60-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="text-align-center">
+<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>|0.89 0.89| 
+ 0.63  0.77 </code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">70</span>, <span class="at">l =</span> <span class="dv">30</span>,</span>
+<span id="cb49-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">3</span>, <span class="at">b =</span> <span class="dv">7</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.01</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-62-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="text-align-center">
+<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>|0.89 0.89| 
+ 0.59  0.73 </code></pre>
+</div>
+</div>
+</div></div>
+</section>
+<section id="section-2" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
+<h2></h2>
+</section>
+<section id="section-3" class="slide level2" data-background-image="images/briggs2.png" data-background-size="contain">
+<h2></h2>
+</section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
+<div id="refs" role="list">
+
+</div>
+</section>
+
+<section id="globe-tossing-likelihood-6" class="slide level2">
+<h2>Globe tossing: Likelihood</h2>
+<p><span class="math display">\[
+\begin{array}{ r l }
+  1)         &amp; \text{there is a 4-sided globe with 1 side covered in water (blue) and 3 sides covered in land (white)} \\
+  2)         &amp; \text{the globe is tossed 3 times} \\
+  \therefore &amp; \text{2 of the tosses show a blue side}
+\end{array}
+\]</span></p>
+<p><span class="math display">\[P(X = 2 \mid \pi = 0.25, n = 3)\]</span></p>
+</section>
+<section id="globe-tossing-the-real-world" class="slide level2">
+<h2>Globe tossing: The real world</h2>
+
+<img data-src="images/gettyimages-dv1990114-2048x2048.jpg" class="r-stretch"></section>
+<section id="globe-tossing-the-real-world-1" class="slide level2">
+<h2>Globe tossing: The real world</h2>
+
+<img data-src="images/gettyimages-504819873-2048x2048.jpg" class="r-stretch"></section>
 <section id="globe-tossing-prior-3" class="slide level2">
 <h2>Globe tossing: Prior</h2>
 <div class="cell">
@@ -2661,14 +3099,14 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a><span class="co"># hyperparameters = parameters of the prior probability distribution</span></span>
-<span id="cb34-2"><a href=""></a>a <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb34-3"><a href=""></a>b <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb34-4"><a href=""></a></span>
-<span id="cb34-5"><a href=""></a><span class="co"># prior probability of the proportion of blue sides on the globe before observing any data</span></span>
-<span id="cb34-6"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">prior =</span> <span class="fu">dbeta</span>(π, a, b))</span>
-<span id="cb34-7"><a href=""></a></span>
-<span id="cb34-8"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href=""></a><span class="co"># hyperparameters = parameters of the prior probability distribution</span></span>
+<span id="cb51-2"><a href=""></a>a <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb51-3"><a href=""></a>b <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb51-4"><a href=""></a></span>
+<span id="cb51-5"><a href=""></a><span class="co"># prior probability of the proportion of blue sides on the globe before observing any data</span></span>
+<span id="cb51-6"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">prior =</span> <span class="fu">dbeta</span>(π, a, b))</span>
+<span id="cb51-7"><a href=""></a></span>
+<span id="cb51-8"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -2714,7 +3152,7 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 </div>
 </div>
 </section>
-<section id="globe-tossing-posterior-8" class="slide level2">
+<section id="globe-tossing-posterior-10" class="slide level2">
 <h2>Globe tossing: Posterior</h2>
 <div class="text-align-center" style="color: #357EC7">
 <p><strong>LIKELIHOOD</strong></p>
@@ -2738,13 +3176,13 @@ p(\pi \mid X = 2, n = 3) \propto p(\pi \mid a = 1, b = 1) \cdot p(X = 2 \mid \pi
 <p><img data-src="images/clipboard-4215830398.png" height="100"></p>
 </div>
 </section>
-<section id="globe-tossing-posterior-9" class="slide level2">
+<section id="globe-tossing-posterior-11" class="slide level2">
 <h2>Globe tossing: Posterior</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a><span class="co"># posterior probability of the proportion of blue sides on the globe after observing the data</span></span>
-<span id="cb35-2"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">posterior =</span> prior <span class="sc">*</span> likelihood)</span>
-<span id="cb35-3"><a href=""></a></span>
-<span id="cb35-4"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href=""></a><span class="co"># posterior probability of the proportion of blue sides on the globe after observing the data</span></span>
+<span id="cb52-2"><a href=""></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">posterior =</span> prior <span class="sc">*</span> likelihood)</span>
+<span id="cb52-3"><a href=""></a></span>
+<span id="cb52-4"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -2795,19 +3233,19 @@ p(\pi \mid X = 2, n = 3) \propto p(\pi \mid a = 1, b = 1) \cdot p(X = 2 \mid \pi
 </div>
 </div>
 </section>
-<section id="globe-tossing-posterior-10" class="slide level2">
+<section id="globe-tossing-posterior-12" class="slide level2">
 <h2>Globe tossing: Posterior</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a>df <span class="sc">%&gt;%</span></span>
-<span id="cb36-2"><a href=""></a>  <span class="fu">gf_point</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"#4E9258"</span>, <span class="at">alpha =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb36-3"><a href=""></a>  <span class="fu">gf_segment</span>(<span class="at">x =</span> <span class="sc">~</span>π, <span class="at">xend =</span> <span class="sc">~</span>π, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">yend =</span> <span class="sc">~</span>posterior, <span class="at">color =</span> <span class="st">"#4E9258"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb36-4"><a href=""></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"π"</span>, <span class="at">y =</span> <span class="st">"p"</span>, <span class="at">title =</span> <span class="st">"Posterior probability distribution of π"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href=""></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb53-2"><a href=""></a>  <span class="fu">gf_point</span>(posterior <span class="sc">~</span> π, <span class="at">color =</span> <span class="st">"#4E9258"</span>, <span class="at">alpha =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb53-3"><a href=""></a>  <span class="fu">gf_segment</span>(<span class="at">x =</span> <span class="sc">~</span>π, <span class="at">xend =</span> <span class="sc">~</span>π, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">yend =</span> <span class="sc">~</span>posterior, <span class="at">color =</span> <span class="st">"#4E9258"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb53-4"><a href=""></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"π"</span>, <span class="at">y =</span> <span class="st">"p"</span>, <span class="at">title =</span> <span class="st">"Posterior probability distribution of π"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-49-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-67-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2817,240 +3255,16 @@ p(\pi \mid X = 2, n = 3) \propto p(\pi \mid a = 1, b = 1) \cdot p(X = 2 \mid \pi
 <h2>Globe tossing: Setup</h2>
 
 <img data-src="images/Slide43.png" class="r-stretch"></section>
-<section id="section-1" class="slide level2">
-<h2></h2>
-
-<img data-src="images/Slide50.png" class="r-stretch"></section>
-<section id="section-2" class="slide level2">
-<h2></h2>
-
-<img data-src="images/Slide52.png" class="r-stretch"></section>
-<section id="section-3" class="slide level2">
-<h2></h2>
-
-<img data-src="statistical-rethinking-2023-lecture-02/slide-075.png" class="r-stretch"></section>
 <section id="section-4" class="slide level2">
 <h2></h2>
 
-<img data-src="images/globe_tossing.gif" class="r-stretch"></section>
+<img data-src="images/Slide50.png" class="r-stretch"></section>
 <section id="section-5" class="slide level2">
 <h2></h2>
 
-<img data-src="statistical-rethinking-2023-lecture-02/slide-076.png" class="r-stretch"></section>
+<img data-src="images/Slide52.png" class="r-stretch"></section>
 <section id="section-6" class="slide level2">
 <h2></h2>
-
-<img data-src="statistical-rethinking-2023-lecture-02/slide-077.png" class="r-stretch"></section>
-<section id="section-7" class="slide level2">
-<h2></h2>
-
-<img data-src="statistical-rethinking-2023-lecture-02/slide-078.png" class="r-stretch"></section>
-<section id="section-8" class="slide level2">
-<h2></h2>
-
-<img data-src="statistical-rethinking-2023-lecture-02/slide-079.png" class="r-stretch"></section>
-<section id="section-9" class="slide level2">
-<h2></h2>
-
-<img data-src="statistical-rethinking-2023-lecture-02/slide-080.png" class="r-stretch"></section>
-<section id="section-10" class="slide level2">
-<h2></h2>
-
-<img data-src="statistical-rethinking-2023-lecture-02/slide-081.png" class="r-stretch"></section>
-<section id="section-11" class="slide level2">
-<h2></h2>
-
-<img data-src="statistical-rethinking-2023-lecture-02/slide-082.png" class="r-stretch"></section>
-<section id="section-12" class="slide level2">
-<h2></h2>
-
-<img data-src="statistical-rethinking-2023-lecture-02/slide-083.png" class="r-stretch"></section>
-<section id="section-13" class="slide level2">
-<h2></h2>
-
-<img data-src="statistical-rethinking-2023-lecture-02/slide-084.png" class="r-stretch"></section>
-<section id="section-14" class="slide level2">
-<h2></h2>
-
-<img data-src="statistical-rethinking-2023-lecture-02/slide-085.png" class="r-stretch"></section>
-<section id="globe-tossing-experiment" class="slide level2">
-<h2>Globe tossing experiment</h2>
-<p><a href="https://www.bayesrulesbook.com/chapter-6">Bayesian inference using grid approximation</a></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a>globe_tossing_grid_approx <span class="ot">&lt;-</span> <span class="cf">function</span>(w, l, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>, <span class="at">grid_size =</span> <span class="dv">1000</span>) {</span>
-<span id="cb37-2"><a href=""></a>  <span class="co"># create grid of proportion of water values</span></span>
-<span id="cb37-3"><a href=""></a>  prop_w.grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">1</span>, <span class="at">length.out =</span> grid_size <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb37-4"><a href=""></a>  </span>
-<span id="cb37-5"><a href=""></a>  <span class="co"># calculate prior (and normalize for plotting)</span></span>
-<span id="cb37-6"><a href=""></a>  prior <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(prop_w.grid, a, b)</span>
-<span id="cb37-7"><a href=""></a>  prior.normalized <span class="ot">&lt;-</span> prior <span class="sc">/</span> <span class="fu">sum</span>(prior)</span>
-<span id="cb37-8"><a href=""></a>  </span>
-<span id="cb37-9"><a href=""></a>  <span class="co"># calculate likelihood (and normalize for plotting)</span></span>
-<span id="cb37-10"><a href=""></a>  likelihood <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(w, <span class="at">size =</span> w<span class="sc">+</span>l, <span class="at">prob =</span> prop_w.grid)</span>
-<span id="cb37-11"><a href=""></a>  likelihood.norm <span class="ot">&lt;-</span> likelihood <span class="sc">/</span> <span class="fu">sum</span>(likelihood)</span>
-<span id="cb37-12"><a href=""></a></span>
-<span id="cb37-13"><a href=""></a>  <span class="co"># calculate posterior and normalize</span></span>
-<span id="cb37-14"><a href=""></a>  posterior.unnorm <span class="ot">&lt;-</span> prior <span class="sc">*</span> likelihood</span>
-<span id="cb37-15"><a href=""></a>  posterior <span class="ot">&lt;-</span> posterior.unnorm <span class="sc">/</span> <span class="fu">sum</span>(posterior.unnorm)</span>
-<span id="cb37-16"><a href=""></a></span>
-<span id="cb37-17"><a href=""></a>  <span class="co"># plot prior, likelihood, and posterior</span></span>
-<span id="cb37-18"><a href=""></a>  <span class="fu">tibble</span>(prop_w.grid, prior, likelihood.norm, posterior) <span class="sc">%&gt;%</span></span>
-<span id="cb37-19"><a href=""></a>    <span class="fu">gf_line</span>(likelihood.norm <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#357EC7"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb37-20"><a href=""></a>    <span class="fu">gf_line</span>(prior.normalized <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#FFA500"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb37-21"><a href=""></a>    <span class="fu">gf_line</span>(posterior <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#4E9258"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb37-22"><a href=""></a>    <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"proportion water (p)"</span>, <span class="at">y =</span> <span class="st">"posterior probability"</span>)</span>
-<span id="cb37-23"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment">
-
-</div>
-</section>
-<section id="globe-tossing-experiment-1" class="slide level2">
-<h2>Globe tossing experiment</h2>
-<p>Prior information: About 71% of the Earth’s surface is covered by water [<a href="https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth">usgs.gov</a>]</p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
-<span id="cb38-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-52-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div class="fragment text-align-center">
-<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>|0.89 0.89| 
- 0.58  0.94 </code></pre>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
-<span id="cb40-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">29</span>, <span class="at">b =</span> <span class="dv">11</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-54-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div class="fragment text-align-center">
-<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>|0.89 0.89| 
- 0.64  0.84 </code></pre>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="globe-tossing-experiment-2" class="slide level2">
-<h2>Globe tossing experiment</h2>
-<p>Prior information: About 71% of the Earth’s surface is covered by water [<a href="https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth">usgs.gov</a>]</p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">2</span>, <span class="at">l =</span> <span class="dv">8</span>,</span>
-<span id="cb42-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">29</span>, <span class="at">b =</span> <span class="dv">11</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-56-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div class="fragment text-align-center">
-<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>|0.89 0.89| 
- 0.50  0.71 </code></pre>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">80</span>, <span class="at">l =</span> <span class="dv">20</span>,</span>
-<span id="cb44-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>,  <span class="at">b =</span> <span class="dv">9</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.011</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-58-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div class="fragment text-align-center">
-<p><span style="font-weight: bold; color: rgb(255, 165, 0);"><strong>prior</strong></span>&nbsp;&nbsp;<span style="color: #357EC7"><strong>likelihood</strong></span>&nbsp;&nbsp;<span style="color: #4E9258"><strong>posterior</strong></span></p>
-</div>
-<div class="fragment">
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>|0.89 0.89| 
- 0.66  0.80 </code></pre>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="references" class="slide level2 smaller scrollable">
-<h2>References</h2>
-<div id="refs" role="list">
-
-</div>
-</section>
-<section id="section-15" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
-<h2></h2>
-</section>
-<section id="section-16" class="slide level2" data-background-image="images/briggs2.png" data-background-size="contain">
-<h2></h2>
-</section>
-<section id="section-17" class="slide level2" data-background-image="images/bayesian_inference_is_just_counting.jpg" data-background-size="contain">
-<h2></h2>
-</section>
-
-<section id="globe-tossing-likelihood-3" class="slide level2">
-<h2>Globe tossing: Likelihood</h2>
-<p><span class="math display">\[
-\begin{array}{ r l }
-  1)         &amp; \text{there is a 4-sided globe with 1 side covered in water (blue) and 3 sides covered in land (white)} \\
-  2)         &amp; \text{the globe is tossed 3 times} \\
-  \therefore &amp; \text{2 of the tosses show a blue side}
-\end{array}
-\]</span></p>
-<p><span class="math display">\[P(X = 2 \mid \pi = 0.25, n = 3)\]</span></p>
 
 </section>
     </div>
