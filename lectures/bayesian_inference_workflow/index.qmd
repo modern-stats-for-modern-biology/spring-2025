@@ -1066,10 +1066,11 @@ ss %>%
 
 ![](images/Slide60.png)
 
-## Globe tossing: posterior
+## Globe tossing: posterior (4-sided globe)
 
 ```{r}
 #| fig.height: 4
+#| output-location: default
 ss %>%
   mutate(
     prior = 1 / n(),
@@ -1080,7 +1081,7 @@ ss %>%
   gf_labs(x = expression(pi), y = "p", title = "Posterior")
 ```
 
-## Globe tossing: posterior
+## Globe tossing: posterior (10-sided globe)
 
 ```{r}
 #| fig.height: 4
@@ -1095,7 +1096,7 @@ tibble(π = seq(0, 1, 0.1)) %>%
   gf_labs(x = expression(pi), y = "p", title = "Posterior")
 ```
 
-## Globe tossing: posterior
+## Globe tossing: posterior (20-sided globe)
 
 ```{r}
 #| fig.height: 4
@@ -1110,7 +1111,7 @@ tibble(π = seq(0, 1, 0.05)) %>%
   gf_labs(x = expression(pi), y = "p", title = "Posterior")
 ```
 
-## Globe tossing: posterior
+## Globe tossing: posterior (100-sided globe)
 
 ```{r}
 #| fig.height: 4
@@ -1307,7 +1308,7 @@ globe_tossing_grid_approx <- function(w, l, a = 1, b = 1, grid_size = 1000) {
 globe_tossing_samples <- function(w, l, a = 1, b = 1, n = 1000) { rbeta(n, w + a, l + b) }
 ```
 
-## Globe tossing: priors and sample size effects
+## Globe tossing: prior and sample size effects
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
@@ -1337,7 +1338,7 @@ HPDI(globe_tossing_samples(w = 5, l = 5,
 :::
 ::::::
 
-## Globe tossing: priors and sample size effects
+## Globe tossing: prior and sample size effects
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
@@ -1383,7 +1384,7 @@ HPDI(globe_tossing_samples(w = 5, l = 5,
 ::::
 :::::::
 
-## Globe tossing: priors and sample size effects
+## Globe tossing: prior and sample size effects
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
@@ -1429,7 +1430,7 @@ HPDI(globe_tossing_samples(w = 5, l = 5,
 ::::
 :::::::
 
-## Globe tossing: priors and sample size effects
+## Globe tossing: prior and sample size effects
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
