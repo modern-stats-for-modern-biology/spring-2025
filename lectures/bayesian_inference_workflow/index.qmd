@@ -157,6 +157,8 @@ P.flex <- function(..., H, table = TRUE, flex = TRUE) {
 }
 ```
 
+# OLD VERSION
+
 ## Modern science: statistical (+ causal) inference
 
 ![](images/Slide1.png){fig-align="center" width="979"}
@@ -171,11 +173,17 @@ P.flex <- function(..., H, table = TRUE, flex = TRUE) {
 
 -   Simple example of Bayesian inference (breast cancer diagnotic test)
 
+-   Models
+
 -   Statistical models
 
 -   Probability distributions
 
 -   Random variables
+
+## Models vs. the real world
+
+![](images/Slide20.png){fig-align="center"}
 
 ## Statistical models
 
@@ -987,13 +995,12 @@ $$
 Inference is the process of using facts we know to learn about facts we do not know. A theory of inference gives assumptions necessary to get from the former to the latter, along with a definition for and summary of the resulting uncertainty. Any one theory of inference is neither right nor wrong, but merely an axiom that may or may not be useful. http://tinyurl.com/y3v8nfwh
 :::
 
-
 ## Statistical inference
 
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
--   **Data probability** (a.k.a. likelihood):
+-   **Data probability** (a.k.a. **likelihood**):
 :::
 
 ## Statistical inference
@@ -1001,7 +1008,7 @@ Inference is the process of using facts we know to learn about facts we do not k
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
--   **Data probability** (a.k.a. likelihood):
+-   **Data probability** (a.k.a. **likelihood**):
 
     -   $p(x \mid M)$ = probability of the data given a set of DGP model assumptions
 :::
@@ -1012,7 +1019,7 @@ Inference is the process of using facts we know to learn about facts we do not k
 
     -   The problem of statistical inference: It is impossible to calculate the inverse probability!
 
-    -   The (more reasonable, limited) goal of statistical inference
+    -   The (more reasonable, limited) goal of statistical inference:
 
     -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
 
@@ -1021,7 +1028,7 @@ Inference is the process of using facts we know to learn about facts we do not k
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
--   **Data probability** (a.k.a. likelihood):
+-   **Data probability** (a.k.a. **likelihood**):
 
     -   $p(x \mid M)$ = probability of the data given a set of DGP model assumptions
 :::
@@ -1033,7 +1040,7 @@ Inference is the process of using facts we know to learn about facts we do not k
 
     -   The problem of statistical inference: It is impossible to calculate the inverse probability!
 
-    -   The (more reasonable, limited) goal of statistical inference
+    -   The (more reasonable, limited) goal of statistical inference:
 
     -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
 :::
@@ -1047,7 +1054,7 @@ Inference is the process of using facts we know to learn about facts we do not k
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
--   **Data probability** (a.k.a. likelihood):
+-   **Data probability** (a.k.a. **likelihood**):
 
     -   $p(x \mid M)$ = probability of the data given a set of DGP model assumptions
 :::
@@ -1059,7 +1066,7 @@ Inference is the process of using facts we know to learn about facts we do not k
 
     -   The problem of statistical inference: It is impossible to calculate the inverse probability!
 
-    -   The (more reasonable, limited) goal of statistical inference
+    -   The (more reasonable, limited) goal of statistical inference:
 
     -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
 :::
@@ -1070,13 +1077,12 @@ Inference is the process of using facts we know to learn about facts we do not k
     -   $p(\theta \mid x, M^*)$ = probability of $\theta$ given $x$ and $M^*$
 :::
 
-
 ## Statistical inference
 
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
--   **Data probability** (a.k.a. likelihood):
+-   **Data probability** (a.k.a. **likelihood**):
 
     -   $p(x \mid M)$ = probability of the data given a set of DGP model assumptions
 :::
@@ -1152,7 +1158,6 @@ $$
 p(\pi \mid x = 2, n = 3)
 $$
 :::
-
 
 ## Globe tossing: Posterior
 
@@ -1267,7 +1272,6 @@ ss %>%
     posterior = posterior.unnorm / sum(posterior.unnorm))
 ```
 
-
 ## Globe tossing: Posterior
 
 ```{r}
@@ -1337,7 +1341,6 @@ ss %>%
   gf_line(posterior ~ π, color = "blue", linewidth = 1) %>% 
   gf_labs(x = expression(pi), y = "p", title = "Posterior")
 ```
-
 
 ## Globe tossing: Posterior
 
@@ -1451,6 +1454,7 @@ df %>%
   gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
 ```
 :::
+
 ::: {.column width="34%"}
 ```{r}
 #| echo: false
@@ -1568,8 +1572,8 @@ globe_tossing_samples <- function(w, l, a = 1, b = 1, n = 1000) { rbeta(n, w + a
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
-::::::::::: columns
-:::::: {.column width="50%"}
+:::::: columns
+:::: {.column width="50%"}
 ```{r}
 #| fig-height: 7.5
 #| output-location: default
@@ -1577,7 +1581,7 @@ globe_tossing_grid_approx(w = 5, l = 5,
                           a = 1, b = 1) %>% gf_lims(y = c(0, 0.01))
 ```
 
-::: { .text-align-center}
+::: text-align-center
 [**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
 :::
 
@@ -1587,19 +1591,19 @@ globe_tossing_grid_approx(w = 5, l = 5,
 HPDI(globe_tossing_samples(w = 5, l = 5,
                            a = 1, b = 1)) %>% round(2)
 ```
-::::::
+::::
 
-:::::: {.column width="50%"}
-&nbsp;
+::: {.column width="50%"}
+ 
+:::
 ::::::
-:::::::::::
 
 ## Globe tossing experiment
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
-::::::::::: columns
-:::::: {.column width="50%"}
+::::::: columns
+:::: {.column width="50%"}
 ```{r}
 #| fig-height: 7.5
 #| output-location: default
@@ -1607,7 +1611,7 @@ globe_tossing_grid_approx(w = 5, l = 5,
                           a = 1, b = 1) %>% gf_lims(y = c(0, 0.01))
 ```
 
-::: { .text-align-center}
+::: text-align-center
 [**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
 :::
 
@@ -1617,9 +1621,9 @@ globe_tossing_grid_approx(w = 5, l = 5,
 HPDI(globe_tossing_samples(w = 5, l = 5,
                            a = 1, b = 1)) %>% round(2)
 ```
-::::::
+::::
 
-:::::: {.column width="50%"}
+:::: {.column width="50%"}
 ```{r}
 #| fig-height: 7.5
 #| output-location: default
@@ -1627,7 +1631,7 @@ globe_tossing_grid_approx(w = 5, l = 5,
                           a = 7, b = 3) %>% gf_lims(y = c(0, 0.01))
 ```
 
-::: {.text-align-center}
+::: text-align-center
 [**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
 :::
 
@@ -1637,17 +1641,15 @@ globe_tossing_grid_approx(w = 5, l = 5,
 HPDI(globe_tossing_samples(w = 5, l = 5,
                            a = 7, b = 3)) %>% round(2)
 ```
-::::::
-:::::::::::
-
-
+::::
+:::::::
 
 ## Globe tossing experiment
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
-::::::::::: columns
-:::::: {.column width="50%"}
+::::::: columns
+:::: {.column width="50%"}
 ```{r}
 #| fig-height: 7.5
 #| output-location: default
@@ -1655,7 +1657,7 @@ globe_tossing_grid_approx(w = 5, l = 5,
                           a = 1, b = 1) %>% gf_lims(y = c(0, 0.01))
 ```
 
-::: { .text-align-center}
+::: text-align-center
 [**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
 :::
 
@@ -1665,9 +1667,9 @@ globe_tossing_grid_approx(w = 5, l = 5,
 HPDI(globe_tossing_samples(w = 5, l = 5,
                            a = 1, b = 1)) %>% round(2)
 ```
-::::::
+::::
 
-:::::: {.column width="50%"}
+:::: {.column width="50%"}
 ```{r}
 #| fig-height: 7.5
 #| output-location: default
@@ -1675,7 +1677,7 @@ globe_tossing_grid_approx(w = 5, l = 5,
                           a = 3, b = 7) %>% gf_lims(y = c(0, 0.01))
 ```
 
-::: {.text-align-center}
+::: text-align-center
 [**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
 :::
 
@@ -1685,18 +1687,15 @@ globe_tossing_grid_approx(w = 5, l = 5,
 HPDI(globe_tossing_samples(w = 5, l = 5,
                            a = 3, b = 7)) %>% round(2)
 ```
-::::::
-:::::::::::
-
-
-
+::::
+:::::::
 
 ## Globe tossing experiment
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
-::::::::::: columns
-:::::: {.column width="50%"}
+::::::: columns
+:::: {.column width="50%"}
 ```{r}
 #| fig-height: 7.5
 #| output-location: default
@@ -1704,7 +1703,7 @@ globe_tossing_grid_approx(w = 70, l = 30,
                           a = 1, b = 1) %>% gf_lims(y = c(0, 0.01))
 ```
 
-::: { .text-align-center}
+::: text-align-center
 [**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
 :::
 
@@ -1714,9 +1713,9 @@ globe_tossing_grid_approx(w = 70, l = 30,
 HPDI(globe_tossing_samples(w = 70, l = 30,
                            a = 1, b = 1)) %>% round(2)
 ```
-::::::
+::::
 
-:::::: {.column width="50%"}
+:::: {.column width="50%"}
 ```{r}
 #| fig-height: 7.5
 #| output-location: default
@@ -1724,7 +1723,7 @@ globe_tossing_grid_approx(w = 70, l = 30,
                           a = 3, b = 7) %>% gf_lims(y = c(0, 0.01))
 ```
 
-::: {.text-align-center}
+::: text-align-center
 [**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
 :::
 
@@ -1734,8 +1733,8 @@ globe_tossing_grid_approx(w = 70, l = 30,
 HPDI(globe_tossing_samples(w = 70, l = 30,
                            a = 3, b = 7)) %>% round(2)
 ```
-::::::
-:::::::::::
+::::
+:::::::
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
@@ -1787,16 +1786,6 @@ $$
 $$
 
 $$P(X = 2 \mid \pi = 0.25, n = 3)$$
-
-## Globe tossing: The real world
-
-![](images/gettyimages-dv1990114-2048x2048.jpg)
-
-## Globe tossing: The real world
-
-![](images/gettyimages-504819873-2048x2048.jpg)
-
-
 
 ## Globe tossing: Prior
 
@@ -1871,18 +1860,1322 @@ df %>%
   gf_labs(x = "π", y = "p", title = "Posterior probability distribution of π") %>% gf_theme(plot.title = element_text(size = 20))
 ```
 
-## Globe tossing: Setup
+
+# NEW VERSION
+
+## Models vs. the real world
+
+ 
+
+![](images/Slide20.png){fig-align="center"}
+
+## Models vs. the real world
+
+In order to reason about the real world, we need a set of premises/assumptions
+
+::: notes
+Learning (incl. statistical inference) is impossible without assumptions!
+:::
+
+![](images/Slide20.png){fig-align="center"}
+
+## Models vs. the real world
+
+In order to reason about the real world, we need a KB that we can use to answer a query
+
+![](images/Slide20.png){fig-align="center"}
+
+## Models vs. the real world
+
+In order to reason about the real world, we need a model of it
+
+![](images/Slide20.png){fig-align="center"}
+
+::: notes
+Discuss model and parameter uncertainty (in addition to sampling uncertainty) and how Bayesian inference helps us quantify and propagate these uncertainties, something that frequentist inference cannot do
+:::
+
+
+## Statistical models
+
+Statistical models = **probability distributions** of **random variables**
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
+:::
+::::
+::::::
+
+## Statistical models
+
+A convenient mathematical abstraction of our knowledge about the DGP
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
+:::
+::::
+::::::
+
+## Statistical models
+
+A convenient mathematical abstraction of our knowledge about the DGP
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+ 
+
+$$
+p : \Omega \to [0, 1]
+$$
+
+::: fragment
+$$
+\sum_{\omega \in \Omega} p(\omega) = 1
+$$
+:::
+::::
+::::::
+
+## Statistical models
+
+A convenient mathematical abstraction of our knowledge about the DGP
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**Uniform distribution** (discrete) [WP](https://en.wikipedia.org/wiki/Discrete_uniform_distribution) [PDE](https://distribution-explorer.github.io/discrete/discrete_uniform.html)
+
+$$
+p(\omega) = \frac{1}{|\Omega|} = \frac{1}{n}
+$$
+:::
+:::::
+
+## Statistical models
+
+A convenient mathematical abstraction of our knowledge about the DGP
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**Uniform distribution** (discrete) [WP](https://en.wikipedia.org/wiki/Discrete_uniform_distribution) [PDE](https://distribution-explorer.github.io/discrete/discrete_uniform.html)
+
+$$
+p(\omega \mid M_0) = \frac{1}{|\Omega|} = \frac{1}{n}
+$$
+
+-   $n$ is the number of possible worlds $\omega$ in the universe $\Omega$
+:::
+:::::
+
+::: notes
+The discrete uniform distribution is the maximum-entropy distribution over a finite set (no constraints beyond normalization), while the normal distribution is the maximum-entropy continuous distribution when we only know the mean and variance/standard deviation.
+:::
+
+::: notes
+While many well‐known distributions (e.g., Normal, Binomial, Poisson) do have a finite mean and variance, there are also heavy‐tailed distributions (like the Cauchy distribution) whose mean and/or variance do not exist in the usual finite sense. In other words, the integrals that define the mean or variance can diverge. Thus, not every probability distribution has a finite mean and variance.
+:::
+
+
+
+## Statistical models
+
+A convenient mathematical abstraction of our knowledge about the DGP
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+**Normal distribution** (continuous) [WP](https://en.wikipedia.org/wiki/Normal_distribution) [PDE](https://distribution-explorer.github.io/continuous/normal.html)
+
+$$
+p(y \mid M_{N}) = \frac{1}{\sqrt{2\pi \sigma^2}}\cdot \exp \!\left( -\frac{\bigl(y - \mu \bigr)^2}{2\sigma^2} \right)
+$$
+
+-   $\mu$ is the location parameter
+
+-   $\sigma$ is the scale parameter
+
+::: fragment
+$$
+\text{GLM} : \mu = \beta_0 + \beta_1 \cdot x
+$$
+:::
+::::
+::::::
+
+## Statistical models
+
+A convenient mathematical abstraction of our knowledge about the DGP
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**General Linear Models** (continuous) [WP](https://en.wikipedia.org/wiki/General_linear_model)
+
+$$
+p(x, y \mid M_{\text{GLM}}) = \frac{k}{\sqrt{2\pi \sigma^2}} \cdot \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x) \bigr)^2}{2\sigma^2} \right)
+$$
+
+-   $\beta_0$ is the intercept parameter
+
+-   $\beta_1$ is the slope parameter
+
+-   $\sigma$ is the scale parameter
+:::
+:::::
+
+## Statistical models
+
+A convenient mathematical abstraction of our knowledge about the DGP
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**General Linear Models** (continuous) [WP](https://en.wikipedia.org/wiki/General_linear_model)
+
+$$
+p(x, y \mid M_{\text{GLM}}) = \frac{k}{\sqrt{2\pi \sigma^2}} \cdot \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x) \bigr)^2}{2\sigma^2} \right)
+$$
+
+[![](images/linear_tests_cheat_sheet.png){fig-align="center" width="550"}](https://lindeloev.github.io/tests-as-linear/)
+:::
+:::::
+
+## Statistical models
+
+A convenient mathematical abstraction of our knowledge about the DGP
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**Large Language Models** (discrete, ANN) [WP](https://en.wikipedia.org/wiki/GPT-3)
+
+![](images/Slide22.png){fig-align="center" width="440"}
+:::
+:::::
+
+::: notes
+GPT-3: 175 billion parameters = 5 million "neurons" x 35K parameters per neuron on average
+:::
+
+::: notes
+Large language models ultimately define a probability distribution over a finite set of tokens in their vocabulary, so it is indeed a discrete distribution—even though the vocabulary is usually very large, it’s still a finite (and hence discrete) set of possible tokens
+:::
+
+## Statistical models
+
+A convenient mathematical abstraction of our knowledge about the DGP
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**The human brain** (continuous, BNN) [WP](https://en.wikipedia.org/wiki/Free_energy_principle)
+
+![](images/Slide23.png){fig-align="center" width="440"}
+:::
+:::::
+
+## Statistical models
+
+A convenient mathematical abstraction of our knowledge about the DGP
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**The human brain** (continuous, BNN) [WP](https://en.wikipedia.org/wiki/Free_energy_principle)
+
+![](images/Slide23_cropped.png){fig-align="center" width="440"}
+
+![](images/airliner_with_birds2.jpg){fig-align="center" width="550"}
+:::
+:::::
+
+## Statistical models
+
+A convenient mathematical abstraction of our knowledge about the DGP
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**Statistical models** (discrete/continuous) [WP](https://en.wikipedia.org/wiki/Statistical_model)
+
+$$
+p(x \mid M)
+$$
+:::
+:::::
+
+## Statistical inference
+
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & \text{data (observations/measurements)} \\
+2. & \text{model (DGP)} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+:::
+
+::: notes
+Inference is the process of using facts we know to learn about facts we do not know. A theory of inference gives assumptions necessary to get from the former to the latter, along with a definition for and summary of the resulting uncertainty. Any one theory of inference is neither right nor wrong, but merely an axiom that may or may not be useful. http://tinyurl.com/y3v8nfwh
+:::
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data probability** (a.k.a. **likelihood**):
+:::
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data probability** (a.k.a. **likelihood**):
+
+    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+:::
+
+-   **Inverse probability**:
+
+    -   $p(M \mid x)$ = probability of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+    -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data probability** (a.k.a. **likelihood**):
+
+    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+:::
+
+::: nonincremental
+-   **Inverse probability**:
+
+    -   $p(M \mid x)$ = probability of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+    -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+:::
+
+::: nonincremental
+-   **Inferential probability** (a.k.a. **posterior**):
+:::
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data probability** (a.k.a. **likelihood**):
+
+    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+:::
+
+::: nonincremental
+-   **Inverse probability**:
+
+    -   $p(M \mid x)$ = probability of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+    -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+:::
+
+::: nonincremental
+-   **Inferential probability** (a.k.a. **posterior**):
+
+    -   $p(\theta \mid x, M^*)$ = probability of $\theta$ given $x$ and $M^*$
+:::
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data probability** (a.k.a. **likelihood**):
+
+    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+:::
+
+::: nonincremental
+-   **Inverse probability**:
+
+    -   $p(M \mid x)$ = probability of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+    -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+:::
+
+::: nonincremental
+-   **Inferential probability** (a.k.a. **posterior**):
+
+    -   $p(\theta \mid x)$ = probability of $\theta$ given $x$ and $M^*$
+:::
+
+## Bayes' theorem for statistical inference
+
+::: text-align-center
+![](images/Slide38.png)
+:::
+
+## Bayes' theorem for statistical inference
+
+::: text-align-center
+![](images/Slide39.png)
+:::
+
+## Bayes' theorem for statistical inference
+
+::: text-align-center
+![](images/Slide40.png)
+:::
+
+## Globe tossing: The real world
+
+![](images/gettyimages-dv1990114-2048x2048.jpg)
+
+## Globe tossing: The real world
+
+![](images/gettyimages-504819873-2048x2048.jpg)
+
+## Statistical inference
+
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & \text{data (observations/measurements)} \\
+2. & \text{model (DGP)} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+:::
+
+::: notes
+Inference is the process of using facts we know to learn about facts we do not know. A theory of inference gives assumptions necessary to get from the former to the latter, along with a definition for and summary of the resulting uncertainty. Any one theory of inference is neither right nor wrong, but merely an axiom that may or may not be useful. http://tinyurl.com/y3v8nfwh
+:::
+
+## Globe tossing: Unknown quantity of interest
+
+The conclusion of the inductive argument
+
+![](statistical-rethinking-2023-lecture-02/slide-002.png)
+
+
+## Globe tossing: Toy example
 
 ![](images/Slide43.png)
 
-## 
+## Globe tossing: Toy example
+
+![](images/Slide46.png)
+
+## Globe tossing: Toy example
+
+![](images/Slide47.png)
+
+## Globe tossing: Toy example
+
+![](images/Slide48.png)
+
+## Globe tossing: Posterior
+
+::: fragment
+$$
+p(\theta \mid x)
+$$
+:::
+
+-   $\pi$ = proportion of blue sides on the globe (?)
+
+-   $x$ = number of tosses that show a blue side (2)
+
+-   $n$ = number of globe tosses (3)
+
+::: fragment
+$$
+p(\pi \mid x = 2, n = 3)
+$$
+:::
+
+
+
+## Globe tossing: Sample space
+
+::: fragment
+```{r}
+π <- c(0, 0.25, 0.5, 0.75, 1)
+x <- 2
+n <- 3
+
+ss <-
+  expand_grid(π, x, n) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss
+```
+:::
+
+## Globe tossing: Posterior
+
+$$
+p(\theta \mid x)
+$$
+
+::: nonincremental
+-   $\pi$ = proportion of blue sides on the globe (?)
+
+-   $x$ = number of tosses that show a blue side (2)
+
+-   $n$ = number of globe tosses (3)
+:::
+
+$$
+p(\pi \mid x = 2, n = 3)
+$$
+
+## Globe tossing: Posterior
+
+$$
+p(\theta \mid x)
+$$
+
+::: nonincremental
+-   $\pi$ = proportion of blue sides on the globe (?)
+
+-   $x$ = number of tosses that show a blue side (2)
+
+-   $n$ = number of globe tosses (3)
+:::
+
+$$
+p(\pi \mid x = 2, n = 3) \propto p(\pi) \cdot p(x = 2, n = 3 \mid \pi)
+$$
+
+
+## Globe tossing: Prior
+
+$$p(\pi)$$
+
+![](images/Slide46.png)
+
+
+## Globe tossing: Prior
+
+$$p(\pi \mid M_0)$$
+
+![](images/Slide46.png)
+
+## Globe tossing: Prior
+
+$$p(\pi \mid M_0) = \frac{1}{|\Omega|} = \frac{1}{n}$$
+
+::: fragment
+```{r}
+ss %>%
+  mutate(
+    prior = 1 / n())
+```
+:::
+
+
+## Globe tossing: Posterior
+
+$$
+p(\theta \mid x)
+$$
+
+::: nonincremental
+-   $\pi$ = proportion of blue sides on the globe (?)
+
+-   $x$ = number of tosses that show a blue side (2)
+
+-   $n$ = number of globe tosses (3)
+:::
+
+$$
+p(\pi \mid x = 2, n = 3) \propto p(\pi) \cdot p(x = 2, n = 3 \mid \pi)
+$$
+
+## Globe tossing: Likelihood
+
+$$p(x = 2, n = 3 \mid \pi)$$
+
+## Globe tossing: Likelihood
+
+$$p(x = 2, n = 3 \mid \pi)$$
+
+![](images/Slide48.png)
+
+## Globe tossing: Likelihood
+
+$$p(b, w, b \mid \pi = 0.25)$$
+
+![](images/Slide49.png)
+
+## Globe tossing: Likelihood
+
+$$p(b \mid \pi = 0.25)$$
 
 ![](images/Slide50.png)
 
-## 
+## Globe tossing: Likelihood
+
+$$p(b \mid \pi = 0.25) = \pi$$
+
+![](images/Slide50.png)
+
+## Globe tossing: Likelihood
+
+$$p(b \mid \pi = 0.25) = \pi = 0.25$$
+
+![](images/Slide50.png)
+
+
+## Globe tossing: Likelihood
+
+$$p(w \mid \pi = 0.25)$$
+
+![](images/Slide51.png)
+
+## Globe tossing: Likelihood
+
+$$p(w \mid \pi = 0.25) = p(\lnot b \mid \pi = 0.25)$$
+
+![](images/Slide51.png)
+
+
+## Globe tossing: Likelihood
+
+$$p(w \mid \pi = 0.25) = p(\lnot b \mid \pi = 0.25) = 1 - p(b \mid \pi = 0.25)$$
+
+![](images/Slide51.png)
+
+## Globe tossing: Likelihood
+
+$$p(w \mid \pi = 0.25) = p(\lnot b \mid \pi = 0.25) = 1 - p(b \mid \pi = 0.25) = 1 - \pi$$
+
+![](images/Slide51.png)
+
+## Globe tossing: Likelihood
+
+$$p(w \mid \pi = 0.25) = 1 - \pi$$
+
+![](images/Slide51.png)
+
+## Globe tossing: Likelihood
+
+$$p(w \mid \pi = 0.25) = 1 - \pi = 1 - 0.25$$
+
+![](images/Slide51.png)
+
+## Globe tossing: Likelihood
+
+$$p(w \mid \pi = 0.25) = 1 - \pi = 0.75$$
+
+![](images/Slide51.png)
+
+## Globe tossing: Likelihood
+
+$$p(b \mid \pi = 0.25) = \pi = 0.25$$
 
 ![](images/Slide52.png)
 
-## 
+## Globe tossing: Likelihood
+
+$$p(b \land w  \land b \mid \pi = 0.25)$$
+
+![](images/Slide49.png)
 
 
+## Globe tossing: Likelihood
+
+$$p(b \land w \land b \mid \pi = 0.25) = p(b  \mid \pi = 0.25) \cdot p(w  \mid \pi = 0.25) \cdot p(b  \mid \pi = 0.25)$$
+
+![](images/Slide49.png)
+
+## Globe tossing: Likelihood
+
+$$p(b \land w \land b \mid \pi = 0.25) = \pi \cdot (1 - \pi) \cdot \pi$$
+
+![](images/Slide49.png)
+
+
+## Globe tossing: Likelihood
+
+$$p(b \land w \land b \mid \pi = 0.25) = 0.25 \times 0.75 \times 0.25$$
+
+![](images/Slide49.png)
+
+## Globe tossing: Likelihood
+
+$$p(b \land w \land b \mid \pi = 0.25) = 0.04688$$
+
+![](images/Slide49.png)
+
+
+## Globe tossing: Likelihood
+
+$$p(b \land b \land w \mid \pi = 0.25) = 0.04688$$
+
+![](images/Slide54.png)
+
+
+
+## Globe tossing: Likelihood
+
+$$p(w \land b \land b \mid \pi = 0.25) = 0.04688$$
+
+![](images/Slide55.png)
+
+
+## Globe tossing: Likelihood
+
+$p(x = 2, n = 3 \mid \pi = 0.25)$
+
+![](images/Slide56.png)
+
+## Globe tossing: Likelihood
+
+$p(x = 2, n = 3 \mid \pi = 0.25) = p\bigl((b \land w \land b) \lor (b \land b \land w) \lor (w \land b \land b) \mid \pi = 0.25\bigr)$
+
+![](images/Slide56.png)
+
+## Globe tossing: Likelihood
+
+$p(x = 2, n = 3 \mid \pi = 0.25) = p(b \land w \land b \mid \pi = 0.25) + p(b \land b \land w \mid \pi = 0.25) + p(w \land b \land b \mid \pi = 0.25)$
+
+![](images/Slide56.png)
+
+## Globe tossing: Likelihood
+
+$p(x = 2, n = 3 \mid \pi = 0.25) = 0.04688 + 0.04688 + 0.04688$
+
+![](images/Slide56.png)
+
+
+## Globe tossing: Likelihood
+
+$p(x = 2, n = 3 \mid \pi = 0.25) = 3 \times 0.04688$
+
+![](images/Slide56.png)
+
+## Globe tossing: Likelihood
+
+$p(x = 2, n = 3 \mid \pi = 0.25) = \binom{3}{2} \times 0.04688$
+
+![](images/Slide56.png)
+
+## Globe tossing: Likelihood
+
+$p(x = 2, n = 3 \mid \pi = 0.25) = 0.1406$
+
+![](images/Slide56.png)
+
+## Globe tossing: Likelihood
+
+$p(x = 2, n = 3 \mid \pi = 0.25) = 0.1406$
+
+**Binomial distribution**: the probability of observing $x$ successes in $n$ trials, given a probability of success $\pi$
+
+::: fragment
+$$
+p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
+$$
+:::
+
+::: fragment
+```{r}
+dbinom(x = 2, size = 3, prob = 0.25)
+```
+:::
+
+## Globe tossing: Likelihood
+
+$$p(x = 2, n = 3 \mid \pi) = \binom{3}{2}\pi^2(1-\pi)^1$$
+![](images/Slide48.png)
+
+## Globe tossing: Likelihood
+
+```{r}
+ss %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π))
+```
+
+## Globe tossing: Unnormalized posterior
+
+```{r}
+ss %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood) 
+```
+
+## Globe tossing: Posterior
+
+```{r}
+ss %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm))
+```
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+ss %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm)) %>% 
+  gf_line(posterior ~ π, color = "blue", linewidth = 1) %>% 
+  gf_labs(x = expression(pi), y = "p", title = "Posterior")
+```
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+ss %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm),
+    likelihood.norm = likelihood / sum(likelihood)) %>% 
+  gf_line(prior ~ π, color = "red", linewidth = 1) %>%
+  gf_line(likelihood.norm ~ π, color = "green", linewidth = 1) %>%
+  gf_line(posterior ~ π, color = "blue", linewidth = 1) %>%
+  gf_labs(x = expression(pi), y = "p", title = "Prior (red), likelihood (green) and posterior (orange)")
+```
+
+## Globe tossing: Prior
+
+$$p(\pi \mid M_0) = \frac{1}{|\Omega|} = \frac{1}{n}$$
+
+![](images/Slide46.png)
+
+
+## Globe tossing: Prior
+
+$$p(\pi \mid M_1) = \{ 0, 0.6, 0.3, 0.1, 0\}$$
+
+![](images/Slide46.png)
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+ss %>%
+  mutate(
+    prior = c(0, 0.6, 0.3, 0.1, 0),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm),
+    likelihood.norm = likelihood / sum(likelihood)) %>% 
+  gf_line(prior ~ π, color = "red", linewidth = 1) %>%
+  gf_line(likelihood.norm ~ π, color = "green", linewidth = 1) %>%
+  gf_line(posterior ~ π, color = "blue", linewidth = 1) %>%
+  gf_labs(x = expression(pi), y = "p", title = "Prior (red), likelihood (green) and posterior (orange)")
+```
+
+## Globe tossing
+
+![](images/Slide45.png)
+
+## Globe tossing
+
+![](images/Slide57.png)
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+ss %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm)) %>% 
+  gf_line(posterior ~ π, color = "blue", linewidth = 1) %>% 
+  gf_labs(x = expression(pi), y = "p", title = "Posterior")
+```
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+#| output-location: default
+tibble(π = seq(0, 1, 0.1)) %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm)) %>% 
+  gf_line(posterior ~ π, color = "blue", linewidth = 1) %>% 
+  gf_labs(x = expression(pi), y = "p", title = "Posterior")
+```
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+#| output-location: default
+tibble(π = seq(0, 1, 0.05)) %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm)) %>% 
+  gf_line(posterior ~ π, color = "blue", linewidth = 1) %>% 
+  gf_labs(x = expression(pi), y = "p", title = "Posterior")
+```
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+#| output-location: default
+tibble(π = seq(0, 1, 0.01)) %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm)) %>% 
+  gf_line(posterior ~ π, color = "blue", linewidth = 1) %>% 
+  gf_labs(x = expression(pi), y = "p", title = "Posterior")
+```
+
+## Globe tossing
+
+![](statistical-rethinking-2023-lecture-02/slide-075.png)
+
+## Globe tossing
+
+![](images/globe_tossing.gif)
+
+## Globe tossing
+
+![](statistical-rethinking-2023-lecture-02/slide-076.png)
+
+## Globe tossing
+
+![](statistical-rethinking-2023-lecture-02/slide-077.png)
+
+## Globe tossing
+
+![](statistical-rethinking-2023-lecture-02/slide-078.png)
+
+## Globe tossing
+
+![](statistical-rethinking-2023-lecture-02/slide-079.png)
+
+## Globe tossing
+
+![](statistical-rethinking-2023-lecture-02/slide-080.png)
+
+## Globe tossing
+
+![](statistical-rethinking-2023-lecture-02/slide-081.png)
+
+## Globe tossing
+
+![](statistical-rethinking-2023-lecture-02/slide-082.png)
+
+## Globe tossing
+
+![](statistical-rethinking-2023-lecture-02/slide-083.png)
+
+## Globe tossing
+
+![](statistical-rethinking-2023-lecture-02/slide-084.png)
+
+## Letter from my reviewers
+
+![](images/letters_from_my_reviewers.png)
+
+## Globe tossing: Prior
+
+The [beta distribution](https://distribution-explorer.github.io/continuous/beta.html) describes the probability of a continuous random variable within the interval $[0, 1]$, making it particularly useful for modeling proportions, probabilities, and other quantities bounded between 0 and 1
+
+:::::: columns
+::: {.column width="33%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 0.5
+b = 0.5
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
+:::
+
+::: {.column width="34%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 1
+b = 1
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
+:::
+
+::: {.column width="33%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 2
+b = 2
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
+:::
+::::::
+
+:::::: columns
+::: {.column width="33%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 2
+b = 8
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
+:::
+
+::: {.column width="34%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 5
+b = 5
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
+:::
+
+::: {.column width="33%"}
+```{r}
+#| echo: false
+X = seq(0, 1, 0.01)
+a = 8
+b = 2
+
+df <- tibble(X, pX = dbeta(X, a, b))
+
+df %>%
+  gf_line(pX ~ X, color = "blue", linewidth = 1) %>%
+  gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
+```
+:::
+::::::
+
+## Globe tossing experiment
+
+[Bayesian inference using grid approximation](https://www.bayesrulesbook.com/chapter-6)
+
+```{r}
+globe_tossing_grid_approx <- function(w, l, a = 1, b = 1, grid_size = 1000) {
+  # create grid of proportion of water values
+  prop_w.grid <- seq(from = 0, to = 1, length.out = grid_size + 1)
+  
+  # calculate prior (and normalize for plotting)
+  prior <- dbeta(prop_w.grid, a, b)
+  prior.normalized <- prior / sum(prior)
+  
+  # calculate likelihood (and normalize for plotting)
+  likelihood <- dbinom(w, size = w+l, prob = prop_w.grid)
+  likelihood.norm <- likelihood / sum(likelihood)
+
+  # calculate posterior and normalize
+  posterior.unnorm <- prior * likelihood
+  posterior <- posterior.unnorm / sum(posterior.unnorm)
+
+  # plot prior, likelihood, and posterior
+  tibble(prop_w.grid, prior, likelihood.norm, posterior) %>%
+    gf_line(likelihood.norm ~ prop_w.grid, color = "#357EC7") %>%
+    gf_line(prior.normalized ~ prop_w.grid, color = "#FFA500") %>%
+    gf_line(posterior ~ prop_w.grid, color = "#4E9258") %>%
+    gf_labs(x = "proportion water (p)", y = "posterior probability")
+}
+```
+
+```{r}
+#| include: false
+globe_tossing_samples <- function(w, l, a = 1, b = 1, n = 1000) { rbeta(n, w + a, l + b) }
+```
+
+## Globe tossing experiment
+
+Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
+
+:::::: columns
+:::: {.column width="50%"}
+```{r}
+#| fig-height: 7.5
+#| output-location: default
+globe_tossing_grid_approx(w = 5, l = 5,
+                          a = 1, b = 1) %>% gf_lims(y = c(0, 0.01))
+```
+
+::: text-align-center
+[**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
+:::
+
+```{r}
+#| echo: false
+#| output-location: default
+HPDI(globe_tossing_samples(w = 5, l = 5,
+                           a = 1, b = 1)) %>% round(2)
+```
+::::
+
+::: {.column width="50%"}
+ 
+:::
+::::::
+
+## Globe tossing experiment
+
+Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
+
+::::::: columns
+:::: {.column width="50%"}
+```{r}
+#| fig-height: 7.5
+#| output-location: default
+globe_tossing_grid_approx(w = 5, l = 5,
+                          a = 1, b = 1) %>% gf_lims(y = c(0, 0.01))
+```
+
+::: text-align-center
+[**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
+:::
+
+```{r}
+#| echo: false
+#| output-location: default
+HPDI(globe_tossing_samples(w = 5, l = 5,
+                           a = 1, b = 1)) %>% round(2)
+```
+::::
+
+:::: {.column width="50%"}
+```{r}
+#| fig-height: 7.5
+#| output-location: default
+globe_tossing_grid_approx(w = 5, l = 5,
+                          a = 7, b = 3) %>% gf_lims(y = c(0, 0.01))
+```
+
+::: text-align-center
+[**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
+:::
+
+```{r}
+#| echo: false
+#| output-location: default
+HPDI(globe_tossing_samples(w = 5, l = 5,
+                           a = 7, b = 3)) %>% round(2)
+```
+::::
+:::::::
+
+## Globe tossing experiment
+
+Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
+
+::::::: columns
+:::: {.column width="50%"}
+```{r}
+#| fig-height: 7.5
+#| output-location: default
+globe_tossing_grid_approx(w = 5, l = 5,
+                          a = 1, b = 1) %>% gf_lims(y = c(0, 0.01))
+```
+
+::: text-align-center
+[**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
+:::
+
+```{r}
+#| echo: false
+#| output-location: default
+HPDI(globe_tossing_samples(w = 5, l = 5,
+                           a = 1, b = 1)) %>% round(2)
+```
+::::
+
+:::: {.column width="50%"}
+```{r}
+#| fig-height: 7.5
+#| output-location: default
+globe_tossing_grid_approx(w = 5, l = 5,
+                          a = 3, b = 7) %>% gf_lims(y = c(0, 0.01))
+```
+
+::: text-align-center
+[**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
+:::
+
+```{r}
+#| echo: false
+#| output-location: default
+HPDI(globe_tossing_samples(w = 5, l = 5,
+                           a = 3, b = 7)) %>% round(2)
+```
+::::
+:::::::
+
+## Globe tossing experiment
+
+Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
+
+::::::: columns
+:::: {.column width="50%"}
+```{r}
+#| fig-height: 7.5
+#| output-location: default
+globe_tossing_grid_approx(w = 70, l = 30,
+                          a = 1, b = 1) %>% gf_lims(y = c(0, 0.01))
+```
+
+::: text-align-center
+[**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
+:::
+
+```{r}
+#| echo: false
+#| output-location: default
+HPDI(globe_tossing_samples(w = 70, l = 30,
+                           a = 1, b = 1)) %>% round(2)
+```
+::::
+
+:::: {.column width="50%"}
+```{r}
+#| fig-height: 7.5
+#| output-location: default
+globe_tossing_grid_approx(w = 70, l = 30,
+                          a = 3, b = 7) %>% gf_lims(y = c(0, 0.01))
+```
+
+::: text-align-center
+[**prior**]{style="font-weight: bold; color: rgb(255, 165, 0);"}  [**likelihood**]{style="color: #357EC7"}  [**posterior**]{style="color: #4E9258"}
+:::
+
+```{r}
+#| echo: false
+#| output-location: default
+HPDI(globe_tossing_samples(w = 70, l = 30,
+                           a = 3, b = 7)) %>% round(2)
+```
+::::
+:::::::
+
+##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
