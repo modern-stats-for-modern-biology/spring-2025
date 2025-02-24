@@ -220,7 +220,7 @@ Edoardo “Dado” Marcora
 <section id="take-homes-from-last-week" class="slide level2">
 <h2>Take homes from last week</h2>
 <ul>
-<li class="fragment"><p>Simple example of Bayesian inference (breast cancer diagnotic test)</p></li>
+<li class="fragment"><p>Simple example of Bayesian inference (breast cancer diagnostic test)</p></li>
 <li class="fragment"><p>Models</p></li>
 <li class="fragment"><p>Statistical models</p></li>
 <li class="fragment"><p>Probability distributions</p></li>
@@ -251,11 +251,6 @@ Edoardo “Dado” Marcora
 
 <img data-src="images/Slide20.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="models-vs.-the-real-world-2" class="slide level2">
-<h2>Models vs.&nbsp;the real world</h2>
-<p>In order to reason about the real world, we need a KB that we can use to answer a query</p>
-
-<img data-src="images/Slide20.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="models-vs.-the-real-world-3" class="slide level2">
 <h2>Models vs.&nbsp;the real world</h2>
 <p>In order to reason about the real world, we need a model of it</p>
 
@@ -1428,15 +1423,15 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 <section id="globe-tossing" class="slide level2">
 <h2>Globe tossing</h2>
 
-<img data-src="images/Slide45.png" class="r-stretch"></section>
+<img data-src="images/Slide57.png" class="r-stretch"></section>
 <section id="globe-tossing-1" class="slide level2">
 <h2>Globe tossing</h2>
 
-<img data-src="images/Slide57.png" class="r-stretch"></section>
+<img data-src="images/Slide58.png" class="r-stretch"></section>
 <section id="globe-tossing-2" class="slide level2">
 <h2>Globe tossing</h2>
 
-<img data-src="images/Slide59.png" class="r-stretch"></section>
+<img data-src="images/Slide60.png" class="r-stretch"></section>
 <section id="globe-tossing-posterior-8" class="slide level2">
 <h2>Globe tossing: Posterior</h2>
 <div class="cell">
@@ -1627,7 +1622,7 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 <span id="cb15-4"><a href=""></a>  </span>
 <span id="cb15-5"><a href=""></a>  <span class="co"># calculate prior (and normalize for plotting)</span></span>
 <span id="cb15-6"><a href=""></a>  prior <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(prop_w.grid, a, b)</span>
-<span id="cb15-7"><a href=""></a>  prior.normalized <span class="ot">&lt;-</span> prior <span class="sc">/</span> <span class="fu">sum</span>(prior)</span>
+<span id="cb15-7"><a href=""></a>  prior.norm <span class="ot">&lt;-</span> prior <span class="sc">/</span> <span class="fu">sum</span>(prior)</span>
 <span id="cb15-8"><a href=""></a>  </span>
 <span id="cb15-9"><a href=""></a>  <span class="co"># calculate likelihood (and normalize for plotting)</span></span>
 <span id="cb15-10"><a href=""></a>  likelihood <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(w, <span class="at">size =</span> w<span class="sc">+</span>l, <span class="at">prob =</span> prop_w.grid)</span>
@@ -1640,9 +1635,9 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 <span id="cb15-17"><a href=""></a>  <span class="co"># plot prior, likelihood, and posterior</span></span>
 <span id="cb15-18"><a href=""></a>  <span class="fu">tibble</span>(prop_w.grid, prior, likelihood.norm, posterior) <span class="sc">%&gt;%</span></span>
 <span id="cb15-19"><a href=""></a>    <span class="fu">gf_line</span>(likelihood.norm <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#357EC7"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb15-20"><a href=""></a>    <span class="fu">gf_line</span>(prior.normalized <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#FFA500"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-20"><a href=""></a>    <span class="fu">gf_line</span>(prior.norm <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#FFA500"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb15-21"><a href=""></a>    <span class="fu">gf_line</span>(posterior <span class="sc">~</span> prop_w.grid, <span class="at">color =</span> <span class="st">"#4E9258"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb15-22"><a href=""></a>    <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"proportion water (p)"</span>, <span class="at">y =</span> <span class="st">"posterior probability"</span>)</span>
+<span id="cb15-22"><a href=""></a>    <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(pi), <span class="at">y =</span> <span class="st">"p"</span>, <span class="at">title =</span> <span class="st">"Prior (orange), likelihood (blue) and posterior (green)"</span>)  </span>
 <span id="cb15-23"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
@@ -1822,11 +1817,27 @@ p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 </div>
 </div></div>
 </section>
+<section id="from-globe-tossing-to-real-science" class="slide level2">
+<h2>From globe tossing to real science</h2>
+<ul>
+<li class="fragment"><p><strong>Estimating proportions</strong> is everywhere in science</p></li>
+<li class="fragment"><p>Our toy example modeled “blue vs.&nbsp;white/water vs.&nbsp;land” as a <strong>binomial</strong> process:</p>
+<ul>
+<li class="fragment">We count how many times “blue” shows up in <span class="math inline">\(n\)</span> draws and infer the <strong>unknown proportion</strong> <span class="math inline">\(\pi\)</span></li>
+</ul></li>
+<li class="fragment"><p>In <strong>real biology</strong>, the same idea applies to any “presence vs.&nbsp;absence” trait. For example:</p>
+<ul>
+<li class="fragment"><p>Researchers want to estimate the fraction of microglial cells in an AD mouse’s brain that exhibit disease-associated microglia (DAM) markers</p></li>
+<li class="fragment"><p>Each cell is either DAM (“blue”) or non‐DAM (“white”)</p></li>
+<li class="fragment"><p>Researchers gather a sample of microglia, count how many are DAM, and estimate <span class="math inline">\(\pi\)</span> of DAM cells in the AD mouse’s brain using statistical inference</p></li>
+</ul></li>
+</ul>
+</section>
 <section id="from-globe-tossing-experiment-to-real-science" class="slide level2">
 <h2>From globe tossing experiment to real science</h2>
 <p><a href="https://doi.org/10.1016/j.cell.2017.05.018">A Unique Microglia Type Associated with Restricting Development of Alzheimer’s Disease</a></p>
 
-<img data-src="images/clipboard-243308569.png" class="r-stretch"></section>
+<img data-src="images/clipboard-243308569.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="section-2" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
 <h2></h2>
 

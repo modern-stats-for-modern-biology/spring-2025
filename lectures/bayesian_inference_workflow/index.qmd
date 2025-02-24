@@ -169,7 +169,7 @@ P.flex <- function(..., H, table = TRUE, flex = TRUE) {
 
 ## Take homes from last week
 
--   Simple example of Bayesian inference (breast cancer diagnotic test)
+-   Simple example of Bayesian inference (breast cancer diagnostic test)
 
 -   Models
 
@@ -192,12 +192,6 @@ In order to reason about the real world, we need a set of premises/assumptions
 ::: notes
 Learning (incl. statistical inference) is impossible without assumptions!
 :::
-
-![](images/Slide20.png){fig-align="center"}
-
-## Models vs. the real world
-
-In order to reason about the real world, we need a KB that we can use to answer a query
 
 ![](images/Slide20.png){fig-align="center"}
 
@@ -1060,15 +1054,15 @@ ss %>%
 
 ## Globe tossing
 
-![](images/Slide45.png)
-
-## Globe tossing
-
 ![](images/Slide57.png)
 
 ## Globe tossing
 
-![](images/Slide59.png)
+![](images/Slide58.png)
+
+## Globe tossing
+
+![](images/Slide60.png)
 
 ## Globe tossing: Posterior
 
@@ -1186,8 +1180,8 @@ The [beta distribution](https://distribution-explorer.github.io/continuous/beta.
 ```{r}
 #| echo: false
 X = seq(0, 1, 0.01)
-a = 0.5
-b = 0.5
+a = 1
+b = 1
 
 df <- tibble(X, pX = dbeta(X, a, b))
 
@@ -1201,8 +1195,8 @@ df %>%
 ```{r}
 #| echo: false
 X = seq(0, 1, 0.01)
-a = 1
-b = 1
+a = 0.5
+b = 0.5
 
 df <- tibble(X, pX = dbeta(X, a, b))
 
@@ -1286,7 +1280,7 @@ globe_tossing_grid_approx <- function(w, l, a = 1, b = 1, grid_size = 1000) {
   
   # calculate prior (and normalize for plotting)
   prior <- dbeta(prop_w.grid, a, b)
-  prior.normalized <- prior / sum(prior)
+  prior.norm <- prior / sum(prior)
   
   # calculate likelihood (and normalize for plotting)
   likelihood <- dbinom(w, size = w+l, prob = prop_w.grid)
@@ -1299,9 +1293,9 @@ globe_tossing_grid_approx <- function(w, l, a = 1, b = 1, grid_size = 1000) {
   # plot prior, likelihood, and posterior
   tibble(prop_w.grid, prior, likelihood.norm, posterior) %>%
     gf_line(likelihood.norm ~ prop_w.grid, color = "#357EC7") %>%
-    gf_line(prior.normalized ~ prop_w.grid, color = "#FFA500") %>%
+    gf_line(prior.norm ~ prop_w.grid, color = "#FFA500") %>%
     gf_line(posterior ~ prop_w.grid, color = "#4E9258") %>%
-    gf_labs(x = "proportion water (p)", y = "posterior probability")
+    gf_labs(x = expression(pi), y = "p", title = "Prior (orange), likelihood (blue) and posterior (green)")  
 }
 ```
 
@@ -1478,10 +1472,26 @@ HPDI(globe_tossing_samples(w = 70, l = 30,
 ::::
 :::::::
 
+## From globe tossing to real science
+
+-   **Estimating proportions** is everywhere in science
+
+-   Our toy example modeled "blue vs. white/water vs. land" as a **binomial** process:
+
+    -   We count how many times "blue" shows up in $n$ draws and infer the **unknown proportion** $\pi$
+
+-   In **real biology**, the same idea applies to any “presence vs. absence” trait. For example:
+
+    -   Researchers want to estimate the fraction of microglial cells in an AD mouse’s brain that exhibit disease-associated microglia (DAM) markers
+
+    -   Each cell is either DAM ("blue") or non‐DAM ("white")
+
+    -   Researchers gather a sample of microglia, count how many are DAM, and estimate $\pi$ of DAM cells in the AD mouse’s brain using statistical inference
+
 ## From globe tossing experiment to real science
 
 [A Unique Microglia Type Associated with Restricting Development of Alzheimer's Disease](https://doi.org/10.1016/j.cell.2017.05.018)
 
-![](images/clipboard-243308569.png)
+![](images/clipboard-243308569.png){fig-align="center"}
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
