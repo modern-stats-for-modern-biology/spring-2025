@@ -25,6 +25,7 @@ library(ggformula)
 library(ggdag)
 library(dagitty)
 library(rethinking)
+library(extraDistr)
 
 set.seed(666)
 
@@ -196,7 +197,7 @@ Statistical models = **probability distributions** of **random variables**
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
 :::::: columns
 ::: {.column width="30%"}
@@ -216,7 +217,7 @@ A convenient way to represent the **premises** of **inductive arguments** about 
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
 :::::: columns
 ::: {.column width="30%"}
@@ -240,7 +241,25 @@ $$
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**Uniform distribution** (discrete) [WP](https://en.wikipedia.org/wiki/Discrete_uniform_distribution) [PDE](https://distribution-explorer.github.io/discrete/discrete_uniform.html)
+
+$$
+p(\omega) = \frac{1}{|\Omega|} = \frac{1}{n}
+$$
+:::
+:::::
+
+## Statistical models
+
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
 ::::: columns
 ::: {.column width="30%"}
@@ -253,12 +272,14 @@ A convenient way to represent the **premises** of **inductive arguments** about 
 $$
 p(\omega \mid M_0) = \frac{1}{|\Omega|} = \frac{1}{n}
 $$
+
+-   $n$ is the number of possible worlds $\omega$ in the universe $\Omega$
 :::
 :::::
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
 :::::: columns
 ::: {.column width="30%"}
@@ -269,8 +290,12 @@ A convenient way to represent the **premises** of **inductive arguments** about 
 **Normal distribution** (continuous) [WP](https://en.wikipedia.org/wiki/Normal_distribution) [PDE](https://distribution-explorer.github.io/continuous/normal.html)
 
 $$
-p(\omega \mid M_{N}) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - \mu \bigr)^2}{2\sigma^2} \right)
+p(y \mid M_{N}) = \frac{1}{\sqrt{2\pi \sigma^2}}\cdot \exp \!\left( -\frac{\bigl(y - \mu \bigr)^2}{2\sigma^2} \right)
 $$
+
+-   $\mu$ is the location parameter
+
+-   $\sigma$ is the scale parameter
 
 ::: fragment
 $$
@@ -282,29 +307,51 @@ $$
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
-:::::: columns
+::::: columns
 ::: {.column width="30%"}
 ![](images/models_80s90s.webp)
 :::
 
-:::: {.column width="70%"}
+::: {.column width="70%"}
 **General Linear Models** (continuous) [WP](https://en.wikipedia.org/wiki/General_linear_model)
 
 $$
-p(\omega \mid M_{\text{GLM}}) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x) \bigr)^2}{2\sigma^2} \right)
+p(x, y \mid M_{\text{GLM}}) = \frac{k}{\sqrt{2\pi \sigma^2}} \cdot \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x) \bigr)^2}{2\sigma^2} \right)
 $$
 
-::: fragment
-[![](images/linear_tests_cheat_sheet.png){fig-align="center" width="550"}](https://lindeloev.github.io/tests-as-linear/)
+-   $\beta_0$ is the intercept parameter
+
+-   $\beta_1$ is the slope parameter
+
+-   $\sigma$ is the scale parameter
 :::
-::::
-::::::
+:::::
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
+
+::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+::: {.column width="70%"}
+**General Linear Models** (continuous) [WP](https://en.wikipedia.org/wiki/General_linear_model)
+
+$$
+p(x, y \mid M_{\text{GLM}}) = \frac{k}{\sqrt{2\pi \sigma^2}} \cdot \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x) \bigr)^2}{2\sigma^2} \right)
+$$
+
+[![](images/linear_tests_cheat_sheet.png){fig-align="center" width="550"}](https://lindeloev.github.io/tests-as-linear/)
+:::
+:::::
+
+## Statistical models
+
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
 ::::: columns
 ::: {.column width="30%"}
@@ -328,7 +375,7 @@ Large language models ultimately define a probability distribution over a finite
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
 ::::: columns
 ::: {.column width="30%"}
@@ -344,7 +391,7 @@ A convenient way to represent the **premises** of **inductive arguments** about 
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
 ::::: columns
 ::: {.column width="30%"}
@@ -817,7 +864,7 @@ ss %>% mutate(p = 1 / n()) %>%                 # uniform probability distributio
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
 :::::: columns
 ::: {.column width="30%"}
@@ -837,7 +884,7 @@ A convenient way to represent the **premises** of **inductive arguments** about 
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
 ::::: columns
 ::: {.column width="30%"}
@@ -863,7 +910,7 @@ While many well‐known distributions (e.g., Normal, Binomial, Poisson) do have 
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
 ::::: columns
 ::: {.column width="30%"}
@@ -881,26 +928,25 @@ $$
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
-:::::: columns
+::::: columns
 ::: {.column width="30%"}
 ![](images/models_80s90s.webp)
 :::
 
-:::: {.column width="70%"}
+::: {.column width="70%"}
 **General Linear Models** (continuous) [WP](https://en.wikipedia.org/wiki/General_linear_model)
 
 $$
-p(x, y \mid M_{\text{GLM}}) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x) \bigr)^2}{2\sigma^2} \right)
+p(x, y \mid M_{\text{GLM}}) = \frac{k}{\sqrt{2\pi \sigma^2}}\cdot \exp \!\left( -\frac{\bigl(y - (\beta_0 + \beta_1 \cdot x) \bigr)^2}{2\sigma^2} \right)
 $$
-
-::::
-::::::
+:::
+:::::
 
 ## Statistical models
 
-A convenient way to represent the **premises** of **inductive arguments** about DGPs
+A convenient representation of the **premises** of an **inductive argument** (about a DGP)
 
 ::::: columns
 ::: {.column width="30%"}
@@ -936,7 +982,7 @@ $$
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
--   Traditional probability (a.k.a. **data probability** or **likelihood**):
+-   Traditional probability (a.k.a. **data** or **sampling probability**):
 :::
 
 ## Statistical inference
@@ -944,21 +990,21 @@ $$
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
--   Traditional probability (a.k.a. **data probability** or **likelihood**):
+-   Traditional probability (a.k.a. **data** or **sampling probability**):
 
-    -   $p(d \mid K_M)$ = probability of the data given a set of DGP model assumptions
+    -   $p(d \mid M)$ = probability of the data given a set of DGP model assumptions
 :::
 
 -   The problem of statistical inference
 
-    -   **Inverse probability**: $P(K_M \mid d)$ = probability of $K_M$ given $d$
+    -   **Inverse probability**: $P(M \mid d)$ = probability of $M$ given $d$
     -   [It is impossible to calculate the inverse probability!]{.underline}
 
 -   The (more reasonable, limited) goal of statistical inference
 
-    -   Let $K_M = \{M_{M^*}, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
-    -   **Inferential probability**: $P(\theta \mid X = x, M^*)$ = probability of $\theta$ given $x$ and $M^*$
-    -   $P(\theta \mid x)$ \[simpler, alternative notation\]
+    -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $d$
+    -   **Inferential probability**: $P(\theta \mid d, M^*)$ = probability of $\theta$ given $d$ and $M^*$
+    -   $P(\theta \mid d)$ \[simpler, alternative notation\]
 
 -   [Learning (incl. statistical inference) is impossible without assumptions!]{.underline}
 
@@ -966,39 +1012,7 @@ $$
 Inference is the process of using facts we know to learn about facts we do not know. A theory of inference gives assumptions necessary to get from the former to the latter, along with a definition for and summary of the resulting uncertainty. Any one theory of inference is neither right nor wrong, but merely an axiom that may or may not be useful. http://tinyurl.com/y3v8nfwh
 :::
 
-## Statistical models: Notation {visibility="hidden"}
-
--   **Random variable**: $Y$
-
--   **Realization**: $y$
-
--   **Statistical model**: $M$
-
--   **PMF/PDF on S**: $p$
-
--   **PMF/PDF on X**: $p_Y$ or $p(Y)$ or $f_Y$ or $f(Y)$
-
-    -   $p_Y$ or $p(Y)$ denotes the overall probability distribution of $Y$
-
-    -   $p_Y(y)$, $p(Y = y)$ or $p(y)$ denotes the probability mass/density of a specific value $y$ of $Y$
-
--   **Parameter**: $\theta$
-
--   **Data (unobserved)**: $(X_1, X_2, \ldots, X_n)$
-
--   **Data (observed)**: $(x_1, x_2, \ldots, x_n)$
-
--   **Function of X**: $g(X)$
-
--   **Statistic**: $T = h(X) : X \to \mathbb{R}$ (a statistic, being a function of a random variable, is also a random variable)
-
--   **Statistic**: $t = h(x) : x \to \mathbb{R}$
-
--   **Parameter**: $\theta$ **Estimator**: $\hat\theta$ **Estimate**: $\hat\theta(y)$
-
 ## Bayes' theorem for statistical inference
-
- 
 
 ::: text-align-center
 ![](images/Slide38.png)
@@ -1006,25 +1020,17 @@ Inference is the process of using facts we know to learn about facts we do not k
 
 ## Bayes' theorem for statistical inference
 
-**Bayesian interpretation**: data are fixed, parameters are random
-
 ::: text-align-center
 ![](images/Slide39.png)
 :::
 
 ## Bayes' theorem for statistical inference
 
-**Bayesian interpretation**: data are fixed, parameters are random
-
 ::: text-align-center
 ![](images/Slide40.png)
 :::
 
 ## Bayesian inference: Globe tossing
-
-![](statistical-rethinking-2023-lecture-02/slide-002.png)
-
-## Globe tossing: Setup
 
 ![](statistical-rethinking-2023-lecture-02/slide-002.png)
 
@@ -1040,92 +1046,219 @@ Inference is the process of using facts we know to learn about facts we do not k
 
 ![](images/Slide45.png)
 
-## Globe tossing: Setup
+## Globe tossing: Posterior
+
+::: fragment
+$$
+p(\theta \mid d)
+$$
+:::
+
+-   $\pi$ = proportion of blue sides on the globe (?)
+
+-   $x$ = number of tosses that show a blue side (2)
+
+-   $n$ = number of globe tosses (3)
+
+::: fragment
+$$
+p(\pi \mid x = 2, n = 3)
+$$
+:::
+
+
+## Globe tossing: Posterior
+
+$$
+p(\theta \mid d)
+$$
+
+::: nonincremental
+-   $\pi$ = proportion of blue sides on the globe (?)
+
+-   $x$ = number of tosses that show a blue side (2)
+
+-   $n$ = number of globe tosses (3)
+:::
+
+$$
+p(\pi \mid x = 2, n = 3) \propto p(\pi) \cdot p(x = 2, n = 3 \mid \pi)
+$$
+
+## Globe tossing: Sample space
+
+::: fragment
+```{r}
+π <- c(0, 0.25, 0.5, 0.75, 1)
+
+ss <-
+  expand_grid(π) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss
+```
+:::
+
+## Globe tossing: Sample space + data
+
+![](images/Slide45.png)
+
+## Globe tossing: Prior
+
+```{r}
+#| output-location: default
+ss
+```
+
+## Globe tossing: Prior
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(
+    prior = 1 / n())
+```
+
+## Globe tossing: Sample space + data
+
+![](images/Slide45.png)
+
+## Globe tossing: Likelihood
 
 ![](images/Slide46.png)
 
 ## Globe tossing: Likelihood
 
 ::: fragment
-$$
-\begin{array}{ r l }
-  1)         & \text{there is a 4-sided globe with 1 side covered in water (blue) and 3 sides covered in land (white)} \\
-  2)         & \text{the globe is tossed 3 times} \\
-  \therefore & \text{2 of the tosses show a blue side}
-\end{array}
-$$
+**Binomial distribution**: the probability of observing $x$ successes in $n$ trials, given a probability of success $\pi$
 :::
-
- 
 
 ::: fragment
 $$
-\begin{array}{r l}
-  \pi     & = \text{proportion of blue sides on the globe}\ (0.25) \\
-  n       & = \text{number of globe tosses}\ (3) \\
-  X       & = \text{what is the number of tosses that show a blue side?} \\
-  x       & = \text{number of tosses that show a blue side}\ (2) \\
-\end{array}
+p(x, n \mid \pi) = \binom{n}{x}\pi^x(1-\pi)^{n-x}
 $$
 :::
-
- 
 
 ::: fragment
-$$
-p(X = 2 \mid \pi = 0.25, n = 3, M^*) =\ ?
-$$
+```{r}
+dbinom(x = 2, size = 3, prob = 0.25)
+```
 :::
-
-## Globe tossing: Likelihood
-
-$$
-\begin{array}{ r l }
-  1)         & \text{there is a 4-sided globe with 1 side covered in water (blue) and 3 sides covered in land (white)} \\
-  2)         & \text{the globe is tossed 3 times} \\
-  \therefore & \text{2 of the tosses show a blue side}
-\end{array}
-$$
-
- 
-
-$$
-\begin{array}{r l}
-  \pi     & = \text{proportion of blue sides on the globe}\ (0.25) \\
-  n       & = \text{number of globe tosses}\ (3) \\
-  X       & = \text{what is the number of tosses that show a blue side?} \\
-  x       & = \text{number of tosses that show a blue side}\ (2) \\
-\end{array}
-$$
-
- 
-
-$$
-p(X = 2 \mid \pi = 0.25, n = 3, M^{\text{Binomial}}) = \binom{n}{k}\pi^k(1-\pi)^{n-k} = 0.14062
-$$
 
 ## Globe tossing: Likelihood
 
 ```{r}
-# data
-x <- 2
-n <- 3
-
-# possible proportions of blue sides on the globe
-sides <- 4
-π <- seq(0, 1, length.out = sides + 1)
-
-# likelihood of the data given the proportion of blue sides on the globe
-df <- tibble(π, likelihood = dbinom(x, prob = π, size = n))
-
-df
+ss %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π))
 ```
+
+## Globe tossing: Unnormalized posterior
+
+```{r}
+ss %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood) 
+```
+
+## Globe tossing: Posterior
+
+```{r}
+ss %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm))
+```
+
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+ss %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm)) %>% 
+  gf_line(posterior ~ π, color = "blue", linewidth = 1)
+```
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+ss %>%
+  mutate(
+    prior = c(0, 0.6, 0.3, 0.1, 0),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm),
+    likelihood.norm = likelihood / sum(likelihood)) %>% 
+  gf_line(prior ~ π, color = "red", linewidth = 1) %>%
+  gf_line(posterior ~ π, color = "orange", linewidth = 1) %>%
+  gf_line(likelihood.norm ~ π, color = "green", linewidth = 1) %>%
+  gf_labs(
+    x = expression(pi),
+    y = "P",
+    title = "Prior (red), likelihood (green) and posterior (orange)")
+```
+
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+ss %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm)) %>% 
+  gf_line(posterior ~ π, color = "blue", linewidth = 1)
+```
+
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+#| output-location: default
+tibble(π = seq(0, 1, 0.1)) %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm)) %>% 
+  gf_line(posterior ~ π, color = "blue", linewidth = 1)
+```
+
+## Globe tossing: Posterior
+
+```{r}
+#| fig.height: 4
+#| output-location: default
+tibble(π = seq(0, 1, 0.01)) %>%
+  mutate(
+    prior = 1 / n(),
+    likelihood = dbinom(x = 2, size = 3, prob = π),
+    posterior.unnorm = prior * likelihood,
+    posterior = posterior.unnorm / sum(posterior.unnorm)) %>% 
+  gf_line(posterior ~ π, color = "blue", linewidth = 1)
+```
+
 
 ## Globe tossing: Prior
 
 The beta distribution is a family of distributions that describe the probability of continuous random variables within the interval $[0, 1]$, making it particularly useful for modeling proportions, probabilities, and other quantities bounded between 0 and 1
 
-::: columns
+:::::: columns
 ::: {.column width="33%"}
 ```{r}
 #| echo: false
@@ -1170,9 +1303,9 @@ df %>%
   gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
 ```
 :::
-:::
+::::::
 
-::: columns
+:::::: columns
 ::: {.column width="33%"}
 ```{r}
 #| echo: false
@@ -1217,7 +1350,7 @@ df %>%
   gf_labs(x = "π", y = "p(π)", title = str_glue("π ~ Beta(a = {a}, b = {b})")) %>% gf_theme(text = element_text(size = 30), plot.title=element_text(size=30), axis.title=element_text(size=30))
 ```
 :::
-:::
+::::::
 
 ## Globe tossing: Prior
 
@@ -1367,15 +1500,15 @@ globe_tossing_grid_approx <- function(w, l, a = 1, b = 1, grid_size = 1000) {
   
   # calculate likelihood (and normalize for plotting)
   likelihood <- dbinom(w, size = w+l, prob = prop_w.grid)
-  likelihood.normalized <- likelihood / sum(likelihood)
+  likelihood.norm <- likelihood / sum(likelihood)
 
   # calculate posterior and normalize
-  posterior.unnormalized <- prior * likelihood
-  posterior <- posterior.unnormalized / sum(posterior.unnormalized)
+  posterior.unnorm <- prior * likelihood
+  posterior <- posterior.unnorm / sum(posterior.unnorm)
 
   # plot prior, likelihood, and posterior
-  tibble(prop_w.grid, prior, likelihood.normalized, posterior) %>%
-    gf_line(likelihood.normalized ~ prop_w.grid, color = "#357EC7") %>%
+  tibble(prop_w.grid, prior, likelihood.norm, posterior) %>%
+    gf_line(likelihood.norm ~ prop_w.grid, color = "#357EC7") %>%
     gf_line(prior.normalized ~ prop_w.grid, color = "#FFA500") %>%
     gf_line(posterior ~ prop_w.grid, color = "#4E9258") %>%
     gf_labs(x = "proportion water (p)", y = "posterior probability")
@@ -1391,8 +1524,8 @@ globe_tossing_samples <- function(w, l, a = 1, b = 1, n = 1000) { rbeta(n, w + a
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
-::: columns
-::: {.column width="50%"}
+::::::::::: columns
+:::::: {.column width="50%"}
 ::: fragment
 ```{r}
 #| fig-height: 7.5
@@ -1412,9 +1545,9 @@ HPDI(globe_tossing_samples(w = 8, l = 2,
                            a = 1, b = 1)) %>% round(2)
 ```
 :::
-:::
+::::::
 
-::: {.column width="50%"}
+:::::: {.column width="50%"}
 ::: fragment
 ```{r}
 #| fig-height: 7.5
@@ -1434,15 +1567,15 @@ HPDI(globe_tossing_samples(w = 8, l = 2,
                            a = 29, b = 11)) %>% round(2)
 ```
 :::
-:::
-:::
+::::::
+:::::::::::
 
 ## Globe tossing experiment
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
-::: columns
-::: {.column width="50%"}
+::::::::::: columns
+:::::: {.column width="50%"}
 ::: fragment
 ```{r}
 #| fig-height: 7.5
@@ -1462,9 +1595,9 @@ HPDI(globe_tossing_samples(w = 2, l = 8,
                            a = 29, b = 11)) %>% round(2)
 ```
 :::
-:::
+::::::
 
-::: {.column width="50%"}
+:::::: {.column width="50%"}
 ::: fragment
 ```{r}
 #| fig-height: 7.5
@@ -1484,8 +1617,8 @@ HPDI(globe_tossing_samples(w = 80, l = 20,
                            a = 1,  b = 9)) %>% round(2)
 ```
 :::
-:::
-:::
+::::::
+:::::::::::
 
 ## References
 
@@ -1497,4 +1630,46 @@ HPDI(globe_tossing_samples(w = 80, l = 20,
 ##  {background-image="images/briggs2.png" background-size="contain"}
 
 ##  {background-image="images/bayesian_inference_is_just_counting.jpg" background-size="contain"}
+
+## Statistical models: Notation {visibility="hidden"}
+
+-   **Random variable**: $Y$
+
+-   **Realization**: $y$
+
+-   **Statistical model**: $M$
+
+-   **PMF/PDF on S**: $p$
+
+-   **PMF/PDF on X**: $p_Y$ or $p(Y)$ or $f_Y$ or $f(Y)$
+
+    -   $p_Y$ or $p(Y)$ denotes the overall probability distribution of $Y$
+
+    -   $p_Y(y)$, $p(Y = y)$ or $p(y)$ denotes the probability mass/density of a specific value $y$ of $Y$
+
+-   **Parameter**: $\theta$
+
+-   **Data (unobserved)**: $(X_1, X_2, \ldots, X_n)$
+
+-   **Data (observed)**: $(x_1, x_2, \ldots, x_n)$
+
+-   **Function of X**: $g(X)$
+
+-   **Statistic**: $T = h(X) : X \to \mathbb{R}$ (a statistic, being a function of a random variable, is also a random variable)
+
+-   **Statistic**: $t = h(x) : x \to \mathbb{R}$
+
+-   **Parameter**: $\theta$ **Estimator**: $\hat\theta$ **Estimate**: $\hat\theta(y)$
+
+## Globe tossing: Likelihood
+
+$$
+\begin{array}{ r l }
+  1)         & \text{there is a 4-sided globe with 1 side covered in water (blue) and 3 sides covered in land (white)} \\
+  2)         & \text{the globe is tossed 3 times} \\
+  \therefore & \text{2 of the tosses show a blue side}
+\end{array}
+$$
+
+$$P(X = 2 \mid \pi = 0.25, n = 3)$$
 
