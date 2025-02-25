@@ -7,9 +7,9 @@ format:
 
 ## Introduction
 
-Imagine a piece of toast that’s come out of the toaster with a faint grid pattern pressed in by the rack. We’ll treat each little square in that pattern as a possible outcome in our sample space. Next, we spread 1 Kg of Nutella across the toast so that some squares get a thick coating and others barely any at all. 
+Imagine a piece of toast that’s come out of the toaster with a faint grid pattern pressed in by the rack. We’ll treat each little square in that pattern as a possible outcome in our sample space. Next, we spread 1 Kg of Nutella across the toast so that some squares get a thick coating and others barely any at all.
 
-Wherever the Nutella is **thick**, the probability is **high**; where it’s **thin or absent**, the probability is **low** or **zero**. But taken together, the **total** Nutella spread must sum to 1 Kg.  
+Wherever the Nutella is **thick**, the probability is **high**; where it’s **thin or absent**, the probability is **low** or **zero**. But taken together, the **total** Nutella spread must sum to 1 Kg.
 
 In this notebook, we’ll model several probability distributions/stastistical models as different ways of smearing Nutella across the toast.
 
@@ -56,8 +56,8 @@ plot_probability_distribution <- function(df, xvar = "X", yvar = "Y", pvar = "p"
         values = c(0, 0.1, 1),
         limits = c(0, 1)
       ),
-      scale_x_continuous(breaks = unique(df[[xvar]])),
-      scale_y_continuous(breaks = unique(df[[yvar]]))
+      scale_x_continuous(breaks = 0:length(df[[xvar]]) + 1),
+      scale_y_continuous(breaks = 0:length(df[[yvar]]) + 1)
     )
   
   return(plot_obj)
@@ -77,8 +77,8 @@ plot_random_samples <- function(df, n, xvar = "X", yvar = "Y", pvar = "p", title
     stroke = 0
   ) %>%
     gf_refine(
-      scale_x_continuous(breaks = unique(df[[xvar]]), minor_breaks = NULL),
-      scale_y_continuous(breaks = unique(df[[yvar]]), minor_breaks = NULL)
+      scale_x_continuous(breaks = 0:length(df[[xvar]] + 1), minor_breaks = NULL),
+      scale_y_continuous(breaks = 0:length(df[[yvar]] + 1), minor_breaks = NULL)
     )
   
   return(plot_obj)
@@ -91,6 +91,10 @@ plot_random_samples <- function(df, n, xvar = "X", yvar = "Y", pvar = "p", title
 n <- 50
 sample.size <- 10
 grid.size <- 10
+b0 <- 1
+b1 <- 2
+e  <- 1
+sd <- 1
 ```
 
 ```{r}
@@ -108,12 +112,20 @@ ss
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
+  rowwise() %>% 
+  mutate(M = TRUE) %>% 
+  ungroup() %>%
+  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
   plot_probability_distribution()
 ```
 
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
+  rowwise() %>% 
+  mutate(M = TRUE) %>% 
+  ungroup() %>%
+  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
   plot_random_samples(n)
 ```
 
@@ -121,21 +133,19 @@ ss %>%
 ss %>% 
   mutate(p = 1 / n()) %>%
   rowwise() %>% 
-  mutate(E = (Y == X)) %>% 
+  mutate(M = (Y == X)) %>% 
   ungroup() %>%
-  mutate(p = if_else(E, p / sum(p[E]), 0)) %>%
+  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
   plot_probability_distribution()
 ```
-
-
 
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
   rowwise() %>% 
-  mutate(E = (Y == X)) %>% 
+  mutate(M = (Y == X)) %>% 
   ungroup() %>%
-  mutate(p = if_else(E, p / sum(p[E]), 0)) %>%
+  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
   plot_random_samples(n)
 ```
 
@@ -143,36 +153,50 @@ ss %>%
 ss %>% 
   mutate(p = 1 / n()) %>%
   rowwise() %>% 
-  mutate(E = (Y == X + 0) | (Y == (X + 1)) | (Y == (X - 1))) %>% 
+  mutate(M = (Y == b0 + b1 * X + 0) | (Y == (b0 + b1 * X + e)) | (Y == (b0 + b1 * X - e))) %>% 
   ungroup() %>%
-  mutate(p = if_else(E, p / sum(p[E]), 0)) %>%
+  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
   plot_probability_distribution()
 ```
-
-
 
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
   rowwise() %>% 
-  mutate(E = (Y == X + 0) | (Y == (X + 1)) | (Y == (X - 1))) %>% 
+  mutate(M = (Y == b0 + b1 * X + 0) | (Y == (b0 + b1 * X + e)) | (Y == (b0 + b1 * X - e))) %>% 
   ungroup() %>%
-  mutate(p = if_else(E, p / sum(p[E]), 0)) %>%
+  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
   plot_random_samples(n)
 ```
-
-
 
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
-  mutate(p = ddnorm(Y, mean = X, sd = 1), p = p / sum(p)) %>%
+  mutate(p = ddunif(X, Y - e, Y + e)) %>% 
+  mutate(p = p / sum(p)) %>%
   plot_probability_distribution()
 ```
 
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
-  mutate(p = ddnorm(Y, mean = X, sd = 1)) %>%
+  mutate(p = ddunif(X, Y - e, Y + e)) %>% 
+  mutate(p = p / sum(p)) %>%
+  plot_random_samples(n)
+```
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  mutate(p = ddnorm(X, mean = Y, sd = sd)) %>%
+  mutate(p = p / sum(p)) %>% 
+  plot_probability_distribution()
+```
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  mutate(p = ddnorm(X, mean = Y, sd = sd)) %>%
+  mutate(p = p / sum(p)) %>% 
   plot_random_samples(n)
 ```
