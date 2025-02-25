@@ -1,0 +1,178 @@
+---
+title: "From Nutella on toast to statistical models"
+format:
+  html:
+    df-print: paged
+---
+
+## Introduction
+
+Imagine a piece of toast that’s come out of the toaster with a faint grid pattern pressed in by the rack. We’ll treat each little square in that pattern as a possible outcome in our sample space. Next, we spread 1 Kg of Nutella across the toast so that some squares get a thick coating and others barely any at all. 
+
+Wherever the Nutella is **thick**, the probability is **high**; where it’s **thin or absent**, the probability is **low** or **zero**. But taken together, the **total** Nutella spread must sum to 1 Kg.  
+
+In this notebook, we’ll model several probability distributions/stastistical models as different ways of smearing Nutella across the toast.
+
+![](images/jar-nutella-chocolate-spread-bread-niedersachsen-germany-september-glass-ferrero-slice-white-background-91085621.jpg)
+
+## Setup environment
+
+```{r}
+#| output: false
+library(tidyverse)
+library(ggformula)
+library(extraDistr)
+
+theme_set(theme_minimal())
+
+set.seed(666)
+```
+
+## Helper functions
+
+```{r}
+# Plot probability distribution
+plot_probability_distribution <- function(df, xvar = "X", yvar = "Y", pvar = "p", title = "p(X, Y)", label_digits = 3) {
+  
+  tile_formula <- as.formula(paste0(yvar, " ~ ", xvar))
+  
+  label_expr <- lazyeval::interp(
+    ~ sprintf(paste0("%0.", label_digits, "f"), var),
+    var = as.name(pvar)
+  )
+  
+  plot_obj <- gf_tile(
+    tile_formula,
+    data = df,
+    fill = as.formula(paste0("~ ", pvar)),
+    color = "black",
+    linewidth = 0.2
+  ) %>%
+    gf_labs(title = title) %>%
+    gf_text(label = label_expr, size = 2) %>%
+    gf_refine(
+      scale_fill_gradientn(
+        colors = c("white","chocolate4","black"),
+        values = c(0, 0.1, 1),
+        limits = c(0, 1)
+      ),
+      scale_x_continuous(breaks = unique(df[[xvar]])),
+      scale_y_continuous(breaks = unique(df[[yvar]]))
+    )
+  
+  return(plot_obj)
+}
+
+# Plot random samples from probability distribution
+plot_random_samples <- function(df, n, xvar = "X", yvar = "Y", pvar = "p", title = "p(X, Y)") {
+  df_sampled <- df %>%
+    slice_sample(n = n, weight_by = .[[pvar]], replace = TRUE)
+  
+  plot_obj <- gf_point(
+    as.formula(paste0(yvar, " ~ ", xvar)),
+    data = df_sampled,
+    alpha = 0.4,
+    size = 4,
+    color = "chocolate4",
+    stroke = 0
+  ) %>%
+    gf_refine(
+      scale_x_continuous(breaks = unique(df[[xvar]]), minor_breaks = NULL),
+      scale_y_continuous(breaks = unique(df[[yvar]]), minor_breaks = NULL)
+    )
+  
+  return(plot_obj)
+}
+```
+
+## Simulate data from uniform and linear models
+
+```{r}
+n <- 50
+sample.size <- 10
+grid.size <- 10
+```
+
+```{r}
+X <- seq(0, grid.size, length.out = grid.size + 1)
+Y <- seq(0, grid.size, length.out = grid.size + 1)
+
+ss <-
+  expand_grid(X, Y) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>%
+  select(Ω, everything())
+
+ss
+```
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  plot_probability_distribution()
+```
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  plot_random_samples(n)
+```
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  rowwise() %>% 
+  mutate(E = (Y == X)) %>% 
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0)) %>%
+  plot_probability_distribution()
+```
+
+
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  rowwise() %>% 
+  mutate(E = (Y == X)) %>% 
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0)) %>%
+  plot_random_samples(n)
+```
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  rowwise() %>% 
+  mutate(E = (Y == X + 0) | (Y == (X + 1)) | (Y == (X - 1))) %>% 
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0)) %>%
+  plot_probability_distribution()
+```
+
+
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  rowwise() %>% 
+  mutate(E = (Y == X + 0) | (Y == (X + 1)) | (Y == (X - 1))) %>% 
+  ungroup() %>%
+  mutate(p = if_else(E, p / sum(p[E]), 0)) %>%
+  plot_random_samples(n)
+```
+
+
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  mutate(p = ddnorm(Y, mean = X, sd = 1), p = p / sum(p)) %>%
+  plot_probability_distribution()
+```
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  mutate(p = ddnorm(Y, mean = X, sd = 1)) %>%
+  plot_random_samples(n)
+```
