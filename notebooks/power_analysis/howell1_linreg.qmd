@@ -1,0 +1,202 @@
+---
+title: "Power analysis using Monte Carlo simulations in R"
+date: 2024-03-19
+author: Edoardo \"Dado\" Marcora
+execute:
+  warning: false
+format:
+  html:
+    toc: true
+    df-print: kable
+bibliography: references.bib
+---
+
+## Setup environment
+
+```{r}
+#| output: false
+library(tidyverse)
+library(coursekata)
+library(readxl)
+library(performance)
+library(parameters)
+library(effectsize)
+library(ggeffects)
+library(mlpwr)
+
+set.seed(123)
+
+options(scipen = 0, ggeffects_margin = "empirical")
+```
+
+## Pilot study
+
+Suppose we ran a pilot study to investigate the "effect" of height on weight in adult individuals from the Kalahari region in Africa ([data](https://raw.githubusercontent.com/rmcelreath/rethinking/master/data/Howell1.csv) from the [`rethinking`](https://github.com/rmcelreath/rethinking) package)
+
+```{r}
+data(Howell1, package = "rethinking")
+
+d1 <- Howell1 %>% filter(age >= 18)
+
+head(d1)
+```
+
+```{r}
+favstats(~ weight, data = d1)
+```
+
+```{r}
+favstats(~ height, data = d1)
+```
+
+```{r}
+gf_point(weight ~ height, data = d1)
+```
+
+```{r}
+m <- lm(weight ~ height, data = d1 %>% mutate(height = height - mean(height)))
+
+summary(m)
+```
+
+`meanx = 154.6`
+
+`sdx = 7.742`
+
+`beta0 = 44.99`
+
+`beta1 = 0.63`
+
+`sde = 4.24`
+
+## Generative model to simulate data
+
+The likelihood of the general linear model:
+
+$$
+y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu = \beta_0 + \beta_1 x_i, \sigma)
+$$
+
+or (equivalently):
+
+$$
+y_i = \beta_0 + \beta_1 x_i + \epsilon_i
+$$
+
+$$
+\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(0, \sigma)
+$$
+
+```{r}
+sim_d <- function(n, meanx, sdx, beta0, beta1, sde) {
+  x <- rnorm(n, meanx, sdx)
+  e <- rnorm(n, 0, sde)
+  y <- beta0 + beta1 * x + e
+  return(tibble(x, y))
+}
+```
+
+```{r}
+d <- sim_d(n = 20, meanx = 154.6, sdx = 7.742, beta0 = 44.99, beta1 = 0.63, sde = 4.24)
+```
+
+```{r}
+gf_point(y ~ x, data = d)
+```
+
+## Inference model for significance test
+
+```{r}
+m <- lm(y ~ x, data = d)
+
+model_parameters(m)
+```
+
+```{r}
+p(m)
+```
+
+```{r}
+gf_point(y ~ x, data = d) %>% gf_model(m, color = "orangered")
+```
+
+## Monte Carlo simulation (null hypothesis)
+
+```{r}
+m = 1000 # number of Monte Carlo simulations
+n = 8   # sample size
+
+sim_p <- function(n) {
+  # simulate data using parameter estimates from model fitted to pilot data except b1 = 0
+  d <- sim_d(n, meanx = 154.6, sdx = 7.742, beta0 = 44.99, beta1 = 0, sde = 4.24)
+  m <- lm(y ~ x, data = d)
+
+  # or resample and shuffle pilot data
+  d <- resample(d1, size = n)
+  m <- lm(shuffle(weight) ~ height, data = d)
+
+  # return the p-value of the significance test
+  p(m)
+}
+
+sim_ps <- do(m) * sim_p(n)
+```
+
+```{r}
+gf_histogram(~ sim_p, data = sim_ps)
+```
+
+```{r}
+mean(sim_ps < 0.05) # alpha = type I error rate
+```
+
+## Monte Carlo simulation of p-values (alternative hypothesis)
+
+```{r}
+m = 1000 # number of Monte Carlo simulations
+n = 8 # sample size
+
+sim_p <- function(n) {
+  # simulate data using parameter estimates from model fitted to pilot data
+  d <- sim_d(n, meanx = 154.6, sdx = 7.742, beta0 = 44.99, beta1 = 0.63, sde = 4.24)
+  m <- lm(y ~ x, data = d)
+
+  # or resample pilot data
+  d <- resample(d1, size = n)
+  m <- lm(weight ~ height, data = d)
+
+  # return the p-value of the significance test
+  p(m)
+}
+
+sim_ps <- do(m) * sim_p(n)
+```
+
+```{r}
+gf_histogram(~ sim_p, data = sim_ps)
+```
+
+```{r}
+mean(sim_ps < 0.05) # power = 1 - beta (beta = type II error rate)
+```
+
+```{r}
+ds <- find.design(\(n) sim_p(n) <= 0.05, # alpha level
+                  boundaries = c(4, 40), # boundaries of sample size space to explore
+                  power = 0.80,          # power level (1 - beta)
+                  evaluations = m)       # number of Monte Carlo simulations
+```
+
+```{r}
+summary(ds)
+```
+
+```{r}
+plot(ds, addribbon = FALSE, adderrorbars = TRUE)
+```
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```

@@ -1,0 +1,387 @@
+---
+title: "Power analysis using Monte Carlo simulations in R"
+date: 2024-03-19
+author: Edoardo \"Dado\" Marcora
+execute:
+  warning: false
+format:
+  html:
+    toc: true
+    df-print: kable
+  ipynb: default
+bibliography: references.bib
+---
+
+## Introduction
+
+Several R functions and packages (e.g., the built-in `stats::power.*` functions or the [`pwr`](https://cran.r-project.org/web/packages/pwr/vignettes/pwr-vignette.html) and [`pwrss`](https://cran.r-project.org/web/packages/pwrss/vignettes/examples.html) packages) as well as desktop (e.g., [G\*Power](https://www.psychologie.hhu.de/arbeitsgruppen/allgemeine-psychologie-und-arbeitspsychologie/gpower.html),) or web (e.g., [powerandsamplesize.com](https://powerandsamplesize.com/), [pwrss](https://pwrss.shinyapps.io/index/), [sample size justification](https://shiny.ieis.tue.nl/sample_size_justification/)) applications are used to perform power analysis of classical null-hypothesis significance tests for simple statistical models and study designs. However, this notebook focuses on the more general approach of using [Monte Carlo simulations](https://ritsokiguess.site/blogg/posts/2021-11-14-tidy-simulation/) [@Morris2019] and (specifically and more conveniently) the [`mlpwr`](https://github.com/flxzimmer/mlpwr) package to perform power analysis of significance tests for statistical models and study designs of any complexity [@Zimmer2023].
+
+## Setup environment
+
+```{r}
+#| output: false
+library(tidyverse)
+library(coursekata)
+library(performance)
+library(parameters)
+library(effectsize)
+library(ggeffects)
+
+set.seed(123)
+
+options(scipen = 0, ggeffects_margin = "empirical")
+```
+
+## Background information
+
+*A-priori* power analysis is critical for study design, sample size justification, and the interpretation of scientific claims based on null-hypothesis significance testing (NHST) 😭 [@Lakens2022]. In particular, it allows us to estimate the minimum sample size required to detect an "effect" of a given size with a given level of confidence, given the probability of detecting such an "effect" (power). Conversely, under sample size constraints, it allows us to estimate the probability of detecting an "effect" of a given size with a given level of confidence (power), given a sample size.
+
+If the inferential goal of a study is NHST 😭 and statistical power is low, then we should modify the design of the study in order to increase power (e.g., by increasing the sample size) or we may consider abandoning it to avoid wasting time and money.
+
+If the inferential goal of a study is NHST 😭, there are four possible outcomes:
+
+1.  A **false positive** (FP or Type I error), determined by ⍺ (the Type I error rate). The test yields a significant result, even though the null-hypothesis is true.
+
+2.  A **false negative** (FN or Type II error), determined by β (the Type II error rate). The test yields a non-significant result, even though the alternative hypothesis is true.
+
+3.  A **true negative** (TN), determined by 1 - ⍺. The test yields a non-significant result when the null-hypothesis is true.
+
+4.  A **true positive** (TP), determined by 1 - β = **power**. The test yields a significant result when the alternative hypothesis is true.
+
+![](images/confusion_matrix.png){width="800"}
+
+![](images/error_types.png){width="800"}
+
+The median statistical power of studies in neuroscience is estimated to be 21% \[8-31%\] [@Button2013]. This is rather unfortunate, because low power increases the likelihood that 1) a statistically significant results is a false positive (\>50% of published research findings are likely to be false positives [@Ioannidis2005]), and that 2) the effect size of a true positive results is overestimated (a.k.a. the "*winner's curse*").
+
+------------------------------------------------------------------------
+
+The following **four quantities** have an intimate relationship in power analysis:
+
+1.  **significance level**, ⍺ = P(Type 1 error), i.e., the probability of concluding that there *is* an effect when there is *no* effect.
+
+2.  **power level**, 1 - β, β = P(Type 2 error), i.e., the probability of concluding there is *no* effect when there *is* an effect.
+
+3.  **effect size**
+
+4.  **sample size**
+
+Given any three, we can determine the fourth.
+
+### Significance level
+
+A generally accepted significance level/type I error rate α is 0.05. However, the default use of an significance level of 5% is sub-optimal [@Maier2022].
+
+### Power level
+
+A generally accepted minimum level of power (1 - Type II error rate β) is 0.80 [@Cohen1988]. This minimum is based on the idea that with a Type I error rate of 0.05, the ratio of a Type II error to a Type I error is 0.20/0.05 = 4. In this setup, concluding that there *is* an effect when there is *no* effect (Type I error) is considered four times more costly than concluding there is *no* effect when there *is* an effect (Type II error). However, the default use of a power level of 80% is sub-optimal [@Lakens2022].
+
+### Effect size
+
+In statistics, an [effect size](https://en.wikipedia.org/wiki/Effect_size) is a value measuring the strength of a statistical association between two variables in a "population", or a sample-based estimate of that quantity. Despite the misleading use of causal language, the term "effect" in statistics does NOT imply a causal relationship between the two variables (association ≠ causation).
+
+The effect sizes used in power analysis should be informed by expert knowledge, a theoretical model, an exploratory study performed before calculating the minimum sample size required for a confirmatory study, or by searching the literature for effect sizes estimated in similar studies or (better) meta-analyses thereof. As a very last resort, Common Language Effect Size (CLES) indicators [@McGraw1992] or benchmarks provided by [@Cohen1988], [@Chen2010], and [@Funder2019] can be used, but these can vary greatly depending on the field of study.
+
++---------------------+-----------------------------+---------------+---------------+---------------+
+| Test                | Effect size measure         | Small\        | Medium\       | Large\        |
+|                     |                             | (% variance)  | (% variance)  | (% variance)  |
++=====================+=============================+===============+===============+===============+
+| *t*-test            | Cohen's *d*\                | 0.20\         | 0.50\         | 0.80\         |
+|                     | (or Hedges's *g* if N ≤ 20) | (1%)          | (6%)          | (16%)         |
++---------------------+-----------------------------+---------------+---------------+---------------+
+| Correlation/\       | Pearson's *r*               | 0.10 \[0.1\]\ | 0.25 \[0.3\]\ | 0.40 \[0.5\]\ |
+| Simple regression   |                             | (1%)          | (6%)          | (16%)         |
++---------------------+-----------------------------+---------------+---------------+---------------+
+| Multiple regression | R^2^                        | 0.02\         | 0.13\         | 0.26\         |
+|                     |                             | (2%)          | (13%)         | (26%)         |
++---------------------+-----------------------------+---------------+---------------+---------------+
+| Multiple regression | *f*^2^                      | 0.02\         | 0.15\         | 0.35\         |
+|                     |                             | (2%)          | (13%)         | (26%)         |
++---------------------+-----------------------------+---------------+---------------+---------------+
+| Logistic regression | OR^\*^                      | 1.46          | 2.50          | 4.14          |
++---------------------+-----------------------------+---------------+---------------+---------------+
+
+^\*^ assuming a 10% probability of the outcome in the control group [@Chen2010]
+
+$\text{Cohen's}\ d = \frac{M_1 - M_2}{SD_{\text{pooled}}} = \frac{M_1 - M_2}{\sqrt{(SD_1^2 + SD_2^2)/2}}$
+
+Omnibus *F* test for one model: $f^2 = \frac{R^2}{1-R^2}$
+
+Omnibus *F* test for two (nested) models: $f^2 = \frac{R^2_{AB} - R^2_A}{1-R^2_{AB}}$
+
+### See also
+
+-   [Improving your statistical inferences: Effect size](https://lakens.github.io/statistical_inferences/06-effectsize.html)
+
+-   [Improving your statistical inferences: Sample size justification](https://lakens.github.io/statistical_inferences/08-samplesizejustification.html)
+
+-   [Quick-R: Power analysis](https://www.statmethods.net/stats/power.html)
+
+{{< video https://youtu.be/VX_M3tIyiYk?si=_GD96QuJPt2AO_Zt >}}
+
+## Read and prep data from pilot study
+
+In the power analysis examples that follow, we will use real data from a pilot study (or synthetic data from a simulated study) of the effect that knocking out a gene (`geno`) has on a phenotype (`pheno`).
+
+```{r}
+d1 <- read_csv("pilot.csv", show_col_types = FALSE)
+
+d1
+
+d1 <- d1 %>% mutate(geno = fct_relevel(geno, "WT"))
+```
+
+## Exploratory data analysis
+
+```{r}
+gf_boxplot(pheno ~ geno, color = ~ geno, fill = ~ geno, data = d1) %>%
+  gf_point()
+```
+
+```{r}
+favstats(pheno ~ geno, data = d1)
+```
+
+## Fit simple linear regression model to the data
+
+```{r}
+m1 <- lm(pheno ~ geno, data = d1)
+
+summary(m1)
+```
+
+```{r}
+#| fig-height: 8
+check_model(m1, detrend = FALSE)
+```
+
+## Evaluate model and compute effect sizes
+
+```{r}
+model_parameters(m1)
+```
+
+```{r}
+supernova(m1)
+```
+
+R-squared ($R^2$ a.k.a. [coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination)) is the same as the *proportional reduction in error* (PRE) for the overall model \[`Model (error reduced) PRE`\] in the output of the `supernova()` function. R-squared is the proportion of variance in the dependent variable that can be explained by the independent variable(s) in a regression model. In other words, R-squared shows how well the model fits the data (the goodness of fit) and is a standardized measure of effect size for a regression model.
+
+```{r}
+r2 <- rsquared(m1)
+
+r2
+```
+
+The linear regression model with one categorical predictor that we fitted above is equivalent to a two sample *t*-test:
+
+```{r}
+t.test(pheno ~ geno, data = d1, var.equal = TRUE)
+```
+
+Cohen's *d* is a standardized measure of effect size for a *t*-test:
+
+```{r}
+cohens_d(pheno ~ geno, data = d1) %>% interpret_cohens_d()
+```
+
+Finally, we compute the adjusted predictions and marginal effects of the model we fitted above using the [`ggeffects`](https://strengejacke.github.io/ggeffects/) package as [previously shown](../marginal_effects):
+
+```{r}
+pred1 <- predict_response(m1, "geno")
+
+pred1
+```
+
+```{r}
+test_predictions(pred1)
+```
+
+[Do NOT describe "almost statistically significant" results like this one as "trending towards statistical significance"]{.underline}! There is no such a thing as a "trend towards statistical significance" in probability theory/statistical inference. It is just [mambo-jumbo](https://mchankins.wordpress.com/2013/04/21/still-not-significant-2/) used by followers of the "*null ritual*" to describe the result of a significance test when the *p*-value is near but not below the magical (yet completely arbitrary) threshold of 0.05 [@Gigerenzer2004]. Implying that a nearly significant *p*-value indicates such a trend or suggesting that the failure to achieve statistical significance was due to an insufficient amount of data is not only wholly mistaken but also actively misleading. This is because a *p*-value is quite likely to become less significant if data are added [@Wood2014].
+
+![](images/clipboard-2262354245.png){width="800"}
+
+## Power analysis using pre-made functions
+
+Although not useful at all (because, *a-posteriori*, power is simply a statistical restatement of the *p*-value), we can calculate the power of our pilot study:
+
+```{r}
+pwrss::power.t.test(ncp = -2.2, df = 10)
+```
+
+Assuming that the simple linear regression model we fitted to the pilot study data is a decent approximation of the DGP^\*^, we can calculate the minimum sample size required to achieve a power level of 0.80 to detect the effect size we estimated above at an alpha level of 0.05, using the built-in `stats::power.t.test` function or analogous functions in the [`pwr`](https://cran.r-project.org/web/packages/pwr/vignettes/pwr-vignette.html) and [`pwrss`](https://cran.r-project.org/web/packages/pwrss/vignettes/examples.html) packages:
+
+```{r}
+stats::power.t.test(delta = -13.38, sd = 10.7,
+                    power = 0.80, sig.level = 0.05)
+```
+
+```{r}
+pwrss::pwrss.t.2means(mu1 = 62.92, sd1 = 10.51,
+                      mu2 = 76.29, sd2 = 10.85,
+                      power = 0.80, alpha = 0.05)
+```
+
+```{r}
+pwr::pwr.t.test(d = 1.25,
+                power = 0.80, sig.level = 0.05)
+```
+
+^\*^ this assumption is not well justified, because the sample size of the pilot study is rather small and thus the effect size estimate is very uncertain `d = 1.25 [0.03, 2.48]`. When searching the literature for effect sizes estimated in similar studies, be aware that (because of low power and publication bias) these effect sizes are likely to be overestimated (2X, see the figure below from @Estimati2015, but see also counterpoint by @Patil2016). Therefore, the most reliable estimates of effect sizes are not from single studies but from meta-analyses that takes publication bias into account [@Lakens2022].
+
+![](images/effect_sizes_repro.jpg){width="800"}
+
+Power analysis at the boundaries of the effect size 95% CI and at half size:
+
+```{r}
+pwr::pwr.t.test(d = 0.03,
+                power = 0.80, sig.level = 0.05)
+
+pwr::pwr.t.test(d = 2.48,
+                power = 0.80, sig.level = 0.05)
+
+pwr::pwr.t.test(d = 1.25 / 2,
+                power = 0.80, sig.level = 0.05)
+```
+
+Click [here](pwrss_linreg.html) for examples on how to use the [`pwrss`](https://cran.r-project.org/web/packages/pwrss/vignettes/examples.html) package to perform power analysis for multiple regression models and different types of significance tests (NHST, non-inferiority/superiority tests, and equivalence tests).
+
+## Power analysis using Monte Carlo simulations
+
+For more complex statistical models and study designs, estimates of power can only be obtained using Monte Carlo simulations. For this more computationally expensive but also much more flexible approach, we need to define a function that, [given a sample size (N)]{.underline}:
+
+1.  simulates data (from a model of the DGP or by resampling)
+
+2.  performs significance testing
+
+3.  returns the *p* value of the significance test
+
+```{r}
+sim_p.gen <- function(n) {
+  # simulate data by generating synthetic data
+  mean.WT <- 62.92; sd.WT <- 10.51
+  mean.KO <- 76.29; sd.KO <- 10.85
+  
+  pheno.WT <- rnorm(n, mean = mean.WT, sd = sd.WT)
+  pheno.KO <- rnorm(n, mean = mean.KO, sd = sd.KO)
+  
+  d.WT <- tibble(pheno = pheno.WT, geno = "WT")
+  d.KO <- tibble(pheno = pheno.KO, geno = "KO")
+  
+  d <- bind_rows(d.WT, d.KO)
+  
+  # perform significance testing
+  m <- lm(pheno ~ geno, data = d)
+  
+  # return p-value of significance test
+  p(m)
+}
+```
+
+```{r}
+sim_p.res <- function(n) {
+  # simulate data by resampling real data
+  d <- d1 %>% group_by(geno) %>% sample_n(n, replace = TRUE)
+  
+  # perform significance testing
+  m <- lm(pheno ~ geno, data = d)
+  
+  # return p-value of significance test
+  p(m)
+}
+```
+
+```{r}
+sim_p.res.null <- function(n) {
+  # simulate data by resampling real data
+  d <- d1 %>% group_by(geno) %>% sample_n(n, replace = TRUE)
+  
+  # perform significance testing (remove effect by shuffling)
+  m <- lm(shuffle(pheno) ~ geno, data = d)
+  
+  # return p-value of significance test
+  p(m)
+}
+```
+
+### Run Monte Carlo simulation a large number of times and visualize the *p* value distribution for a specific sample size
+
+```{r}
+M <- 1000 # number of Monte Carlo simulations
+N <- 6    # sample size
+```
+
+```{r}
+sim_ps <- do(M) * sim_p.gen(N)
+```
+
+```{r}
+gf_histogram(~ sim_p.gen, fill = ~ (sim_p.gen <= 0.05), binwidth = 0.0125, data = sim_ps)
+```
+
+The proportion of *p*-values below the significance level (e.g., $\alpha = 0.05$) when the alternative hypothesis is true is equal to 1 - β, i.e., the power level:
+
+```{r}
+tally(sim_ps <= 0.05, format = "proportion")
+```
+
+```{r}
+sim_ps <- do(M) * sim_p.res(N)
+```
+
+```{r}
+gf_histogram(~ sim_p.res, fill = ~ (sim_p.res <= 0.05), binwidth = 0.0125, data = sim_ps)
+```
+
+```{r}
+tally(sim_ps <= 0.05, format = "proportion")
+```
+
+The proportion of *p*-values below the significance level (e.g., $\alpha = 0.05$) assuming the null hypothesis is true is equal to ⍺, i.e., the significance level:
+
+```{r}
+sim_ps <- do(M) * sim_p.res.null(N)
+```
+
+```{r}
+gf_histogram(~ sim_p.res.null, fill = ~ (sim_p.res.null <= 0.05), binwidth = 0.0125, data = sim_ps)
+```
+
+```{r}
+tally(sim_ps <= 0.05, format = "proportion")
+```
+
+### Find design by running the Monte Carlo simulation a large number of times and visualize the power curve for a range of sample sizes
+
+The `find.design()` function of the [`mlpwr`](https://github.com/flxzimmer/mlpwr) package [@Zimmer2023] takes as first argument a simulation function (similar to the ones above) that takes the sample size as input and returns `TRUE` or `FALSE` if the computed *p*-value is below the specified significance level (here we reuse the `sim_p.gen()` function above by wrapping it in an [anonymous function](https://towardsdatascience.com/the-new-pipe-and-anonymous-function-syntax-in-r-54d98861014c) that check whether the returned *p*-value is below the specified significance level):
+
+```{r}
+#| output: false
+ds <- mlpwr::find.design(\(n) sim_p.gen(n) <= 0.05, # alpha level
+                         boundaries = c(4, 40),     # range of sample sizes
+                         power = 0.80,              # power level (1 - beta)
+                         evaluations = M)           # number of Monte Carlo simulations
+```
+
+Print the power analysis results:
+
+```{r}
+summary(ds)
+```
+
+Plot the power analysis results:
+
+```{r}
+plot(ds, addribbon = FALSE, adderrorbars = TRUE)
+```
+
+## References
+
+::: {#refs}
+:::
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```
