@@ -395,45 +395,29 @@ The [`test_predictions()`](https://strengejacke.github.io/ggeffects/reference/te
 ### Effect of stress on neuronal activation conditional on sociability
 
 ```{r}
-pred <- predict_response(m5, "StressCondition")
-
-pred
+predict_response(m5, "StressCondition")
 ```
 
 ```{r}
-test_predictions(pred)
+test_predictions(m5, "StressCondition")
 ```
 
 ```{r}
-pred <- predict_response(m5, c("StressCondition", "Sociability [meansd]"))
-
-pred
-```
-
-```{r}
-test_predictions(pred, test = c("b1 = b4", "b2 = b5", "b3 = b6"))
+predict_response(m5, c("StressCondition", "Sociability [meansd]"))
 ```
 
 ### Effect of sociability on neuronal activation conditional on stress
 
 ```{r}
-pred <- predict_response(m5, "Sociability")
-
-pred
+predict_response(m5, "Sociability [meansd]")
 ```
 
 ```{r}
-test_predictions(pred)
+test_predictions(m5, "Sociability [meansd]")
 ```
 
 ```{r}
-pred <- predict_response(m5, c("Sociability", "StressCondition"))
-
-pred
-```
-
-```{r}
-test_predictions(pred)
+predict_response(m5, c("Sociability [meansd]", "StressCondition"))
 ```
 
 ## References
