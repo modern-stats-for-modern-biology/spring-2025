@@ -21,7 +21,6 @@ In this notebook, we’ll model several probability distributions/stastistical m
 #| output: false
 library(tidyverse)
 library(ggformula)
-library(extraDistr)
 
 theme_set(theme_minimal())
 
@@ -31,57 +30,37 @@ set.seed(666)
 ## Helper functions
 
 ```{r}
-# Plot probability distribution
-plot_probability_distribution <- function(df, xvar = "X", yvar = "Y", pvar = "p", title = "p(X, Y)", label_digits = 3) {
+plot_model <- function(df, n = NULL) {
+  max_x <- max(df$X)
+  max_y <- max(df$Y)
   
-  tile_formula <- as.formula(paste0(yvar, " ~ ", xvar))
-  
-  label_expr <- lazyeval::interp(
-    ~ sprintf(paste0("%0.", label_digits, "f"), var),
-    var = as.name(pvar)
-  )
-  
-  plot_obj <- gf_tile(
-    tile_formula,
-    data = df,
-    fill = as.formula(paste0("~ ", pvar)),
+  plt <- gf_tile(
+    Y ~ X, data = df,
+    fill = ~ p,
     color = "black",
-    linewidth = 0.2
-  ) %>%
-    gf_labs(title = title) %>%
-    gf_text(label = label_expr, size = 2) %>%
+    linewidth = 0.2) %>%
     gf_refine(
       scale_fill_gradientn(
         colors = c("white","chocolate4","black"),
-        values = c(0, 0.1, 1),
-        limits = c(0, 1)
-      ),
-      scale_x_continuous(breaks = 0:length(df[[xvar]]) + 1),
-      scale_y_continuous(breaks = 0:length(df[[yvar]]) + 1)
-    )
-  
-  return(plot_obj)
-}
+        values = c(0, 0.125, 1),
+        limits = c(0, 0.25)),
+      scale_x_continuous(breaks = seq(0, max_x)),
+      scale_y_continuous(breaks = seq(0, max_y)),
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()))
 
-# Plot random samples from probability distribution
-plot_random_samples <- function(df, n, xvar = "X", yvar = "Y", pvar = "p", title = "p(X, Y)") {
-  df_sampled <- df %>%
-    slice_sample(n = n, weight_by = .[[pvar]], replace = TRUE)
+  if (!is.null(n)) {
+    plt <- plt %>%
+      gf_point(
+        Y ~ X, data = df %>% slice_sample(n = n, weight_by = p, replace = TRUE),
+        size = 4,
+        color = "red2",
+        alpha = 0.5,
+        stroke = 0)
+  }
   
-  plot_obj <- gf_point(
-    as.formula(paste0(yvar, " ~ ", xvar)),
-    data = df_sampled,
-    alpha = 0.4,
-    size = 4,
-    color = "chocolate4",
-    stroke = 0
-  ) %>%
-    gf_refine(
-      scale_x_continuous(breaks = 0:length(df[[xvar]] + 1), minor_breaks = NULL),
-      scale_y_continuous(breaks = 0:length(df[[yvar]] + 1), minor_breaks = NULL)
-    )
-  
-  return(plot_obj)
+  return(plt)
 }
 ```
 
@@ -90,11 +69,10 @@ plot_random_samples <- function(df, n, xvar = "X", yvar = "Y", pvar = "p", title
 ```{r}
 n <- 50
 sample.size <- 10
-grid.size <- 10
-b0 <- 1
-b1 <- 2
-e  <- 1
-sd <- 1
+grid.size <- 20
+b0 <- 3
+b1 <- 1
+s  <- 1
 ```
 
 ```{r}
@@ -116,7 +94,7 @@ ss %>%
   mutate(M = TRUE) %>% 
   ungroup() %>%
   mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
-  plot_probability_distribution()
+  plot_model()
 ```
 
 ```{r}
@@ -126,77 +104,93 @@ ss %>%
   mutate(M = TRUE) %>% 
   ungroup() %>%
   mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
-  plot_random_samples(n)
+  plot_model(n)
 ```
 
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
   rowwise() %>% 
-  mutate(M = (Y == X)) %>% 
+  mutate(M = (Y == b0 + b1 * X)) %>% 
   ungroup() %>%
   mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
-  plot_probability_distribution()
+  plot_model()
 ```
 
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
   rowwise() %>% 
-  mutate(M = (Y == X)) %>% 
+  mutate(M = (Y == b0 + b1 * X)) %>% 
   ungroup() %>%
   mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
-  plot_random_samples(n)
+  plot_model(n)
 ```
 
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
   rowwise() %>% 
-  mutate(M = (Y == b0 + b1 * X + 0) | (Y == (b0 + b1 * X + e)) | (Y == (b0 + b1 * X - e))) %>% 
+  mutate(M = (Y == b0 + b1 * X + 0) | (Y == (b0 + b1 * X + s)) | (Y == (b0 + b1 * X - s))) %>% 
   ungroup() %>%
   mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
-  plot_probability_distribution()
+  plot_model()
 ```
 
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
   rowwise() %>% 
-  mutate(M = (Y == b0 + b1 * X + 0) | (Y == (b0 + b1 * X + e)) | (Y == (b0 + b1 * X - e))) %>% 
+  mutate(M = (Y == b0 + b1 * X + 0) | (Y == (b0 + b1 * X + s)) | (Y == (b0 + b1 * X - s))) %>% 
   ungroup() %>%
   mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
-  plot_random_samples(n)
+  plot_model(n)
 ```
 
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
-  mutate(p = ddunif(X, Y - e, Y + e)) %>% 
-  mutate(p = p / sum(p)) %>%
-  plot_probability_distribution()
-```
-
-```{r}
-ss %>% 
-  mutate(p = 1 / n()) %>%
-  mutate(p = ddunif(X, Y - e, Y + e)) %>% 
-  mutate(p = p / sum(p)) %>%
-  plot_random_samples(n)
-```
-
-```{r}
-ss %>% 
-  mutate(p = 1 / n()) %>%
-  mutate(p = ddnorm(X, mean = Y, sd = sd)) %>%
+  mutate(p = dunif(Y, min = b0 + b1 * X - s, max = b0 + b1 * X + s)) %>%
   mutate(p = p / sum(p)) %>% 
-  plot_probability_distribution()
+  plot_model()
 ```
 
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
-  mutate(p = ddnorm(X, mean = Y, sd = sd)) %>%
+  mutate(p = dunif(Y, min = b0 + b1 * X - s, max = b0 + b1 * X + s)) %>%
   mutate(p = p / sum(p)) %>% 
-  plot_random_samples(n)
+  plot_model(n)
+```
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  mutate(p = dnorm(Y, mean = b0 + b1 * X, sd = s)) %>%
+  mutate(p = p / sum(p)) %>% 
+  plot_model()
+```
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  mutate(p = dnorm(Y, mean = b0 + b1 * X, sd = s)) %>%
+  mutate(p = p / sum(p)) %>% 
+  plot_model(n)
+```
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  mutate(p = dcauchy(Y, location = b0 + b1 * X, scale = s)) %>%
+  mutate(p = p / sum(p)) %>% 
+  plot_model()
+```
+
+```{r}
+ss %>% 
+  mutate(p = 1 / n()) %>%
+  mutate(p = dcauchy(Y, location = b0 + b1 * X, scale = s)) %>%
+  mutate(p = p / sum(p)) %>% 
+  plot_model(n)
 ```
