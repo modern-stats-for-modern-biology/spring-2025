@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Edoardo &quot;Dado&quot; Marcora">
+<meta name="dcterms.date" content="2024-03-12">
+
+<title>Marginal effects using R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="index_files/libs/quarto-diagram/mermaid.min.js"></script>
+<script src="index_files/libs/quarto-diagram/mermaid-init.js"></script>
+<link href="index_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+<script src="index_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="index_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="index_files/libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="index_files/libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#setup-environment" id="toc-setup-environment" class="nav-link" data-scroll-target="#setup-environment">Setup environment</a></li>
+  <li><a href="#background-information" id="toc-background-information" class="nav-link" data-scroll-target="#background-information">Background information</a></li>
+  <li><a href="#estimands" id="toc-estimands" class="nav-link" data-scroll-target="#estimands">Estimands</a></li>
+  <li><a href="#read-and-prep-data" id="toc-read-and-prep-data" class="nav-link" data-scroll-target="#read-and-prep-data">Read and prep data</a></li>
+  <li><a href="#causal-model" id="toc-causal-model" class="nav-link" data-scroll-target="#causal-model">Causal model</a></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory data analysis</a>
+  <ul class="collapse">
+  <li><a href="#sociability-stresscondition" id="toc-sociability-stresscondition" class="nav-link" data-scroll-target="#sociability-stresscondition">Sociability ~ StressCondition</a></li>
+  <li><a href="#celcfos-null" id="toc-celcfos-null" class="nav-link" data-scroll-target="#celcfos-null">CeLcfos ~ NULL</a></li>
+  <li><a href="#logcelcfos-stresscondition" id="toc-logcelcfos-stresscondition" class="nav-link" data-scroll-target="#logcelcfos-stresscondition">logCeLcfos ~ StressCondition</a></li>
+  <li><a href="#logcelcfos-sociability" id="toc-logcelcfos-sociability" class="nav-link" data-scroll-target="#logcelcfos-sociability">logCeLcfos ~ Sociability</a></li>
+  <li><a href="#logcelcfos-stresscondition-sociability" id="toc-logcelcfos-stresscondition-sociability" class="nav-link" data-scroll-target="#logcelcfos-stresscondition-sociability">logCeLcfos ~ StressCondition + Sociability</a></li>
+  <li><a href="#logcelcfos-stresscondition-sociability-1" id="toc-logcelcfos-stresscondition-sociability-1" class="nav-link" data-scroll-target="#logcelcfos-stresscondition-sociability-1">logCeLcfos ~ StressCondition * Sociability</a></li>
+  </ul></li>
+  <li><a href="#build-and-fit-models" id="toc-build-and-fit-models" class="nav-link" data-scroll-target="#build-and-fit-models">Build and fit models</a>
+  <ul class="collapse">
+  <li><a href="#sociability-stresscondition-1" id="toc-sociability-stresscondition-1" class="nav-link" data-scroll-target="#sociability-stresscondition-1">Sociability ~ StressCondition</a></li>
+  <li><a href="#logcelcfos-null" id="toc-logcelcfos-null" class="nav-link" data-scroll-target="#logcelcfos-null">logCeLcfos ~ NULL</a></li>
+  <li><a href="#logcelcfos-stresscondition-1" id="toc-logcelcfos-stresscondition-1" class="nav-link" data-scroll-target="#logcelcfos-stresscondition-1">logCeLcfos ~ StressCondition</a></li>
+  <li><a href="#logcelcfos-sociability-1" id="toc-logcelcfos-sociability-1" class="nav-link" data-scroll-target="#logcelcfos-sociability-1">logCeLcfos ~ Sociability</a></li>
+  <li><a href="#logcelcfos-stresscondition-sociability-2" id="toc-logcelcfos-stresscondition-sociability-2" class="nav-link" data-scroll-target="#logcelcfos-stresscondition-sociability-2">logCeLcfos ~ StressCondition + Sociability</a></li>
+  <li><a href="#logcelcfos-stresscondition-sociability-3" id="toc-logcelcfos-stresscondition-sociability-3" class="nav-link" data-scroll-target="#logcelcfos-stresscondition-sociability-3">logCeLcfos ~ StressCondition * Sociability</a></li>
+  </ul></li>
+  <li><a href="#model-evaluation-and-comparison" id="toc-model-evaluation-and-comparison" class="nav-link" data-scroll-target="#model-evaluation-and-comparison">Model evaluation and comparison</a></li>
+  <li><a href="#model-predictions" id="toc-model-predictions" class="nav-link" data-scroll-target="#model-predictions">Model predictions</a></li>
+  <li><a href="#marginal-effects" id="toc-marginal-effects" class="nav-link" data-scroll-target="#marginal-effects">Marginal effects</a></li>
+  <li><a href="#estimates" id="toc-estimates" class="nav-link" data-scroll-target="#estimates">Estimates</a>
+  <ul class="collapse">
+  <li><a href="#effect-of-stress-on-neuronal-activation-conditional-on-sociability" id="toc-effect-of-stress-on-neuronal-activation-conditional-on-sociability" class="nav-link" data-scroll-target="#effect-of-stress-on-neuronal-activation-conditional-on-sociability">Effect of stress on neuronal activation conditional on sociability</a></li>
+  <li><a href="#effect-of-sociability-on-neuronal-activation-conditional-on-stress" id="toc-effect-of-sociability-on-neuronal-activation-conditional-on-stress" class="nav-link" data-scroll-target="#effect-of-sociability-on-neuronal-activation-conditional-on-stress">Effect of sociability on neuronal activation conditional on stress</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#print-environment" id="toc-print-environment" class="nav-link" data-scroll-target="#print-environment">Print environment</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Marginal effects using R</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Edoardo "Dado" Marcora </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 12, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This notebook shows how to use various packages to 1) import data from an Excel spreadsheet (<a href="https://readxl.tidyverse.org/"><code>readxl</code></a>), 2) evaluate (<a href="https://easystats.github.io/performance/"><code>performance</code></a>) and compare (<a href="https://modelsummary.com/"><code>modelsummary</code></a>) models, and 3) estimate marginal effects (<a href="https://strengejacke.github.io/ggeffects/"><code>ggeffects</code></a>) using the best fitting model (<code>m5</code>) of the mouse stress/sociability/neuronal activation experiment illustrated during the lecture of week 10 (2024-03-12, <strong>Chapter 9: Models with interactions</strong>) by <a href="https://labs.neuroscience.mssm.edu/project/rich-lab/">Erin Rich</a>.</p>
+</section>
+<section id="setup-environment" class="level2">
+<h2 class="anchored" data-anchor-id="setup-environment">Setup environment</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coursekata)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">ggeffects_margin =</span> <span class="st">"empirical"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="background-information" class="level2">
+<h2 class="anchored" data-anchor-id="background-information">Background information</h2>
+<p>The data are from a study of the effects of footshock stress on social behavior and neuronal activation in the amygdala (and medial prefrontal cortex) of male and female mice.</p>
+<p>Data available at <a href="https://doi.org/10.7910/DVN/1RAQON" class="uri">https://doi.org/10.7910/DVN/1RAQON</a></p>
+<p>Study available at <a href="https://doi.org/10.1371/journal.pone.0281388" class="uri">https://doi.org/10.1371/journal.pone.0281388</a></p>
+</section>
+<section id="estimands" class="level2">
+<h2 class="anchored" data-anchor-id="estimands">Estimands</h2>
+<p>The aim of the original study was to explore the effect of stress on the sociability of male and female mice in a standard social approach test. Neuronal activation during social approach was assessed using immunohistochemistry against the immediate early gene product cFos.</p>
+<p>Here we are going to estimate the effect of stress (<code>StressCondition</code>, treatment variable) on neuronal activation (<code>CeLcfos</code>, outcome variable) conditional on the sociability of male and female mice (<code>Sociability</code>, control variable). We will also estimate the effect of <code>Sociability</code> on <code>CeLcfos</code> conditional on <code>StressCondition</code>.</p>
+</section>
+<section id="read-and-prep-data" class="level2">
+<h2 class="anchored" data-anchor-id="read-and-prep-data">Read and prep data</h2>
+<p>This study is a good example of <u>how NOT to format supplementary data in an Excel spreadsheet</u>! It shouldn’t take more than one call to the <code>read_xlsx()</code> function to import data from a properly formatted Excel spreadsheet.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>id1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!C4:D11"</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Treatment"</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>id2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!C16:D23"</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Treatment"</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>id3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!C26:D33"</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Treatment"</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>id4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!C37:D44"</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Treatment"</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>id <span class="ot">&lt;-</span> <span class="fu">rbind</span>(id1, id2, id3, id4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cel1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!H4:H11"</span>, <span class="at">col_names =</span> <span class="st">"CeLcfos"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cel2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!H16:H23"</span>, <span class="at">col_names =</span> <span class="st">"CeLcfos"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>cel3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!H26:H33"</span>, <span class="at">col_names =</span> <span class="st">"CeLcfos"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>cel4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!H37:H44"</span>, <span class="at">col_names =</span> <span class="st">"CeLcfos"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>cel <span class="ot">&lt;-</span> <span class="fu">rbind</span>(cel1, cel2, cel3, cel4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>soc1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!N4:N11"</span>, <span class="at">col_names =</span> <span class="st">"Sociability"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>soc2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!N16:N23"</span>, <span class="at">col_names =</span> <span class="st">"Sociability"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>soc3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!N26:N33"</span>, <span class="at">col_names =</span> <span class="st">"Sociability"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>soc4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!N37:N44"</span>, <span class="at">col_names =</span> <span class="st">"Sociability"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>soc <span class="ot">&lt;-</span> <span class="fu">rbind</span>(soc1, soc2, soc3, soc4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">cbind</span>(id,soc,cel) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sex =</span> <span class="fu">factor</span>(<span class="fu">substr</span>(ID, <span class="dv">1</span>, <span class="dv">1</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">StressCondition =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"FC-"</span>, Treatment) <span class="sc">~</span> <span class="st">"Control"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"FC+"</span>, Treatment) <span class="sc">~</span> <span class="st">"Shock"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Control"</span>, Treatment) <span class="sc">~</span> <span class="st">"Control"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Stress"</span>, Treatment) <span class="sc">~</span> <span class="st">"Shock"</span>),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Treatment =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Veh"</span>, Treatment) <span class="sc">~</span> <span class="st">"Vehicle"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Alp"</span>, Treatment) <span class="sc">~</span> <span class="st">"Alprazolam"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">logCeLcfos =</span> <span class="fu">log</span>(CeLcfos),</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">Sex =</span> <span class="fu">factor</span>(Sex),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">Treatment =</span> <span class="fu">factor</span>(Treatment),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">StressCondition =</span> <span class="fu">factor</span>(StressCondition)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ID, CeLcfos, logCeLcfos, StressCondition, Sociability, <span class="fu">everything</span>())</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["CeLcfos"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["logCeLcfos"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["StressCondition"],"name":[4],"type":["fct"],"align":["left"]},{"label":["Sociability"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Treatment"],"name":[6],"type":["fct"],"align":["left"]},{"label":["Sex"],"name":[7],"type":["fct"],"align":["left"]}],"data":[{"1":"M14","2":"87.50","3":"4.472","4":"Shock","5":"71.55","6":"Alprazolam","7":"M"},{"1":"M15","2":"675.00","3":"6.515","4":"Shock","5":"0.00","6":"Alprazolam","7":"M"},{"1":"M1","2":"50.00","3":"3.912","4":"Shock","5":"86.90","6":"Alprazolam","7":"M"},{"1":"M2","2":"22.22","3":"3.101","4":"Shock","5":"93.43","6":"Alprazolam","7":"M"},{"1":"F9","2":"316.67","3":"5.758","4":"Shock","5":"82.24","6":"Alprazolam","7":"F"},{"1":"F13","2":"79.17","3":"4.372","4":"Shock","5":"65.52","6":"Alprazolam","7":"F"},{"1":"F1","2":"22.22","3":"3.101","4":"Shock","5":"83.40","6":"Alprazolam","7":"F"},{"1":"F2","2":"22.22","3":"3.101","4":"Shock","5":"81.63","6":"Alprazolam","7":"F"},{"1":"M3","2":"41.67","3":"3.730","4":"Shock","5":"75.95","6":"Vehicle","7":"M"},{"1":"M4","2":"80.56","3":"4.389","4":"Shock","5":"63.27","6":"Vehicle","7":"M"},{"1":"M12","2":"175.00","3":"5.165","4":"Shock","5":"54.90","6":"Vehicle","7":"M"},{"1":"M13","2":"433.33","3":"6.072","4":"Shock","5":"67.21","6":"Vehicle","7":"M"},{"1":"F7","2":"25.00","3":"3.219","4":"Shock","5":"76.67","6":"Vehicle","7":"F"},{"1":"F8","2":"138.89","3":"4.934","4":"Shock","5":"52.24","6":"Vehicle","7":"F"},{"1":"F11","2":"83.33","3":"4.423","4":"Shock","5":"65.90","6":"Vehicle","7":"F"},{"1":"F12","2":"236.67","3":"5.467","4":"Shock","5":"43.27","6":"Vehicle","7":"F"},{"1":"M9","2":"70.83","3":"4.260","4":"Control","5":"83.91","6":"Alprazolam","7":"M"},{"1":"M16","2":"215.00","3":"5.371","4":"Control","5":"68.49","6":"Alprazolam","7":"M"},{"1":"M17","2":"158.33","3":"5.065","4":"Control","5":"52.30","6":"Alprazolam","7":"M"},{"1":"M21","2":"120.00","3":"4.787","4":"Control","5":"72.34","6":"Alprazolam","7":"M"},{"1":"F2","2":"461.11","3":"6.134","4":"Control","5":"68.06","6":"Alprazolam","7":"F"},{"1":"F18","2":"77.78","3":"4.354","4":"Control","5":"25.14","6":"Alprazolam","7":"F"},{"1":"F19","2":"102.08","3":"4.626","4":"Control","5":"34.00","6":"Alprazolam","7":"F"},{"1":"F21","2":"80.56","3":"4.389","4":"Control","5":"77.47","6":"Alprazolam","7":"F"},{"1":"M18","2":"125.00","3":"4.828","4":"Control","5":"55.69","6":"Vehicle","7":"M"},{"1":"M19","2":"226.67","3":"5.423","4":"Control","5":"61.90","6":"Vehicle","7":"M"},{"1":"M20","2":"125.00","3":"4.828","4":"Control","5":"91.09","6":"Vehicle","7":"M"},{"1":"M2","2":"29.17","3":"3.373","4":"Control","5":"70.34","6":"Vehicle","7":"M"},{"1":"F10","2":"58.33","3":"4.066","4":"Control","5":"39.94","6":"Vehicle","7":"F"},{"1":"F15","2":"69.44","3":"4.241","4":"Control","5":"72.59","6":"Vehicle","7":"F"},{"1":"F17","2":"55.56","3":"4.017","4":"Control","5":"71.18","6":"Vehicle","7":"F"},{"1":"F22","2":"16.67","3":"2.813","4":"Control","5":"73.60","6":"Vehicle","7":"F"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="causal-model" class="level2">
+<h2 class="anchored" data-anchor-id="causal-model">Causal model</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<div>
+<pre class="mermaid mermaid-js">flowchart T
+    X[StressCondition] --&gt; Y[CeLcfos]
+    Z[Sociability] --&gt; Y
+    X[StressCondition] --&gt; Z
+</pre>
+</div>
+</div>
+</div>
+</div>
+<p>See <a href="https://www.dagitty.net/">daggity</a> causal diagram at <a href="https://dagitty.net/mPkDBY42K" class="uri">https://dagitty.net/mPkDBY42K</a></p>
+</section>
+<section id="exploratory-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory data analysis</h2>
+<section id="sociability-stresscondition" class="level3">
+<h3 class="anchored" data-anchor-id="sociability-stresscondition">Sociability ~ StressCondition</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(Sociability <span class="sc">~</span> StressCondition, <span class="at">color =</span> <span class="sc">~</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_boxplot</span>(<span class="at">fill =</span> <span class="sc">~</span> StressCondition, <span class="at">alpha =</span> <span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="celcfos-null" class="level3">
+<h3 class="anchored" data-anchor-id="celcfos-null">CeLcfos ~ NULL</h3>
+<p>It is often but erroneously believed that linear regression assumes that the outcome variable is normally distributed. This misconception arises from not knowing/remembering the regression likelihood equation(s) of the general linear model (discussed in a <a href="https://modern-stats-for-modern-biology.github.io/spring-2024/lectures/statistical_inference_3/#/linear-regression-models">previous lecture</a>), e.g.:</p>
+<p><span class="math display">\[
+y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu = \beta_0 + \beta_1 x_i, \sigma)
+\]</span></p>
+<p>or (equivalently):</p>
+<p><span class="math display">\[
+y_i = \beta_0 + \beta_1 x_i + \epsilon_i
+\]</span></p>
+<p><span class="math display">\[
+\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(0, \sigma)
+\]</span></p>
+<p>All the assumptions of the general linear model are unambiguously stated by these two equivalent notations!</p>
+<p>Specifically, to return to the misconception mentioned above, the linear regression model assumes that the outcome variable <span class="math inline">\(y\)</span> is normally distributed <strong>conditional on the covariates</strong> <span class="math inline">\(x\)</span> or, equivalently, that the <strong>residuals</strong> <strong>are normally distributed</strong>.</p>
+<p>For example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nsamples <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>y_xA <span class="ot">=</span> <span class="fu">rnorm</span>(nsamples, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="dv">4</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>y_xB <span class="ot">=</span> <span class="fu">rnorm</span>(nsamples, <span class="at">mean =</span> <span class="dv">20</span>, <span class="at">sd =</span> <span class="dv">4</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>y_x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">y =</span> <span class="fu">c</span>(y_xA, y_xB), <span class="at">x =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"A"</span>, nsamples), <span class="fu">rep</span>(<span class="st">"B"</span>, nsamples))))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>y_x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["y"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["x"],"name":[2],"type":["fct"],"align":["left"]}],"data":[{"1":"-0.241903","2":"A"},{"1":"1.079290","2":"A"},{"1":"8.234833","2":"A"},{"1":"2.282034","2":"A"},{"1":"2.517151","2":"A"},{"1":"8.860260","2":"A"},{"1":"3.843665","2":"A"},{"1":"-3.060245","2":"A"},{"1":"-0.747411","2":"A"},{"1":"0.217352","2":"A"},{"1":"6.896327","2":"A"},{"1":"3.439255","2":"A"},{"1":"3.603086","2":"A"},{"1":"2.442731","2":"A"},{"1":"-0.223365","2":"A"},{"1":"9.147653","2":"A"},{"1":"3.991402","2":"A"},{"1":"-5.866469","2":"A"},{"1":"4.805424","2":"A"},{"1":"0.108834","2":"A"},{"1":"-2.271295","2":"A"},{"1":"1.128100","2":"A"},{"1":"-2.104018","2":"A"},{"1":"-0.915565","2":"A"},{"1":"-0.500157","2":"A"},{"1":"-4.746773","2":"A"},{"1":"5.351148","2":"A"},{"1":"2.613492","2":"A"},{"1":"-2.552548","2":"A"},{"1":"7.015260","2":"A"},{"1":"3.705857","2":"A"},{"1":"0.819714","2":"A"},{"1":"5.580503","2":"A"},{"1":"5.512534","2":"A"},{"1":"5.286324","2":"A"},{"1":"4.754561","2":"A"},{"1":"4.215671","2":"A"},{"1":"1.752353","2":"A"},{"1":"0.776149","2":"A"},{"1":"0.478116","2":"A"},{"1":"-0.778828","2":"A"},{"1":"1.168331","2":"A"},{"1":"-3.061585","2":"A"},{"1":"10.675824","2":"A"},{"1":"6.831848","2":"A"},{"1":"-2.492434","2":"A"},{"1":"0.388461","2":"A"},{"1":"0.133379","2":"A"},{"1":"5.119860","2":"A"},{"1":"1.666524","2":"A"},{"1":"3.013274","2":"A"},{"1":"1.885813","2":"A"},{"1":"1.828518","2":"A"},{"1":"7.474409","2":"A"},{"1":"1.096916","2":"A"},{"1":"8.065882","2":"A"},{"1":"-4.195011","2":"A"},{"1":"4.338455","2":"A"},{"1":"2.495417","2":"A"},{"1":"2.863766","2":"A"},{"1":"3.518558","2":"A"},{"1":"-0.009294","2":"A"},{"1":"0.667170","2":"A"},{"1":"-2.074302","2":"A"},{"1":"-2.287165","2":"A"},{"1":"3.214115","2":"A"},{"1":"3.792839","2":"A"},{"1":"2.212017","2":"A"},{"1":"5.689070","2":"A"},{"1":"10.200339","2":"A"},{"1":"0.035875","2":"A"},{"1":"-7.236676","2":"A"},{"1":"6.022954","2":"A"},{"1":"-0.836803","2":"A"},{"1":"-0.752034","2":"A"},{"1":"6.102285","2":"A"},{"1":"0.860908","2":"A"},{"1":"-2.882871","2":"A"},{"1":"2.725214","2":"A"},{"1":"1.444435","2":"A"},{"1":"2.023057","2":"A"},{"1":"3.541122","2":"A"},{"1":"0.517360","2":"A"},{"1":"4.577506","2":"A"},{"1":"1.118054","2":"A"},{"1":"3.327128","2":"A"},{"1":"6.387356","2":"A"},{"1":"3.740726","2":"A"},{"1":"0.696274","2":"A"},{"1":"6.595230","2":"A"},{"1":"5.974015","2":"A"},{"1":"4.193588","2":"A"},{"1":"2.954927","2":"A"},{"1":"-0.511624","2":"A"},{"1":"7.442610","2":"A"},{"1":"-0.401038","2":"A"},{"1":"10.749332","2":"A"},{"1":"8.130443","2":"A"},{"1":"1.057199","2":"A"},{"1":"-2.105684","2":"A"},{"1":"-0.841626","2":"A"},{"1":"3.027535","2":"A"},{"1":"1.013232","2":"A"},{"1":"0.609830","2":"A"},{"1":"-1.806474","2":"A"},{"1":"1.819889","2":"A"},{"1":"-1.139618","2":"A"},{"1":"-4.671768","2":"A"},{"1":"0.479094","2":"A"},{"1":"5.675986","2":"A"},{"1":"-0.301388","2":"A"},{"1":"4.431857","2":"A"},{"1":"-4.471531","2":"A"},{"1":"1.777752","2":"A"},{"1":"4.077629","2":"A"},{"1":"3.204613","2":"A"},{"1":"2.422705","2":"A"},{"1":"-0.562824","2":"A"},{"1":"-1.398817","2":"A"},{"1":"-2.096515","2":"A"},{"1":"2.470586","2":"A"},{"1":"-1.789898","2":"A"},{"1":"0.037770","2":"A"},{"1":"0.975631","2":"A"},{"1":"9.375448","2":"A"},{"1":"-0.607800","2":"A"},{"1":"2.941546","2":"A"},{"1":"2.311843","2":"A"},{"1":"-1.847427","2":"A"},{"1":"1.714768","2":"A"},{"1":"7.778203","2":"A"},{"1":"3.806016","2":"A"},{"1":"2.164932","2":"A"},{"1":"0.310013","2":"A"},{"1":"-6.212989","2":"A"},{"1":"6.525349","2":"A"},{"1":"-3.842560","2":"A"},{"1":"4.959790","2":"A"},{"1":"9.636414","2":"A"},{"1":"-3.775573","2":"A"},{"1":"4.807137","2":"A"},{"1":"0.951210","2":"A"},{"1":"-4.288577","2":"A"},{"1":"-4.058671","2":"A"},{"1":"-4.406145","2":"A"},{"1":"-0.123626","2":"A"},{"1":"-3.847022","2":"A"},{"1":"4.751667","2":"A"},{"1":"10.400436","2":"A"},{"1":"-3.148122","2":"A"},{"1":"5.150955","2":"A"},{"1":"5.076169","2":"A"},{"1":"3.328810","2":"A"},{"1":"-2.033506","2":"A"},{"1":"1.522190","2":"A"},{"1":"0.878419","2":"A"},{"1":"4.251958","2":"A"},{"1":"0.510245","2":"A"},{"1":"5.907894","2":"A"},{"1":"0.501677","2":"A"},{"1":"6.210846","2":"A"},{"1":"-2.196708","2":"A"},{"1":"-3.040621","2":"A"},{"1":"14.964160","2":"A"},{"1":"0.332570","2":"A"},{"1":"3.192910","2":"A"},{"1":"4.546279","2":"A"},{"1":"0.064877","2":"A"},{"1":"4.067448","2":"A"},{"1":"3.475858","2":"A"},{"1":"1.138478","2":"A"},{"1":"2.261172","2":"A"},{"1":"1.863731","2":"A"},{"1":"10.513808","2":"A"},{"1":"-0.965344","2":"A"},{"1":"-2.383985","2":"A"},{"1":"2.151154","2":"A"},{"1":"3.241923","2":"A"},{"1":"3.746094","2":"A"},{"1":"0.166539","2":"A"},{"1":"-2.253305","2":"A"},{"1":"7.052741","2":"A"},{"1":"0.601398","2":"A"},{"1":"-1.462051","2":"A"},{"1":"1.054882","2":"A"},{"1":"1.211296","2":"A"},{"1":"6.439681","2":"A"},{"1":"2.338949","2":"A"},{"1":"5.016215","2":"A"},{"1":"0.002832","2":"A"},{"1":"2.857781","2":"A"},{"1":"0.701256","2":"A"},{"1":"2.378334","2":"A"},{"1":"-1.581453","2":"A"},{"1":"-3.243206","2":"A"},{"1":"9.988854","2":"A"},{"1":"4.402835","2":"A"},{"1":"-3.005085","2":"A"},{"1":"-0.444664","2":"A"},{"1":"-2.741920","2":"A"},{"1":"10.795241","2":"A"},{"1":"7.249652","2":"A"},{"1":"0.939420","2":"A"},{"1":"4.172776","2":"A"},{"1":"0.342640","2":"A"},{"1":"0.095012","2":"A"},{"1":"-1.154411","2":"A"},{"1":"-0.378469","2":"A"},{"1":"8.603630","2":"A"},{"1":"1.783887","2":"A"},{"1":"2.476981","2":"A"},{"1":"2.974750","2":"A"},{"1":"6.929904","2":"A"},{"1":"-0.064255","2":"A"},{"1":"-1.970029","2":"A"},{"1":"8.702788","2":"A"},{"1":"0.235347","2":"A"},{"1":"-0.892264","2":"A"},{"1":"-2.945092","2":"A"},{"1":"-3.138863","2":"A"},{"1":"-0.295894","2":"A"},{"1":"4.471943","2":"A"},{"1":"6.439393","2":"A"},{"1":"4.830353","2":"A"},{"1":"0.545371","2":"A"},{"1":"2.239000","2":"A"},{"1":"-0.818386","2":"A"},{"1":"-0.868873","2":"A"},{"1":"5.538602","2":"A"},{"1":"-2.062370","2":"A"},{"1":"9.821176","2":"A"},{"1":"1.638722","2":"A"},{"1":"2.858155","2":"A"},{"1":"-0.954111","2":"A"},{"1":"-0.297555","2":"A"},{"1":"-3.268065","2":"A"},{"1":"1.268298","2":"A"},{"1":"3.675930","2":"A"},{"1":"3.297217","2":"A"},{"1":"-1.126146","2":"A"},{"1":"-1.154488","2":"A"},{"1":"-0.008795","2":"A"},{"1":"7.984243","2":"A"},{"1":"-2.549214","2":"A"},{"1":"1.283794","2":"A"},{"1":"9.609447","2":"A"},{"1":"1.596100","2":"A"},{"1":"-3.439363","2":"A"},{"1":"-0.659078","2":"A"},{"1":"3.941840","2":"A"},{"1":"0.497589","2":"A"},{"1":"-0.247505","2":"A"},{"1":"0.624331","2":"A"},{"1":"2.361987","2":"A"},{"1":"8.394035","2":"A"},{"1":"1.645740","2":"A"},{"1":"6.323198","2":"A"},{"1":"4.523016","2":"A"},{"1":"1.545440","2":"A"},{"1":"-4.131608","2":"A"},{"1":"-0.084469","2":"A"},{"1":"0.040518","2":"A"},{"1":"2.188618","2":"A"},{"1":"7.200795","2":"A"},{"1":"11.172316","2":"A"},{"1":"8.190324","2":"A"},{"1":"1.467396","2":"A"},{"1":"-5.026110","2":"A"},{"1":"0.444881","2":"A"},{"1":"2.356829","2":"A"},{"1":"5.380052","2":"A"},{"1":"5.850112","2":"A"},{"1":"4.737238","2":"A"},{"1":"-3.581097","2":"A"},{"1":"5.398572","2":"A"},{"1":"0.213771","2":"A"},{"1":"2.699211","2":"A"},{"1":"2.298205","2":"A"},{"1":"3.712667","2":"A"},{"1":"2.098700","2":"A"},{"1":"-4.669900","2":"A"},{"1":"4.945984","2":"A"},{"1":"3.544106","2":"A"},{"1":"0.937393","2":"A"},{"1":"2.472578","2":"A"},{"1":"2.536155","2":"A"},{"1":"2.884078","2":"A"},{"1":"8.563385","2":"A"},{"1":"1.123798","2":"A"},{"1":"2.672262","2":"A"},{"1":"6.673535","2":"A"},{"1":"6.216724","2":"A"},{"1":"6.581052","2":"A"},{"1":"-0.309872","2":"A"},{"1":"10.009931","2":"A"},{"1":"2.266803","2":"A"},{"1":"9.467407","2":"A"},{"1":"-3.403611","2":"A"},{"1":"2.083934","2":"A"},{"1":"6.999658","2":"A"},{"1":"-0.860969","2":"A"},{"1":"-1.010756","2":"A"},{"1":"-1.754155","2":"A"},{"1":"-2.210053","2":"A"},{"1":"0.251362","2":"A"},{"1":"3.324717","2":"A"},{"1":"-6.056842","2":"A"},{"1":"2.847922","2":"A"},{"1":"6.946700","2":"A"},{"1":"10.150296","2":"A"},{"1":"7.204704","2":"A"},{"1":"5.027099","2":"A"},{"1":"-4.906922","2":"A"},{"1":"-0.406027","2":"A"},{"1":"0.591814","2":"A"},{"1":"4.814096","2":"A"},{"1":"1.577315","2":"A"},{"1":"-3.034595","2":"A"},{"1":"8.737743","2":"A"},{"1":"5.645565","2":"A"},{"1":"2.949721","2":"A"},{"1":"6.872434","2":"A"},{"1":"-3.355097","2":"A"},{"1":"4.643281","2":"A"},{"1":"-0.091650","2":"A"},{"1":"4.734982","2":"A"},{"1":"1.756712","2":"A"},{"1":"4.531843","2":"A"},{"1":"7.342070","2":"A"},{"1":"2.029160","2":"A"},{"1":"6.070235","2":"A"},{"1":"-2.753736","2":"A"},{"1":"-0.886418","2":"A"},{"1":"8.076871","2":"A"},{"1":"3.509552","2":"A"},{"1":"-6.208891","2":"A"},{"1":"-3.456150","2":"A"},{"1":"1.196876","2":"A"},{"1":"5.463118","2":"A"},{"1":"1.592467","2":"A"},{"1":"4.496750","2":"A"},{"1":"5.836022","2":"A"},{"1":"8.684219","2":"A"},{"1":"2.224067","2":"A"},{"1":"1.792072","2":"A"},{"1":"-5.012949","2":"A"},{"1":"2.397310","2":"A"},{"1":"-0.287400","2":"A"},{"1":"-1.896038","2":"A"},{"1":"1.280375","2":"A"},{"1":"6.059773","2":"A"},{"1":"-5.970994","2":"A"},{"1":"0.290883","2":"A"},{"1":"2.466549","2":"A"},{"1":"-1.572830","2":"A"},{"1":"3.335612","2":"A"},{"1":"3.645720","2":"A"},{"1":"1.867855","2":"A"},{"1":"-7.863593","2":"A"},{"1":"12.285833","2":"A"},{"1":"1.178803","2":"A"},{"1":"4.604773","2":"A"},{"1":"3.095066","2":"A"},{"1":"6.098693","2":"A"},{"1":"5.270638","2":"A"},{"1":"1.160827","2":"A"},{"1":"3.512671","2":"A"},{"1":"-1.781635","2":"A"},{"1":"5.427692","2":"A"},{"1":"0.155847","2":"A"},{"1":"11.667093","2":"A"},{"1":"-4.604196","2":"A"},{"1":"0.144051","2":"A"},{"1":"5.301519","2":"A"},{"1":"4.040530","2":"A"},{"1":"-0.357924","2":"A"},{"1":"-1.987123","2":"A"},{"1":"2.577903","2":"A"},{"1":"1.942770","2":"A"},{"1":"-5.161125","2":"A"},{"1":"2.138204","2":"A"},{"1":"2.760921","2":"A"},{"1":"2.698906","2":"A"},{"1":"-2.220068","2":"A"},{"1":"3.904533","2":"A"},{"1":"7.514281","2":"A"},{"1":"3.824946","2":"A"},{"1":"-2.542354","2":"A"},{"1":"0.257418","2":"A"},{"1":"3.384414","2":"A"},{"1":"-0.588183","2":"A"},{"1":"-6.630585","2":"A"},{"1":"5.537003","2":"A"},{"1":"-1.317910","2":"A"},{"1":"-0.294241","2":"A"},{"1":"8.015602","2":"A"},{"1":"-1.096580","2":"A"},{"1":"5.382926","2":"A"},{"1":"-3.042732","2":"A"},{"1":"0.581830","2":"A"},{"1":"1.705776","2":"A"},{"1":"-2.674606","2":"A"},{"1":"-0.538993","2":"A"},{"1":"1.884634","2":"A"},{"1":"4.682784","2":"A"},{"1":"-4.602186","2":"A"},{"1":"0.600983","2":"A"},{"1":"5.025626","2":"A"},{"1":"-0.155237","2":"A"},{"1":"2.909168","2":"A"},{"1":"3.968914","2":"A"},{"1":"3.071340","2":"A"},{"1":"4.613031","2":"A"},{"1":"1.509165","2":"A"},{"1":"0.345294","2":"A"},{"1":"-8.572596","2":"A"},{"1":"1.628236","2":"A"},{"1":"3.721139","2":"A"},{"1":"4.141595","2":"A"},{"1":"-0.221113","2":"A"},{"1":"9.118012","2":"A"},{"1":"3.145698","2":"A"},{"1":"2.505263","2":"A"},{"1":"7.089067","2":"A"},{"1":"-0.873865","2":"A"},{"1":"0.198646","2":"A"},{"1":"11.589810","2":"A"},{"1":"2.044517","2":"A"},{"1":"8.534274","2":"A"},{"1":"-3.754027","2":"A"},{"1":"1.237933","2":"A"},{"1":"3.513696","2":"A"},{"1":"3.200154","2":"A"},{"1":"-2.022545","2":"A"},{"1":"2.077037","2":"A"},{"1":"-2.309683","2":"A"},{"1":"4.850813","2":"A"},{"1":"6.339100","2":"A"},{"1":"-6.899951","2":"A"},{"1":"6.942774","2":"A"},{"1":"-2.964178","2":"A"},{"1":"3.819077","2":"A"},{"1":"4.639611","2":"A"},{"1":"1.200441","2":"A"},{"1":"-0.580456","2":"A"},{"1":"2.661284","2":"A"},{"1":"3.755275","2":"A"},{"1":"5.533211","2":"A"},{"1":"-6.209348","2":"A"},{"1":"-4.545517","2":"A"},{"1":"7.721609","2":"A"},{"1":"6.186515","2":"A"},{"1":"3.741156","2":"A"},{"1":"4.860714","2":"A"},{"1":"5.668700","2":"A"},{"1":"-8.643691","2":"A"},{"1":"6.441108","2":"A"},{"1":"0.060050","2":"A"},{"1":"2.922467","2":"A"},{"1":"0.819369","2":"A"},{"1":"5.487860","2":"A"},{"1":"0.606110","2":"A"},{"1":"4.074015","2":"A"},{"1":"0.437260","2":"A"},{"1":"-2.371149","2":"A"},{"1":"6.840042","2":"A"},{"1":"4.963600","2":"A"},{"1":"8.897049","2":"A"},{"1":"2.260616","2":"A"},{"1":"6.500011","2":"A"},{"1":"9.901676","2":"A"},{"1":"0.874072","2":"A"},{"1":"-3.291804","2":"A"},{"1":"1.042594","2":"A"},{"1":"1.143835","2":"A"},{"1":"2.606722","2":"A"},{"1":"8.849220","2":"A"},{"1":"0.695424","2":"A"},{"1":"3.492019","2":"A"},{"1":"1.089264","2":"A"},{"1":"2.081803","2":"A"},{"1":"3.256231","2":"A"},{"1":"7.312859","2":"A"},{"1":"2.485274","2":"A"},{"1":"4.851369","2":"A"},{"1":"5.115440","2":"A"},{"1":"5.659093","2":"A"},{"1":"-0.297578","2":"A"},{"1":"8.507525","2":"A"},{"1":"0.476173","2":"A"},{"1":"1.576863","2":"A"},{"1":"7.616201","2":"A"},{"1":"7.176336","2":"A"},{"1":"-2.359967","2":"A"},{"1":"-1.492284","2":"A"},{"1":"-3.432316","2":"A"},{"1":"2.727389","2":"A"},{"1":"2.659363","2":"A"},{"1":"3.456459","2":"A"},{"1":"4.208631","2":"A"},{"1":"-0.407571","2":"A"},{"1":"-1.974794","2":"A"},{"1":"6.107140","2":"A"},{"1":"5.004245","2":"A"},{"1":"-4.036666","2":"A"},{"1":"1.619410","2":"A"},{"1":"-1.583791","2":"A"},{"1":"-6.283004","2":"A"},{"1":"2.600481","2":"A"},{"1":"1.683153","2":"A"},{"1":"1.610523","2":"A"},{"1":"2.864610","2":"A"},{"1":"5.529861","2":"A"},{"1":"2.822390","2":"A"},{"1":"-0.465743","2":"A"},{"1":"-0.939197","2":"A"},{"1":"1.472789","2":"A"},{"1":"3.240068","2":"A"},{"1":"-2.158721","2":"A"},{"1":"1.262765","2":"A"},{"1":"5.869069","2":"A"},{"1":"1.566880","2":"A"},{"1":"-0.793683","2":"A"},{"1":"0.896219","2":"A"},{"1":"6.458594","2":"A"},{"1":"4.200176","2":"A"},{"1":"6.946703","2":"A"},{"1":"2.556391","2":"A"},{"1":"3.641100","2":"A"},{"1":"-0.233828","2":"A"},{"1":"4.421483","2":"A"},{"1":"-0.025334","2":"A"},{"1":"-3.682262","2":"A"},{"1":"2.511972","2":"A"},{"1":"9.783405","2":"A"},{"1":"5.203657","2":"A"},{"1":"6.661014","2":"A"},{"1":"3.435423","2":"A"},{"1":"-0.434229","2":"A"},{"1":"1.191037","2":"A"},{"1":"0.907008","2":"A"},{"1":"0.125201","2":"A"},{"1":"4.816669","2":"A"},{"1":"-2.789454","2":"A"},{"1":"5.465465","2":"A"},{"1":"5.456610","2":"A"},{"1":"-2.794489","2":"A"},{"1":"4.557968","2":"A"},{"1":"11.720907","2":"A"},{"1":"-0.228862","2":"A"},{"1":"5.379617","2":"A"},{"1":"-1.128807","2":"A"},{"1":"6.442846","2":"A"},{"1":"2.999299","2":"A"},{"1":"8.607662","2":"A"},{"1":"-3.835883","2":"A"},{"1":"1.794808","2":"A"},{"1":"-0.107701","2":"A"},{"1":"1.210941","2":"A"},{"1":"-0.518315","2":"A"},{"1":"-1.335374","2":"A"},{"1":"4.314889","2":"A"},{"1":"-2.350323","2":"A"},{"1":"7.936124","2":"A"},{"1":"-2.744826","2":"A"},{"1":"2.404317","2":"A"},{"1":"4.131957","2":"A"},{"1":"4.346941","2":"A"},{"1":"0.793013","2":"A"},{"1":"2.318008","2":"A"},{"1":"5.845057","2":"A"},{"1":"-3.825864","2":"A"},{"1":"-1.126959","2":"A"},{"1":"3.281609","2":"A"},{"1":"0.220872","2":"A"},{"1":"7.480016","2":"A"},{"1":"4.693015","2":"A"},{"1":"2.288667","2":"A"},{"1":"-4.031029","2":"A"},{"1":"2.104401","2":"A"},{"1":"0.734337","2":"A"},{"1":"1.590614","2":"A"},{"1":"-2.726237","2":"A"},{"1":"3.994632","2":"A"},{"1":"-2.155826","2":"A"},{"1":"1.095112","2":"A"},{"1":"3.525703","2":"A"},{"1":"-1.134063","2":"A"},{"1":"4.331966","2":"A"},{"1":"-3.266042","2":"A"},{"1":"-9.239099","2":"A"},{"1":"3.859872","2":"A"},{"1":"5.362159","2":"A"},{"1":"0.856618","2":"A"},{"1":"4.016505","2":"A"},{"1":"-2.623666","2":"A"},{"1":"1.491406","2":"A"},{"1":"-5.766074","2":"A"},{"1":"6.724724","2":"A"},{"1":"9.439643","2":"A"},{"1":"6.296049","2":"A"},{"1":"1.890612","2":"A"},{"1":"1.866679","2":"A"},{"1":"-4.064270","2":"A"},{"1":"5.161541","2":"A"},{"1":"1.157063","2":"A"},{"1":"-0.626972","2":"A"},{"1":"-3.648103","2":"A"},{"1":"0.800950","2":"A"},{"1":"-1.396245","2":"A"},{"1":"0.411878","2":"A"},{"1":"-2.870400","2":"A"},{"1":"8.750358","2":"A"},{"1":"1.935990","2":"A"},{"1":"6.299780","2":"A"},{"1":"-8.406799","2":"A"},{"1":"0.187209","2":"A"},{"1":"-0.701929","2":"A"},{"1":"-2.891705","2":"A"},{"1":"8.186437","2":"A"},{"1":"-3.661128","2":"A"},{"1":"3.273561","2":"A"},{"1":"5.385745","2":"A"},{"1":"2.712761","2":"A"},{"1":"-1.501022","2":"A"},{"1":"5.764663","2":"A"},{"1":"2.682352","2":"A"},{"1":"-2.253992","2":"A"},{"1":"-3.552196","2":"A"},{"1":"10.346870","2":"A"},{"1":"-0.714013","2":"A"},{"1":"-5.422287","2":"A"},{"1":"4.133037","2":"A"},{"1":"3.240921","2":"A"},{"1":"-3.415337","2":"A"},{"1":"-5.771826","2":"A"},{"1":"1.534790","2":"A"},{"1":"6.557585","2":"A"},{"1":"4.544496","2":"A"},{"1":"0.028250","2":"A"},{"1":"-1.336753","2":"A"},{"1":"3.084267","2":"A"},{"1":"2.629413","2":"A"},{"1":"4.518847","2":"A"},{"1":"0.416808","2":"A"},{"1":"5.597416","2":"A"},{"1":"-1.323246","2":"A"},{"1":"0.677821","2":"A"},{"1":"4.963258","2":"A"},{"1":"5.959886","2":"A"},{"1":"-5.754019","2":"A"},{"1":"2.428762","2":"A"},{"1":"4.435116","2":"A"},{"1":"-3.803297","2":"A"},{"1":"3.922502","2":"A"},{"1":"-1.312697","2":"A"},{"1":"6.081012","2":"A"},{"1":"4.153928","2":"A"},{"1":"5.076209","2":"A"},{"1":"2.482877","2":"A"},{"1":"5.454594","2":"A"},{"1":"7.522058","2":"A"},{"1":"9.864992","2":"A"},{"1":"1.886420","2":"A"},{"1":"-6.996204","2":"A"},{"1":"2.126104","2":"A"},{"1":"2.822245","2":"A"},{"1":"1.378619","2":"A"},{"1":"4.273154","2":"A"},{"1":"6.042712","2":"A"},{"1":"-0.071930","2":"A"},{"1":"0.823619","2":"A"},{"1":"3.591369","2":"A"},{"1":"-0.200895","2":"A"},{"1":"2.365070","2":"A"},{"1":"-5.846830","2":"A"},{"1":"-2.479599","2":"A"},{"1":"-3.311022","2":"A"},{"1":"-1.414495","2":"A"},{"1":"-0.773218","2":"A"},{"1":"3.529221","2":"A"},{"1":"5.928452","2":"A"},{"1":"-0.909534","2":"A"},{"1":"-1.987356","2":"A"},{"1":"-2.166755","2":"A"},{"1":"0.341645","2":"A"},{"1":"1.043884","2":"A"},{"1":"3.934470","2":"A"},{"1":"0.714701","2":"A"},{"1":"-6.313957","2":"A"},{"1":"1.634263","2":"A"},{"1":"6.748747","2":"A"},{"1":"6.766405","2":"A"},{"1":"-1.155853","2":"A"},{"1":"-4.191106","2":"A"},{"1":"11.832242","2":"A"},{"1":"1.350312","2":"A"},{"1":"1.610195","2":"A"},{"1":"3.682297","2":"A"},{"1":"-4.456158","2":"A"},{"1":"-0.912876","2":"A"},{"1":"-4.161770","2":"A"},{"1":"-0.772378","2":"A"},{"1":"2.475398","2":"A"},{"1":"-3.458838","2":"A"},{"1":"4.359931","2":"A"},{"1":"3.157376","2":"A"},{"1":"-1.616860","2":"A"},{"1":"2.905300","2":"A"},{"1":"4.992325","2":"A"},{"1":"6.244381","2":"A"},{"1":"1.148607","2":"A"},{"1":"1.625453","2":"A"},{"1":"1.653143","2":"A"},{"1":"7.765847","2":"A"},{"1":"6.500288","2":"A"},{"1":"5.337606","2":"A"},{"1":"0.850637","2":"A"},{"1":"3.492966","2":"A"},{"1":"3.613161","2":"A"},{"1":"-2.166693","2":"A"},{"1":"-4.913218","2":"A"},{"1":"4.567320","2":"A"},{"1":"-4.117242","2":"A"},{"1":"2.006735","2":"A"},{"1":"3.000991","2":"A"},{"1":"4.255470","2":"A"},{"1":"2.757705","2":"A"},{"1":"-0.931415","2":"A"},{"1":"5.945463","2":"A"},{"1":"8.954535","2":"A"},{"1":"5.524715","2":"A"},{"1":"-5.774604","2":"A"},{"1":"7.598305","2":"A"},{"1":"1.775776","2":"A"},{"1":"4.099657","2":"A"},{"1":"4.488133","2":"A"},{"1":"1.613256","2":"A"},{"1":"1.698947","2":"A"},{"1":"6.076628","2":"A"},{"1":"4.846408","2":"A"},{"1":"5.961049","2":"A"},{"1":"11.531707","2":"A"},{"1":"4.657663","2":"A"},{"1":"2.829525","2":"A"},{"1":"-6.842532","2":"A"},{"1":"12.766856","2":"A"},{"1":"0.069293","2":"A"},{"1":"11.498939","2":"A"},{"1":"3.498574","2":"A"},{"1":"8.153721","2":"A"},{"1":"1.561159","2":"A"},{"1":"4.045883","2":"A"},{"1":"2.855832","2":"A"},{"1":"1.255517","2":"A"},{"1":"1.518425","2":"A"},{"1":"6.051337","2":"A"},{"1":"1.194167","2":"A"},{"1":"-6.150730","2":"A"},{"1":"1.216443","2":"A"},{"1":"4.159162","2":"A"},{"1":"4.465823","2":"A"},{"1":"4.466271","2":"A"},{"1":"-4.768406","2":"A"},{"1":"3.474968","2":"A"},{"1":"5.871437","2":"A"},{"1":"7.106315","2":"A"},{"1":"1.100155","2":"A"},{"1":"0.712430","2":"A"},{"1":"7.951351","2":"A"},{"1":"-4.671712","2":"A"},{"1":"0.252680","2":"A"},{"1":"3.829848","2":"A"},{"1":"-4.471095","2":"A"},{"1":"3.118511","2":"A"},{"1":"9.511456","2":"A"},{"1":"1.983757","2":"A"},{"1":"0.886184","2":"A"},{"1":"3.899647","2":"A"},{"1":"0.883711","2":"A"},{"1":"5.253601","2":"A"},{"1":"5.617742","2":"A"},{"1":"2.010767","2":"A"},{"1":"-2.706769","2":"A"},{"1":"-3.272883","2":"A"},{"1":"-0.371989","2":"A"},{"1":"5.189522","2":"A"},{"1":"-5.832821","2":"A"},{"1":"-5.545301","2":"A"},{"1":"-0.615119","2":"A"},{"1":"3.577579","2":"A"},{"1":"-1.654264","2":"A"},{"1":"5.546996","2":"A"},{"1":"3.333480","2":"A"},{"1":"1.317442","2":"A"},{"1":"5.275313","2":"A"},{"1":"3.553461","2":"A"},{"1":"0.216260","2":"A"},{"1":"2.924460","2":"A"},{"1":"4.590053","2":"A"},{"1":"3.425133","2":"A"},{"1":"-0.632041","2":"A"},{"1":"5.420809","2":"A"},{"1":"6.611745","2":"A"},{"1":"3.105098","2":"A"},{"1":"2.576419","2":"A"},{"1":"1.697500","2":"A"},{"1":"10.645663","2":"A"},{"1":"3.105262","2":"A"},{"1":"1.366824","2":"A"},{"1":"-8.031671","2":"A"},{"1":"-4.261127","2":"A"},{"1":"1.689307","2":"A"},{"1":"2.825176","2":"A"},{"1":"3.107490","2":"A"},{"1":"5.286027","2":"A"},{"1":"1.223390","2":"A"},{"1":"6.858355","2":"A"},{"1":"-1.686064","2":"A"},{"1":"-2.833771","2":"A"},{"1":"-2.915945","2":"A"},{"1":"4.969188","2":"A"},{"1":"1.668320","2":"A"},{"1":"5.159272","2":"A"},{"1":"0.929174","2":"A"},{"1":"-0.367568","2":"A"},{"1":"0.526590","2":"A"},{"1":"-5.410467","2":"A"},{"1":"-2.678461","2":"A"},{"1":"-3.768139","2":"A"},{"1":"6.217289","2":"A"},{"1":"-0.389320","2":"A"},{"1":"5.157839","2":"A"},{"1":"8.065962","2":"A"},{"1":"1.232901","2":"A"},{"1":"3.135516","2":"A"},{"1":"-5.004270","2":"A"},{"1":"-1.274679","2":"A"},{"1":"2.224859","2":"A"},{"1":"3.196348","2":"A"},{"1":"-1.037592","2":"A"},{"1":"12.739436","2":"A"},{"1":"0.166439","2":"A"},{"1":"2.256974","2":"A"},{"1":"4.599167","2":"A"},{"1":"1.895925","2":"A"},{"1":"-0.574270","2":"A"},{"1":"6.181223","2":"A"},{"1":"8.462181","2":"A"},{"1":"1.881224","2":"A"},{"1":"4.249069","2":"A"},{"1":"1.610350","2":"A"},{"1":"6.065821","2":"A"},{"1":"-2.624670","2":"A"},{"1":"11.283441","2":"A"},{"1":"-0.414125","2":"A"},{"1":"-3.835398","2":"A"},{"1":"0.596329","2":"A"},{"1":"2.586834","2":"A"},{"1":"8.494485","2":"A"},{"1":"5.644839","2":"A"},{"1":"2.569834","2":"A"},{"1":"-3.557934","2":"A"},{"1":"-1.464151","2":"A"},{"1":"1.346860","2":"A"},{"1":"12.212104","2":"A"},{"1":"-5.440910","2":"A"},{"1":"6.524219","2":"A"},{"1":"-0.108937","2":"A"},{"1":"8.663964","2":"A"},{"1":"-2.556803","2":"A"},{"1":"2.574493","2":"A"},{"1":"-2.398204","2":"A"},{"1":"5.614066","2":"A"},{"1":"7.935118","2":"A"},{"1":"9.802884","2":"A"},{"1":"5.190403","2":"A"},{"1":"9.373065","2":"A"},{"1":"6.985696","2":"A"},{"1":"1.472500","2":"A"},{"1":"3.908149","2":"A"},{"1":"-1.887977","2":"A"},{"1":"1.259191","2":"A"},{"1":"6.883855","2":"A"},{"1":"4.165137","2":"A"},{"1":"3.829429","2":"A"},{"1":"-2.152524","2":"A"},{"1":"-0.418053","2":"A"},{"1":"-1.058424","2":"A"},{"1":"3.581183","2":"A"},{"1":"-1.962031","2":"A"},{"1":"4.248166","2":"A"},{"1":"-2.465666","2":"A"},{"1":"9.314122","2":"A"},{"1":"3.842365","2":"A"},{"1":"-0.804014","2":"A"},{"1":"2.964184","2":"A"},{"1":"0.590187","2":"A"},{"1":"3.484592","2":"A"},{"1":"2.974131","2":"A"},{"1":"-2.056457","2":"A"},{"1":"-1.165256","2":"A"},{"1":"3.198375","2":"A"},{"1":"8.556208","2":"A"},{"1":"6.338468","2":"A"},{"1":"-0.498270","2":"A"},{"1":"5.303692","2":"A"},{"1":"1.805727","2":"A"},{"1":"3.205255","2":"A"},{"1":"3.041446","2":"A"},{"1":"12.301799","2":"A"},{"1":"-2.741155","2":"A"},{"1":"2.403679","2":"A"},{"1":"-5.119909","2":"A"},{"1":"4.359344","2":"A"},{"1":"6.386434","2":"A"},{"1":"7.782649","2":"A"},{"1":"-5.700581","2":"A"},{"1":"3.651078","2":"A"},{"1":"8.373480","2":"A"},{"1":"0.343937","2":"A"},{"1":"1.151398","2":"A"},{"1":"1.853851","2":"A"},{"1":"3.460075","2":"A"},{"1":"4.660640","2":"A"},{"1":"7.271284","2":"A"},{"1":"1.618050","2":"A"},{"1":"2.785112","2":"A"},{"1":"11.951992","2":"A"},{"1":"3.724396","2":"A"},{"1":"2.755012","2":"A"},{"1":"-3.368973","2":"A"},{"1":"2.011424","2":"A"},{"1":"1.114695","2":"A"},{"1":"1.955817","2":"A"},{"1":"-0.301671","2":"A"},{"1":"-0.747263","2":"A"},{"1":"-0.883095","2":"A"},{"1":"1.141982","2":"A"},{"1":"7.472531","2":"A"},{"1":"6.196347","2":"A"},{"1":"0.560100","2":"A"},{"1":"-4.743666","2":"A"},{"1":"-1.378334","2":"A"},{"1":"0.168958","2":"A"},{"1":"2.414552","2":"A"},{"1":"-0.650429","2":"A"},{"1":"10.026723","2":"A"},{"1":"0.910930","2":"A"},{"1":"-2.855778","2":"A"},{"1":"1.434953","2":"A"},{"1":"-2.021510","2":"A"},{"1":"2.624623","2":"A"},{"1":"2.934534","2":"A"},{"1":"3.422350","2":"A"},{"1":"-4.487433","2":"A"},{"1":"2.882845","2":"A"},{"1":"3.241800","2":"A"},{"1":"-3.684434","2":"A"},{"1":"5.821463","2":"A"},{"1":"5.136684","2":"A"},{"1":"11.198477","2":"A"},{"1":"2.626812","2":"A"},{"1":"2.186934","2":"A"},{"1":"2.386343","2":"A"},{"1":"2.279065","2":"A"},{"1":"-5.393891","2":"A"},{"1":"-4.684508","2":"A"},{"1":"1.689844","2":"A"},{"1":"-0.324270","2":"A"},{"1":"2.218946","2":"A"},{"1":"-6.444833","2":"A"},{"1":"-3.994793","2":"A"},{"1":"-2.405934","2":"A"},{"1":"5.944233","2":"A"},{"1":"-2.393960","2":"A"},{"1":"-1.198056","2":"A"},{"1":"2.319495","2":"A"},{"1":"0.709015","2":"A"},{"1":"2.585669","2":"A"},{"1":"11.220248","2":"A"},{"1":"-2.498415","2":"A"},{"1":"0.778121","2":"A"},{"1":"-0.067038","2":"A"},{"1":"8.049582","2":"A"},{"1":"-1.077940","2":"A"},{"1":"1.671652","2":"A"},{"1":"5.148534","2":"A"},{"1":"-2.234362","2":"A"},{"1":"8.620703","2":"A"},{"1":"4.703050","2":"A"},{"1":"-2.296826","2":"A"},{"1":"3.818311","2":"A"},{"1":"1.146771","2":"A"},{"1":"3.252915","2":"A"},{"1":"1.640099","2":"A"},{"1":"6.282064","2":"A"},{"1":"-3.404402","2":"A"},{"1":"-0.090467","2":"A"},{"1":"1.003237","2":"A"},{"1":"16.016805","2":"B"},{"1":"15.840180","2":"B"},{"1":"19.928079","2":"B"},{"1":"19.471299","2":"B"},{"1":"9.802629","2":"B"},{"1":"24.162294","2":"B"},{"1":"20.998903","2":"B"},{"1":"29.664829","2":"B"},{"1":"22.740793","2":"B"},{"1":"18.212163","2":"B"},{"1":"31.189565","2":"B"},{"1":"31.328904","2":"B"},{"1":"15.125153","2":"B"},{"1":"21.876128","2":"B"},{"1":"19.155012","2":"B"},{"1":"20.748205","2":"B"},{"1":"20.910171","2":"B"},{"1":"14.952398","2":"B"},{"1":"21.142358","2":"B"},{"1":"26.996989","2":"B"},{"1":"19.343640","2":"B"},{"1":"19.348293","2":"B"},{"1":"25.594288","2":"B"},{"1":"23.593585","2":"B"},{"1":"13.406021","2":"B"},{"1":"20.914228","2":"B"},{"1":"26.614189","2":"B"},{"1":"25.661105","2":"B"},{"1":"21.679806","2":"B"},{"1":"22.884883","2":"B"},{"1":"15.212259","2":"B"},{"1":"21.200526","2":"B"},{"1":"16.182204","2":"B"},{"1":"18.167928","2":"B"},{"1":"23.742415","2":"B"},{"1":"15.452428","2":"B"},{"1":"21.067673","2":"B"},{"1":"21.713328","2":"B"},{"1":"20.219648","2":"B"},{"1":"27.288755","2":"B"},{"1":"15.910611","2":"B"},{"1":"22.424521","2":"B"},{"1":"19.644278","2":"B"},{"1":"18.956671","2":"B"},{"1":"21.856365","2":"B"},{"1":"15.918398","2":"B"},{"1":"14.746196","2":"B"},{"1":"18.022076","2":"B"},{"1":"27.007029","2":"B"},{"1":"20.223059","2":"B"},{"1":"21.325738","2":"B"},{"1":"19.240613","2":"B"},{"1":"21.881971","2":"B"},{"1":"16.193282","2":"B"},{"1":"24.631642","2":"B"},{"1":"22.338821","2":"B"},{"1":"16.774189","2":"B"},{"1":"20.218213","2":"B"},{"1":"22.865326","2":"B"},{"1":"22.230924","2":"B"},{"1":"25.927736","2":"B"},{"1":"17.548049","2":"B"},{"1":"24.464546","2":"B"},{"1":"24.146192","2":"B"},{"1":"19.350067","2":"B"},{"1":"16.096293","2":"B"},{"1":"15.643419","2":"B"},{"1":"21.831148","2":"B"},{"1":"19.715493","2":"B"},{"1":"27.116411","2":"B"},{"1":"22.140552","2":"B"},{"1":"18.512220","2":"B"},{"1":"15.897831","2":"B"},{"1":"17.670393","2":"B"},{"1":"21.371554","2":"B"},{"1":"18.196261","2":"B"},{"1":"22.056920","2":"B"},{"1":"18.662648","2":"B"},{"1":"19.577760","2":"B"},{"1":"17.077961","2":"B"},{"1":"27.620174","2":"B"},{"1":"21.330487","2":"B"},{"1":"20.922535","2":"B"},{"1":"13.232550","2":"B"},{"1":"22.639168","2":"B"},{"1":"15.905506","2":"B"},{"1":"16.433914","2":"B"},{"1":"23.673365","2":"B"},{"1":"18.189197","2":"B"},{"1":"13.006511","2":"B"},{"1":"27.079616","2":"B"},{"1":"10.490372","2":"B"},{"1":"22.291246","2":"B"},{"1":"24.068997","2":"B"},{"1":"17.476129","2":"B"},{"1":"21.777148","2":"B"},{"1":"21.756522","2":"B"},{"1":"24.162493","2":"B"},{"1":"21.936398","2":"B"},{"1":"19.020465","2":"B"},{"1":"23.663968","2":"B"},{"1":"23.202489","2":"B"},{"1":"16.253724","2":"B"},{"1":"14.396850","2":"B"},{"1":"20.641110","2":"B"},{"1":"18.904151","2":"B"},{"1":"16.057844","2":"B"},{"1":"20.335723","2":"B"},{"1":"14.720014","2":"B"},{"1":"20.644905","2":"B"},{"1":"17.500286","2":"B"},{"1":"23.828657","2":"B"},{"1":"29.697957","2":"B"},{"1":"16.336083","2":"B"},{"1":"24.230657","2":"B"},{"1":"23.300599","2":"B"},{"1":"19.719223","2":"B"},{"1":"18.185415","2":"B"},{"1":"26.301231","2":"B"},{"1":"11.978169","2":"B"},{"1":"17.427221","2":"B"},{"1":"14.252626","2":"B"},{"1":"25.581254","2":"B"},{"1":"19.237186","2":"B"},{"1":"17.901315","2":"B"},{"1":"32.736178","2":"B"},{"1":"19.799851","2":"B"},{"1":"18.225003","2":"B"},{"1":"21.199461","2":"B"},{"1":"13.726302","2":"B"},{"1":"21.961211","2":"B"},{"1":"19.615347","2":"B"},{"1":"21.874100","2":"B"},{"1":"16.070517","2":"B"},{"1":"15.908065","2":"B"},{"1":"17.226341","2":"B"},{"1":"16.928042","2":"B"},{"1":"25.196200","2":"B"},{"1":"26.316582","2":"B"},{"1":"19.372432","2":"B"},{"1":"18.564254","2":"B"},{"1":"18.683845","2":"B"},{"1":"20.276946","2":"B"},{"1":"20.387617","2":"B"},{"1":"21.160138","2":"B"},{"1":"17.013284","2":"B"},{"1":"16.612414","2":"B"},{"1":"24.788311","2":"B"},{"1":"17.805491","2":"B"},{"1":"21.212183","2":"B"},{"1":"19.772118","2":"B"},{"1":"16.168602","2":"B"},{"1":"22.364248","2":"B"},{"1":"20.692419","2":"B"},{"1":"25.599133","2":"B"},{"1":"20.469838","2":"B"},{"1":"18.673817","2":"B"},{"1":"21.113180","2":"B"},{"1":"15.257633","2":"B"},{"1":"16.656424","2":"B"},{"1":"22.041093","2":"B"},{"1":"18.667516","2":"B"},{"1":"19.736156","2":"B"},{"1":"19.539113","2":"B"},{"1":"17.397950","2":"B"},{"1":"11.925245","2":"B"},{"1":"21.395340","2":"B"},{"1":"23.046558","2":"B"},{"1":"14.845135","2":"B"},{"1":"25.929611","2":"B"},{"1":"21.540619","2":"B"},{"1":"25.366561","2":"B"},{"1":"16.171318","2":"B"},{"1":"20.667125","2":"B"},{"1":"19.599944","2":"B"},{"1":"23.074030","2":"B"},{"1":"17.696562","2":"B"},{"1":"19.959609","2":"B"},{"1":"12.885363","2":"B"},{"1":"16.889514","2":"B"},{"1":"20.500136","2":"B"},{"1":"17.174714","2":"B"},{"1":"19.825722","2":"B"},{"1":"18.128296","2":"B"},{"1":"22.427721","2":"B"},{"1":"24.673953","2":"B"},{"1":"16.709994","2":"B"},{"1":"18.771854","2":"B"},{"1":"25.759045","2":"B"},{"1":"11.204307","2":"B"},{"1":"18.720649","2":"B"},{"1":"28.258817","2":"B"},{"1":"28.774360","2":"B"},{"1":"20.626381","2":"B"},{"1":"16.545564","2":"B"},{"1":"20.661830","2":"B"},{"1":"17.388902","2":"B"},{"1":"25.811269","2":"B"},{"1":"16.774069","2":"B"},{"1":"21.491646","2":"B"},{"1":"22.479400","2":"B"},{"1":"16.969959","2":"B"},{"1":"23.406099","2":"B"},{"1":"17.008280","2":"B"},{"1":"22.520959","2":"B"},{"1":"24.386647","2":"B"},{"1":"16.046228","2":"B"},{"1":"24.431980","2":"B"},{"1":"18.041869","2":"B"},{"1":"21.177414","2":"B"},{"1":"20.807350","2":"B"},{"1":"18.291214","2":"B"},{"1":"21.072411","2":"B"},{"1":"15.078276","2":"B"},{"1":"19.455453","2":"B"},{"1":"23.303163","2":"B"},{"1":"11.303501","2":"B"},{"1":"14.048295","2":"B"},{"1":"15.352250","2":"B"},{"1":"13.643641","2":"B"},{"1":"21.678332","2":"B"},{"1":"16.028287","2":"B"},{"1":"11.341812","2":"B"},{"1":"17.449725","2":"B"},{"1":"18.437459","2":"B"},{"1":"23.427142","2":"B"},{"1":"15.584991","2":"B"},{"1":"24.645157","2":"B"},{"1":"21.593451","2":"B"},{"1":"21.449409","2":"B"},{"1":"16.589897","2":"B"},{"1":"27.814672","2":"B"},{"1":"19.342917","2":"B"},{"1":"12.700410","2":"B"},{"1":"19.184574","2":"B"},{"1":"12.262224","2":"B"},{"1":"18.757960","2":"B"},{"1":"18.311092","2":"B"},{"1":"22.727319","2":"B"},{"1":"24.037985","2":"B"},{"1":"17.095580","2":"B"},{"1":"23.224435","2":"B"},{"1":"25.697292","2":"B"},{"1":"16.863424","2":"B"},{"1":"17.390383","2":"B"},{"1":"22.603113","2":"B"},{"1":"20.732192","2":"B"},{"1":"22.195100","2":"B"},{"1":"25.618737","2":"B"},{"1":"21.548332","2":"B"},{"1":"24.206805","2":"B"},{"1":"22.491622","2":"B"},{"1":"21.734482","2":"B"},{"1":"21.544338","2":"B"},{"1":"25.165293","2":"B"},{"1":"15.990961","2":"B"},{"1":"15.579269","2":"B"},{"1":"22.367784","2":"B"},{"1":"19.521241","2":"B"},{"1":"20.296021","2":"B"},{"1":"22.965110","2":"B"},{"1":"23.013180","2":"B"},{"1":"18.949318","2":"B"},{"1":"18.749825","2":"B"},{"1":"20.294394","2":"B"},{"1":"24.252071","2":"B"},{"1":"21.704082","2":"B"},{"1":"25.732030","2":"B"},{"1":"19.969453","2":"B"},{"1":"24.502670","2":"B"},{"1":"23.532009","2":"B"},{"1":"22.448334","2":"B"},{"1":"21.658803","2":"B"},{"1":"18.880470","2":"B"},{"1":"19.563850","2":"B"},{"1":"20.917582","2":"B"},{"1":"20.195556","2":"B"},{"1":"23.772898","2":"B"},{"1":"19.562732","2":"B"},{"1":"19.718492","2":"B"},{"1":"18.062724","2":"B"},{"1":"19.446655","2":"B"},{"1":"19.724937","2":"B"},{"1":"10.745057","2":"B"},{"1":"14.540673","2":"B"},{"1":"19.710052","2":"B"},{"1":"18.938865","2":"B"},{"1":"15.196523","2":"B"},{"1":"12.033847","2":"B"},{"1":"18.582523","2":"B"},{"1":"22.613983","2":"B"},{"1":"27.092955","2":"B"},{"1":"19.846173","2":"B"},{"1":"25.972739","2":"B"},{"1":"20.332089","2":"B"},{"1":"20.462128","2":"B"},{"1":"21.299301","2":"B"},{"1":"16.517691","2":"B"},{"1":"19.793127","2":"B"},{"1":"23.633791","2":"B"},{"1":"17.001097","2":"B"},{"1":"18.713576","2":"B"},{"1":"15.408917","2":"B"},{"1":"21.417409","2":"B"},{"1":"21.699199","2":"B"},{"1":"22.593389","2":"B"},{"1":"15.120760","2":"B"},{"1":"20.428940","2":"B"},{"1":"16.223769","2":"B"},{"1":"19.998461","2":"B"},{"1":"25.370496","2":"B"},{"1":"17.985899","2":"B"},{"1":"22.866733","2":"B"},{"1":"17.001326","2":"B"},{"1":"18.085887","2":"B"},{"1":"21.754887","2":"B"},{"1":"17.283551","2":"B"},{"1":"13.188141","2":"B"},{"1":"25.060674","2":"B"},{"1":"21.441429","2":"B"},{"1":"17.665442","2":"B"},{"1":"12.023685","2":"B"},{"1":"27.608839","2":"B"},{"1":"33.561483","2":"B"},{"1":"20.829922","2":"B"},{"1":"23.399227","2":"B"},{"1":"24.898241","2":"B"},{"1":"17.192782","2":"B"},{"1":"18.595215","2":"B"},{"1":"13.091516","2":"B"},{"1":"17.053687","2":"B"},{"1":"22.489639","2":"B"},{"1":"18.837136","2":"B"},{"1":"19.143154","2":"B"},{"1":"19.549762","2":"B"},{"1":"12.545332","2":"B"},{"1":"23.350520","2":"B"},{"1":"14.226028","2":"B"},{"1":"19.165719","2":"B"},{"1":"18.245746","2":"B"},{"1":"19.125625","2":"B"},{"1":"25.839864","2":"B"},{"1":"17.671760","2":"B"},{"1":"16.867610","2":"B"},{"1":"13.921384","2":"B"},{"1":"16.777208","2":"B"},{"1":"15.335261","2":"B"},{"1":"21.631785","2":"B"},{"1":"16.547983","2":"B"},{"1":"21.216168","2":"B"},{"1":"19.414290","2":"B"},{"1":"14.265751","2":"B"},{"1":"16.837569","2":"B"},{"1":"23.540450","2":"B"},{"1":"23.612304","2":"B"},{"1":"28.022293","2":"B"},{"1":"19.985679","2":"B"},{"1":"14.016693","2":"B"},{"1":"16.926332","2":"B"},{"1":"21.633954","2":"B"},{"1":"27.600545","2":"B"},{"1":"20.440036","2":"B"},{"1":"24.561547","2":"B"},{"1":"23.072325","2":"B"},{"1":"15.327634","2":"B"},{"1":"19.315549","2":"B"},{"1":"25.221046","2":"B"},{"1":"23.504384","2":"B"},{"1":"21.855185","2":"B"},{"1":"21.908457","2":"B"},{"1":"18.034379","2":"B"},{"1":"14.722459","2":"B"},{"1":"25.181703","2":"B"},{"1":"14.319122","2":"B"},{"1":"16.244416","2":"B"},{"1":"22.515860","2":"B"},{"1":"14.951222","2":"B"},{"1":"17.792518","2":"B"},{"1":"15.268802","2":"B"},{"1":"22.482654","2":"B"},{"1":"21.785252","2":"B"},{"1":"21.687539","2":"B"},{"1":"21.769859","2":"B"},{"1":"22.228983","2":"B"},{"1":"22.557426","2":"B"},{"1":"12.125354","2":"B"},{"1":"19.404735","2":"B"},{"1":"20.449855","2":"B"},{"1":"22.898705","2":"B"},{"1":"15.250056","2":"B"},{"1":"18.001599","2":"B"},{"1":"15.705428","2":"B"},{"1":"24.228961","2":"B"},{"1":"25.116290","2":"B"},{"1":"23.150707","2":"B"},{"1":"15.110386","2":"B"},{"1":"21.807808","2":"B"},{"1":"24.601797","2":"B"},{"1":"20.671764","2":"B"},{"1":"17.735563","2":"B"},{"1":"15.655527","2":"B"},{"1":"17.338789","2":"B"},{"1":"22.859393","2":"B"},{"1":"18.273356","2":"B"},{"1":"20.910460","2":"B"},{"1":"25.179783","2":"B"},{"1":"22.313340","2":"B"},{"1":"25.458691","2":"B"},{"1":"13.193681","2":"B"},{"1":"18.877295","2":"B"},{"1":"20.260272","2":"B"},{"1":"22.314357","2":"B"},{"1":"15.323174","2":"B"},{"1":"23.224739","2":"B"},{"1":"21.229560","2":"B"},{"1":"21.055224","2":"B"},{"1":"22.033939","2":"B"},{"1":"19.534566","2":"B"},{"1":"23.702184","2":"B"},{"1":"22.592919","2":"B"},{"1":"19.399163","2":"B"},{"1":"24.161508","2":"B"},{"1":"21.170235","2":"B"},{"1":"22.675006","2":"B"},{"1":"17.623289","2":"B"},{"1":"26.321727","2":"B"},{"1":"19.984044","2":"B"},{"1":"23.391371","2":"B"},{"1":"19.599534","2":"B"},{"1":"18.881480","2":"B"},{"1":"23.137753","2":"B"},{"1":"13.661533","2":"B"},{"1":"21.913465","2":"B"},{"1":"21.574265","2":"B"},{"1":"9.218683","2":"B"},{"1":"21.473509","2":"B"},{"1":"11.326329","2":"B"},{"1":"22.639218","2":"B"},{"1":"18.184345","2":"B"},{"1":"17.220253","2":"B"},{"1":"19.972615","2":"B"},{"1":"25.492208","2":"B"},{"1":"17.458708","2":"B"},{"1":"22.232413","2":"B"},{"1":"21.364631","2":"B"},{"1":"15.281925","2":"B"},{"1":"13.035912","2":"B"},{"1":"12.029657","2":"B"},{"1":"22.205097","2":"B"},{"1":"19.861032","2":"B"},{"1":"27.402287","2":"B"},{"1":"22.294700","2":"B"},{"1":"23.398784","2":"B"},{"1":"25.337534","2":"B"},{"1":"17.997124","2":"B"},{"1":"22.040392","2":"B"},{"1":"23.475173","2":"B"},{"1":"25.477407","2":"B"},{"1":"23.050605","2":"B"},{"1":"21.684589","2":"B"},{"1":"16.527104","2":"B"},{"1":"22.918241","2":"B"},{"1":"22.001063","2":"B"},{"1":"22.537001","2":"B"},{"1":"21.694580","2":"B"},{"1":"19.192648","2":"B"},{"1":"19.692536","2":"B"},{"1":"22.749456","2":"B"},{"1":"20.686526","2":"B"},{"1":"16.679566","2":"B"},{"1":"18.839364","2":"B"},{"1":"14.723497","2":"B"},{"1":"16.131872","2":"B"},{"1":"19.421556","2":"B"},{"1":"12.807470","2":"B"},{"1":"13.245830","2":"B"},{"1":"24.410261","2":"B"},{"1":"17.693524","2":"B"},{"1":"12.593233","2":"B"},{"1":"19.548547","2":"B"},{"1":"25.284277","2":"B"},{"1":"22.649017","2":"B"},{"1":"21.765533","2":"B"},{"1":"24.734984","2":"B"},{"1":"16.913994","2":"B"},{"1":"22.918757","2":"B"},{"1":"17.651658","2":"B"},{"1":"20.003057","2":"B"},{"1":"28.857861","2":"B"},{"1":"23.877738","2":"B"},{"1":"23.072031","2":"B"},{"1":"15.566688","2":"B"},{"1":"16.855056","2":"B"},{"1":"29.136466","2":"B"},{"1":"15.626797","2":"B"},{"1":"20.857918","2":"B"},{"1":"23.570284","2":"B"},{"1":"24.075032","2":"B"},{"1":"24.356448","2":"B"},{"1":"19.347484","2":"B"},{"1":"16.716053","2":"B"},{"1":"18.770971","2":"B"},{"1":"16.391608","2":"B"},{"1":"22.508275","2":"B"},{"1":"24.481420","2":"B"},{"1":"28.508854","2":"B"},{"1":"21.464458","2":"B"},{"1":"16.500874","2":"B"},{"1":"24.097899","2":"B"},{"1":"23.619036","2":"B"},{"1":"19.047005","2":"B"},{"1":"13.768580","2":"B"},{"1":"23.045240","2":"B"},{"1":"24.516578","2":"B"},{"1":"18.819569","2":"B"},{"1":"22.144971","2":"B"},{"1":"18.896438","2":"B"},{"1":"22.729261","2":"B"},{"1":"19.530837","2":"B"},{"1":"18.621297","2":"B"},{"1":"20.446482","2":"B"},{"1":"18.866379","2":"B"},{"1":"17.635931","2":"B"},{"1":"18.736252","2":"B"},{"1":"19.967391","2":"B"},{"1":"20.829981","2":"B"},{"1":"26.129694","2":"B"},{"1":"14.568009","2":"B"},{"1":"19.201524","2":"B"},{"1":"22.526093","2":"B"},{"1":"27.048084","2":"B"},{"1":"21.704057","2":"B"},{"1":"19.944986","2":"B"},{"1":"18.769772","2":"B"},{"1":"21.657233","2":"B"},{"1":"23.956232","2":"B"},{"1":"19.264567","2":"B"},{"1":"20.655046","2":"B"},{"1":"20.867745","2":"B"},{"1":"22.917111","2":"B"},{"1":"24.445522","2":"B"},{"1":"21.116643","2":"B"},{"1":"19.695317","2":"B"},{"1":"25.578653","2":"B"},{"1":"20.658136","2":"B"},{"1":"26.311408","2":"B"},{"1":"19.752309","2":"B"},{"1":"22.455692","2":"B"},{"1":"13.815646","2":"B"},{"1":"19.550432","2":"B"},{"1":"19.912822","2":"B"},{"1":"16.966618","2":"B"},{"1":"15.856428","2":"B"},{"1":"23.792637","2":"B"},{"1":"23.656635","2":"B"},{"1":"14.805072","2":"B"},{"1":"21.697515","2":"B"},{"1":"15.549819","2":"B"},{"1":"15.795707","2":"B"},{"1":"22.101650","2":"B"},{"1":"17.255904","2":"B"},{"1":"23.973920","2":"B"},{"1":"20.154094","2":"B"},{"1":"22.144596","2":"B"},{"1":"17.905493","2":"B"},{"1":"15.395115","2":"B"},{"1":"23.659009","2":"B"},{"1":"20.952286","2":"B"},{"1":"19.043729","2":"B"},{"1":"20.276941","2":"B"},{"1":"25.303633","2":"B"},{"1":"17.207333","2":"B"},{"1":"17.002366","2":"B"},{"1":"17.521540","2":"B"},{"1":"13.660035","2":"B"},{"1":"23.278513","2":"B"},{"1":"20.769479","2":"B"},{"1":"20.828688","2":"B"},{"1":"19.826611","2":"B"},{"1":"17.959358","2":"B"},{"1":"16.706326","2":"B"},{"1":"23.407426","2":"B"},{"1":"14.295261","2":"B"},{"1":"21.761196","2":"B"},{"1":"16.829553","2":"B"},{"1":"21.129241","2":"B"},{"1":"17.037238","2":"B"},{"1":"17.906633","2":"B"},{"1":"27.077464","2":"B"},{"1":"22.673130","2":"B"},{"1":"11.420412","2":"B"},{"1":"20.505650","2":"B"},{"1":"18.192748","2":"B"},{"1":"15.453495","2":"B"},{"1":"20.839144","2":"B"},{"1":"20.519862","2":"B"},{"1":"18.685974","2":"B"},{"1":"27.890814","2":"B"},{"1":"11.005240","2":"B"},{"1":"23.352878","2":"B"},{"1":"18.843907","2":"B"},{"1":"22.626054","2":"B"},{"1":"18.184009","2":"B"},{"1":"17.624542","2":"B"},{"1":"13.158481","2":"B"},{"1":"19.162206","2":"B"},{"1":"29.914983","2":"B"},{"1":"23.958809","2":"B"},{"1":"26.702289","2":"B"},{"1":"23.659861","2":"B"},{"1":"24.577051","2":"B"},{"1":"23.611506","2":"B"},{"1":"21.901570","2":"B"},{"1":"17.669885","2":"B"},{"1":"17.868261","2":"B"},{"1":"13.596640","2":"B"},{"1":"19.976729","2":"B"},{"1":"23.597423","2":"B"},{"1":"24.127690","2":"B"},{"1":"20.380531","2":"B"},{"1":"17.809490","2":"B"},{"1":"33.162070","2":"B"},{"1":"22.946742","2":"B"},{"1":"25.682301","2":"B"},{"1":"18.649277","2":"B"},{"1":"19.848169","2":"B"},{"1":"21.794428","2":"B"},{"1":"26.706089","2":"B"},{"1":"18.754102","2":"B"},{"1":"23.414463","2":"B"},{"1":"11.620741","2":"B"},{"1":"17.970982","2":"B"},{"1":"14.831964","2":"B"},{"1":"24.453451","2":"B"},{"1":"19.342188","2":"B"},{"1":"18.438504","2":"B"},{"1":"25.476399","2":"B"},{"1":"24.465091","2":"B"},{"1":"16.407915","2":"B"},{"1":"21.711466","2":"B"},{"1":"15.086222","2":"B"},{"1":"18.097540","2":"B"},{"1":"26.466311","2":"B"},{"1":"25.800512","2":"B"},{"1":"24.436075","2":"B"},{"1":"17.716384","2":"B"},{"1":"12.474274","2":"B"},{"1":"15.297207","2":"B"},{"1":"23.810226","2":"B"},{"1":"18.837728","2":"B"},{"1":"11.349567","2":"B"},{"1":"19.279250","2":"B"},{"1":"25.640957","2":"B"},{"1":"22.573875","2":"B"},{"1":"16.714966","2":"B"},{"1":"13.816333","2":"B"},{"1":"16.693811","2":"B"},{"1":"20.138111","2":"B"},{"1":"23.552295","2":"B"},{"1":"12.240239","2":"B"},{"1":"24.092807","2":"B"},{"1":"20.021831","2":"B"},{"1":"22.279116","2":"B"},{"1":"13.386978","2":"B"},{"1":"17.333382","2":"B"},{"1":"18.207063","2":"B"},{"1":"24.175565","2":"B"},{"1":"24.112696","2":"B"},{"1":"21.740362","2":"B"},{"1":"26.416849","2":"B"},{"1":"17.938355","2":"B"},{"1":"24.050149","2":"B"},{"1":"19.856240","2":"B"},{"1":"17.330632","2":"B"},{"1":"23.693520","2":"B"},{"1":"25.524401","2":"B"},{"1":"23.513002","2":"B"},{"1":"17.962386","2":"B"},{"1":"18.120849","2":"B"},{"1":"25.510703","2":"B"},{"1":"21.411306","2":"B"},{"1":"23.318296","2":"B"},{"1":"18.645192","2":"B"},{"1":"25.044140","2":"B"},{"1":"16.764979","2":"B"},{"1":"22.501406","2":"B"},{"1":"16.731300","2":"B"},{"1":"10.149700","2":"B"},{"1":"14.628170","2":"B"},{"1":"20.545181","2":"B"},{"1":"23.531691","2":"B"},{"1":"12.994792","2":"B"},{"1":"14.994302","2":"B"},{"1":"27.058184","2":"B"},{"1":"18.264403","2":"B"},{"1":"22.022801","2":"B"},{"1":"17.892259","2":"B"},{"1":"18.805668","2":"B"},{"1":"20.348977","2":"B"},{"1":"20.043847","2":"B"},{"1":"19.229759","2":"B"},{"1":"18.120814","2":"B"},{"1":"7.808556","2":"B"},{"1":"27.474622","2":"B"},{"1":"27.161697","2":"B"},{"1":"15.595673","2":"B"},{"1":"19.327570","2":"B"},{"1":"25.501101","2":"B"},{"1":"23.993160","2":"B"},{"1":"25.106406","2":"B"},{"1":"15.713012","2":"B"},{"1":"30.309072","2":"B"},{"1":"15.466160","2":"B"},{"1":"23.015665","2":"B"},{"1":"20.565104","2":"B"},{"1":"18.385159","2":"B"},{"1":"18.482337","2":"B"},{"1":"16.034413","2":"B"},{"1":"26.490639","2":"B"},{"1":"20.358053","2":"B"},{"1":"21.036872","2":"B"},{"1":"20.838531","2":"B"},{"1":"18.499317","2":"B"},{"1":"15.463915","2":"B"},{"1":"21.014905","2":"B"},{"1":"11.625442","2":"B"},{"1":"14.325732","2":"B"},{"1":"15.694413","2":"B"},{"1":"15.685285","2":"B"},{"1":"20.428755","2":"B"},{"1":"26.393950","2":"B"},{"1":"13.938703","2":"B"},{"1":"21.734704","2":"B"},{"1":"23.598179","2":"B"},{"1":"16.041871","2":"B"},{"1":"19.788802","2":"B"},{"1":"23.294444","2":"B"},{"1":"18.977964","2":"B"},{"1":"19.117263","2":"B"},{"1":"21.230907","2":"B"},{"1":"19.759947","2":"B"},{"1":"17.777388","2":"B"},{"1":"19.445540","2":"B"},{"1":"27.531359","2":"B"},{"1":"23.494675","2":"B"},{"1":"16.341612","2":"B"},{"1":"15.020330","2":"B"},{"1":"18.560071","2":"B"},{"1":"25.315099","2":"B"},{"1":"21.170716","2":"B"},{"1":"17.193979","2":"B"},{"1":"23.528938","2":"B"},{"1":"19.466518","2":"B"},{"1":"15.517286","2":"B"},{"1":"21.844770","2":"B"},{"1":"26.096571","2":"B"},{"1":"21.737873","2":"B"},{"1":"20.768001","2":"B"},{"1":"17.375027","2":"B"},{"1":"22.273594","2":"B"},{"1":"15.717718","2":"B"},{"1":"13.387404","2":"B"},{"1":"19.826589","2":"B"},{"1":"19.861626","2":"B"},{"1":"29.460222","2":"B"},{"1":"15.134611","2":"B"},{"1":"20.683625","2":"B"},{"1":"23.220212","2":"B"},{"1":"24.202371","2":"B"},{"1":"19.957102","2":"B"},{"1":"17.026975","2":"B"},{"1":"19.736864","2":"B"},{"1":"27.759024","2":"B"},{"1":"21.930956","2":"B"},{"1":"11.822092","2":"B"},{"1":"25.693837","2":"B"},{"1":"22.162011","2":"B"},{"1":"19.865713","2":"B"},{"1":"19.928546","2":"B"},{"1":"19.400841","2":"B"},{"1":"21.026238","2":"B"},{"1":"17.984532","2":"B"},{"1":"21.108045","2":"B"},{"1":"16.274576","2":"B"},{"1":"20.800588","2":"B"},{"1":"24.427350","2":"B"},{"1":"22.036824","2":"B"},{"1":"24.134999","2":"B"},{"1":"15.636525","2":"B"},{"1":"20.219171","2":"B"},{"1":"22.469001","2":"B"},{"1":"15.727981","2":"B"},{"1":"26.263257","2":"B"},{"1":"15.860768","2":"B"},{"1":"20.658075","2":"B"},{"1":"20.607329","2":"B"},{"1":"20.486681","2":"B"},{"1":"19.158302","2":"B"},{"1":"21.799747","2":"B"},{"1":"15.875342","2":"B"},{"1":"14.842543","2":"B"},{"1":"17.381725","2":"B"},{"1":"19.770704","2":"B"},{"1":"25.026991","2":"B"},{"1":"26.349817","2":"B"},{"1":"21.277926","2":"B"},{"1":"21.526366","2":"B"},{"1":"19.025420","2":"B"},{"1":"20.192212","2":"B"},{"1":"14.381817","2":"B"},{"1":"21.159735","2":"B"},{"1":"17.857786","2":"B"},{"1":"21.338715","2":"B"},{"1":"18.616075","2":"B"},{"1":"17.353537","2":"B"},{"1":"19.123554","2":"B"},{"1":"18.532380","2":"B"},{"1":"24.378313","2":"B"},{"1":"20.836832","2":"B"},{"1":"21.729966","2":"B"},{"1":"15.036586","2":"B"},{"1":"25.987287","2":"B"},{"1":"20.637482","2":"B"},{"1":"16.574874","2":"B"},{"1":"21.236187","2":"B"},{"1":"23.481736","2":"B"},{"1":"14.465291","2":"B"},{"1":"26.760428","2":"B"},{"1":"19.367877","2":"B"},{"1":"24.484683","2":"B"},{"1":"20.289045","2":"B"},{"1":"18.670309","2":"B"},{"1":"12.660320","2":"B"},{"1":"15.599311","2":"B"},{"1":"19.834639","2":"B"},{"1":"23.311410","2":"B"},{"1":"12.473285","2":"B"},{"1":"25.501764","2":"B"},{"1":"25.595962","2":"B"},{"1":"15.426735","2":"B"},{"1":"21.889202","2":"B"},{"1":"15.865443","2":"B"},{"1":"19.499200","2":"B"},{"1":"23.714651","2":"B"},{"1":"23.473359","2":"B"},{"1":"16.603302","2":"B"},{"1":"18.453454","2":"B"},{"1":"16.095346","2":"B"},{"1":"21.358175","2":"B"},{"1":"13.763699","2":"B"},{"1":"9.482698","2":"B"},{"1":"25.879249","2":"B"},{"1":"29.093892","2":"B"},{"1":"18.179866","2":"B"},{"1":"23.044410","2":"B"},{"1":"19.969989","2":"B"},{"1":"25.897255","2":"B"},{"1":"22.216576","2":"B"},{"1":"20.814656","2":"B"},{"1":"12.803454","2":"B"},{"1":"24.331823","2":"B"},{"1":"18.596586","2":"B"},{"1":"14.386040","2":"B"},{"1":"19.192813","2":"B"},{"1":"19.492887","2":"B"},{"1":"24.236827","2":"B"},{"1":"15.330416","2":"B"},{"1":"17.769425","2":"B"},{"1":"25.952480","2":"B"},{"1":"25.434663","2":"B"},{"1":"24.652858","2":"B"},{"1":"26.646096","2":"B"},{"1":"20.816124","2":"B"},{"1":"17.672465","2":"B"},{"1":"22.220816","2":"B"},{"1":"24.234893","2":"B"},{"1":"29.654533","2":"B"},{"1":"12.140071","2":"B"},{"1":"21.092943","2":"B"},{"1":"22.619178","2":"B"},{"1":"19.781605","2":"B"},{"1":"13.768711","2":"B"},{"1":"22.966004","2":"B"},{"1":"16.883657","2":"B"},{"1":"22.023446","2":"B"},{"1":"23.630207","2":"B"},{"1":"25.135828","2":"B"},{"1":"13.768545","2":"B"},{"1":"24.326967","2":"B"},{"1":"16.972075","2":"B"},{"1":"14.843922","2":"B"},{"1":"25.257283","2":"B"},{"1":"24.585040","2":"B"},{"1":"19.029667","2":"B"},{"1":"23.038163","2":"B"},{"1":"16.558697","2":"B"},{"1":"19.395874","2":"B"},{"1":"19.625107","2":"B"},{"1":"18.877040","2":"B"},{"1":"22.936395","2":"B"},{"1":"26.149310","2":"B"},{"1":"18.176916","2":"B"},{"1":"19.869366","2":"B"},{"1":"26.547029","2":"B"},{"1":"18.683832","2":"B"},{"1":"9.583847","2":"B"},{"1":"22.055935","2":"B"},{"1":"16.454128","2":"B"},{"1":"16.005846","2":"B"},{"1":"25.683267","2":"B"},{"1":"29.791992","2":"B"},{"1":"15.840870","2":"B"},{"1":"24.124101","2":"B"},{"1":"19.623409","2":"B"},{"1":"20.567230","2":"B"},{"1":"24.888947","2":"B"},{"1":"20.854698","2":"B"},{"1":"16.594539","2":"B"},{"1":"18.118365","2":"B"},{"1":"22.744541","2":"B"},{"1":"10.656211","2":"B"},{"1":"24.380978","2":"B"},{"1":"13.731400","2":"B"},{"1":"20.087724","2":"B"},{"1":"19.238564","2":"B"},{"1":"25.172278","2":"B"},{"1":"20.755397","2":"B"},{"1":"20.407757","2":"B"},{"1":"22.792543","2":"B"},{"1":"16.691942","2":"B"},{"1":"19.216405","2":"B"},{"1":"24.710338","2":"B"},{"1":"22.733894","2":"B"},{"1":"14.898013","2":"B"},{"1":"22.551825","2":"B"},{"1":"14.489642","2":"B"},{"1":"17.606757","2":"B"},{"1":"24.843682","2":"B"},{"1":"10.995819","2":"B"},{"1":"12.883943","2":"B"},{"1":"25.205491","2":"B"},{"1":"16.740829","2":"B"},{"1":"24.974828","2":"B"},{"1":"19.326999","2":"B"},{"1":"21.711103","2":"B"},{"1":"23.253116","2":"B"},{"1":"17.395153","2":"B"},{"1":"18.781636","2":"B"},{"1":"18.339611","2":"B"},{"1":"31.264337","2":"B"},{"1":"20.504588","2":"B"},{"1":"21.891202","2":"B"},{"1":"18.636986","2":"B"},{"1":"19.032837","2":"B"},{"1":"25.515019","2":"B"},{"1":"18.644465","2":"B"},{"1":"20.080545","2":"B"},{"1":"21.507849","2":"B"},{"1":"18.273105","2":"B"},{"1":"27.836257","2":"B"},{"1":"14.286162","2":"B"},{"1":"28.045172","2":"B"},{"1":"18.593632","2":"B"},{"1":"25.428479","2":"B"},{"1":"12.003290","2":"B"},{"1":"23.824322","2":"B"},{"1":"23.505725","2":"B"},{"1":"14.915132","2":"B"},{"1":"16.926704","2":"B"},{"1":"20.774099","2":"B"},{"1":"24.575342","2":"B"},{"1":"16.936003","2":"B"},{"1":"19.103496","2":"B"},{"1":"26.285388","2":"B"},{"1":"15.490611","2":"B"},{"1":"23.791176","2":"B"},{"1":"21.795073","2":"B"},{"1":"15.576742","2":"B"},{"1":"17.328529","2":"B"},{"1":"23.133110","2":"B"},{"1":"20.995838","2":"B"},{"1":"25.700393","2":"B"},{"1":"17.592864","2":"B"},{"1":"13.142049","2":"B"},{"1":"24.191308","2":"B"},{"1":"17.565514","2":"B"},{"1":"20.481362","2":"B"},{"1":"26.876167","2":"B"},{"1":"18.998344","2":"B"},{"1":"26.198221","2":"B"},{"1":"15.611441","2":"B"},{"1":"23.702045","2":"B"},{"1":"20.987197","2":"B"},{"1":"17.052914","2":"B"},{"1":"14.879964","2":"B"},{"1":"20.306575","2":"B"},{"1":"21.020659","2":"B"},{"1":"21.109787","2":"B"},{"1":"22.147424","2":"B"},{"1":"18.158058","2":"B"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_dens</span>(<span class="sc">~</span> y, <span class="at">data =</span> y_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_dens</span>(<span class="sc">~</span> y <span class="sc">|</span> x, <span class="at">data =</span> y_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_dens</span>(<span class="sc">~</span> y, <span class="at">color =</span> <span class="sc">~</span> x, <span class="at">data =</span> y_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> y_x)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x, data = y_x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-12.361  -2.683   0.021   2.732  13.392 
+
+Coefficients:
+            Estimate Std. Error t value            Pr(&gt;|t|)    
+(Intercept)    2.065      0.127    16.3 &lt;0.0000000000000002 ***
+xB            18.105      0.179   101.1 &lt;0.0000000000000002 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4 on 1998 degrees of freedom
+Multiple R-squared:  0.837, Adjusted R-squared:  0.837 
+F-statistic: 1.02e+04 on 1 and 1998 DF,  p-value: &lt;0.0000000000000002</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_normality</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>OK: residuals appear as normally distributed (p = 0.630).</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_jitter</span>(y <span class="sc">~</span> x, <span class="at">color =</span> <span class="sc">~</span> x, <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">data =</span> y_x) <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_model</span>(m) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  ggExtra<span class="sc">::</span><span class="fu">ggMarginal</span>(y, <span class="at">type=</span><span class="st">"density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The “problem” with the <code>CeLcfos</code> outcome variable is not that it is not normally distributed, but that it is a count variable (or more precisely in this case a density, the number of “active neurons”/cfos-expressing cells per mm<sup>2</sup> of the central lateral amygdala) and thus it cannot be negative.</p>
+<p>A normally distributed variable is defined over the entire real line <span class="math inline">\((-\infty, \infty)\)</span> and, therefore, it is not appropriate for count data, especially if they are concentrated close to the zero boundary.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> CeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["min"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Q1"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["median"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Q3"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["max"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["mean"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["n"],"name":[8],"type":["int"],"align":["right"]},{"label":["missing"],"name":[9],"type":["int"],"align":["right"]}],"data":[{"1":"16.67","2":"54.17","3":"81.94","4":"162.5","5":"675","6":"140","7":"147.8","8":"32","9":"0","_rn_":""}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> CeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_qq</span>(<span class="sc">~</span> CeLcfos, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_qqline</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>A log transformation is often applied to count data in order to make them more amenable to commonly used null-hypothesis significance tests and general linear regression modeling, all of which assume that the outcome variable is conditionally normally distributed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(<span class="sc">~</span> logCeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["min"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Q1"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["median"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Q3"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["max"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["mean"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["n"],"name":[8],"type":["int"],"align":["right"]},{"label":["missing"],"name":[9],"type":["int"],"align":["right"]}],"data":[{"1":"2.813","2":"3.991","3":"4.406","4":"5.09","5":"6.515","6":"4.51","7":"0.9464","8":"32","9":"0","_rn_":""}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> logCeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_qq</span>(<span class="sc">~</span> logCeLcfos, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_qqline</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>However, generalized linear models that, e.g., use the Poisson or negative binomial distribution are better suited for dealing with count data.</p>
+<p>The log transformation of counts is also problematic when the data includes observations of zero counts and the whole dataset need to be fudged by adding a value, usually 1, before transformation.</p>
+</section>
+<section id="logcelcfos-stresscondition" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition">logCeLcfos ~ StressCondition</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> StressCondition, <span class="at">color =</span> <span class="sc">~</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_boxplot</span>(<span class="at">fill =</span> <span class="sc">~</span> StressCondition, <span class="at">alpha =</span> <span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="logcelcfos-sociability" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-sociability">logCeLcfos ~ Sociability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="logcelcfos-stresscondition-sociability" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-sociability">logCeLcfos ~ StressCondition + Sociability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">color =</span> <span class="sc">~</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> Sociability <span class="sc">+</span> StressCondition, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="logcelcfos-stresscondition-sociability-1" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-sociability-1">logCeLcfos ~ StressCondition * Sociability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">color =</span> <span class="sc">~</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> Sociability <span class="sc">*</span> StressCondition, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="build-and-fit-models" class="level2">
+<h2 class="anchored" data-anchor-id="build-and-fit-models">Build and fit models</h2>
+<section id="sociability-stresscondition-1" class="level3">
+<h3 class="anchored" data-anchor-id="sociability-stresscondition-1">Sociability ~ StressCondition</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(Sociability <span class="sc">~</span> StressCondition, <span class="at">data =</span> d)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Sociability ~ StressCondition, data = d)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-66.51  -8.79   4.95  11.08  27.46 
+
+Coefficients:
+                     Estimate Std. Error t value         Pr(&gt;|t|)    
+(Intercept)             63.63       5.06    12.6 0.00000000000017 ***
+StressConditionShock     2.88       7.16     0.4             0.69    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 20.3 on 30 degrees of freedom
+Multiple R-squared:  0.00535,   Adjusted R-squared:  -0.0278 
+F-statistic: 0.161 on 1 and 30 DF,  p-value: 0.691</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m, <span class="at">detrend =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="logcelcfos-null" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-null">logCeLcfos ~ NULL</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> <span class="cn">NULL</span>, <span class="at">data =</span> d)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(CeLcfos) ~ NULL, data = d)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-1.696 -0.518 -0.104  0.580  2.005 
+
+Coefficients:
+            Estimate Std. Error t value            Pr(&gt;|t|)    
+(Intercept)    4.510      0.167      27 &lt;0.0000000000000002 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.946 on 31 degrees of freedom</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m1, <span class="at">detrend =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="logcelcfos-stresscondition-1" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-1">logCeLcfos ~ StressCondition</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> StressCondition, <span class="at">data =</span> d)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(CeLcfos) ~ StressCondition, data = d)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.7226 -0.5317 -0.0771  0.5670  2.0317 
+
+Coefficients:
+                     Estimate Std. Error t value            Pr(&gt;|t|)    
+(Intercept)             4.536      0.240   18.87 &lt;0.0000000000000002 ***
+StressConditionShock   -0.053      0.340   -0.16                0.88    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.962 on 30 degrees of freedom
+Multiple R-squared:  0.000809,  Adjusted R-squared:  -0.0325 
+F-statistic: 0.0243 on 1 and 30 DF,  p-value: 0.877</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m2, <span class="at">detrend =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="logcelcfos-sociability-1" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-sociability-1">logCeLcfos ~ Sociability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> Sociability, <span class="at">data =</span> d)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(CeLcfos) ~ Sociability, data = d)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.5049 -0.6280  0.0197  0.4479  1.6913 
+
+Coefficients:
+            Estimate Std. Error t value        Pr(&gt;|t|)    
+(Intercept)  5.96731    0.51798   11.52 0.0000000000015 ***
+Sociability -0.02240    0.00762   -2.94          0.0063 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.848 on 30 degrees of freedom
+Multiple R-squared:  0.224, Adjusted R-squared:  0.198 
+F-statistic: 8.64 on 1 and 30 DF,  p-value: 0.00626</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m3, <span class="at">detrend =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="logcelcfos-stresscondition-sociability-2" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-sociability-2">logCeLcfos ~ StressCondition + Sociability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> StressCondition <span class="sc">+</span> Sociability, <span class="at">data =</span> d)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(CeLcfos) ~ StressCondition + Sociability, data = d)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.4990 -0.6255  0.0141  0.4508  1.6971 
+
+Coefficients:
+                     Estimate Std. Error t value        Pr(&gt;|t|)    
+(Intercept)           5.96295    0.53940   11.05 0.0000000000065 ***
+StressConditionShock  0.01152    0.30562    0.04          0.9702    
+Sociability          -0.02243    0.00777   -2.89          0.0073 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.862 on 29 degrees of freedom
+Multiple R-squared:  0.224, Adjusted R-squared:  0.17 
+F-statistic: 4.18 on 2 and 29 DF,  p-value: 0.0254</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m4, <span class="at">detrend =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="logcelcfos-stresscondition-sociability-3" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-sociability-3">logCeLcfos ~ StressCondition * Sociability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>m5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> StressCondition <span class="sc">*</span> Sociability, <span class="at">data =</span> d)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(CeLcfos) ~ StressCondition * Sociability, data = d)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-1.698 -0.420 -0.097  0.273  1.833 
+
+Coefficients:
+                                 Estimate Std. Error t value  Pr(&gt;|t|)    
+(Intercept)                        4.6950     0.7652    6.14 0.0000013 ***
+StressConditionShock               2.1482     1.0082    2.13     0.042 *  
+Sociability                       -0.0025     0.0116   -0.22     0.831    
+StressConditionShock:Sociability  -0.0330     0.0149   -2.21     0.035 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.81 on 28 degrees of freedom
+Multiple R-squared:  0.339, Adjusted R-squared:  0.268 
+F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m5, <span class="at">detrend =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="model-evaluation-and-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="model-evaluation-and-comparison">Model evaluation and comparison</h2>
+<p>Here we use the <code>modelsummary()</code> and the <code>compare_performance()</code> functions from the <a href="https://modelsummary.com/"><code>modelsummary</code></a> and <a href="https://easystats.github.io/performance/"><code>performance</code></a> packages, respectively, to evaluate and compare models.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(m1, m2, m3, m4, m5), <span class="at">stars =</span> <span class="cn">TRUE</span>, <span class="at">statistic =</span> <span class="st">"conf.int"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;(1)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;&nbsp;(2)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;&nbsp;(3)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;&nbsp;(4)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;&nbsp;(5)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">4.510***</td>
+<td style="text-align: center;">4.536***</td>
+<td style="text-align: center;">5.967***</td>
+<td style="text-align: center;">5.963***</td>
+<td style="text-align: center;">4.695***</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">[4.168, 4.851]</td>
+<td style="text-align: center;">[4.045, 5.027]</td>
+<td style="text-align: center;">[4.909, 7.025]</td>
+<td style="text-align: center;">[4.860, 7.066]</td>
+<td style="text-align: center;">[3.128, 6.262]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">StressConditionShock</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">−0.053</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">0.012</td>
+<td style="text-align: center;">2.148*</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">[−0.747, 0.641]</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">[−0.614, 0.637]</td>
+<td style="text-align: center;">[0.083, 4.213]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sociability</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">−0.022**</td>
+<td style="text-align: center;">−0.022**</td>
+<td style="text-align: center;">−0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">[−0.038, −0.007]</td>
+<td style="text-align: center;">[−0.038, −0.007]</td>
+<td style="text-align: center;">[−0.026, 0.021]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">StressConditionShock × Sociability</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">−0.033*</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1.5px;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5px;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5px;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5px;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5px;"></td>
+<td style="text-align: center; box-shadow: 0px 1.5px;">[−0.064, −0.002]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Num.Obs.</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R2</td>
+<td style="text-align: center;">0.000</td>
+<td style="text-align: center;">0.001</td>
+<td style="text-align: center;">0.224</td>
+<td style="text-align: center;">0.224</td>
+<td style="text-align: center;">0.339</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R2 Adj.</td>
+<td style="text-align: center;">0.000</td>
+<td style="text-align: center;">−0.032</td>
+<td style="text-align: center;">0.198</td>
+<td style="text-align: center;">0.170</td>
+<td style="text-align: center;">0.268</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AIC</td>
+<td style="text-align: center;">378.9</td>
+<td style="text-align: center;">380.9</td>
+<td style="text-align: center;">372.8</td>
+<td style="text-align: center;">374.8</td>
+<td style="text-align: center;">371.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BIC</td>
+<td style="text-align: center;">381.8</td>
+<td style="text-align: center;">385.2</td>
+<td style="text-align: center;">377.2</td>
+<td style="text-align: center;">380.6</td>
+<td style="text-align: center;">379.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Log.Lik.</td>
+<td style="text-align: center;">−43.135</td>
+<td style="text-align: center;">−43.122</td>
+<td style="text-align: center;">−39.084</td>
+<td style="text-align: center;">−39.083</td>
+<td style="text-align: center;">−36.509</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">F</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">0.024</td>
+<td style="text-align: center;">8.644</td>
+<td style="text-align: center;">4.179</td>
+<td style="text-align: center;">4.789</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RMSE</td>
+<td style="text-align: center;">0.93</td>
+<td style="text-align: center;">0.93</td>
+<td style="text-align: center;">0.82</td>
+<td style="text-align: center;">0.82</td>
+<td style="text-align: center;">0.76</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><sup></sup> + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+
+
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">compare_performance</span>(m1, m2, m3, m4, m5, <span class="at">rank =</span> <span class="cn">TRUE</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="model-predictions" class="level2">
+<h2 class="anchored" data-anchor-id="model-predictions">Model predictions</h2>
+<p>On the log(<em>response</em>) scale:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict_response</span>(m5, <span class="fu">c</span>(<span class="st">"Sociability"</span>, <span class="st">"StressCondition"</span>), <span class="at">back_transform =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>On the <em>response</em> scale:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict_response</span>(m5, <span class="fu">c</span>(<span class="st">"Sociability"</span>, <span class="st">"StressCondition"</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="marginal-effects" class="level2">
+<h2 class="anchored" data-anchor-id="marginal-effects">Marginal effects</h2>
+<p>The <code>predict_response()</code> and <code>test_predictions()</code> functions from the <a href="https://strengejacke.github.io/ggeffects/"><code>ggeffects</code></a> package are used here to compute model predictions (above) and marginal effects (below) from a fitted regression model. <code>ggeffects</code> is based on the more powerful but also more complex <a href="https://marginaleffects.com/"><code>marginaleffects</code></a> package. Another package often used to compute marginal effects from a fitted regression model is <a href="https://cran.r-project.org/package=emmeans"><code>emmeans</code></a>.</p>
+<p>A good introduction to “marginal effects” is available <a href="https://www.andrewheiss.com/blog/2022/05/20/marginalia">here</a>. Please refer to the documentation of the “marginal effects” package of your choice to understand exactly what the author(s) defines as marginal effects, since there is very little consensus on terminology, unfortunately.</p>
+<p>The <a href="https://strengejacke.github.io/ggeffects/reference/predict_response.html"><code>predict_response()</code></a> function takes two inputs:</p>
+<ol type="1">
+<li><code>model</code>, the output of a regression model fitting function such as <code>lm</code>, <code>glm</code>, <a href="https://mc-stan.org/rstanarm/"><code>rstanarm</code></a><code>::stan_glm()</code>, <a href="https://paul-buerkner.github.io/brms/"><code>brms</code></a><code>:brm()</code>, etc.</li>
+<li><code>terms</code>, a character vector of names of one or more predictor variables (a.k.a. “<em>focal terms</em>”)</li>
+</ol>
+<p>The output is a data frame of predictions of the response variable, which is nicely printed by default.</p>
+<p>The output data frame can be passed to the <code>plot()</code> function to easily plot the predictions, or to the <code>test_predictions()</code> function to easily estimate and test hypotheses about marginal effects (i.e., differences between two adjacent predictions, a.k.a. contrasts/comparisons).</p>
+<p>By default, these predictions are on the <em>response</em> scale, which is the most intuitive scale to interpret them.</p>
+<p>The <code>predict_response()</code> function requires at least one, but not more than four focal terms. Predicted values of the response variable, along the values or levels of the first focal term are calculated, possibly grouped by the other focal terms, while all other predictor variables (a.k.a. “<em>non-focal terms</em>”) are marginalized over.</p>
+<p>The <code>margin</code> argument indicates how to marginalize over the non-focal terms:</p>
+<ul>
+<li><code>"mean_reference"</code> [the default, which can be changed using the <code>options()</code> function, e.g., <code>options(ggeffects_margin = "empirical")</code>]
+<ul>
+<li>non-focal terms are set to their mean (numeric variables), reference level (factors), or “most common value” (character vectors)</li>
+<li>the predictions in the output data frame are <strong>adjusted predictions</strong> of the response variable specified in the model</li>
+<li>Question answered: “<em>What is the predicted value of the response variable at meaningful values or levels of the focal terms for a ”typical” observation in the data?</em>”</li>
+</ul></li>
+<li><code>"mean_mode"</code>
+<ul>
+<li>non-focal terms are set to their mean (numeric variables) or “most common value” (factors and character vectors)</li>
+<li>the predictions in the output data frame are <strong>adjusted predictions</strong> of the response variable specified in the model</li>
+<li>Question answered: “<em>What is the predicted value of the response variable at meaningful values or levels of the focal terms for a ”typical” observation in the data?</em>”</li>
+</ul></li>
+<li><code>"marginalmeans"</code>
+<ul>
+<li>non-focal predictors are set to their mean (numeric variables) or marginalized over their levels or “values” (factors and character vectors)</li>
+<li>the predictions in the output data frame are <strong>marginal means</strong> of the response variable specified in the model</li>
+<li>Question answered: “<em>What is the predicted value of the response variable at meaningful values or levels of the focal terms for an ”average” observation in the data?</em>”</li>
+</ul></li>
+<li><code>"empirical"</code> (or <code>"counterfactual"</code>)
+<ul>
+<li>non-focal predictors are marginalized over the observations in the sample; the response is predicted for each observation and the predicted values are then averaged across all observations, grouped by the focal terms <span class="citation" data-cites="dickerman2020">(<a href="#ref-dickerman2020" role="doc-biblioref">Dickerman and Hernán 2020</a>)</span></li>
+<li>the predictions in the output data frame are <strong>averaged counterfactual predictions</strong> of the response variable specified in the model</li>
+<li>Question answered: “<em>What is the predicted value of the response variable at meaningful values or levels of the focal terms for the ”average” observation in the population [not only in the data]?</em>”</li>
+</ul></li>
+</ul>
+<p>“Marginal effects” (in the terminology used by the <code>ggeffects</code> package) are differences between two adjacent predictions, not the adjusted predictions, marginal means, or averaged counterfactual predictions described above.</p>
+<p>The <a href="https://strengejacke.github.io/ggeffects/reference/test_predictions.html"><code>test_predictions()</code></a> function takes the same two inputs (<code>model</code> and <code>terms</code>) of the <code>predict_response()</code> function (or its output data frame as a single input) and test the differences between two adjacent predictions for statistical significance. These differences are usually called <em>contrasts</em> or (pairwise) <em>comparisons</em> and are also known as “marginal effects”. If the first focal term is numeric, contrasts/comparisons of the <em>slopes</em> of this numeric predictor are computed, possibly grouped by the other focal terms.</p>
+</section>
+<section id="estimates" class="level2">
+<h2 class="anchored" data-anchor-id="estimates">Estimates</h2>
+<section id="effect-of-stress-on-neuronal-activation-conditional-on-sociability" class="level3">
+<h3 class="anchored" data-anchor-id="effect-of-stress-on-neuronal-activation-conditional-on-sociability">Effect of stress on neuronal activation conditional on sociability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict_response</span>(m5, <span class="st">"StressCondition"</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>pred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["x"],"name":[1],"type":["fct"],"align":["left"]},{"label":["predicted"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["group"],"name":[6],"type":["fct"],"align":["left"]}],"data":[{"1":"Control","2":"92.98","3":"0.2031","4":"61.34","5":"140.9","6":"1"},{"1":"Shock","2":"93.14","3":"0.2028","4":"61.47","5":"141.1","6":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_predictions</span>(pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["StressCondition"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Contrast"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"Control-Shock","2":"-0.001643","3":"-0.5896","4":"0.5863","5":"0.9955"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict_response</span>(m5, <span class="fu">c</span>(<span class="st">"StressCondition"</span>, <span class="st">"Sociability [meansd]"</span>))</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>pred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["x"],"name":[1],"type":["fct"],"align":["left"]},{"label":["predicted"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["group"],"name":[6],"type":["fct"],"align":["left"]}],"data":[{"1":"Control","2":"97.74","3":"0.2953","4":"53.38","5":"179.0","6":"45.09"},{"1":"Control","2":"92.98","3":"0.2031","4":"61.34","5":"140.9","6":"65.07"},{"1":"Control","2":"88.46","3":"0.3204","4":"45.89","5":"170.5","6":"85.04"},{"1":"Shock","2":"189.23","3":"0.2853","4":"105.49","5":"339.5","6":"45.09"},{"1":"Shock","2":"93.12","3":"0.2028","4":"61.46","5":"141.1","6":"65.07"},{"1":"Shock","2":"45.84","3":"0.2669","4":"26.54","5":"79.2","6":"85.04"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_predictions</span>(pred, <span class="at">test =</span> <span class="fu">c</span>(<span class="st">"b1 = b4"</span>, <span class="st">"b2 = b5"</span>, <span class="st">"b3 = b6"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Hypothesis"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Contrast"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"b1=b4","2":"-0.66066","3":"-1.5017","4":"0.1804","5":"0.1188"},{"1":"b2=b5","2":"-0.00153","3":"-0.5895","4":"0.5864","5":"0.9958"},{"1":"b3=b6","2":"0.65727","3":"-0.1969","4":"1.5114","5":"0.1262"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="effect-of-sociability-on-neuronal-activation-conditional-on-stress" class="level3">
+<h3 class="anchored" data-anchor-id="effect-of-sociability-on-neuronal-activation-conditional-on-stress">Effect of sociability on neuronal activation conditional on stress</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict_response</span>(m5, <span class="st">"Sociability"</span>)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>pred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["x"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["predicted"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["group"],"name":[6],"type":["fct"],"align":["left"]}],"data":[{"1":"0","2":"320.23","3":"0.5041","4":"114.03","5":"899.28","6":"1"},{"1":"10","2":"264.84","3":"0.4331","4":"109.07","5":"643.05","6":"1"},{"1":"20","2":"219.02","3":"0.3635","4":"104.02","5":"461.20","6":"1"},{"1":"30","2":"181.14","3":"0.2964","4":"98.69","5":"332.45","6":"1"},{"1":"40","2":"149.80","3":"0.2340","4":"92.77","5":"241.91","6":"1"},{"1":"50","2":"123.89","3":"0.1809","4":"85.52","5":"179.46","6":"1"},{"1":"60","2":"102.46","3":"0.1478","4":"75.69","5":"138.70","6":"1"},{"1":"70","2":"84.73","3":"0.1487","4":"62.48","5":"114.91","6":"1"},{"1":"80","2":"70.08","3":"0.1830","4":"48.17","5":"101.96","6":"1"},{"1":"90","2":"57.95","3":"0.2367","4":"35.69","5":"94.12","6":"1"},{"1":"100","2":"47.93","3":"0.2995","4":"25.95","5":"88.52","6":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_predictions</span>(pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Sociability"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Slope"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"slope","2":"-0.01899","3":"-0.03428","4":"-0.003708","5":"0.01671"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict_response</span>(m5, <span class="fu">c</span>(<span class="st">"Sociability"</span>, <span class="st">"StressCondition"</span>))</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>pred</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["x"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["predicted"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["group"],"name":[6],"type":["fct"],"align":["left"]}],"data":[{"1":"0","2":"109.40","3":"0.7652","4":"22.82","5":"524.45","6":"Control"},{"1":"0","2":"937.42","3":"0.6564","4":"244.33","5":"3596.51","6":"Shock"},{"1":"10","2":"106.70","3":"0.6541","4":"27.94","5":"407.38","6":"Control"},{"1":"10","2":"657.37","3":"0.5678","4":"205.43","5":"2103.57","6":"Shock"},{"1":"20","2":"104.06","3":"0.5450","4":"34.08","5":"317.75","6":"Control"},{"1":"20","2":"460.99","3":"0.4813","4":"172.01","5":"1235.47","6":"Shock"},{"1":"30","2":"101.50","3":"0.4394","4":"41.26","5":"249.65","6":"Control"},{"1":"30","2":"323.27","3":"0.3980","4":"143.04","5":"730.59","6":"Shock"},{"1":"40","2":"98.99","3":"0.3407","4":"49.27","5":"198.91","6":"Control"},{"1":"40","2":"226.70","3":"0.3208","4":"117.51","5":"437.32","6":"Shock"},{"1":"50","2":"96.55","3":"0.2568","4":"57.06","5":"163.38","6":"Control"},{"1":"50","2":"158.97","3":"0.2549","4":"94.31","5":"267.97","6":"Shock"},{"1":"60","2":"94.17","3":"0.2067","4":"61.66","5":"143.81","6":"Control"},{"1":"60","2":"111.48","3":"0.2114","4":"72.30","5":"171.90","6":"Shock"},{"1":"70","2":"91.84","3":"0.2155","4":"59.07","5":"142.80","6":"Control"},{"1":"70","2":"78.18","3":"0.2050","4":"51.37","5":"118.98","6":"Shock"},{"1":"80","2":"89.58","3":"0.2775","4":"50.74","5":"158.15","6":"Control"},{"1":"80","2":"54.82","3":"0.2388","4":"33.62","5":"89.41","6":"Shock"},{"1":"90","2":"87.37","3":"0.3667","4":"41.22","5":"185.19","6":"Control"},{"1":"90","2":"38.44","3":"0.2994","4":"20.82","5":"70.98","6":"Shock"},{"1":"100","2":"85.21","3":"0.4679","4":"32.68","5":"222.18","6":"Control"},{"1":"100","2":"26.96","3":"0.3740","4":"12.53","5":"58.00","6":"Shock"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_predictions</span>(pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Sociability"],"name":[1],"type":["chr"],"align":["left"]},{"label":["StressCondition"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Contrast"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"slope","2":"Control-Shock","3":"0.03299","4":"0.002419","5":"0.06356","6":"0.03541"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-dickerman2020" class="csl-entry" role="listitem">
+Dickerman, Barbra A., and Miguel A. Hernán. 2020. <span>“Counterfactual Prediction Is Not Only for Causal Inference.”</span> <em>European Journal of Epidemiology</em> 35 (7): 615–17. <a href="https://doi.org/10.1007/s10654-020-00659-8">https://doi.org/10.1007/s10654-020-00659-8</a>.
+</div>
+</div>
+</section>
+<section id="print-environment" class="level2">
+<h2 class="anchored" data-anchor-id="print-environment">Print environment</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.3.3 (2024-02-29)
+ os       macOS Sonoma 14.4
+ system   aarch64, darwin20
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       America/New_York
+ date     2024-03-17
+ pandoc   3.1.12.2 @ /opt/homebrew/bin/ (via rmarkdown)
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package             * version    date (UTC) lib source
+ backports             1.4.1      2021-12-13 [1] CRAN (R 4.3.0)
+ bayestestR            0.13.2     2024-02-12 [1] CRAN (R 4.3.1)
+ callr                 3.7.5      2024-02-19 [1] CRAN (R 4.3.1)
+ cellranger            1.1.0      2016-07-27 [1] CRAN (R 4.3.0)
+ checkmate             2.3.1      2023-12-04 [1] CRAN (R 4.3.1)
+ cli                   3.6.2      2023-12-11 [1] CRAN (R 4.3.1)
+ coda                  0.19-4.1   2024-01-31 [1] CRAN (R 4.3.1)
+ codetools             0.2-19     2023-02-01 [1] CRAN (R 4.3.3)
+ colorspace            2.1-0      2023-01-23 [1] CRAN (R 4.3.0)
+ coursekata          * 0.15.0     2023-12-14 [1] CRAN (R 4.3.1)
+ data.table            1.15.2     2024-02-29 [1] CRAN (R 4.3.1)
+ datawizard            0.9.1      2023-12-21 [1] CRAN (R 4.3.1)
+ digest                0.6.35     2024-03-11 [1] CRAN (R 4.3.1)
+ dplyr               * 1.1.4      2023-11-17 [1] CRAN (R 4.3.1)
+ dslabs              * 0.8.0      2024-03-01 [1] CRAN (R 4.3.1)
+ effectsize            0.8.6      2023-09-14 [1] CRAN (R 4.3.0)
+ ellipsis              0.3.2      2021-04-29 [1] CRAN (R 4.3.0)
+ emmeans               1.10.0     2024-01-23 [1] CRAN (R 4.3.1)
+ estimability          1.5        2024-02-20 [1] CRAN (R 4.3.1)
+ evaluate              0.23       2023-11-01 [1] CRAN (R 4.3.1)
+ fansi                 1.0.6      2023-12-08 [1] CRAN (R 4.3.1)
+ farver                2.1.1      2022-07-06 [1] CRAN (R 4.3.0)
+ fastmap               1.1.1      2023-02-24 [1] CRAN (R 4.3.0)
+ fivethirtyeight     * 0.6.2      2021-10-07 [1] CRAN (R 4.3.0)
+ fivethirtyeightdata * 0.1.0      2024-01-06 [1] Github (fivethirtyeightdata/fivethirtyeightdata@8de5de4)
+ forcats               1.0.0      2023-01-29 [1] CRAN (R 4.3.0)
+ future                1.33.1     2023-12-22 [1] CRAN (R 4.3.1)
+ future.apply          1.11.1     2023-12-21 [1] CRAN (R 4.3.1)
+ generics              0.1.3      2022-07-05 [1] CRAN (R 4.3.0)
+ ggeffects           * 1.5.0      2024-02-24 [1] CRAN (R 4.3.1)
+ ggExtra               0.10.1     2023-08-21 [1] CRAN (R 4.3.0)
+ ggformula           * 0.12.0     2023-11-09 [1] CRAN (R 4.3.1)
+ ggplot2             * 3.5.0      2024-02-23 [1] CRAN (R 4.3.1)
+ ggrepel               0.9.5      2024-01-10 [1] CRAN (R 4.3.1)
+ ggridges              0.5.6      2024-01-23 [1] CRAN (R 4.3.1)
+ globals               0.16.3     2024-03-08 [1] CRAN (R 4.3.1)
+ glue                  1.7.0      2024-01-09 [1] CRAN (R 4.3.1)
+ gtable                0.3.4      2023-08-21 [1] CRAN (R 4.3.0)
+ haven                 2.5.4      2023-11-30 [1] CRAN (R 4.3.1)
+ hms                   1.1.3      2023-03-21 [1] CRAN (R 4.3.0)
+ htmltools             0.5.7      2023-11-03 [1] CRAN (R 4.3.1)
+ htmlwidgets           1.6.4      2023-12-06 [1] CRAN (R 4.3.1)
+ httpuv                1.6.14     2024-01-26 [1] CRAN (R 4.3.1)
+ insight               0.19.8     2024-01-31 [1] CRAN (R 4.3.1)
+ jsonlite              1.8.8      2023-12-04 [1] CRAN (R 4.3.1)
+ kableExtra            1.4.0      2024-01-24 [1] CRAN (R 4.3.1)
+ knitr                 1.45       2023-10-30 [1] CRAN (R 4.3.1)
+ labeling              0.4.3      2023-08-29 [1] CRAN (R 4.3.0)
+ labelled              2.12.0     2023-06-21 [1] CRAN (R 4.3.0)
+ later                 1.3.2      2023-12-06 [1] CRAN (R 4.3.1)
+ lattice             * 0.22-5     2023-10-24 [1] CRAN (R 4.3.3)
+ lifecycle             1.0.4      2023-11-07 [1] CRAN (R 4.3.1)
+ listenv               0.9.1      2024-01-29 [1] CRAN (R 4.3.1)
+ lmtest                0.9-40     2022-03-21 [1] CRAN (R 4.3.0)
+ Lock5withR          * 1.2.2      2015-12-22 [1] CRAN (R 4.3.0)
+ lsr                 * 0.5.2      2021-12-01 [1] CRAN (R 4.3.0)
+ magrittr              2.0.3      2022-03-30 [1] CRAN (R 4.3.0)
+ marginaleffects       0.18.0     2024-02-05 [1] CRAN (R 4.3.1)
+ MASS                  7.3-60.0.1 2024-01-13 [1] CRAN (R 4.3.3)
+ Matrix              * 1.6-5      2024-01-11 [1] CRAN (R 4.3.3)
+ Metrics             * 0.1.4      2018-07-09 [1] CRAN (R 4.3.0)
+ mgcv                  1.9-1      2023-12-21 [1] CRAN (R 4.3.3)
+ mime                  0.12       2021-09-28 [1] CRAN (R 4.3.0)
+ miniUI                0.1.1.1    2018-05-18 [1] CRAN (R 4.3.0)
+ modelsummary        * 1.4.5      2024-02-17 [1] CRAN (R 4.3.1)
+ mosaic              * 1.9.1      2024-02-23 [1] CRAN (R 4.3.1)
+ mosaicCore            0.9.4.0    2023-11-05 [1] CRAN (R 4.3.1)
+ mosaicData          * 0.20.4     2023-11-05 [1] CRAN (R 4.3.1)
+ multcomp              1.4-25     2023-06-20 [1] CRAN (R 4.3.0)
+ munsell               0.5.0      2018-06-12 [1] CRAN (R 4.3.0)
+ mvtnorm               1.2-4      2023-11-27 [1] CRAN (R 4.3.1)
+ nlme                  3.1-164    2023-11-27 [1] CRAN (R 4.3.3)
+ pak                   0.7.1      2023-12-11 [1] CRAN (R 4.3.1)
+ palmerpenguins        0.1.1      2022-08-15 [1] CRAN (R 4.3.0)
+ parallelly            1.37.1     2024-02-29 [1] CRAN (R 4.3.1)
+ parameters            0.21.5     2024-02-07 [1] CRAN (R 4.3.1)
+ patchwork             1.2.0      2024-01-08 [1] CRAN (R 4.3.1)
+ performance         * 0.10.9     2024-02-17 [1] CRAN (R 4.3.1)
+ pillar                1.9.0      2023-03-22 [1] CRAN (R 4.3.0)
+ pkgconfig             2.0.3      2019-09-22 [1] CRAN (R 4.3.0)
+ processx              3.8.3      2023-12-10 [1] CRAN (R 4.3.1)
+ promises              1.2.1      2023-08-10 [1] CRAN (R 4.3.0)
+ ps                    1.7.6      2024-01-18 [1] CRAN (R 4.3.1)
+ purrr                 1.0.2      2023-08-10 [1] CRAN (R 4.3.0)
+ R6                    2.5.1      2021-08-19 [1] CRAN (R 4.3.0)
+ Rcpp                  1.0.12     2024-01-09 [1] CRAN (R 4.3.1)
+ readxl              * 1.4.3      2023-07-06 [1] CRAN (R 4.3.0)
+ rematch               2.0.0      2023-08-30 [1] CRAN (R 4.3.0)
+ rlang                 1.1.3      2024-01-10 [1] CRAN (R 4.3.1)
+ rmarkdown             2.26       2024-03-05 [1] CRAN (R 4.3.1)
+ rstudioapi            0.15.0     2023-07-07 [1] CRAN (R 4.3.0)
+ sandwich              3.1-0      2023-12-11 [1] CRAN (R 4.3.1)
+ scales                1.3.0      2023-11-28 [1] CRAN (R 4.3.1)
+ see                   0.8.2      2024-02-14 [1] CRAN (R 4.3.1)
+ sessioninfo           1.2.2      2021-12-06 [1] CRAN (R 4.3.0)
+ shiny                 1.8.0      2023-11-17 [1] CRAN (R 4.3.1)
+ stringi               1.8.3      2023-12-11 [1] CRAN (R 4.3.1)
+ stringr               1.5.1      2023-11-14 [1] CRAN (R 4.3.1)
+ supernova           * 3.0.0      2024-02-07 [1] CRAN (R 4.3.1)
+ survival              3.5-8      2024-02-14 [1] CRAN (R 4.3.3)
+ svglite               2.1.3      2023-12-08 [1] CRAN (R 4.3.1)
+ systemfonts           1.0.6      2024-03-07 [1] CRAN (R 4.3.1)
+ tables                0.9.17     2023-05-02 [1] CRAN (R 4.3.0)
+ TH.data               1.1-2      2023-04-17 [1] CRAN (R 4.3.0)
+ tibble                3.2.1      2023-03-20 [1] CRAN (R 4.3.0)
+ tidyr                 1.3.1      2024-01-24 [1] CRAN (R 4.3.1)
+ tidyselect            1.2.1      2024-03-11 [1] CRAN (R 4.3.1)
+ utf8                  1.2.4      2023-10-22 [1] CRAN (R 4.3.1)
+ vctrs                 0.6.5      2023-12-01 [1] CRAN (R 4.3.1)
+ viridisLite           0.4.2      2023-05-02 [1] CRAN (R 4.3.0)
+ withr                 3.0.0      2024-01-16 [1] CRAN (R 4.3.1)
+ xfun                  0.42       2024-02-08 [1] CRAN (R 4.3.1)
+ xml2                  1.3.6      2023-12-04 [1] CRAN (R 4.3.1)
+ xtable                1.8-4      2019-04-21 [1] CRAN (R 4.3.0)
+ yaml                  2.3.8      2023-12-11 [1] CRAN (R 4.3.1)
+ zoo                   1.8-12     2023-04-13 [1] CRAN (R 4.3.0)
+
+ [1] /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library
+
+──────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

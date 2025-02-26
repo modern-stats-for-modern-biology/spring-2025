@@ -1,0 +1,448 @@
+---
+title: "Marginal effects using R"
+date: 2024-03-12
+author: Edoardo \"Dado\" Marcora
+execute:
+  warning: false
+format:
+  html:
+    toc: true
+    df-print: paged
+bibliography: references.bib
+---
+
+## Introduction
+
+This notebook shows how to use various packages to 1) import data from an Excel spreadsheet ([`readxl`](https://readxl.tidyverse.org/)), 2) evaluate ([`performance`](https://easystats.github.io/performance/)) and compare ([`modelsummary`](https://modelsummary.com/)) models, and 3) estimate marginal effects ([`ggeffects`](https://strengejacke.github.io/ggeffects/)) using the best fitting model (`m5`) of the mouse stress/sociability/neuronal activation experiment illustrated during the lecture of week 10 (2024-03-12, **Chapter 9: Models with interactions**) by [Erin Rich](https://labs.neuroscience.mssm.edu/project/rich-lab/).
+
+## Setup environment
+
+```{r}
+#| output: false
+library(coursekata)
+library(readxl)
+library(performance)
+library(modelsummary)
+library(ggeffects)
+
+options(ggeffects_margin = "empirical")
+
+set.seed(123)
+```
+
+## Background information
+
+The data are from a study of the effects of footshock stress on social behavior and neuronal activation in the amygdala (and medial prefrontal cortex) of male and female mice.
+
+Data available at <https://doi.org/10.7910/DVN/1RAQON>
+
+Study available at <https://doi.org/10.1371/journal.pone.0281388>
+
+## Estimands
+
+The aim of the original study was to explore the effect of stress on the sociability of male and female mice in a standard social approach test. Neuronal activation during social approach was assessed using immunohistochemistry against the immediate early gene product cFos.
+
+Here we are going to estimate the effect of stress (`StressCondition`, treatment variable) on neuronal activation (`CeLcfos`, outcome variable) conditional on the sociability of male and female mice (`Sociability`, control variable). We will also estimate the effect of `Sociability` on `CeLcfos` conditional on `StressCondition`.
+
+## Read and prep data
+
+This study is a good example of [how NOT to format supplementary data in an Excel spreadsheet]{.underline}! It shouldn't take more than one call to the `read_xlsx()` function to import data from a properly formatted Excel spreadsheet.
+
+```{r}
+id1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C4:D11", col_names = c("ID", "Treatment"))
+id2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C16:D23", col_names = c("ID", "Treatment"))
+id3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C26:D33", col_names = c("ID", "Treatment"))
+id4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C37:D44", col_names = c("ID", "Treatment"))
+
+id <- rbind(id1, id2, id3, id4)
+```
+
+```{r}
+cel1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H4:H11", col_names = "CeLcfos")
+cel2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H16:H23", col_names = "CeLcfos")
+cel3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H26:H33", col_names = "CeLcfos")
+cel4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H37:H44", col_names = "CeLcfos")
+
+cel <- rbind(cel1, cel2, cel3, cel4)
+```
+
+```{r}
+soc1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N4:N11", col_names = "Sociability")
+soc2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N16:N23", col_names = "Sociability")
+soc3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N26:N33", col_names = "Sociability")
+soc4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N37:N44", col_names = "Sociability")
+
+soc <- rbind(soc1, soc2, soc3, soc4)
+```
+
+```{r}
+d <- cbind(id,soc,cel) %>%
+  mutate(Sex = factor(substr(ID, 1, 1))) %>% 
+  rowwise() %>% 
+  mutate(
+    StressCondition = case_when(
+      grepl("FC-", Treatment) ~ "Control",
+      grepl("FC+", Treatment) ~ "Shock",
+      grepl("Control", Treatment) ~ "Control",
+      grepl("Stress", Treatment) ~ "Shock"),
+    Treatment = case_when(
+      grepl("Veh", Treatment) ~ "Vehicle",
+      grepl("Alp", Treatment) ~ "Alprazolam")) %>%
+  ungroup() %>% 
+  mutate(logCeLcfos = log(CeLcfos),
+         Sex = factor(Sex),
+         Treatment = factor(Treatment),
+         StressCondition = factor(StressCondition)) %>% 
+  select(ID, CeLcfos, logCeLcfos, StressCondition, Sociability, everything())
+
+d
+```
+
+## Causal model
+
+```{mermaid}
+flowchart T
+    X[StressCondition] --> Y[CeLcfos]
+    Z[Sociability] --> Y
+    X[StressCondition] --> Z
+```
+
+See [daggity](https://www.dagitty.net/) causal diagram at <https://dagitty.net/mPkDBY42K>
+
+## Exploratory data analysis
+
+### Sociability \~ StressCondition
+
+```{r}
+gf_point(Sociability ~ StressCondition, color = ~ StressCondition, data = d) %>%
+  gf_boxplot(fill = ~ StressCondition, alpha = 0.2)
+```
+
+### CeLcfos \~ NULL
+
+It is often but erroneously believed that linear regression assumes that the outcome variable is normally distributed. This misconception arises from not knowing/remembering the regression likelihood equation(s) of the general linear model (discussed in a [previous lecture](https://modern-stats-for-modern-biology.github.io/spring-2024/lectures/statistical_inference_3/#/linear-regression-models)), e.g.:
+
+$$
+y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu = \beta_0 + \beta_1 x_i, \sigma)
+$$
+
+or (equivalently):
+
+$$
+y_i = \beta_0 + \beta_1 x_i + \epsilon_i
+$$
+
+$$
+\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(0, \sigma)
+$$
+
+All the assumptions of the general linear model are unambiguously stated by these two equivalent notations!
+
+Specifically, to return to the misconception mentioned above, the linear regression model assumes that the outcome variable $y$ is normally distributed **conditional on the covariates** $x$ or, equivalently, that the **residuals** **are normally distributed**.
+
+For example:
+
+```{r}
+nsamples = 1000
+
+y_xA = rnorm(nsamples, mean = 2, sd = 4)
+y_xB = rnorm(nsamples, mean = 20, sd = 4)
+
+y_x <- tibble(y = c(y_xA, y_xB), x = factor(c(rep("A", nsamples), rep("B", nsamples))))
+
+y_x
+```
+
+```{r}
+gf_dens(~ y, data = y_x)
+```
+
+```{r}
+gf_dens(~ y | x, data = y_x)
+```
+
+```{r}
+gf_dens(~ y, color = ~ x, data = y_x)
+```
+
+```{r}
+m <- lm(y ~ x, data = y_x)
+
+summary(m)
+```
+
+```{r}
+check_normality(m)
+```
+
+```{r}
+gf_jitter(y ~ x, color = ~ x, alpha = 0.1, data = y_x) %>%
+  gf_model(m) %>%
+  ggExtra::ggMarginal(y, type="density")
+```
+
+The "problem" with the `CeLcfos` outcome variable is not that it is not normally distributed, but that it is a count variable (or more precisely in this case a density, the number of "active neurons"/cfos-expressing cells per mm^2^ of the central lateral amygdala) and thus it cannot be negative.
+
+A normally distributed variable is defined over the entire real line $(-\infty, \infty)$ and, therefore, it is not appropriate for count data, especially if they are concentrated close to the zero boundary.
+
+```{r}
+favstats(~ CeLcfos, data = d)
+```
+
+```{r}
+gf_histogram(~ CeLcfos, data = d)
+```
+
+```{r}
+gf_qq(~ CeLcfos, data = d) %>% gf_qqline()
+```
+
+A log transformation is often applied to count data in order to make them more amenable to commonly used null-hypothesis significance tests and general linear regression modeling, all of which assume that the outcome variable is conditionally normally distributed.
+
+```{r}
+favstats(~ logCeLcfos, data = d)
+```
+
+```{r}
+gf_histogram(~ logCeLcfos, data = d)
+```
+
+```{r}
+gf_qq(~ logCeLcfos, data = d) %>% gf_qqline()
+```
+
+However, generalized linear models that, e.g., use the Poisson or negative binomial distribution are better suited for dealing with count data.
+
+The log transformation of counts is also problematic when the data includes observations of zero counts and the whole dataset need to be fudged by adding a value, usually 1, before transformation.
+
+### logCeLcfos \~ StressCondition
+
+```{r}
+gf_point(logCeLcfos ~ StressCondition, color = ~ StressCondition, data = d) %>%
+  gf_boxplot(fill = ~ StressCondition, alpha = 0.2)
+```
+
+### logCeLcfos \~ Sociability
+
+```{r}
+gf_point(logCeLcfos ~ Sociability, data = d) %>% gf_model(logCeLcfos ~ Sociability, data = d)
+```
+
+### logCeLcfos \~ StressCondition + Sociability
+
+```{r}
+gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
+  gf_model(logCeLcfos ~ Sociability + StressCondition, data = d)
+```
+
+### logCeLcfos \~ StressCondition \* Sociability
+
+```{r}
+gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
+  gf_model(logCeLcfos ~ Sociability * StressCondition, data = d)
+```
+
+## Build and fit models
+
+### Sociability \~ StressCondition
+
+```{r}
+m <- lm(Sociability ~ StressCondition, data = d)
+
+summary(m)
+```
+
+```{r}
+#| fig-height: 10
+check_model(m, detrend = FALSE)
+```
+
+### logCeLcfos \~ NULL
+
+```{r}
+m1 <- lm(log(CeLcfos) ~ NULL, data = d)
+
+summary(m1)
+```
+
+```{r}
+#| fig-height: 10
+check_model(m1, detrend = FALSE)
+```
+
+### logCeLcfos \~ StressCondition
+
+```{r}
+m2 <- lm(log(CeLcfos) ~ StressCondition, data = d)
+
+summary(m2)
+```
+
+```{r}
+#| fig-height: 10
+check_model(m2, detrend = FALSE)
+```
+
+### logCeLcfos \~ Sociability
+
+```{r}
+m3 <- lm(log(CeLcfos) ~ Sociability, data = d)
+
+summary(m3)
+```
+
+```{r}
+#| fig-height: 10
+check_model(m3, detrend = FALSE)
+```
+
+### logCeLcfos \~ StressCondition + Sociability
+
+```{r}
+m4 <- lm(log(CeLcfos) ~ StressCondition + Sociability, data = d)
+
+summary(m4)
+```
+
+```{r}
+#| fig-height: 10
+check_model(m4, detrend = FALSE)
+```
+
+### logCeLcfos \~ StressCondition \* Sociability
+
+```{r}
+m5 <- lm(log(CeLcfos) ~ StressCondition * Sociability, data = d)
+
+summary(m5)
+```
+
+```{r}
+#| fig-height: 10
+check_model(m5, detrend = FALSE)
+```
+
+## Model evaluation and comparison
+
+Here we use the `modelsummary()` and the `compare_performance()` functions from the [`modelsummary`](https://modelsummary.com/) and [`performance`](https://easystats.github.io/performance/) packages, respectively, to evaluate and compare models.
+
+```{r}
+modelsummary(list(m1, m2, m3, m4, m5), stars = TRUE, statistic = "conf.int")
+```
+
+```{r}
+plot(compare_performance(m1, m2, m3, m4, m5, rank = TRUE, verbose = FALSE))
+```
+
+## Model predictions
+
+On the log(*response*) scale:
+
+```{r}
+predict_response(m5, c("Sociability", "StressCondition"), back_transform = FALSE) %>% plot()
+```
+
+On the *response* scale:
+
+```{r}
+predict_response(m5, c("Sociability", "StressCondition")) %>% plot()
+```
+
+## Marginal effects
+
+The `predict_response()` and `test_predictions()` functions from the [`ggeffects`](https://strengejacke.github.io/ggeffects/) package are used here to compute model predictions (above) and marginal effects (below) from a fitted regression model. `ggeffects` is based on the more powerful but also more complex [`marginaleffects`](https://marginaleffects.com/) package. Another package often used to compute marginal effects from a fitted regression model is [`emmeans`](https://cran.r-project.org/package=emmeans).
+
+A good introduction to "marginal effects" is available [here](https://www.andrewheiss.com/blog/2022/05/20/marginalia). Please refer to the documentation of the "marginal effects" package of your choice to understand exactly what the author(s) defines as marginal effects, since there is very little consensus on terminology, unfortunately.
+
+The [`predict_response()`](https://strengejacke.github.io/ggeffects/reference/predict_response.html) function takes two inputs:
+
+1.  `model`, the output of a regression model fitting function such as `lm`, `glm`, [`rstanarm`](https://mc-stan.org/rstanarm/)`::stan_glm()`, [`brms`](https://paul-buerkner.github.io/brms/)`:brm()`, etc.
+2.  `terms`, a character vector of names of one or more predictor variables (a.k.a. "*focal terms*")
+
+The output is a data frame of predictions of the response variable, which is nicely printed by default.
+
+The output data frame can be passed to the `plot()` function to easily plot the predictions, or to the `test_predictions()` function to easily estimate and test hypotheses about marginal effects (i.e., differences between two adjacent predictions, a.k.a. contrasts/comparisons).
+
+By default, these predictions are on the *response* scale, which is the most intuitive scale to interpret them.
+
+The `predict_response()` function requires at least one, but not more than four focal terms. Predicted values of the response variable, along the values or levels of the first focal term are calculated, possibly grouped by the other focal terms, while all other predictor variables (a.k.a. "*non-focal terms*") are marginalized over.
+
+The `margin` argument indicates how to marginalize over the non-focal terms:
+
+-   `"mean_reference"` \[the default, which can be changed using the `options()` function, e.g., `options(ggeffects_margin = "empirical")`\]
+    -   non-focal terms are set to their mean (numeric variables), reference level (factors), or "most common value" (character vectors)
+    -   the predictions in the output data frame are **adjusted predictions** of the response variable specified in the model
+    -   Question answered: "*What is the predicted value of the response variable at meaningful values or levels of the focal terms for a "typical" observation in the data?*"
+-   `"mean_mode"`
+    -   non-focal terms are set to their mean (numeric variables) or "most common value" (factors and character vectors)
+    -   the predictions in the output data frame are **adjusted predictions** of the response variable specified in the model
+    -   Question answered: "*What is the predicted value of the response variable at meaningful values or levels of the focal terms for a "typical" observation in the data?*"
+-   `"marginalmeans"`
+    -   non-focal predictors are set to their mean (numeric variables) or marginalized over their levels or "values" (factors and character vectors)
+    -   the predictions in the output data frame are **marginal means** of the response variable specified in the model
+    -   Question answered: "*What is the predicted value of the response variable at meaningful values or levels of the focal terms for an "average" observation in the data?*"
+-   `"empirical"` (or `"counterfactual"`)
+    -   non-focal predictors are marginalized over the observations in the sample; the response is predicted for each observation and the predicted values are then averaged across all observations, grouped by the focal terms [@dickerman2020]
+    -   the predictions in the output data frame are **averaged counterfactual predictions** of the response variable specified in the model
+    -   Question answered: "*What is the predicted value of the response variable at meaningful values or levels of the focal terms for the "average" observation in the population \[not only in the data\]?*"
+
+"Marginal effects" (in the terminology used by the `ggeffects` package) are differences between two adjacent predictions, not the adjusted predictions, marginal means, or averaged counterfactual predictions described above.
+
+The [`test_predictions()`](https://strengejacke.github.io/ggeffects/reference/test_predictions.html) function takes the same two inputs (`model` and `terms`) of the `predict_response()` function (or its output data frame as a single input) and test the differences between two adjacent predictions for statistical significance. These differences are usually called *contrasts* or (pairwise) *comparisons* and are also known as "marginal effects". If the first focal term is numeric, contrasts/comparisons of the *slopes* of this numeric predictor are computed, possibly grouped by the other focal terms.
+
+## Estimates
+
+### Effect of stress on neuronal activation conditional on sociability
+
+```{r}
+pred <- predict_response(m5, "StressCondition")
+
+pred
+```
+
+```{r}
+test_predictions(pred)
+```
+
+```{r}
+pred <- predict_response(m5, c("StressCondition", "Sociability [meansd]"))
+
+pred
+```
+
+```{r}
+test_predictions(pred, test = c("b1 = b4", "b2 = b5", "b3 = b6"))
+```
+
+### Effect of sociability on neuronal activation conditional on stress
+
+```{r}
+pred <- predict_response(m5, "Sociability")
+
+pred
+```
+
+```{r}
+test_predictions(pred)
+```
+
+```{r}
+pred <- predict_response(m5, c("Sociability", "StressCondition"))
+
+pred
+```
+
+```{r}
+test_predictions(pred)
+```
+
+## References
+
+::: {#refs}
+:::
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```
