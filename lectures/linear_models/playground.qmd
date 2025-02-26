@@ -21,7 +21,6 @@ In this notebook, we’ll model several probability distributions/stastistical m
 #| output: false
 library(tidyverse)
 library(ggformula)
-library(extraDistr)
 
 theme_set(theme_minimal())
 
@@ -31,50 +30,48 @@ set.seed(666)
 ## Helper functions
 
 ```{r}
-plot_model <- function(df, n = NULL, title = "p(X, Y)") {
+plot_model <- function(df, n = NULL) {
   max_x <- max(df$X)
   max_y <- max(df$Y)
   
-  # 1) Base tile plot
-  p_obj <- gf_tile(
+  plt <- gf_tile(
     Y ~ X, data = df,
-    fill = ~ p, color = "black", linewidth = 0.2
-  ) %>%
-    gf_labs(title = title) %>%
+    fill = ~ p,
+    color = "black",
+    linewidth = 0.2) %>%
     gf_refine(
       scale_fill_gradientn(
         colors = c("white","chocolate4","black"),
         values = c(0, 0.125, 1),
-        limits = c(0, 0.25)
-      ),
+        limits = c(0, 0.25)),
       scale_x_continuous(breaks = seq(0, max_x)),
-      scale_y_continuous(breaks = seq(0, max_y))
-    ) +
-    expand_limits(x = c(0, max_x), y = c(0, max_y))
-  
+      scale_y_continuous(breaks = seq(0, max_y)),
+      theme(
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()))
+
   if (!is.null(n)) {
-    df_samples <- df %>%
-      slice_sample(n = n, weight_by = p, replace = TRUE)
-    
-    p_obj <- p_obj %>% gf_point(
-      Y ~ X, data = df_samples,
-      size = 4, color = "red2", alpha = 0.2, stroke = 0
-    )
+    plt <- plt %>%
+      gf_point(
+        Y ~ X, data = df %>% slice_sample(n = n, weight_by = p, replace = TRUE),
+        size = 4,
+        color = "red2",
+        alpha = 0.5,
+        stroke = 0)
   }
   
-  return(p_obj)
+  return(plt)
 }
 ```
 
 ## Simulate data from uniform and linear models
 
 ```{r}
-n <- 100
+n <- 50
 sample.size <- 10
 grid.size <- 20
 b0 <- 3
-b1 <- 2
-e  <- 1
+b1 <- 1
 sd <- 1
 ```
 
@@ -134,7 +131,7 @@ ss %>%
 ss %>% 
   mutate(p = 1 / n()) %>%
   rowwise() %>% 
-  mutate(M = (Y == b0 + b1 * X + 0) | (Y == (b0 + b1 * X + e)) | (Y == (b0 + b1 * X - e))) %>% 
+  mutate(M = (Y == b0 + b1 * X + 0) | (Y == (b0 + b1 * X + sd)) | (Y == (b0 + b1 * X - sd))) %>% 
   ungroup() %>%
   mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
   plot_model()
@@ -144,7 +141,7 @@ ss %>%
 ss %>% 
   mutate(p = 1 / n()) %>%
   rowwise() %>% 
-  mutate(M = (Y == b0 + b1 * X + 0) | (Y == (b0 + b1 * X + e)) | (Y == (b0 + b1 * X - e))) %>% 
+  mutate(M = (Y == b0 + b1 * X + 0) | (Y == (b0 + b1 * X + sd)) | (Y == (b0 + b1 * X - sd))) %>% 
   ungroup() %>%
   mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
   plot_model(n)
@@ -153,7 +150,7 @@ ss %>%
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
-  mutate(p = ddnorm(b0 + b1 * X, mean = Y, sd = sd)) %>%
+  mutate(p = dnorm(Y, mean = b0 + b1 * X, sd = sd)) %>%
   mutate(p = p / sum(p)) %>% 
   plot_model()
 ```
@@ -161,7 +158,7 @@ ss %>%
 ```{r}
 ss %>% 
   mutate(p = 1 / n()) %>%
-  mutate(p = ddnorm(b0 + b1 * X, mean = Y, sd = sd)) %>%
+  mutate(p = dnorm(Y, mean = b0 + b1 * X, sd = sd)) %>%
   mutate(p = p / sum(p)) %>% 
   plot_model(n)
 ```
