@@ -15,6 +15,12 @@ In this notebook, we’ll model several probability distributions/stastistical m
 
 ![](images/nutella-toast.webp)
 
+Once we have our sample space and probability distribution, we can:
+
+-   Calculate the probability of any proposition/event in the sample space, i.e., any conclusion given the premises/assumptions/evidence
+
+-   Sample from it to generate data in accordance with the model
+
 ## Setup environment
 
 ```{r}
@@ -146,7 +152,7 @@ sample.size <- 50
 grid.size <- 10
 b0 <- 3
 b1 <- 1
-s  <- 2
+s  <- 1
 e  <- seq(-s, s) 
 sd <- 2
 scale <- 1
@@ -231,6 +237,7 @@ ss %>%
   mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
   plot_model(n = sample.size)
 ```
+
 ### Linear model with fixed error
 
 ```{r}

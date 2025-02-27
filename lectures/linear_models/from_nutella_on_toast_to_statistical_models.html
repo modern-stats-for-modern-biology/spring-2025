@@ -57,18 +57,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="playground_files/libs/clipboard/clipboard.min.js"></script>
-<script src="playground_files/libs/quarto-html/quarto.js"></script>
-<script src="playground_files/libs/quarto-html/popper.min.js"></script>
-<script src="playground_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="playground_files/libs/quarto-html/anchor.min.js"></script>
-<link href="playground_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="playground_files/libs/quarto-html/quarto-syntax-highlighting-48ffa3e5b9d089919c6712c39e5b00f2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="playground_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="playground_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="playground_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<link href="playground_files/libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="playground_files/libs/pagedtable-1.1/js/pagedtable.js"></script>
+<script src="from_nutella_on_toast_to_statistical_models_files/libs/clipboard/clipboard.min.js"></script>
+<script src="from_nutella_on_toast_to_statistical_models_files/libs/quarto-html/quarto.js"></script>
+<script src="from_nutella_on_toast_to_statistical_models_files/libs/quarto-html/popper.min.js"></script>
+<script src="from_nutella_on_toast_to_statistical_models_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="from_nutella_on_toast_to_statistical_models_files/libs/quarto-html/anchor.min.js"></script>
+<link href="from_nutella_on_toast_to_statistical_models_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="from_nutella_on_toast_to_statistical_models_files/libs/quarto-html/quarto-syntax-highlighting-48ffa3e5b9d089919c6712c39e5b00f2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="from_nutella_on_toast_to_statistical_models_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="from_nutella_on_toast_to_statistical_models_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="from_nutella_on_toast_to_statistical_models_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="from_nutella_on_toast_to_statistical_models_files/libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="from_nutella_on_toast_to_statistical_models_files/libs/pagedtable-1.1/js/pagedtable.js"></script>
 
 
 </head>
@@ -104,6 +104,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Wherever the Nutella is <strong>thick</strong>, the probability is <strong>high</strong>; where it’s <strong>thin or absent</strong>, the probability is <strong>low</strong> or <strong>zero</strong>. But taken together, the <strong>total</strong> Nutella spread must sum to 1 Kg.</p>
 <p>In this notebook, we’ll model several probability distributions/stastistical models as different ways of smearing Nutella across the toast.</p>
 <p><img src="images/nutella-toast.webp" class="img-fluid"></p>
+<p>Once we have our sample space and probability distribution, we can:</p>
+<ul>
+<li><p>Calculate the probability of any proposition/event in the sample space, i.e., any conclusion given the premises/assumptions/evidence</p></li>
+<li><p>Sample from it to generate data in accordance with the model</p></li>
+</ul>
 </section>
 <section id="setup-environment" class="level2">
 <h2 class="anchored" data-anchor-id="setup-environment">Setup environment</h2>
@@ -235,7 +240,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>grid.size <span class="ot">&lt;-</span> <span class="dv">10</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>s  <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>s  <span class="ot">&lt;-</span> <span class="dv">1</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>e  <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span>s, s) </span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>sd <span class="ot">&lt;-</span> <span class="dv">2</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>scale <span class="ot">&lt;-</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -275,7 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -291,7 +296,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -310,7 +315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -326,7 +331,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -345,7 +350,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -361,7 +366,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -380,7 +385,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -396,7 +401,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -413,7 +418,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -427,7 +432,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -444,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -458,7 +463,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -475,7 +480,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -489,7 +494,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="playground_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
