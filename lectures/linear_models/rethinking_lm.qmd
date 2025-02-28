@@ -2,6 +2,7 @@
 title: "rethinking_lm"
 format:
   html:
+    toc: true
     df-print: paged
 ---
 
@@ -9,19 +10,30 @@ format:
 
 ```{r}
 #| output: false
-library(tidyverse)
 library(coursekata)
+library(tidyverse)
+library(easystats)
 library(rethinking)
+library(rstanarm)
+library(bayesplot)
 
 theme_set(theme_bw())
+
+set.rseed(666)
 ```
 
 ## Load data
 
 ```{r}
-data(Howell1, package = "rethinking")
+data(Howell1) # from rethinking package
 ```
 
+Demographic data from [Kalahari !Kung San people](https://en.wikipedia.org/wiki/%C7%83Kung_people) collected by [Nancy Howell](https://medium.com/extralife/the-long-ceiling-fddda72f4c0b)
+
+-   `height`: Height in cm
+-   `weight`: Weight in kg
+-   `age`: Age in years
+-   `male`: Gender indicator
 
 ## Explore data
 
@@ -29,6 +41,9 @@ data(Howell1, package = "rethinking")
 Howell1
 ```
 
+```{r}
+skimr::skim(Howell1)
+```
 
 ```{r}
 gf_point(weight ~ height, data = Howell1, alpha = 0.5, color = 4) %>%
@@ -37,14 +52,17 @@ gf_point(weight ~ height, data = Howell1, alpha = 0.5, color = 4) %>%
 ```
 
 ```{r}
-d.obs <- Howell1 %>% filter(age >= 18) %>% select(-c(male, age))
+d.pop <- Howell1 %>% filter(age >= 18) %>% select(-c(male, age))
 
-d.obs
+d.pop
 ```
 
+```{r}
+skimr::skim(d.pop)
+```
 
 ```{r}
-gf_point(weight ~ height, data = d.obs, alpha = 0.5, color = 4) %>%
+gf_point(weight ~ height, data = d.pop, alpha = 0.5, color = 4) %>%
   gf_smooth(linewidth = 1, color = 2, method = "loess") %>% 
   gf_labs(x = "Height (cm)", y = "Weight (kg)")
 ```
@@ -54,15 +72,14 @@ gf_point(weight ~ height, data = d.obs, alpha = 0.5, color = 4) %>%
 1.  State a clear question/goal
 2.  Specify causal model (use a DAG to sketch your causal assumptions)
 3.  Use causal model to build generative model
-4.  Specify estimand (i.e., the unknown quantity of interest)
+4.  Specify estimand (i.e., the unknown statistical quantity of interest)
 5.  Use generative model to build an estimator
 6.  Test estimator using data simulated with generative model
-7.  Apply estimator to observed data
+7.  Estimate (fit/train model using observed data)
 8.  Check model assumptions
-9.  Test model using observed data (posterior predictive check)
-10. Test model using new data
-11. Profit
-
+9.  Test model using training data (posterior predictive check)
+10. Test model using new data (replication)
+11. Profit but keep testing
 
 ## State a clear question/goal
 
@@ -79,21 +96,19 @@ graph LR;
 
 $$\text{W} = f(\text{H})$$
 
-
 ## Use causal model to build generative model
 
 The likelihood of the general linear model:
 
 $$
-y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu = \beta_0 + \beta_1 \cdot x_i, \sigma)
+y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu = (\beta_0 + \beta_1 \cdot x_i), \sigma)
 $$
 
 or (equivalently):
 
 $$
 y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i
-$$
-$$
+$$ $$
 \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(0, \sigma)
 $$
 
@@ -106,8 +121,8 @@ sim_weight <- function(H, beta1, sigma) {
 ```
 
 ```{r}
-H <- runif(500, 130, 180)
-W <- sim_weight(H, 0.33, 5)
+H <- rnorm(n = 350, mean = 155, sd = 8)
+W <- sim_weight(H, beta1 = 0.4, sigma = 5)
 ```
 
 ```{r}
@@ -120,55 +135,220 @@ gf_point(weight ~ height, data = d.sim, alpha = 0.5, color = 3) %>%
   gf_labs(x = "Height (cm)", y = "Weight (kg)")
 ```
 
+## Specify estimand
+
+The unknown statistical quantity of interest
+
+## Use generative model to build an estimator
+
+Build Bayesian estimator using grid approximation
+
+```{r}
+sample.size <- 20 # number of samples in the dataset
+n <- 1000         # number of samples used in Montecarlo simulations
+```
+
+```{r}
+# parameter variables
+beta0 <- seq(-80, 80, length.out = 100)
+beta1 <- seq(-3, 3, length.out = 100)
+sigma <- seq(0.1, 20, length.out = 100)
+
+# build sample space of parameter variables
+ss <- expand_grid(beta0, beta1, sigma)
+
+# simulate data
+H <- rnorm(sample.size, mean = 155, sd = 8)
+W <- sim_weight(H, beta1 = 0.4, sigma = 5)
+
+# estimate using grid approximation
+post <- ss %>%
+  rowwise() %>%
+  mutate(
+    like = exp(sum(dnorm(W, mean = beta0 + beta1 * H, sigma, log = TRUE))),
+    post.unnorm = like
+  ) %>%
+  ungroup() %>%
+  mutate(
+    post = post.unnorm / sum(post.unnorm)
+    
+  )
+
+post
+```
+
+## Test estimator
+
+$$
+\beta_0 = 0 \quad \beta_1 = 0.4 \quad \sigma = 5
+$$
+
+```{r}
+draws <- post %>%
+  slice_sample(n = n, weight_by = post, replace = TRUE) %>%
+  select(beta0, beta1, sigma) %>% 
+  posterior::as_draws_df()
+```
+
+```{r}
+mcmc_hist(draws, pars = "beta1", binwidth = 6/100)
+```
+
+```{r}
+summary(draws)
+```
+
+## Estimate
+
+Fit/train model using observed data
+
+### Grid approximation
+
+```{r}
+# randomly sample data from population
+d.smp <- d.pop %>% slice_sample(n = sample.size)
+
+H <- d.smp$height # observed covariates
+W <- d.smp$weight # observed outcomes
+
+# estimate using grid approximation
+post <- ss %>%
+  rowwise() %>%
+  mutate(
+    like = exp(sum(dnorm(W, mean = beta0 + beta1 * H, sigma, log = TRUE))),
+    post.unnorm = like
+  ) %>%
+  ungroup() %>%
+  mutate(
+    post = post.unnorm / sum(post.unnorm)
+    
+  )
+
+post
+```
+
+```{r}
+draws <- post %>%
+  slice_sample(n = n, weight_by = post, replace = TRUE) %>%
+  select(beta0, beta1, sigma) %>% 
+  posterior::as_draws_df()
+```
+
+```{r}
+mcmc_hist(draws, pars = "beta1", binwidth = 6/50)
+```
+
+```{r}
+summary(draws)
+```
+
+### Quadratic approximation
+
 ```{r}
 m <- alist(
     W ~ dnorm(mu, sigma),
     mu <- beta0 + beta1 * H,
-    beta0 ~ dnorm(0, 10),
-    beta1 ~ dnorm(0, 10),
-    sigma ~ dunif(0, 10)
+    beta0 ~ dnorm(0, 25),
+    beta1 ~ dnorm(0, 1),
+    sigma ~ dexp(0.3)
 )
 ```
 
 ```{r}
-f <- quap(m, data = d.sim)
+f <- quap(m, data = d.smp)
 ```
 
 ```{r}
 summary(f)
 ```
 
-
-## Grid approximation
+### Bayesian linear model estimation
 
 ```{r}
-beta0 <- seq(-10, 10, length.out = 50)
-beta1 <- seq(-5, 5, length.out = 100)
-sigma <- seq(0.1, 10, length.out = 50)
-
-ss <- expand_grid(beta0, beta1, sigma)
-
-H <- c(1, 2, 3)   # observed covariates
-W <- c(5, 6, 7)   # observed outcomes
-
-H <- c(130, 150, 170)   # observed covariates
-W <- sim_weight(H, beta1 = 0.33, sigma = 5)   # observed outcomes
-
-ss %>%
-  rowwise() %>%
-  mutate(
-    likelihood.unnorm = exp(sum(dnorm(W, mean = beta0 + beta1 * H, sigma, log = TRUE)))
-  ) %>%
-  ungroup() %>%
-  mutate(
-    likelihood = likelihood.unnorm / sum(likelihood.unnorm)
-  ) %>%
-  pivot_longer(
-    cols = c(beta0, beta1, sigma),
-    names_to = "param",
-    values_to = "value"
-  ) %>% 
-  gf_histogram(~ value, data = ss_long, weight = ~ likelihood) %>%
-  gf_facet_wrap(~ param) %>%
-  gf_labs(title = "Posterior distribution of parameters", x = "Parameter", y = "p")
+#| output: false
+bayes.est.unif <- stan_glm(weight ~ 1 + height, data = d.smp)
 ```
+
+```{r}
+#| output: false
+bayes.est.winf <- stan_glm(weight ~ 1 + height, data = d.smp,
+                           prior = normal(0, 1),
+                           prior_intercept = normal(0, 25),
+                           prior_aux = exponential(0.3))
+```
+
+### Maximum likelihood linear model estimation
+
+```{r}
+ml.est <- lm(weight ~ 1 + height, data = d.smp)
+```
+
+### Compare models
+
+```{r}
+modelsummary::modelsummary(list(mle = ml.est, bayes.unif = bayes.est.unif, bayes.winf = bayes.est.winf), metrics = "all")
+```
+
+```{r}
+estimate_slopes(bayes.est.unif, trend = "height")
+```
+
+```{r}
+estimate_slopes(ml.est, trend = "height")
+```
+
+
+## Check model assumptions
+
+XXX
+
+## Test model using training data
+
+XXX
+
+## Test model using new data (replication)
+
+XXX
+
+## Profit but keep testing
+
+
+## Population parameters
+
+```{r}
+f <- quap(m, data = d.pop)
+```
+
+```{r}
+summary(f)
+```
+
+```{r}
+#| output: false
+bayes.est.unif <- stan_glm(weight ~ 1 + height, data = d.pop)
+```
+
+```{r}
+#| output: false
+bayes.est.winf <- stan_glm(weight ~ 1 + height, data = d.pop,
+                           prior = normal(0, 1),
+                           prior_intercept = normal(0, 25),
+                           prior_aux = exponential(0.3))
+```
+
+```{r}
+ml.est <- lm(weight ~ 1 + height, data = d.pop)
+```
+
+```{r}
+modelsummary::modelsummary(list(mle = ml.est, bayes.unif = bayes.est.unif, bayes.winf = bayes.est.winf), metrics = "all")
+```
+
+```{r}
+estimate_slopes(bayes.est.unif, trend = "height")
+```
+
+```{r}
+estimate_slopes(ml.est, trend = "height")
+```
+
