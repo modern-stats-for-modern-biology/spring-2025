@@ -1,0 +1,174 @@
+---
+title: "rethinking_lm"
+format:
+  html:
+    df-print: paged
+---
+
+## Setup environment
+
+```{r}
+#| output: false
+library(tidyverse)
+library(coursekata)
+library(rethinking)
+
+theme_set(theme_bw())
+```
+
+## Load data
+
+```{r}
+data(Howell1, package = "rethinking")
+```
+
+
+## Explore data
+
+```{r}
+Howell1
+```
+
+
+```{r}
+gf_point(weight ~ height, data = Howell1, alpha = 0.5, color = 4) %>%
+  gf_smooth(linewidth = 1, color = 2, method = "loess") %>% 
+  gf_labs(x = "Height (cm)", y = "Weight (kg)")
+```
+
+```{r}
+d.obs <- Howell1 %>% filter(age >= 18) %>% select(-c(male, age))
+
+d.obs
+```
+
+
+```{r}
+gf_point(weight ~ height, data = d.obs, alpha = 0.5, color = 4) %>%
+  gf_smooth(linewidth = 1, color = 2, method = "loess") %>% 
+  gf_labs(x = "Height (cm)", y = "Weight (kg)")
+```
+
+## Workflow
+
+1.  State a clear question/goal
+2.  Specify causal model (use a DAG to sketch your causal assumptions)
+3.  Use causal model to build generative model
+4.  Specify estimand (i.e., the unknown quantity of interest)
+5.  Use generative model to build an estimator
+6.  Test estimator using data simulated with generative model
+7.  Apply estimator to observed data
+8.  Check model assumptions
+9.  Test model using observed data (posterior predictive check)
+10. Test model using new data
+11. Profit
+
+
+## State a clear question/goal
+
+-   What is the relationship between height and weight in adults?
+
+-   Describe the association between height and weight in adults
+
+## Specify causal model (DAG)
+
+```{mermaid}
+graph LR;
+    H --> W;
+```
+
+$$\text{W} = f(\text{H})$$
+
+
+## Use causal model to build generative model
+
+The likelihood of the general linear model:
+
+$$
+y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu = \beta_0 + \beta_1 \cdot x_i, \sigma)
+$$
+
+or (equivalently):
+
+$$
+y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i
+$$
+$$
+\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(0, \sigma)
+$$
+
+```{r}
+sim_weight <- function(H, beta1, sigma) {
+  U <- rnorm(length(H), mean = 0, sd = sigma)
+  W <- beta1 * H + U
+  return(W)
+}
+```
+
+```{r}
+H <- runif(500, 130, 180)
+W <- sim_weight(H, 0.33, 5)
+```
+
+```{r}
+d.sim <- tibble(height = H, weight = W)
+```
+
+```{r}
+gf_point(weight ~ height, data = d.sim, alpha = 0.5, color = 3) %>%
+  gf_smooth(linewidth = 1, color = 2, method = "loess") %>%
+  gf_labs(x = "Height (cm)", y = "Weight (kg)")
+```
+
+```{r}
+m <- alist(
+    W ~ dnorm(mu, sigma),
+    mu <- beta0 + beta1 * H,
+    beta0 ~ dnorm(0, 10),
+    beta1 ~ dnorm(0, 10),
+    sigma ~ dunif(0, 10)
+)
+```
+
+```{r}
+f <- quap(m, data = d.sim)
+```
+
+```{r}
+summary(f)
+```
+
+
+## Grid approximation
+
+```{r}
+beta0 <- seq(-10, 10, length.out = 50)
+beta1 <- seq(-5, 5, length.out = 100)
+sigma <- seq(0.1, 10, length.out = 50)
+
+ss <- expand_grid(beta0, beta1, sigma)
+
+H <- c(1, 2, 3)   # observed covariates
+W <- c(5, 6, 7)   # observed outcomes
+
+H <- c(130, 150, 170)   # observed covariates
+W <- sim_weight(H, beta1 = 0.33, sigma = 5)   # observed outcomes
+
+ss %>%
+  rowwise() %>%
+  mutate(
+    likelihood.unnorm = exp(sum(dnorm(W, mean = beta0 + beta1 * H, sigma, log = TRUE)))
+  ) %>%
+  ungroup() %>%
+  mutate(
+    likelihood = likelihood.unnorm / sum(likelihood.unnorm)
+  ) %>%
+  pivot_longer(
+    cols = c(beta0, beta1, sigma),
+    names_to = "param",
+    values_to = "value"
+  ) %>% 
+  gf_histogram(~ value, data = ss_long, weight = ~ likelihood) %>%
+  gf_facet_wrap(~ param) %>%
+  gf_labs(title = "Posterior distribution of parameters", x = "Parameter", y = "p")
+```
