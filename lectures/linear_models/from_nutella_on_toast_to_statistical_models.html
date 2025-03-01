@@ -137,7 +137,12 @@ window.Quarto = {
   <li><a href="#linear-model-with-cauchy-error-heavier-tails-than-the-normal" id="toc-linear-model-with-cauchy-error-heavier-tails-than-the-normal" class="nav-link" data-scroll-target="#linear-model-with-cauchy-error-heavier-tails-than-the-normal">Linear model with Cauchy error (heavier tails than the normal)</a></li>
   <li><a href="#non-linear-model-with-no-error" id="toc-non-linear-model-with-no-error" class="nav-link" data-scroll-target="#non-linear-model-with-no-error">Non-linear model with no error</a></li>
   <li><a href="#non-linear-model-with-normal-error" id="toc-non-linear-model-with-normal-error" class="nav-link" data-scroll-target="#non-linear-model-with-normal-error">Non-linear model with normal error</a></li>
-  <li><a href="#another-non-linear-model-with-no-error" id="toc-another-non-linear-model-with-no-error" class="nav-link" data-scroll-target="#another-non-linear-model-with-no-error">Another non-linear model with no error</a></li>
+  </ul></li>
+  <li><a href="#conditional-probability" id="toc-conditional-probability" class="nav-link" data-scroll-target="#conditional-probability">Conditional probability</a>
+  <ul class="collapse">
+  <li><a href="#uniform-model-1" id="toc-uniform-model-1" class="nav-link" data-scroll-target="#uniform-model-1">Uniform model</a></li>
+  <li><a href="#linear-model-with-no-error-1" id="toc-linear-model-with-no-error-1" class="nav-link" data-scroll-target="#linear-model-with-no-error-1">Linear model with no error</a></li>
+  <li><a href="#linear-model-with-uniform-error-2" id="toc-linear-model-with-uniform-error-2" class="nav-link" data-scroll-target="#linear-model-with-uniform-error-2">Linear model with uniform error</a></li>
   </ul></li>
   <li><a href="#print-environment" id="toc-print-environment" class="nav-link" data-scroll-target="#print-environment">Print environment</a></li>
   </ul>
@@ -525,7 +530,7 @@ window.Quarto = {
 </div>
 </div>
 <p><span class="math inline">\(p(x, y)\)</span></p>
-<p><span class="math display">\[P(Y = 2 \mid X = 1, M_0)\]</span></p>
+<p><span class="math display">\[P(Y = 3 \mid X = 1, M_0)\]</span></p>
 </section>
 <section id="calculate-conditional-probability-1" class="level3">
 <h3 class="anchored" data-anchor-id="calculate-conditional-probability-1">Calculate conditional probability</h3>
@@ -550,7 +555,7 @@ window.Quarto = {
 </div>
 </div>
 <p><span class="math inline">\(p(x, y \mid X = 1)\)</span></p>
-<p><span class="math display">\[P(Y = 2 \mid X = 1, M_0)\]</span></p>
+<p><span class="math display">\[P(Y = 3 \mid X = 1, M_0)\]</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
@@ -562,7 +567,7 @@ window.Quarto = {
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">if_else</span>(M1, p <span class="sc">/</span> <span class="fu">sum</span>(p[M1]), <span class="dv">0</span>)</span>
 <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Y <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Y <span class="sc">==</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
@@ -916,22 +921,17 @@ p(x, y \mid M_2) &amp; = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Cauchy}(
 </div>
 </div>
 </section>
-<section id="another-non-linear-model-with-no-error" class="level3">
-<h3 class="anchored" data-anchor-id="another-non-linear-model-with-no-error">Another non-linear model with no error</h3>
+</section>
+<section id="conditional-probability" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-probability">Conditional probability</h2>
+<section id="uniform-model-1" class="level3">
+<h3 class="anchored" data-anchor-id="uniform-model-1">Uniform model</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">M4 =</span> (Y <span class="sc">==</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>)[X <span class="sc">+</span> <span class="dv">1</span>]) <span class="sc">|</span></span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>         (X <span class="sc">==</span> <span class="dv">3</span> <span class="sc">&amp;</span> Y <span class="sc">==</span> <span class="dv">8</span>) <span class="sc">|</span></span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>         (X <span class="sc">==</span> <span class="dv">7</span> <span class="sc">&amp;</span> Y <span class="sc">==</span> <span class="dv">8</span>)</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">if_else</span>(M4, p <span class="sc">/</span> <span class="fu">sum</span>(p[M4]), <span class="dv">0</span>)</span>
-<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -940,12 +940,197 @@ p(x, y \mid M_2) &amp; = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Cauchy}(
 </div>
 </div>
 </div>
+<p><span class="math inline">\(p(x, y)\)</span></p>
+<p><span class="math display">\[P(Y = 4 \mid M_0)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Y <span class="sc">==</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["P"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.09091"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><span class="math display">\[P(Y = 4 \mid X = 1, M_0)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">X1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(X1, p <span class="sc">/</span> <span class="fu">sum</span>(p[X1]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Y <span class="sc">==</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["P"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.09091"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="linear-model-with-no-error-1" class="level3">
+<h3 class="anchored" data-anchor-id="linear-model-with-no-error-1">Linear model with no error</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M1 =</span> (Y <span class="sc">==</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M1, p <span class="sc">/</span> <span class="fu">sum</span>(p[M1]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math display">\[
+\begin{aligned}
+p(x, y \mid M_1) &amp; = p(x, y \mid y = 3 + x) \\
+                 &amp; = p(x, y \mid \beta_0 = 3, \beta_1 = 1, M_L) \quad M_L: y = \beta_0 + \beta_1 x
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[P(Y = 4, M_1)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M1 =</span> (Y <span class="sc">==</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X)) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M1, p <span class="sc">/</span> <span class="fu">sum</span>(p[M1]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Y <span class="sc">==</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["P"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.125"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><span class="math display">\[P(Y = 4 \mid X = 1, M_1)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M1 =</span> (Y <span class="sc">==</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X),</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">X1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(X1 <span class="sc">&amp;</span> M1, p <span class="sc">/</span> <span class="fu">sum</span>(p[X1 <span class="sc">&amp;</span> M1]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Y <span class="sc">==</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["P"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="linear-model-with-uniform-error-2" class="level3">
+<h3 class="anchored" data-anchor-id="linear-model-with-uniform-error-2">Linear model with uniform error</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M2 =</span> Y <span class="sc">%in%</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> e)</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M2, p <span class="sc">/</span> <span class="fu">sum</span>(p[M2]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math display">\[
+\begin{aligned}
+p(x, y \mid M_2) &amp; = p(x, y \mid (y = 3 + x + e), e \in [-1, 1]) \\
+                 &amp; = p(x, y \mid (y = 3 + x - 1) \lor (y = 3 + x + 0) \lor (y = 3 + x + 1)) \\
+                 &amp; = p(x, y \mid (y = 2 + x) \lor (y = 3 + x) \lor (y = 4 + x)) \\
+                 &amp; = p(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_U}) \\
+                 \\
+                 &amp; M_{L+E_U}: y = \beta_0 + \beta_1 \cdot x + e \quad e \in [-s, s]
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[P(Y = 4 \mid M_2)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M2 =</span> Y <span class="sc">%in%</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> e)) <span class="sc">%&gt;%</span> </span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M2, p <span class="sc">/</span> <span class="fu">sum</span>(p[M2]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Y <span class="sc">==</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["P"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.125"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><span class="math display">\[P(Y = 4 \mid X = 1, M_2)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M2 =</span> Y <span class="sc">%in%</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> e),</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">X1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(X1 <span class="sc">&amp;</span> M2, p <span class="sc">/</span> <span class="fu">sum</span>(p[X1 <span class="sc">&amp;</span> M2]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Y <span class="sc">==</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["P"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.3333"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="print-environment" class="level2">
 <h2 class="anchored" data-anchor-id="print-environment">Print environment</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>─ Session info ───────────────────────────────────────────────────────────────
  setting  value

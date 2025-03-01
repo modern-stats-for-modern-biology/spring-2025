@@ -314,7 +314,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
 
 $p(x, y)$
 
-$$P(Y = 2 \mid X = 1, M_0)$$
+$$P(Y = 3 \mid X = 1, M_0)$$
 
 ### Calculate conditional probability
 
@@ -336,7 +336,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
 
 $p(x, y \mid X = 1)$
 
-$$P(Y = 2 \mid X = 1, M_0)$$
+$$P(Y = 3 \mid X = 1, M_0)$$
 
 ```{r}
 expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
@@ -349,7 +349,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
   mutate(
     p = if_else(M1, p / sum(p[M1]), 0)
   ) %>%
-  filter(Y == 2) %>% 
+  filter(Y == 3) %>% 
   summarize(P = sum(p))
 ```
 
@@ -375,6 +375,8 @@ ss %>%
   ) %>%
   plot_model(n = sample.size)
 ```
+
+
 
 ### Linear model with no error
 
@@ -413,6 +415,8 @@ ss %>%
   mutate(p = if_else(M1, p / sum(p[M1]), 0)) %>%
   plot_model(n = sample.size)
 ```
+
+
 
 ### Linear model with uniform error
 
@@ -457,6 +461,7 @@ ss %>%
   mutate(p = if_else(M2, p / sum(p[M2]), 0)) %>%
   plot_model(n = sample.size)
 ```
+
 
 
 ### Linear model with uniform error
@@ -610,23 +615,163 @@ ss %>%
   plot_model(n = sample.size)
 ```
 
+## Conditional probability
 
-### Another non-linear model with no error
+### Uniform model
 
 ```{r}
-ss %>%
-  mutate(p = 1 / n()) %>%
-  rowwise() %>%
+ss %>% 
   mutate(
-    M4 = (Y == c(-1, -1, 4, 3, 2, 2, 2, 3, 4, -1, -1)[X + 1]) |
-         (X == 3 & Y == 8) |
-         (X == 7 & Y == 8)
-  ) %>%
-  ungroup() %>%
-  mutate(
-    p = if_else(M4, p / sum(p[M4]), 0)
+    p = 1 / n() # M0
   ) %>%
   plot_model()
+```
+
+$p(x, y)$
+
+$$P(Y = 4 \mid M_0)$$
+
+```{r}
+ss %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  filter(Y == 4) %>% 
+  summarize(P = sum(p))
+```
+
+$$P(Y = 4 \mid X = 1, M_0)$$
+
+```{r}
+ss %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    X1 = (X == 1)) %>% 
+  ungroup() %>%
+  mutate(p = if_else(X1, p / sum(p[X1]), 0)) %>%
+  filter(Y == 4) %>% 
+  summarize(P = sum(p))
+```
+
+### Linear model with no error
+
+```{r}
+ss %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    M1 = (Y == b0 + b1 * X)) %>% 
+  ungroup() %>%
+  mutate(p = if_else(M1, p / sum(p[M1]), 0)) %>%
+  plot_model()
+```
+
+
+$$
+\begin{aligned}
+p(x, y \mid M_1) & = p(x, y \mid y = 3 + x) \\
+                 & = p(x, y \mid \beta_0 = 3, \beta_1 = 1, M_L) \quad M_L: y = \beta_0 + \beta_1 x
+\end{aligned}
+$$
+
+$$P(Y = 4, M_1)$$
+
+```{r}
+ss %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    M1 = (Y == b0 + b1 * X)) %>% 
+  ungroup() %>%
+  mutate(p = if_else(M1, p / sum(p[M1]), 0)) %>%
+  filter(Y == 4) %>% 
+  summarize(P = sum(p))
+```
+
+$$P(Y = 4 \mid X = 1, M_1)$$
+
+```{r}
+ss %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    M1 = (Y == b0 + b1 * X),
+    X1 = (X == 1)) %>% 
+  ungroup() %>%
+  mutate(p = if_else(X1 & M1, p / sum(p[X1 & M1]), 0)) %>%
+  filter(Y == 4) %>% 
+  summarize(P = sum(p))
+```
+
+### Linear model with uniform error
+
+```{r}
+ss %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    M2 = Y %in% (b0 + b1 * X + e)
+  ) %>%
+  ungroup() %>%
+  mutate(p = if_else(M2, p / sum(p[M2]), 0)) %>%
+  plot_model()
+```
+
+
+
+$$
+\begin{aligned}
+p(x, y \mid M_2) & = p(x, y \mid (y = 3 + x + e), e \in [-1, 1]) \\
+                 & = p(x, y \mid (y = 3 + x - 1) \lor (y = 3 + x + 0) \lor (y = 3 + x + 1)) \\
+                 & = p(x, y \mid (y = 2 + x) \lor (y = 3 + x) \lor (y = 4 + x)) \\
+                 & = p(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_U}) \\
+                 \\
+                 & M_{L+E_U}: y = \beta_0 + \beta_1 \cdot x + e \quad e \in [-s, s]
+\end{aligned}
+$$
+
+$$P(Y = 4 \mid M_2)$$
+
+```{r}
+ss %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    M2 = Y %in% (b0 + b1 * X + e)) %>% 
+  ungroup() %>%
+  mutate(p = if_else(M2, p / sum(p[M2]), 0)) %>%
+  filter(Y == 4) %>% 
+  summarize(P = sum(p))
+```
+
+$$P(Y = 4 \mid X = 1, M_2)$$
+
+```{r}
+ss %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    M2 = Y %in% (b0 + b1 * X + e),
+    X1 = (X == 1)) %>% 
+  ungroup() %>%
+  mutate(p = if_else(X1 & M2, p / sum(p[X1 & M2]), 0)) %>%
+  filter(Y == 4) %>% 
+  summarize(P = sum(p))
 ```
 
 ## Print environment
