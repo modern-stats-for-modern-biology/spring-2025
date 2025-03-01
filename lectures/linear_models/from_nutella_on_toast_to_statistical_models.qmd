@@ -2,6 +2,7 @@
 title: "From Nutella on toast to statistical models"
 format:
   html:
+    toc: true
     df-print: paged
 ---
 
@@ -120,7 +121,8 @@ plot_model <- function(pdf, n = NULL) {
       y_scale,
       base_theme
     ) +
-    expand_limits(x = c(0, max_x), y = c(0, max_y))
+    expand_limits(x = c(0, max_x), y = c(0, max_y)) +
+    coord_fixed(expand = FALSE)
   
   # Optionally add text labels if text_size is applicable
   if (!is.na(text_size)) {
@@ -143,9 +145,8 @@ plot_model <- function(pdf, n = NULL) {
 }
 ```
 
-## Simulate data from uniform and linear models
 
-### Grid, model and sampling parameters
+## Grid, model and sampling parameters
 
 ```{r}
 sample.size <- 50
@@ -153,16 +154,14 @@ grid.size <- 10
 b0 <- 3
 b1 <- 1
 s  <- 1
-e  <- seq(-s, s) 
-sd <- 2
-scale <- 1
+e  <- seq(-s, s)
 ```
 
-### Create sample space
+## Create sample space with uniform probability distribution
 
 ```{r}
-X <- seq(0, grid.size, length.out = grid.size + 1)
-Y <- seq(0, grid.size, length.out = grid.size + 1)
+X <- seq(0, 10)
+Y <- seq(0, 10)
 
 ss <-
   expand_grid(X, Y) %>%
@@ -172,25 +171,208 @@ ss <-
 ss
 ```
 
+```{r}
+ss %>% 
+  mutate(p = 1 / n())
+```
+
+## Uniform spreading of Nutella on a toast
+
+### Small toast
+
+```{r}
+#| fig.width: 3
+#| fig.height: 3
+expand_grid(X = c(0, 1), Y = c(0, 1)) %>%
+  mutate(p = 1 / n()) %>%
+  plot_model()
+```
+
+### Medium toast
+
+```{r}
+#| fig.width: 4
+#| fig.height: 4
+expand_grid(X = c(0, 1, 2), Y = c(0, 1, 2)) %>%
+  mutate(p = 1 / n()) %>%
+  plot_model()
+```
+
+### Large toast
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(p = 1 / n()) %>%
+  plot_model()
+```
+
+### Calculate joint probability
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  plot_model()
+```
+
+$p(X = x, Y = y \mid M_0)$
+
+
+### Calculate joint probability
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  plot_model()
+```
+
+$p(x, y)$
+
+
+$$P(X = 1, Y = 2 \mid M_0)$$
+
+```{r}
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  filter(X == 1, Y == 2) %>% 
+  summarize(P = sum(p))
+```
+
+
+### Calculate marginal probability
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  plot_model()
+```
+
+$p(x, y)$
+
+$$P(X = 1 \mid M_0)$$
+
+```{r}
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  filter(X == 1) %>% 
+  summarize(P = sum(p))
+```
+
+### Calculate marginal probability
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  plot_model()
+```
+
+$p(x, y)$
+
+$$P(Y = 2 \mid M_0)$$
+
+```{r}
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  filter(Y == 2) %>% 
+  summarize(P = sum(p))
+```
+
+### Calculate conditional probability
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  plot_model()
+```
+
+$p(x, y)$
+
+$$P(Y = 2 \mid X = 1, M_0)$$
+
+### Calculate conditional probability
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  mutate(
+    M1 = (X == 1)
+  ) %>% 
+  mutate(
+    p = if_else(M1, p / sum(p[M1]), 0)
+  ) %>%
+  plot_model()
+```
+
+$p(x, y \mid X = 1)$
+
+$$P(Y = 2 \mid X = 1, M_0)$$
+
+```{r}
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  mutate(
+    M1 = (X == 1)
+  ) %>% 
+  mutate(
+    p = if_else(M1, p / sum(p[M1]), 0)
+  ) %>%
+  filter(Y == 2) %>% 
+  summarize(P = sum(p))
+```
+
+
+## Linear models
+
 ### Uniform model
 
 ```{r}
 ss %>% 
-  mutate(p = 1 / n()) %>%
-  rowwise() %>% 
-  mutate(M = TRUE) %>% 
-  ungroup() %>%
-  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
   plot_model()
 ```
 
+$p(x, y)$
+
 ```{r}
 ss %>% 
-  mutate(p = 1 / n()) %>%
-  rowwise() %>% 
-  mutate(M = TRUE) %>% 
-  ungroup() %>%
-  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
   plot_model(n = sample.size)
 ```
 
@@ -198,65 +380,37 @@ ss %>%
 
 ```{r}
 ss %>% 
-  mutate(p = 1 / n()) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
   rowwise() %>% 
-  mutate(M = (Y == b0 + b1 * X)) %>% 
+  mutate(
+    M1 = (Y == b0 + b1 * X)) %>% 
   ungroup() %>%
-  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
+  mutate(p = if_else(M1, p / sum(p[M1]), 0)) %>%
   plot_model()
 ```
 
-```{r}
-ss %>% 
-  mutate(p = 1 / n()) %>%
-  rowwise() %>% 
-  mutate(M = (Y == b0 + b1 * X)) %>% 
-  ungroup() %>%
-  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
-  plot_model(n = sample.size)
-```
 
-### Linear model with fixed error
+$$
+\begin{aligned}
+p(x, y \mid M_1) & = p(x, y \mid y = 3 + x) \\
+                 & = p(x, y \mid \beta_0 = 3, \beta_1 = 1, M_L) \quad M_L: y = \beta_0 + \beta_1 x
+\end{aligned}
+$$
+
 
 ```{r}
 ss %>% 
-  mutate(p = 1 / n()) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
   rowwise() %>% 
-  mutate(M = Y %in% (b0 + b1 * X + e)) %>%
+  mutate(
+    M1 = (Y == b0 + b1 * X)
+  ) %>% 
   ungroup() %>%
-  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
-  plot_model()
-```
-
-```{r}
-ss %>% 
-  mutate(p = 1 / n()) %>%
-  rowwise() %>% 
-  mutate(M = Y %in% (b0 + b1 * X + e)) %>%
-  ungroup() %>%
-  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
-  plot_model(n = sample.size)
-```
-
-### Linear model with fixed error
-
-```{r}
-ss %>% 
-  mutate(p = 1 / n()) %>%
-  rowwise() %>% 
-  mutate(M = abs(Y - (b0 + b1 * X + 0)) <= s) %>%
-  ungroup() %>%
-  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
-  plot_model()
-```
-
-```{r}
-ss %>% 
-  mutate(p = 1 / n()) %>%
-  rowwise() %>% 
-  mutate(M = abs(Y - (b0 + b1 * X + 0)) <= s) %>%
-  ungroup() %>%
-  mutate(p = if_else(M, p / sum(p[M]), 0)) %>%
+  mutate(p = if_else(M1, p / sum(p[M1]), 0)) %>%
   plot_model(n = sample.size)
 ```
 
@@ -264,17 +418,77 @@ ss %>%
 
 ```{r}
 ss %>% 
-  mutate(p = 1 / n()) %>%
-  mutate(p = dunif(Y, min = b0 + b1 * X - s, max = b0 + b1 * X + s)) %>%
-  mutate(p = p / sum(p)) %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    M2 = Y %in% (b0 + b1 * X + e)
+  ) %>%
+  ungroup() %>%
+  mutate(p = if_else(M2, p / sum(p[M2]), 0)) %>%
   plot_model()
 ```
 
+
+
+$$
+\begin{aligned}
+p(x, y \mid M_2) & = p(x, y \mid (y = 3 + x + e), e \in [-1, 1]) \\
+                 & = p(x, y \mid (y = 3 + x - 1) \lor (y = 3 + x + 0) \lor (y = 3 + x + 1)) \\
+                 & = p(x, y \mid (y = 2 + x) \lor (y = 3 + x) \lor (y = 4 + x)) \\
+                 & = p(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_U}) \\
+                 \\
+                 & M_{L+E_U}: y = \beta_0 + \beta_1 \cdot x + e \quad e \in [-s, s]
+\end{aligned}
+$$
+
+
 ```{r}
 ss %>% 
-  mutate(p = 1 / n()) %>%
-  mutate(p = dunif(Y, min = b0 + b1 * X - s, max = b0 + b1 * X + s)) %>%
-  mutate(p = p / sum(p)) %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    M2 = Y %in% (b0 + b1 * X + e)
+  ) %>%
+  ungroup() %>%
+  mutate(p = if_else(M2, p / sum(p[M2]), 0)) %>%
+  plot_model(n = sample.size)
+```
+
+
+### Linear model with uniform error
+
+```{r}
+ss %>% 
+  mutate(
+    p = dunif(Y, min = b0 + b1 * X - s, max = b0 + b1 * X + s) # M0, M2
+  ) %>%
+  mutate(p = p / sum(p)) %>% # normalize probability density to sum to 1
+  plot_model()
+```
+
+
+$$
+\begin{aligned}
+p(x, y \mid M_2) & = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Uniform}(\mu = 0, \sigma = 1)\bigr) \\
+                 & = p\bigl(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_\text{Uniform}}\bigr) \\
+                 \\
+                 & M_{L+E_\text{Uniform}}: y = \beta_0 + \beta_1 \cdot x + e \quad e \sim \text{Uniform}(\mu = 0, \sigma) \\
+                 \\
+                 & M_{L+E_\text{Uniform}}: y \sim \text{Uniform} \bigl(\mu = (\beta_0 + \beta_1 \cdot x), \sigma \bigr)
+\end{aligned}
+$$
+
+
+```{r}
+ss %>%
+  mutate(
+    p = dunif(Y, min = b0 + b1 * X - s, max = b0 + b1 * X + s) # M0, M2
+  ) %>%
+  mutate(p = p / sum(p)) %>% # normalize probability density to sum to 1
   plot_model(n = sample.size)
 ```
 
@@ -282,17 +496,30 @@ ss %>%
 
 ```{r}
 ss %>% 
-  mutate(p = 1 / n()) %>%
-  mutate(p = dnorm(Y, mean = b0 + b1 * X, sd = sd)) %>%
-  mutate(p = p / sum(p)) %>% 
+  mutate(
+    p = dnorm(Y, mean = b0 + b1 * X, sd = s) # M0, M3
+  ) %>%
+  mutate(p = p / sum(p)) %>% # normalize probability density to sum to 1
   plot_model()
 ```
 
+$$
+\begin{aligned}
+p(x, y \mid M_2) & = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Normal}(\mu = 0, \sigma = 1)\bigr) \\
+                 & = p\bigl(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_\text{Normal}}\bigr) \\
+                 \\
+                 & M_{L+E_\text{Normal}}: y = \beta_0 + \beta_1 \cdot x + e \quad e \sim \text{Normal}(\mu = 0, \sigma) \\
+                 \\
+                 & M_{L+E_\text{Normal}}: y \sim \text{Normal}\bigl(\mu = (\beta_0 + \beta_1 \cdot x), \sigma \bigr)
+\end{aligned}
+$$
+
 ```{r}
 ss %>% 
-  mutate(p = 1 / n()) %>%
-  mutate(p = dnorm(Y, mean = b0 + b1 * X, sd = sd)) %>%
-  mutate(p = p / sum(p)) %>% 
+  mutate(
+    p = dnorm(Y, mean = b0 + b1 * X, sd = s) # M0, M3
+  ) %>%
+  mutate(p = p / sum(p)) %>% # normalize probability density to sum to 1
   plot_model(n = sample.size)
 ```
 
@@ -300,18 +527,106 @@ ss %>%
 
 ```{r}
 ss %>% 
-  mutate(p = 1 / n()) %>%
-  mutate(p = dcauchy(Y, location = b0 + b1 * X, scale = scale)) %>%
-  mutate(p = p / sum(p)) %>% 
+  mutate(
+    p = dcauchy(Y, location = b0 + b1 * X, scale = s) # M0, M4
+  ) %>%
+  mutate(p = p / sum(p)) %>% # normalize probability density to sum to 1
   plot_model()
 ```
 
+$$
+\begin{aligned}
+p(x, y \mid M_2) & = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Cauchy}(\mu = 0, \sigma = 1)\bigr) \\
+                 & = p\bigl(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_\text{Cauchy}}\bigr) \\
+                 \\
+                 & M_{L+E_\text{Cauchy}}: y = \beta_0 + \beta_1 \cdot x + e \quad e \sim \text{Cauchy}(\mu = 0, \sigma) \\
+                 \\
+                 & M_{L+E_\text{Cauchy}}: y \sim \text{Cauchy} \bigl(\mu = (\beta_0 + \beta_1 \cdot x), \sigma \bigr)
+\end{aligned}
+$$
+
+
 ```{r}
 ss %>% 
-  mutate(p = 1 / n()) %>%
-  mutate(p = dcauchy(Y, location = b0 + b1 * X, scale = scale)) %>%
-  mutate(p = p / sum(p)) %>% 
+  mutate(
+    p = dcauchy(Y, location = b0 + b1 * X, scale = s) # M0, M4
+  ) %>%
+  mutate(p = p / sum(p)) %>% # normalize probability density to sum to 1
   plot_model(n = sample.size)
+```
+
+
+### Non-linear model with no error
+
+```{r}
+ss %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    M3 = Y == (b0 + round(sin(b1 * X)))
+  ) %>%
+  ungroup() %>%
+  mutate(p = if_else(M3, p / sum(p[M3]), 0)) %>%
+  plot_model()
+```
+
+$p(x, y)$
+
+```{r}
+ss %>% 
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    M3 = Y == (b0 + round(sin(b1 * X)))
+  ) %>%
+  ungroup() %>%
+  mutate(p = if_else(M3, p / sum(p[M3]), 0)) %>%
+  plot_model(n = sample.size)
+```
+
+### Non-linear model with normal error
+
+```{r}
+ss %>% 
+  mutate(
+    p = dnorm(Y, mean = b0 + round(sin(b1 * X)), sd = s)
+  ) %>%
+  mutate(p = p / sum(p)) %>% # normalize probability density to sum to 1
+  plot_model()
+```
+
+$p(x, y)$
+
+```{r}
+ss %>% 
+  mutate(
+    p = dnorm(Y, mean = b0 + round(sin(b1 * X)), sd = s)
+  ) %>%
+  mutate(p = p / sum(p)) %>% # normalize probability density to sum to 1
+  plot_model(n = sample.size)
+```
+
+
+### Another non-linear model with no error
+
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  rowwise() %>%
+  mutate(
+    M4 = (Y == c(-1, -1, 4, 3, 2, 2, 2, 3, 4, -1, -1)[X + 1]) |
+         (X == 3 & Y == 8) |
+         (X == 7 & Y == 8)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    p = if_else(M4, p / sum(p[M4]), 0)
+  ) %>%
+  plot_model()
 ```
 
 ## Print environment

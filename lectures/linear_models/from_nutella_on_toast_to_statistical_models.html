@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.41">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -63,20 +63,86 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="from_nutella_on_toast_to_statistical_models_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="from_nutella_on_toast_to_statistical_models_files/libs/quarto-html/anchor.min.js"></script>
 <link href="from_nutella_on_toast_to_statistical_models_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="from_nutella_on_toast_to_statistical_models_files/libs/quarto-html/quarto-syntax-highlighting-48ffa3e5b9d089919c6712c39e5b00f2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="from_nutella_on_toast_to_statistical_models_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="from_nutella_on_toast_to_statistical_models_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="from_nutella_on_toast_to_statistical_models_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="from_nutella_on_toast_to_statistical_models_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="from_nutella_on_toast_to_statistical_models_files/libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
 <script src="from_nutella_on_toast_to_statistical_models_files/libs/pagedtable-1.1/js/pagedtable.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#setup-environment" id="toc-setup-environment" class="nav-link" data-scroll-target="#setup-environment">Setup environment</a></li>
+  <li><a href="#helper-function" id="toc-helper-function" class="nav-link" data-scroll-target="#helper-function">Helper function</a></li>
+  <li><a href="#grid-model-and-sampling-parameters" id="toc-grid-model-and-sampling-parameters" class="nav-link" data-scroll-target="#grid-model-and-sampling-parameters">Grid, model and sampling parameters</a></li>
+  <li><a href="#create-sample-space-with-uniform-probability-distribution" id="toc-create-sample-space-with-uniform-probability-distribution" class="nav-link" data-scroll-target="#create-sample-space-with-uniform-probability-distribution">Create sample space with uniform probability distribution</a></li>
+  <li><a href="#uniform-spreading-of-nutella-on-a-toast" id="toc-uniform-spreading-of-nutella-on-a-toast" class="nav-link" data-scroll-target="#uniform-spreading-of-nutella-on-a-toast">Uniform spreading of Nutella on a toast</a>
+  <ul class="collapse">
+  <li><a href="#small-toast" id="toc-small-toast" class="nav-link" data-scroll-target="#small-toast">Small toast</a></li>
+  <li><a href="#medium-toast" id="toc-medium-toast" class="nav-link" data-scroll-target="#medium-toast">Medium toast</a></li>
+  <li><a href="#large-toast" id="toc-large-toast" class="nav-link" data-scroll-target="#large-toast">Large toast</a></li>
+  <li><a href="#calculate-joint-probability" id="toc-calculate-joint-probability" class="nav-link" data-scroll-target="#calculate-joint-probability">Calculate joint probability</a></li>
+  <li><a href="#calculate-joint-probability-1" id="toc-calculate-joint-probability-1" class="nav-link" data-scroll-target="#calculate-joint-probability-1">Calculate joint probability</a></li>
+  <li><a href="#calculate-marginal-probability" id="toc-calculate-marginal-probability" class="nav-link" data-scroll-target="#calculate-marginal-probability">Calculate marginal probability</a></li>
+  <li><a href="#calculate-marginal-probability-1" id="toc-calculate-marginal-probability-1" class="nav-link" data-scroll-target="#calculate-marginal-probability-1">Calculate marginal probability</a></li>
+  <li><a href="#calculate-conditional-probability" id="toc-calculate-conditional-probability" class="nav-link" data-scroll-target="#calculate-conditional-probability">Calculate conditional probability</a></li>
+  <li><a href="#calculate-conditional-probability-1" id="toc-calculate-conditional-probability-1" class="nav-link" data-scroll-target="#calculate-conditional-probability-1">Calculate conditional probability</a></li>
+  </ul></li>
+  <li><a href="#linear-models" id="toc-linear-models" class="nav-link" data-scroll-target="#linear-models">Linear models</a>
+  <ul class="collapse">
+  <li><a href="#uniform-model" id="toc-uniform-model" class="nav-link" data-scroll-target="#uniform-model">Uniform model</a></li>
+  <li><a href="#linear-model-with-no-error" id="toc-linear-model-with-no-error" class="nav-link" data-scroll-target="#linear-model-with-no-error">Linear model with no error</a></li>
+  <li><a href="#linear-model-with-uniform-error" id="toc-linear-model-with-uniform-error" class="nav-link" data-scroll-target="#linear-model-with-uniform-error">Linear model with uniform error</a></li>
+  <li><a href="#linear-model-with-uniform-error-1" id="toc-linear-model-with-uniform-error-1" class="nav-link" data-scroll-target="#linear-model-with-uniform-error-1">Linear model with uniform error</a></li>
+  <li><a href="#linear-model-with-normal-error" id="toc-linear-model-with-normal-error" class="nav-link" data-scroll-target="#linear-model-with-normal-error">Linear model with normal error</a></li>
+  <li><a href="#linear-model-with-cauchy-error-heavier-tails-than-the-normal" id="toc-linear-model-with-cauchy-error-heavier-tails-than-the-normal" class="nav-link" data-scroll-target="#linear-model-with-cauchy-error-heavier-tails-than-the-normal">Linear model with Cauchy error (heavier tails than the normal)</a></li>
+  <li><a href="#non-linear-model-with-no-error" id="toc-non-linear-model-with-no-error" class="nav-link" data-scroll-target="#non-linear-model-with-no-error">Non-linear model with no error</a></li>
+  <li><a href="#non-linear-model-with-normal-error" id="toc-non-linear-model-with-normal-error" class="nav-link" data-scroll-target="#non-linear-model-with-normal-error">Non-linear model with normal error</a></li>
+  <li><a href="#another-non-linear-model-with-no-error" id="toc-another-non-linear-model-with-no-error" class="nav-link" data-scroll-target="#another-non-linear-model-with-no-error">Another non-linear model with no error</a></li>
+  </ul></li>
+  <li><a href="#print-environment" id="toc-print-environment" class="nav-link" data-scroll-target="#print-environment">Print environment</a></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -208,49 +274,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>      y_scale,</span>
 <span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>      base_theme</span>
 <span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, max_x), <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, max_y))</span>
-<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Optionally add text labels if text_size is applicable</span></span>
-<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.na</span>(text_size)) {</span>
-<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>    plt <span class="ot">&lt;-</span> plt <span class="sc">%&gt;%</span> <span class="fu">gf_text</span>(<span class="at">label =</span> <span class="sc">~</span> <span class="fu">sprintf</span>(<span class="st">"%0.3f"</span>, p), <span class="at">size =</span> text_size, <span class="at">alpha =</span> <span class="fl">0.75</span>)</span>
-<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Optionally overlay random sample points if n is provided</span></span>
-<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(n)) {</span>
-<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>    plt <span class="ot">&lt;-</span> plt <span class="sc">%&gt;%</span> <span class="fu">gf_point</span>(</span>
-<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>      Y <span class="sc">~</span> X,</span>
-<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> pdf <span class="sc">%&gt;%</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> n, <span class="at">weight_by =</span> p, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>      <span class="at">size =</span> <span class="dv">4</span>,</span>
-<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"red2"</span>,</span>
-<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
-<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>      <span class="at">stroke =</span> <span class="dv">0</span></span>
-<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(plt)</span>
-<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, max_x), <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, max_y)) <span class="sc">+</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_fixed</span>(<span class="at">expand =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Optionally add text labels if text_size is applicable</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.na</span>(text_size)) {</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>    plt <span class="ot">&lt;-</span> plt <span class="sc">%&gt;%</span> <span class="fu">gf_text</span>(<span class="at">label =</span> <span class="sc">~</span> <span class="fu">sprintf</span>(<span class="st">"%0.3f"</span>, p), <span class="at">size =</span> text_size, <span class="at">alpha =</span> <span class="fl">0.75</span>)</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Optionally overlay random sample points if n is provided</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(n)) {</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>    plt <span class="ot">&lt;-</span> plt <span class="sc">%&gt;%</span> <span class="fu">gf_point</span>(</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>      Y <span class="sc">~</span> X,</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> pdf <span class="sc">%&gt;%</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> n, <span class="at">weight_by =</span> p, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>      <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"red2"</span>,</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>      <span class="at">stroke =</span> <span class="dv">0</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(plt)</span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="simulate-data-from-uniform-and-linear-models" class="level2">
-<h2 class="anchored" data-anchor-id="simulate-data-from-uniform-and-linear-models">Simulate data from uniform and linear models</h2>
-<section id="grid-model-and-sampling-parameters" class="level3">
-<h3 class="anchored" data-anchor-id="grid-model-and-sampling-parameters">Grid, model and sampling parameters</h3>
+<section id="grid-model-and-sampling-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="grid-model-and-sampling-parameters">Grid, model and sampling parameters</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sample.size <span class="ot">&lt;-</span> <span class="dv">50</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>grid.size <span class="ot">&lt;-</span> <span class="dv">10</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>s  <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>e  <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span>s, s) </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>sd <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>scale <span class="ot">&lt;-</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>e  <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span>s, s)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="create-sample-space" class="level3">
-<h3 class="anchored" data-anchor-id="create-sample-space">Create sample space</h3>
+<section id="create-sample-space-with-uniform-probability-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="create-sample-space-with-uniform-probability-distribution">Create sample space with uniform probability distribution</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, grid.size, <span class="at">length.out =</span> grid.size <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, grid.size, <span class="at">length.out =</span> grid.size <span class="sc">+</span> <span class="dv">1</span>)</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>ss <span class="ot">&lt;-</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_grid</span>(X, Y) <span class="sc">%&gt;%</span></span>
@@ -261,42 +324,285 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["Ω"],"name":[1],"type":["chr"],"align":["left"]},{"label":["X"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Y"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"⍵1","2":"0","3":"0"},{"1":"⍵2","2":"0","3":"1"},{"1":"⍵3","2":"0","3":"2"},{"1":"⍵4","2":"0","3":"3"},{"1":"⍵5","2":"0","3":"4"},{"1":"⍵6","2":"0","3":"5"},{"1":"⍵7","2":"0","3":"6"},{"1":"⍵8","2":"0","3":"7"},{"1":"⍵9","2":"0","3":"8"},{"1":"⍵10","2":"0","3":"9"},{"1":"⍵11","2":"0","3":"10"},{"1":"⍵12","2":"1","3":"0"},{"1":"⍵13","2":"1","3":"1"},{"1":"⍵14","2":"1","3":"2"},{"1":"⍵15","2":"1","3":"3"},{"1":"⍵16","2":"1","3":"4"},{"1":"⍵17","2":"1","3":"5"},{"1":"⍵18","2":"1","3":"6"},{"1":"⍵19","2":"1","3":"7"},{"1":"⍵20","2":"1","3":"8"},{"1":"⍵21","2":"1","3":"9"},{"1":"⍵22","2":"1","3":"10"},{"1":"⍵23","2":"2","3":"0"},{"1":"⍵24","2":"2","3":"1"},{"1":"⍵25","2":"2","3":"2"},{"1":"⍵26","2":"2","3":"3"},{"1":"⍵27","2":"2","3":"4"},{"1":"⍵28","2":"2","3":"5"},{"1":"⍵29","2":"2","3":"6"},{"1":"⍵30","2":"2","3":"7"},{"1":"⍵31","2":"2","3":"8"},{"1":"⍵32","2":"2","3":"9"},{"1":"⍵33","2":"2","3":"10"},{"1":"⍵34","2":"3","3":"0"},{"1":"⍵35","2":"3","3":"1"},{"1":"⍵36","2":"3","3":"2"},{"1":"⍵37","2":"3","3":"3"},{"1":"⍵38","2":"3","3":"4"},{"1":"⍵39","2":"3","3":"5"},{"1":"⍵40","2":"3","3":"6"},{"1":"⍵41","2":"3","3":"7"},{"1":"⍵42","2":"3","3":"8"},{"1":"⍵43","2":"3","3":"9"},{"1":"⍵44","2":"3","3":"10"},{"1":"⍵45","2":"4","3":"0"},{"1":"⍵46","2":"4","3":"1"},{"1":"⍵47","2":"4","3":"2"},{"1":"⍵48","2":"4","3":"3"},{"1":"⍵49","2":"4","3":"4"},{"1":"⍵50","2":"4","3":"5"},{"1":"⍵51","2":"4","3":"6"},{"1":"⍵52","2":"4","3":"7"},{"1":"⍵53","2":"4","3":"8"},{"1":"⍵54","2":"4","3":"9"},{"1":"⍵55","2":"4","3":"10"},{"1":"⍵56","2":"5","3":"0"},{"1":"⍵57","2":"5","3":"1"},{"1":"⍵58","2":"5","3":"2"},{"1":"⍵59","2":"5","3":"3"},{"1":"⍵60","2":"5","3":"4"},{"1":"⍵61","2":"5","3":"5"},{"1":"⍵62","2":"5","3":"6"},{"1":"⍵63","2":"5","3":"7"},{"1":"⍵64","2":"5","3":"8"},{"1":"⍵65","2":"5","3":"9"},{"1":"⍵66","2":"5","3":"10"},{"1":"⍵67","2":"6","3":"0"},{"1":"⍵68","2":"6","3":"1"},{"1":"⍵69","2":"6","3":"2"},{"1":"⍵70","2":"6","3":"3"},{"1":"⍵71","2":"6","3":"4"},{"1":"⍵72","2":"6","3":"5"},{"1":"⍵73","2":"6","3":"6"},{"1":"⍵74","2":"6","3":"7"},{"1":"⍵75","2":"6","3":"8"},{"1":"⍵76","2":"6","3":"9"},{"1":"⍵77","2":"6","3":"10"},{"1":"⍵78","2":"7","3":"0"},{"1":"⍵79","2":"7","3":"1"},{"1":"⍵80","2":"7","3":"2"},{"1":"⍵81","2":"7","3":"3"},{"1":"⍵82","2":"7","3":"4"},{"1":"⍵83","2":"7","3":"5"},{"1":"⍵84","2":"7","3":"6"},{"1":"⍵85","2":"7","3":"7"},{"1":"⍵86","2":"7","3":"8"},{"1":"⍵87","2":"7","3":"9"},{"1":"⍵88","2":"7","3":"10"},{"1":"⍵89","2":"8","3":"0"},{"1":"⍵90","2":"8","3":"1"},{"1":"⍵91","2":"8","3":"2"},{"1":"⍵92","2":"8","3":"3"},{"1":"⍵93","2":"8","3":"4"},{"1":"⍵94","2":"8","3":"5"},{"1":"⍵95","2":"8","3":"6"},{"1":"⍵96","2":"8","3":"7"},{"1":"⍵97","2":"8","3":"8"},{"1":"⍵98","2":"8","3":"9"},{"1":"⍵99","2":"8","3":"10"},{"1":"⍵100","2":"9","3":"0"},{"1":"⍵101","2":"9","3":"1"},{"1":"⍵102","2":"9","3":"2"},{"1":"⍵103","2":"9","3":"3"},{"1":"⍵104","2":"9","3":"4"},{"1":"⍵105","2":"9","3":"5"},{"1":"⍵106","2":"9","3":"6"},{"1":"⍵107","2":"9","3":"7"},{"1":"⍵108","2":"9","3":"8"},{"1":"⍵109","2":"9","3":"9"},{"1":"⍵110","2":"9","3":"10"},{"1":"⍵111","2":"10","3":"0"},{"1":"⍵112","2":"10","3":"1"},{"1":"⍵113","2":"10","3":"2"},{"1":"⍵114","2":"10","3":"3"},{"1":"⍵115","2":"10","3":"4"},{"1":"⍵116","2":"10","3":"5"},{"1":"⍵117","2":"10","3":"6"},{"1":"⍵118","2":"10","3":"7"},{"1":"⍵119","2":"10","3":"8"},{"1":"⍵120","2":"10","3":"9"},{"1":"⍵121","2":"10","3":"10"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Ω"],"name":[1],"type":["chr"],"align":["left"]},{"label":["X"],"name":[2],"type":["int"],"align":["right"]},{"label":["Y"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"⍵1","2":"0","3":"0"},{"1":"⍵2","2":"0","3":"1"},{"1":"⍵3","2":"0","3":"2"},{"1":"⍵4","2":"0","3":"3"},{"1":"⍵5","2":"0","3":"4"},{"1":"⍵6","2":"0","3":"5"},{"1":"⍵7","2":"0","3":"6"},{"1":"⍵8","2":"0","3":"7"},{"1":"⍵9","2":"0","3":"8"},{"1":"⍵10","2":"0","3":"9"},{"1":"⍵11","2":"0","3":"10"},{"1":"⍵12","2":"1","3":"0"},{"1":"⍵13","2":"1","3":"1"},{"1":"⍵14","2":"1","3":"2"},{"1":"⍵15","2":"1","3":"3"},{"1":"⍵16","2":"1","3":"4"},{"1":"⍵17","2":"1","3":"5"},{"1":"⍵18","2":"1","3":"6"},{"1":"⍵19","2":"1","3":"7"},{"1":"⍵20","2":"1","3":"8"},{"1":"⍵21","2":"1","3":"9"},{"1":"⍵22","2":"1","3":"10"},{"1":"⍵23","2":"2","3":"0"},{"1":"⍵24","2":"2","3":"1"},{"1":"⍵25","2":"2","3":"2"},{"1":"⍵26","2":"2","3":"3"},{"1":"⍵27","2":"2","3":"4"},{"1":"⍵28","2":"2","3":"5"},{"1":"⍵29","2":"2","3":"6"},{"1":"⍵30","2":"2","3":"7"},{"1":"⍵31","2":"2","3":"8"},{"1":"⍵32","2":"2","3":"9"},{"1":"⍵33","2":"2","3":"10"},{"1":"⍵34","2":"3","3":"0"},{"1":"⍵35","2":"3","3":"1"},{"1":"⍵36","2":"3","3":"2"},{"1":"⍵37","2":"3","3":"3"},{"1":"⍵38","2":"3","3":"4"},{"1":"⍵39","2":"3","3":"5"},{"1":"⍵40","2":"3","3":"6"},{"1":"⍵41","2":"3","3":"7"},{"1":"⍵42","2":"3","3":"8"},{"1":"⍵43","2":"3","3":"9"},{"1":"⍵44","2":"3","3":"10"},{"1":"⍵45","2":"4","3":"0"},{"1":"⍵46","2":"4","3":"1"},{"1":"⍵47","2":"4","3":"2"},{"1":"⍵48","2":"4","3":"3"},{"1":"⍵49","2":"4","3":"4"},{"1":"⍵50","2":"4","3":"5"},{"1":"⍵51","2":"4","3":"6"},{"1":"⍵52","2":"4","3":"7"},{"1":"⍵53","2":"4","3":"8"},{"1":"⍵54","2":"4","3":"9"},{"1":"⍵55","2":"4","3":"10"},{"1":"⍵56","2":"5","3":"0"},{"1":"⍵57","2":"5","3":"1"},{"1":"⍵58","2":"5","3":"2"},{"1":"⍵59","2":"5","3":"3"},{"1":"⍵60","2":"5","3":"4"},{"1":"⍵61","2":"5","3":"5"},{"1":"⍵62","2":"5","3":"6"},{"1":"⍵63","2":"5","3":"7"},{"1":"⍵64","2":"5","3":"8"},{"1":"⍵65","2":"5","3":"9"},{"1":"⍵66","2":"5","3":"10"},{"1":"⍵67","2":"6","3":"0"},{"1":"⍵68","2":"6","3":"1"},{"1":"⍵69","2":"6","3":"2"},{"1":"⍵70","2":"6","3":"3"},{"1":"⍵71","2":"6","3":"4"},{"1":"⍵72","2":"6","3":"5"},{"1":"⍵73","2":"6","3":"6"},{"1":"⍵74","2":"6","3":"7"},{"1":"⍵75","2":"6","3":"8"},{"1":"⍵76","2":"6","3":"9"},{"1":"⍵77","2":"6","3":"10"},{"1":"⍵78","2":"7","3":"0"},{"1":"⍵79","2":"7","3":"1"},{"1":"⍵80","2":"7","3":"2"},{"1":"⍵81","2":"7","3":"3"},{"1":"⍵82","2":"7","3":"4"},{"1":"⍵83","2":"7","3":"5"},{"1":"⍵84","2":"7","3":"6"},{"1":"⍵85","2":"7","3":"7"},{"1":"⍵86","2":"7","3":"8"},{"1":"⍵87","2":"7","3":"9"},{"1":"⍵88","2":"7","3":"10"},{"1":"⍵89","2":"8","3":"0"},{"1":"⍵90","2":"8","3":"1"},{"1":"⍵91","2":"8","3":"2"},{"1":"⍵92","2":"8","3":"3"},{"1":"⍵93","2":"8","3":"4"},{"1":"⍵94","2":"8","3":"5"},{"1":"⍵95","2":"8","3":"6"},{"1":"⍵96","2":"8","3":"7"},{"1":"⍵97","2":"8","3":"8"},{"1":"⍵98","2":"8","3":"9"},{"1":"⍵99","2":"8","3":"10"},{"1":"⍵100","2":"9","3":"0"},{"1":"⍵101","2":"9","3":"1"},{"1":"⍵102","2":"9","3":"2"},{"1":"⍵103","2":"9","3":"3"},{"1":"⍵104","2":"9","3":"4"},{"1":"⍵105","2":"9","3":"5"},{"1":"⍵106","2":"9","3":"6"},{"1":"⍵107","2":"9","3":"7"},{"1":"⍵108","2":"9","3":"8"},{"1":"⍵109","2":"9","3":"9"},{"1":"⍵110","2":"9","3":"10"},{"1":"⍵111","2":"10","3":"0"},{"1":"⍵112","2":"10","3":"1"},{"1":"⍵113","2":"10","3":"2"},{"1":"⍵114","2":"10","3":"3"},{"1":"⍵115","2":"10","3":"4"},{"1":"⍵116","2":"10","3":"5"},{"1":"⍵117","2":"10","3":"6"},{"1":"⍵118","2":"10","3":"7"},{"1":"⍵119","2":"10","3":"8"},{"1":"⍵120","2":"10","3":"9"},{"1":"⍵121","2":"10","3":"10"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Ω"],"name":[1],"type":["chr"],"align":["left"]},{"label":["X"],"name":[2],"type":["int"],"align":["right"]},{"label":["Y"],"name":[3],"type":["int"],"align":["right"]},{"label":["p"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"⍵1","2":"0","3":"0","4":"0.008264"},{"1":"⍵2","2":"0","3":"1","4":"0.008264"},{"1":"⍵3","2":"0","3":"2","4":"0.008264"},{"1":"⍵4","2":"0","3":"3","4":"0.008264"},{"1":"⍵5","2":"0","3":"4","4":"0.008264"},{"1":"⍵6","2":"0","3":"5","4":"0.008264"},{"1":"⍵7","2":"0","3":"6","4":"0.008264"},{"1":"⍵8","2":"0","3":"7","4":"0.008264"},{"1":"⍵9","2":"0","3":"8","4":"0.008264"},{"1":"⍵10","2":"0","3":"9","4":"0.008264"},{"1":"⍵11","2":"0","3":"10","4":"0.008264"},{"1":"⍵12","2":"1","3":"0","4":"0.008264"},{"1":"⍵13","2":"1","3":"1","4":"0.008264"},{"1":"⍵14","2":"1","3":"2","4":"0.008264"},{"1":"⍵15","2":"1","3":"3","4":"0.008264"},{"1":"⍵16","2":"1","3":"4","4":"0.008264"},{"1":"⍵17","2":"1","3":"5","4":"0.008264"},{"1":"⍵18","2":"1","3":"6","4":"0.008264"},{"1":"⍵19","2":"1","3":"7","4":"0.008264"},{"1":"⍵20","2":"1","3":"8","4":"0.008264"},{"1":"⍵21","2":"1","3":"9","4":"0.008264"},{"1":"⍵22","2":"1","3":"10","4":"0.008264"},{"1":"⍵23","2":"2","3":"0","4":"0.008264"},{"1":"⍵24","2":"2","3":"1","4":"0.008264"},{"1":"⍵25","2":"2","3":"2","4":"0.008264"},{"1":"⍵26","2":"2","3":"3","4":"0.008264"},{"1":"⍵27","2":"2","3":"4","4":"0.008264"},{"1":"⍵28","2":"2","3":"5","4":"0.008264"},{"1":"⍵29","2":"2","3":"6","4":"0.008264"},{"1":"⍵30","2":"2","3":"7","4":"0.008264"},{"1":"⍵31","2":"2","3":"8","4":"0.008264"},{"1":"⍵32","2":"2","3":"9","4":"0.008264"},{"1":"⍵33","2":"2","3":"10","4":"0.008264"},{"1":"⍵34","2":"3","3":"0","4":"0.008264"},{"1":"⍵35","2":"3","3":"1","4":"0.008264"},{"1":"⍵36","2":"3","3":"2","4":"0.008264"},{"1":"⍵37","2":"3","3":"3","4":"0.008264"},{"1":"⍵38","2":"3","3":"4","4":"0.008264"},{"1":"⍵39","2":"3","3":"5","4":"0.008264"},{"1":"⍵40","2":"3","3":"6","4":"0.008264"},{"1":"⍵41","2":"3","3":"7","4":"0.008264"},{"1":"⍵42","2":"3","3":"8","4":"0.008264"},{"1":"⍵43","2":"3","3":"9","4":"0.008264"},{"1":"⍵44","2":"3","3":"10","4":"0.008264"},{"1":"⍵45","2":"4","3":"0","4":"0.008264"},{"1":"⍵46","2":"4","3":"1","4":"0.008264"},{"1":"⍵47","2":"4","3":"2","4":"0.008264"},{"1":"⍵48","2":"4","3":"3","4":"0.008264"},{"1":"⍵49","2":"4","3":"4","4":"0.008264"},{"1":"⍵50","2":"4","3":"5","4":"0.008264"},{"1":"⍵51","2":"4","3":"6","4":"0.008264"},{"1":"⍵52","2":"4","3":"7","4":"0.008264"},{"1":"⍵53","2":"4","3":"8","4":"0.008264"},{"1":"⍵54","2":"4","3":"9","4":"0.008264"},{"1":"⍵55","2":"4","3":"10","4":"0.008264"},{"1":"⍵56","2":"5","3":"0","4":"0.008264"},{"1":"⍵57","2":"5","3":"1","4":"0.008264"},{"1":"⍵58","2":"5","3":"2","4":"0.008264"},{"1":"⍵59","2":"5","3":"3","4":"0.008264"},{"1":"⍵60","2":"5","3":"4","4":"0.008264"},{"1":"⍵61","2":"5","3":"5","4":"0.008264"},{"1":"⍵62","2":"5","3":"6","4":"0.008264"},{"1":"⍵63","2":"5","3":"7","4":"0.008264"},{"1":"⍵64","2":"5","3":"8","4":"0.008264"},{"1":"⍵65","2":"5","3":"9","4":"0.008264"},{"1":"⍵66","2":"5","3":"10","4":"0.008264"},{"1":"⍵67","2":"6","3":"0","4":"0.008264"},{"1":"⍵68","2":"6","3":"1","4":"0.008264"},{"1":"⍵69","2":"6","3":"2","4":"0.008264"},{"1":"⍵70","2":"6","3":"3","4":"0.008264"},{"1":"⍵71","2":"6","3":"4","4":"0.008264"},{"1":"⍵72","2":"6","3":"5","4":"0.008264"},{"1":"⍵73","2":"6","3":"6","4":"0.008264"},{"1":"⍵74","2":"6","3":"7","4":"0.008264"},{"1":"⍵75","2":"6","3":"8","4":"0.008264"},{"1":"⍵76","2":"6","3":"9","4":"0.008264"},{"1":"⍵77","2":"6","3":"10","4":"0.008264"},{"1":"⍵78","2":"7","3":"0","4":"0.008264"},{"1":"⍵79","2":"7","3":"1","4":"0.008264"},{"1":"⍵80","2":"7","3":"2","4":"0.008264"},{"1":"⍵81","2":"7","3":"3","4":"0.008264"},{"1":"⍵82","2":"7","3":"4","4":"0.008264"},{"1":"⍵83","2":"7","3":"5","4":"0.008264"},{"1":"⍵84","2":"7","3":"6","4":"0.008264"},{"1":"⍵85","2":"7","3":"7","4":"0.008264"},{"1":"⍵86","2":"7","3":"8","4":"0.008264"},{"1":"⍵87","2":"7","3":"9","4":"0.008264"},{"1":"⍵88","2":"7","3":"10","4":"0.008264"},{"1":"⍵89","2":"8","3":"0","4":"0.008264"},{"1":"⍵90","2":"8","3":"1","4":"0.008264"},{"1":"⍵91","2":"8","3":"2","4":"0.008264"},{"1":"⍵92","2":"8","3":"3","4":"0.008264"},{"1":"⍵93","2":"8","3":"4","4":"0.008264"},{"1":"⍵94","2":"8","3":"5","4":"0.008264"},{"1":"⍵95","2":"8","3":"6","4":"0.008264"},{"1":"⍵96","2":"8","3":"7","4":"0.008264"},{"1":"⍵97","2":"8","3":"8","4":"0.008264"},{"1":"⍵98","2":"8","3":"9","4":"0.008264"},{"1":"⍵99","2":"8","3":"10","4":"0.008264"},{"1":"⍵100","2":"9","3":"0","4":"0.008264"},{"1":"⍵101","2":"9","3":"1","4":"0.008264"},{"1":"⍵102","2":"9","3":"2","4":"0.008264"},{"1":"⍵103","2":"9","3":"3","4":"0.008264"},{"1":"⍵104","2":"9","3":"4","4":"0.008264"},{"1":"⍵105","2":"9","3":"5","4":"0.008264"},{"1":"⍵106","2":"9","3":"6","4":"0.008264"},{"1":"⍵107","2":"9","3":"7","4":"0.008264"},{"1":"⍵108","2":"9","3":"8","4":"0.008264"},{"1":"⍵109","2":"9","3":"9","4":"0.008264"},{"1":"⍵110","2":"9","3":"10","4":"0.008264"},{"1":"⍵111","2":"10","3":"0","4":"0.008264"},{"1":"⍵112","2":"10","3":"1","4":"0.008264"},{"1":"⍵113","2":"10","3":"2","4":"0.008264"},{"1":"⍵114","2":"10","3":"3","4":"0.008264"},{"1":"⍵115","2":"10","3":"4","4":"0.008264"},{"1":"⍵116","2":"10","3":"5","4":"0.008264"},{"1":"⍵117","2":"10","3":"6","4":"0.008264"},{"1":"⍵118","2":"10","3":"7","4":"0.008264"},{"1":"⍵119","2":"10","3":"8","4":"0.008264"},{"1":"⍵120","2":"10","3":"9","4":"0.008264"},{"1":"⍵121","2":"10","3":"10","4":"0.008264"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
 </div>
 </section>
-<section id="uniform-model" class="level3">
-<h3 class="anchored" data-anchor-id="uniform-model">Uniform model</h3>
+<section id="uniform-spreading-of-nutella-on-a-toast" class="level2">
+<h2 class="anchored" data-anchor-id="uniform-spreading-of-nutella-on-a-toast">Uniform spreading of Nutella on a toast</h2>
+<section id="small-toast" class="level3">
+<h3 class="anchored" data-anchor-id="small-toast">Small toast</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M, p <span class="sc">/</span> <span class="fu">sum</span>(p[M]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="288"></p>
 </figure>
 </div>
 </div>
 </div>
+</section>
+<section id="medium-toast" class="level3">
+<h3 class="anchored" data-anchor-id="medium-toast">Medium toast</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M, p <span class="sc">/</span> <span class="fu">sum</span>(p[M]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="384"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="large-toast" class="level3">
+<h3 class="anchored" data-anchor-id="large-toast">Large toast</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="calculate-joint-probability" class="level3">
+<h3 class="anchored" data-anchor-id="calculate-joint-probability">Calculate joint probability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(p(X = x, Y = y \mid M_0)\)</span></p>
+</section>
+<section id="calculate-joint-probability-1" class="level3">
+<h3 class="anchored" data-anchor-id="calculate-joint-probability-1">Calculate joint probability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(p(x, y)\)</span></p>
+<p><span class="math display">\[P(X = 1, Y = 2 \mid M_0)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(X <span class="sc">==</span> <span class="dv">1</span>, Y <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["P"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.0625"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="calculate-marginal-probability" class="level3">
+<h3 class="anchored" data-anchor-id="calculate-marginal-probability">Calculate marginal probability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(p(x, y)\)</span></p>
+<p><span class="math display">\[P(X = 1 \mid M_0)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(X <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["P"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.25"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="calculate-marginal-probability-1" class="level3">
+<h3 class="anchored" data-anchor-id="calculate-marginal-probability-1">Calculate marginal probability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(p(x, y)\)</span></p>
+<p><span class="math display">\[P(Y = 2 \mid M_0)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Y <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["P"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.25"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="calculate-conditional-probability" class="level3">
+<h3 class="anchored" data-anchor-id="calculate-conditional-probability">Calculate conditional probability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(p(x, y)\)</span></p>
+<p><span class="math display">\[P(Y = 2 \mid X = 1, M_0)\]</span></p>
+</section>
+<section id="calculate-conditional-probability-1" class="level3">
+<h3 class="anchored" data-anchor-id="calculate-conditional-probability-1">Calculate conditional probability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">M1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">if_else</span>(M1, p <span class="sc">/</span> <span class="fu">sum</span>(p[M1]), <span class="dv">0</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(p(x, y \mid X = 1)\)</span></p>
+<p><span class="math display">\[P(Y = 2 \mid X = 1, M_0)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">M1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">if_else</span>(M1, p <span class="sc">/</span> <span class="fu">sum</span>(p[M1]), <span class="dv">0</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Y <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["P"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.25"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="linear-models" class="level2">
+<h2 class="anchored" data-anchor-id="linear-models">Linear models</h2>
+<section id="uniform-model" class="level3">
+<h3 class="anchored" data-anchor-id="uniform-model">Uniform model</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(p(x, y)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -305,103 +611,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="linear-model-with-no-error" class="level3">
 <h3 class="anchored" data-anchor-id="linear-model-with-no-error">Linear model with no error</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M =</span> (Y <span class="sc">==</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X)) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M, p <span class="sc">/</span> <span class="fu">sum</span>(p[M]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M1 =</span> (Y <span class="sc">==</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X)) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M1, p <span class="sc">/</span> <span class="fu">sum</span>(p[M1]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<p><span class="math display">\[
+\begin{aligned}
+p(x, y \mid M_1) &amp; = p(x, y \mid y = 3 + x) \\
+                 &amp; = p(x, y \mid \beta_0 = 3, \beta_1 = 1, M_L) \quad M_L: y = \beta_0 + \beta_1 x
+\end{aligned}
+\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M =</span> (Y <span class="sc">==</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X)) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M, p <span class="sc">/</span> <span class="fu">sum</span>(p[M]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M1 =</span> (Y <span class="sc">==</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M1, p <span class="sc">/</span> <span class="fu">sum</span>(p[M1]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="linear-model-with-fixed-error" class="level3">
-<h3 class="anchored" data-anchor-id="linear-model-with-fixed-error">Linear model with fixed error</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M =</span> Y <span class="sc">%in%</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> e)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M, p <span class="sc">/</span> <span class="fu">sum</span>(p[M]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M =</span> Y <span class="sc">%in%</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> e)) <span class="sc">%&gt;%</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M, p <span class="sc">/</span> <span class="fu">sum</span>(p[M]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="linear-model-with-fixed-error-1" class="level3">
-<h3 class="anchored" data-anchor-id="linear-model-with-fixed-error-1">Linear model with fixed error</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M =</span> <span class="fu">abs</span>(Y <span class="sc">-</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> <span class="dv">0</span>)) <span class="sc">&lt;=</span> s) <span class="sc">%&gt;%</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M, p <span class="sc">/</span> <span class="fu">sum</span>(p[M]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M =</span> <span class="fu">abs</span>(Y <span class="sc">-</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> <span class="dv">0</span>)) <span class="sc">&lt;=</span> s) <span class="sc">%&gt;%</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M, p <span class="sc">/</span> <span class="fu">sum</span>(p[M]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -410,29 +659,94 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="linear-model-with-uniform-error" class="level3">
 <h3 class="anchored" data-anchor-id="linear-model-with-uniform-error">Linear model with uniform error</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">dunif</span>(Y, <span class="at">min =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">-</span> s, <span class="at">max =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> s)) <span class="sc">%&gt;%</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M2 =</span> Y <span class="sc">%in%</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> e)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M2, p <span class="sc">/</span> <span class="fu">sum</span>(p[M2]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<p><span class="math display">\[
+\begin{aligned}
+p(x, y \mid M_2) &amp; = p(x, y \mid (y = 3 + x + e), e \in [-1, 1]) \\
+                 &amp; = p(x, y \mid (y = 3 + x - 1) \lor (y = 3 + x + 0) \lor (y = 3 + x + 1)) \\
+                 &amp; = p(x, y \mid (y = 2 + x) \lor (y = 3 + x) \lor (y = 4 + x)) \\
+                 &amp; = p(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_U}) \\
+                 \\
+                 &amp; M_{L+E_U}: y = \beta_0 + \beta_1 \cdot x + e \quad e \in [-s, s]
+\end{aligned}
+\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">dunif</span>(Y, <span class="at">min =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">-</span> s, <span class="at">max =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> s)) <span class="sc">%&gt;%</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M2 =</span> Y <span class="sc">%in%</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> e)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M2, p <span class="sc">/</span> <span class="fu">sum</span>(p[M2]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="linear-model-with-uniform-error-1" class="level3">
+<h3 class="anchored" data-anchor-id="linear-model-with-uniform-error-1">Linear model with uniform error</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">dunif</span>(Y, <span class="at">min =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">-</span> s, <span class="at">max =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> s) <span class="co"># M0, M2</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> <span class="co"># normalize probability density to sum to 1</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math display">\[
+\begin{aligned}
+p(x, y \mid M_2) &amp; = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Uniform}(\mu = 0, \sigma = 1)\bigr) \\
+                 &amp; = p\bigl(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_\text{Uniform}}\bigr) \\
+                 \\
+                 &amp; M_{L+E_\text{Uniform}}: y = \beta_0 + \beta_1 \cdot x + e \quad e \sim \text{Uniform}(\mu = 0, \sigma) \\
+                 \\
+                 &amp; M_{L+E_\text{Uniform}}: y \sim \text{Uniform} \bigl(\mu = (\beta_0 + \beta_1 \cdot x), \sigma \bigr)
+\end{aligned}
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">dunif</span>(Y, <span class="at">min =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">-</span> s, <span class="at">max =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> s) <span class="co"># M0, M2</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> <span class="co"># normalize probability density to sum to 1</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -441,29 +755,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="linear-model-with-normal-error" class="level3">
 <h3 class="anchored" data-anchor-id="linear-model-with-normal-error">Linear model with normal error</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">dnorm</span>(Y, <span class="at">mean =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X, <span class="at">sd =</span> sd)) <span class="sc">%&gt;%</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">dnorm</span>(Y, <span class="at">mean =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X, <span class="at">sd =</span> s) <span class="co"># M0, M3</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> <span class="co"># normalize probability density to sum to 1</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<p><span class="math display">\[
+\begin{aligned}
+p(x, y \mid M_2) &amp; = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Normal}(\mu = 0, \sigma = 1)\bigr) \\
+                 &amp; = p\bigl(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_\text{Normal}}\bigr) \\
+                 \\
+                 &amp; M_{L+E_\text{Normal}}: y = \beta_0 + \beta_1 \cdot x + e \quad e \sim \text{Normal}(\mu = 0, \sigma) \\
+                 \\
+                 &amp; M_{L+E_\text{Normal}}: y \sim \text{Normal}\bigl(\mu = (\beta_0 + \beta_1 \cdot x), \sigma \bigr)
+\end{aligned}
+\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">dnorm</span>(Y, <span class="at">mean =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X, <span class="at">sd =</span> sd)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> </span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">dnorm</span>(Y, <span class="at">mean =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X, <span class="at">sd =</span> s) <span class="co"># M0, M3</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> <span class="co"># normalize probability density to sum to 1</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -472,29 +798,144 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="linear-model-with-cauchy-error-heavier-tails-than-the-normal" class="level3">
 <h3 class="anchored" data-anchor-id="linear-model-with-cauchy-error-heavier-tails-than-the-normal">Linear model with Cauchy error (heavier tails than the normal)</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">dcauchy</span>(Y, <span class="at">location =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X, <span class="at">scale =</span> scale)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">dcauchy</span>(Y, <span class="at">location =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X, <span class="at">scale =</span> s) <span class="co"># M0, M4</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> <span class="co"># normalize probability density to sum to 1</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<p><span class="math display">\[
+\begin{aligned}
+p(x, y \mid M_2) &amp; = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Cauchy}(\mu = 0, \sigma = 1)\bigr) \\
+                 &amp; = p\bigl(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_\text{Cauchy}}\bigr) \\
+                 \\
+                 &amp; M_{L+E_\text{Cauchy}}: y = \beta_0 + \beta_1 \cdot x + e \quad e \sim \text{Cauchy}(\mu = 0, \sigma) \\
+                 \\
+                 &amp; M_{L+E_\text{Cauchy}}: y \sim \text{Cauchy} \bigl(\mu = (\beta_0 + \beta_1 \cdot x), \sigma \bigr)
+\end{aligned}
+\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">dcauchy</span>(Y, <span class="at">location =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X, <span class="at">scale =</span> scale)) <span class="sc">%&gt;%</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">dcauchy</span>(Y, <span class="at">location =</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X, <span class="at">scale =</span> s) <span class="co"># M0, M4</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> <span class="co"># normalize probability density to sum to 1</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="non-linear-model-with-no-error" class="level3">
+<h3 class="anchored" data-anchor-id="non-linear-model-with-no-error">Non-linear model with no error</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M3 =</span> Y <span class="sc">==</span> (b0 <span class="sc">+</span> <span class="fu">round</span>(<span class="fu">sin</span>(b1 <span class="sc">*</span> X)))</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M3, p <span class="sc">/</span> <span class="fu">sum</span>(p[M3]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(p(x, y)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">M3 =</span> Y <span class="sc">==</span> (b0 <span class="sc">+</span> <span class="fu">round</span>(<span class="fu">sin</span>(b1 <span class="sc">*</span> X)))</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M3, p <span class="sc">/</span> <span class="fu">sum</span>(p[M3]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="non-linear-model-with-normal-error" class="level3">
+<h3 class="anchored" data-anchor-id="non-linear-model-with-normal-error">Non-linear model with normal error</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">dnorm</span>(Y, <span class="at">mean =</span> b0 <span class="sc">+</span> <span class="fu">round</span>(<span class="fu">sin</span>(b1 <span class="sc">*</span> X)), <span class="at">sd =</span> s)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> <span class="co"># normalize probability density to sum to 1</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math inline">\(p(x, y)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">dnorm</span>(Y, <span class="at">mean =</span> b0 <span class="sc">+</span> <span class="fu">round</span>(<span class="fu">sin</span>(b1 <span class="sc">*</span> X)), <span class="at">sd =</span> s)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span> <span class="co"># normalize probability density to sum to 1</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">n =</span> sample.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="another-non-linear-model-with-no-error" class="level3">
+<h3 class="anchored" data-anchor-id="another-non-linear-model-with-no-error">Another non-linear model with no error</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>ss <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">M4 =</span> (Y <span class="sc">==</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>)[X <span class="sc">+</span> <span class="dv">1</span>]) <span class="sc">|</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>         (X <span class="sc">==</span> <span class="dv">3</span> <span class="sc">&amp;</span> Y <span class="sc">==</span> <span class="dv">8</span>) <span class="sc">|</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>         (X <span class="sc">==</span> <span class="dv">7</span> <span class="sc">&amp;</span> Y <span class="sc">==</span> <span class="dv">8</span>)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">if_else</span>(M4, p <span class="sc">/</span> <span class="fu">sum</span>(p[M4]), <span class="dv">0</span>)</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -504,7 +945,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="print-environment" class="level2">
 <h2 class="anchored" data-anchor-id="print-environment">Print environment</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>─ Session info ───────────────────────────────────────────────────────────────
  setting  value
@@ -516,9 +957,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       America/New_York
- date     2025-02-27
+ date     2025-03-01
  pandoc   3.2 @ /Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
- quarto   1.6.41 @ /usr/local/bin/quarto
+ quarto   1.6.42 @ /usr/local/bin/quarto
 
 ─ Packages ───────────────────────────────────────────────────────────────────
  package     * version date (UTC) lib source
