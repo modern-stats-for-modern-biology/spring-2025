@@ -246,7 +246,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
     p = 1 / n() # M0
   ) %>%
   filter(X == 1, Y == 2) %>% 
-  summarize(P = sum(p))
+  summarize(P = sum(p)) %>% pull(P)
 ```
 
 
@@ -272,7 +272,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
     p = 1 / n() # M0
   ) %>%
   filter(X == 1) %>% 
-  summarize(P = sum(p))
+  summarize(P = sum(p)) %>% pull(P)
 ```
 
 ### Calculate marginal probability
@@ -297,7 +297,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
     p = 1 / n() # M0
   ) %>%
   filter(Y == 2) %>% 
-  summarize(P = sum(p))
+  summarize(P = sum(p)) %>% pull(P)
 ```
 
 ### Calculate conditional probability
@@ -314,7 +314,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
 
 $p(x, y)$
 
-$$P(Y = 3 \mid X = 1, M_0)$$
+$$P(Y = 3 \mid X = 1)$$
 
 ### Calculate conditional probability
 
@@ -336,7 +336,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
 
 $p(x, y \mid X = 1)$
 
-$$P(Y = 3 \mid X = 1, M_0)$$
+$$P(Y = 3 \mid X = 1)$$
 
 ```{r}
 expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
@@ -350,7 +350,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
     p = if_else(M1, p / sum(p[M1]), 0)
   ) %>%
   filter(Y == 3) %>% 
-  summarize(P = sum(p))
+  summarize(P = sum(p)) %>% pull(P)
 ```
 
 
@@ -615,7 +615,7 @@ ss %>%
   plot_model(n = sample.size)
 ```
 
-## Conditional probability
+## Conditional probability and statistical association
 
 ### Uniform model
 
@@ -629,18 +629,19 @@ ss %>%
 
 $p(x, y)$
 
-$$P(Y = 4 \mid M_0)$$
+$$P(Y = 4)$$
 
 ```{r}
 ss %>% 
   mutate(
     p = 1 / n() # M0
   ) %>%
-  filter(Y == 4) %>% 
-  summarize(P = sum(p))
+  filter(
+    Y == 4) %>% 
+  summarize(P = sum(p)) %>% pull(P)
 ```
 
-$$P(Y = 4 \mid X = 1, M_0)$$
+$$P(Y = 4 \mid X = 1)$$
 
 ```{r}
 ss %>% 
@@ -652,9 +653,12 @@ ss %>%
     X1 = (X == 1)) %>% 
   ungroup() %>%
   mutate(p = if_else(X1, p / sum(p[X1]), 0)) %>%
-  filter(Y == 4) %>% 
-  summarize(P = sum(p))
+  filter(
+    Y == 4) %>% 
+  summarize(P = sum(p)) %>% pull(P)
 ```
+
+$P(Y = 4)\quad = \quad P(Y = 4 \mid X = 1) \implies$ there is no statistical association between $X$ and $Y$ given the assumptions of the uniform model ($M_0$), i.e., $X$ and $Y$ are independent
 
 ### Linear model with no error
 
@@ -691,8 +695,9 @@ ss %>%
     M1 = (Y == b0 + b1 * X)) %>% 
   ungroup() %>%
   mutate(p = if_else(M1, p / sum(p[M1]), 0)) %>%
-  filter(Y == 4) %>% 
-  summarize(P = sum(p))
+  filter(
+    Y == 4) %>% 
+  summarize(P = sum(p)) %>% pull(P)
 ```
 
 $$P(Y = 4 \mid X = 1, M_1)$$
@@ -708,9 +713,12 @@ ss %>%
     X1 = (X == 1)) %>% 
   ungroup() %>%
   mutate(p = if_else(X1 & M1, p / sum(p[X1 & M1]), 0)) %>%
-  filter(Y == 4) %>% 
-  summarize(P = sum(p))
+  filter(
+    Y == 4) %>% 
+  summarize(P = sum(p)) %>% pull(P)
 ```
+
+$P(Y = 4 \mid M_1)\quad \neq \quad P(Y = 4 \mid X = 1, M_1) \implies$ there is a statistical association between $X$ and $Y$ given the assumptions of the linear model with no error ($M_1$), i.e., $X$ and $Y$ are dependent
 
 ### Linear model with uniform error
 
@@ -753,8 +761,9 @@ ss %>%
     M2 = Y %in% (b0 + b1 * X + e)) %>% 
   ungroup() %>%
   mutate(p = if_else(M2, p / sum(p[M2]), 0)) %>%
-  filter(Y == 4) %>% 
-  summarize(P = sum(p))
+  filter(
+    Y == 4) %>% 
+  summarize(P = sum(p)) %>% pull(P)
 ```
 
 $$P(Y = 4 \mid X = 1, M_2)$$
@@ -770,8 +779,63 @@ ss %>%
     X1 = (X == 1)) %>% 
   ungroup() %>%
   mutate(p = if_else(X1 & M2, p / sum(p[X1 & M2]), 0)) %>%
-  filter(Y == 4) %>% 
-  summarize(P = sum(p))
+  filter(
+    Y == 4) %>% 
+  summarize(P = sum(p)) %>% pull(P)
+```
+
+$P(Y = 4 \mid M_2) \quad \neq \quad P(Y = 4 \mid X = 1, M_2) \implies$ there is a statistical association between $X$ and $Y$ given the assumptions of the linear model with uniform error ($M_2$), i.e., $X$ and $Y$ are dependent
+
+### Linear model with normal error
+
+```{r}
+ss %>% 
+  mutate(
+    p = dnorm(Y, mean = b0 + b1 * X, sd = s) # M0, M3
+  ) %>%
+  mutate(p = p / sum(p)) %>% # normalize probability density to sum to 1
+  plot_model()
+```
+
+$$
+\begin{aligned}
+p(x, y \mid M_2) & = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Normal}(\mu = 0, \sigma = 1)\bigr) \\
+                 & = p\bigl(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_\text{Normal}}\bigr) \\
+                 \\
+                 & M_{L+E_\text{Normal}}: y = \beta_0 + \beta_1 \cdot x + e \quad e \sim \text{Normal}(\mu = 0, \sigma) \\
+                 \\
+                 & M_{L+E_\text{Normal}}: y \sim \text{Normal}\bigl(\mu = (\beta_0 + \beta_1 \cdot x), \sigma \bigr)
+\end{aligned}
+$$
+
+$$P(Y = 4 \mid M_3)$$
+
+```{r}
+ss %>% 
+  mutate(
+    p = dnorm(Y, mean = b0 + b1 * X, sd = s) # M0, M3
+  ) %>%
+  mutate(p = p / sum(p)) %>% # normalize probability density to sum to 1
+  filter(
+    Y == 4) %>% 
+  summarize(P = sum(p)) %>% pull(P)
+```
+
+$$P(Y = 4 \mid X = 1, M_3)$$
+
+```{r}
+ss %>% 
+  mutate(
+    p = dnorm(Y, mean = b0 + b1 * X, sd = s) # M0, M3
+  ) %>%
+  rowwise() %>% 
+  mutate(
+    X1 = (X == 1)) %>% 
+  ungroup() %>%
+  mutate(p = if_else(X1, p / sum(p[X1]), 0)) %>%
+  filter(
+    Y == 4) %>% 
+  summarize(P = sum(p)) %>% pull(P)
 ```
 
 ## Print environment
