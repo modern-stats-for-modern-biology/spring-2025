@@ -6,8 +6,8 @@
 <script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="index_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-48ffa3e5b9d089919c6712c39e5b00f2.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.6.41">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.6.42">
 
   <meta name="author" content="Edoardo &quot;Dado&quot; Marcora">
   <meta name="dcterms.date" content="2025-03-03">
@@ -234,27 +234,20 @@ Edoardo "Dado" Marcora
 <section id="take-homes-from-last-week" class="slide level2">
 <h2>Take homes from last week</h2>
 <ul>
-<li class="fragment"><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
-<li class="fragment"><p>Traditional probability (a.k.a. <strong>data probability</strong> or <strong>likelihood</strong>):</p>
-<ul>
-<li class="fragment"><span class="math inline">\(P(X = x \mid M)\)</span> = probability of the data (<span class="math inline">\(x\)</span>) given a model of the DGP (<span class="math inline">\(M\)</span>)</li>
-</ul></li>
-<li class="fragment"><p>The problem of statistical inference</p>
-<ul>
-<li class="fragment"><strong>Inverse probability</strong>: <span class="math inline">\(P(M \mid X = x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></li>
-<li class="fragment"><u>It’s impossible to calculate the inverse probability!</u></li>
-</ul></li>
-<li class="fragment"><p>The (more reasonable, limited) goal of statistical inference</p>
-<ul>
-<li class="fragment">Let <span class="math inline">\(M = \{M^*, \theta\}\)</span>, where <span class="math inline">\(M^*\)</span> (the functional form of <span class="math inline">\(M\)</span>) is assumed and <span class="math inline">\(\theta\)</span> are the parameters of <span class="math inline">\(M^*\)</span> to be learned from <span class="math inline">\(x\)</span></li>
-<li class="fragment"><strong>Inferential probability</strong>: <span class="math inline">\(P(\theta \mid X = x, M^*)\)</span> = probability of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span> and <span class="math inline">\(M^*\)</span></li>
-<li class="fragment"><span class="math inline">\(P(\theta \mid x)\)</span> [simpler, alternative notation]</li>
-</ul></li>
-<li class="fragment"><p><u>Learning (incl.&nbsp;statistical inference) is impossible without assumptions!</u></p></li>
+<li class="fragment">Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</li>
 </ul>
+<div class="fragment">
+<p><span class="math display">\[
+\begin{array}{ll}
+1. &amp; \text{data (observations/measurements)} \\
+2. &amp; \text{model (DGP)} \\
+\hline
+\therefore &amp; \text{unknown quantities} \\
+\end{array}
+\]</span></p>
+</div>
 <aside class="notes">
-<p>Bayesian inference in a nutshell: A method for figuring out unobservable quantities/unknown facts given observable quantitities/know facts that uses probability to describe the uncertainty over the values of the unknown quantities</p>
-<p>Bayesian data analysis: The use of Bayesian inference to learn from data</p>
+<p>Inference is the process of using facts we know to learn about facts we do not know. A theory of inference gives assumptions necessary to get from the former to the latter, along with a definition for and summary of the resulting uncertainty. Any one theory of inference is neither right nor wrong, but merely an axiom that may or may not be useful. http://tinyurl.com/y3v8nfwh</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -267,23 +260,182 @@ Edoardo "Dado" Marcora
           display:block!important;
       }</style></aside>
 </section>
-<section id="statistical-inference-globe-tossing-experiment" class="slide level2">
-<h2>Statistical inference: Globe tossing experiment</h2>
+<section id="take-homes-from-last-week-1" class="slide level2">
+<h2>Take homes from last week</h2>
+<div>
+<ul>
+<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
+<li><p><strong>Data probability</strong> (a.k.a. <strong>likelihood</strong>):</p></li>
+</ul>
+</div>
+</section>
+<section id="take-homes-from-last-week-2" class="slide level2">
+<h2>Take homes from last week</h2>
+<div>
+<ul>
+<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
+<li><p><strong>Data probability</strong> (a.k.a. <strong>likelihood</strong>):</p>
+<ul>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given our knowledge of the DGP</li>
+</ul></li>
+</ul>
+</div>
+<ul>
+<li class="fragment"><p><strong>Inverse probability</strong>:</p>
+<ul>
+<li class="fragment"><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li class="fragment"><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
+<li class="fragment"><p>The (more reasonable, limited) goal of statistical inference:</p>
+<ul>
+<li class="fragment">Let <span class="math inline">\(M = \{M^*, \theta\}\)</span>, where <span class="math inline">\(M^*\)</span> (the functional form of <span class="math inline">\(M\)</span>) is assumed and <span class="math inline">\(\theta\)</span> are the parameters of <span class="math inline">\(M^*\)</span> to be learned from <span class="math inline">\(x\)</span></li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="take-homes-from-last-week-3" class="slide level2">
+<h2>Take homes from last week</h2>
+<div>
+<ul>
+<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
+<li><p><strong>Data probability</strong> (a.k.a. <strong>likelihood</strong>):</p>
+<ul>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given our knowledge of the DGP</li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><p><strong>Inverse probability</strong>:</p>
+<ul>
+<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
+<li><p>The (more reasonable, limited) goal of statistical inference:</p>
+<ul>
+<li>Let <span class="math inline">\(M = \{M^*, \theta\}\)</span>, where <span class="math inline">\(M^*\)</span> (the functional form of <span class="math inline">\(M\)</span>) is assumed and <span class="math inline">\(\theta\)</span> are the parameters of <span class="math inline">\(M^*\)</span> to be learned from <span class="math inline">\(x\)</span></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><strong>Inferential probability</strong> (a.k.a. <strong>posterior</strong>):</li>
+</ul>
+</div>
+</section>
+<section id="take-homes-from-last-week-4" class="slide level2">
+<h2>Take homes from last week</h2>
+<div>
+<ul>
+<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
+<li><p><strong>Data probability</strong> (a.k.a. <strong>likelihood</strong>):</p>
+<ul>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given our knowledge of the DGP</li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><p><strong>Inverse probability</strong>:</p>
+<ul>
+<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
+<li><p>The (more reasonable, limited) goal of statistical inference:</p>
+<ul>
+<li>Let <span class="math inline">\(M = \{M^*, \theta\}\)</span>, where <span class="math inline">\(M^*\)</span> (the functional form of <span class="math inline">\(M\)</span>) is assumed and <span class="math inline">\(\theta\)</span> are the parameters of <span class="math inline">\(M^*\)</span> to be learned from <span class="math inline">\(x\)</span></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><p><strong>Inferential probability</strong> (a.k.a. <strong>posterior</strong>):</p>
+<ul>
+<li><span class="math inline">\(p(\theta \mid x, M^*)\)</span> = probability of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span> and <span class="math inline">\(M^*\)</span></li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="take-homes-from-last-week-5" class="slide level2">
+<h2>Take homes from last week</h2>
+<div>
+<ul>
+<li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
+<li><p><strong>Data probability</strong> (a.k.a. <strong>likelihood</strong>):</p>
+<ul>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given our knowledge of the DGP</li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><p><strong>Inverse probability</strong>:</p>
+<ul>
+<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
+<li><p>The (more reasonable, limited) goal of statistical inference:</p>
+<ul>
+<li>Let <span class="math inline">\(M = \{M^*, \theta\}\)</span>, where <span class="math inline">\(M^*\)</span> (the functional form of <span class="math inline">\(M\)</span>) is assumed and <span class="math inline">\(\theta\)</span> are the parameters of <span class="math inline">\(M^*\)</span> to be learned from <span class="math inline">\(x\)</span></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div>
+<ul>
+<li><p><strong>Inferential probability</strong> (a.k.a. <strong>posterior</strong>):</p>
+<ul>
+<li><span class="math inline">\(p(\theta \mid x)\)</span> = probability of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span> and <span class="math inline">\(M^*\)</span></li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="bayes-theorem-for-statistical-inference" class="slide level2">
+<h2>Bayes’ theorem for statistical inference</h2>
+<div class="text-align-center">
+<p><img data-src="images/Slide11.png"></p>
+</div>
+</section>
+<section id="bayes-theorem-for-statistical-inference-1" class="slide level2">
+<h2>Bayes’ theorem for statistical inference</h2>
+<div class="text-align-center">
+<p><img data-src="images/Slide12.png"></p>
+</div>
+</section>
+<section id="bayes-theorem-for-statistical-inference-2" class="slide level2">
+<h2>Bayes’ theorem for statistical inference</h2>
+<div class="text-align-center">
+<p><img data-src="images/Slide13.png"></p>
+</div>
+</section>
+<section id="statistical-inference-globe-tossing" class="slide level2">
+<h2>Statistical inference: globe tossing</h2>
 
 <img data-src="statistical-rethinking-2023-lecture-02/slide-002.png" class="r-stretch"></section>
 <section id="science-before-statistics" class="slide level2">
 <h2>Science before statistics</h2>
-<p>Clearly state the <em>research question</em>, based on prior knowledge and domain expertise</p>
+<p>Clearly state the <strong>research question</strong></p>
 
 <img data-src="images/Slide1.png" class="r-stretch"></section>
 <section id="identify-the-estimand" class="slide level2">
 <h2>Identify the estimand</h2>
-<p>From a <em>research question</em> to a <em>quantity of interest</em>: the <strong>estimand</strong></p>
+<p>From the <em>research question</em> to the <em>quantity of interest</em>: the <strong>estimand</strong></p>
 
-<img data-src="images/Slide2.png" class="r-stretch"></section>
+<img data-src="images/Slide2.png" class="r-stretch"><aside class="notes">
+<p>quantitative empirical research question</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="identify-the-estimand-1" class="slide level2">
 <h2>Identify the estimand</h2>
-<p>The <em>estimand</em> should be identified before statistical data analysis is performed!</p>
+<p>The <strong>estimand</strong> should be identified before statistical data analysis is performed!</p>
 <aside class="notes">
 <p>Questionable research practices: HARKing, cherry-picking, P-hacking, fishing, and data dredging or mining</p>
 <p><a href="https://youtu.be/0Rnq1NpHdmw" class="uri">https://youtu.be/0Rnq1NpHdmw</a></p>
@@ -302,44 +454,86 @@ Edoardo "Dado" Marcora
 <img data-src="images/Slide2.png" class="r-stretch"></section>
 <section id="identify-the-estimand-2" class="slide level2">
 <h2>Identify the estimand</h2>
-<p>The <em>estimand</em> is a <em>quantity of interest</em> that is out of reach and hidden from us</p>
+<p>The <strong>estimand</strong> is a <em>quantity of interest</em> that is out of reach and hidden from us</p>
 
 <img data-src="images/Slide3.png" class="r-stretch"></section>
+<section id="identify-the-estimand-3" class="slide level2">
+<h2>Identify the estimand</h2>
+<p>The <strong>estimand</strong> is the target of statistical inference</p>
+
+<img data-src="images/Slide3.png" class="r-stretch"><aside class="notes">
+<p>the conclusion of an inductive argument</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="collect-the-data" class="slide level2">
 <h2>Collect the data</h2>
-<p>The <em>sampling process</em> (a crucial component of <em>study design</em>)</p>
+<p>The <strong>sampling process</strong>: a crucial component of <em>study design</em></p>
 
 <img data-src="images/Slide4.png" class="r-stretch"></section>
 <section id="collect-the-data-1" class="slide level2">
 <h2>Collect the data</h2>
-<p>The <em>sampling process</em> (a crucial component of <em>study design</em>)</p>
+<p>The <strong>sampling process</strong>: a crucial component of <em>study design</em></p>
 
 <img data-src="images/Slide5.png" class="r-stretch"></section>
-<section id="build-a-statistical-model" class="slide level2">
-<h2>Build a statistical model</h2>
-<p>Build a probability <em>model</em> of the DGP <span class="fragment">to capture important features of the <em>estimand</em> and <em>sampling process</em></span></p>
+<section id="build-a-model-of-the-data-generating-process" class="slide level2">
+<h2>Build a model of the data generating process</h2>
+<p>A <strong>statistical model</strong> (i.e., a probability distribution of one or more random variables) that captures important features of the DGP, including the <em>estimand</em> and <em>sampling process</em></p>
 
 <img data-src="images/Slide6.png" class="r-stretch"></section>
 <section id="fit-the-statistical-model-to-the-data" class="slide level2">
 <h2>Fit the statistical model to the data</h2>
-<p>Condition the probability <em>model</em> of the DGP on the <em>data</em> using an <strong>estimator</strong> to obtain an <strong>estimate</strong> of the <em>estimand</em></p>
+<p>Train the <em>statistical model</em> with the <em>data</em> using an <strong>estimator</strong> (i.e., an inference algorithm) in order to obtain an <strong>estimate</strong> of the <em>estimand</em></p>
 
 <img data-src="images/Slide7.png" class="r-stretch"></section>
 <section id="the-estimate-in-an-ideal-world" class="slide level2">
 <h2>The estimate (in an ideal world)</h2>
-<p>&nbsp;</p>
+<p>With a perfect model and infinite amount of data, the estimate would be the estimand</p>
 
 <img data-src="images/Slide8.png" class="r-stretch"></section>
-<section id="the-estimate-in-reality" class="slide level2">
-<h2>The estimate (in reality)</h2>
+<section id="the-estimate-in-reality-hopefully" class="slide level2">
+<h2>The estimate (in reality, hopefully)</h2>
 <p>&nbsp;</p>
 
 <img data-src="images/Slide9.png" class="r-stretch"></section>
-<section id="the-estimate-in-reality-1" class="slide level2">
-<h2>The estimate (in reality)</h2>
+<section id="the-estimate-in-reality-hopefully-not" class="slide level2">
+<h2>The estimate (in reality, hopefully not)</h2>
 <p>&nbsp;</p>
 
 <img data-src="images/Slide10.png" class="r-stretch"></section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+
+<img data-src="images/briggs2.png" class="r-stretch"></section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+
+<img data-src="images/briggs1.png" class="r-stretch"></section>
+<section id="section-3" class="slide level2">
+<h2></h2>
+
+<img data-src="images/briggs3.png" class="r-stretch"></section>
+<section id="observations" class="slide level2">
+<h2>Observations</h2>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"></section>
+<section id="model-say-line" class="slide level2">
+<h2>Model, say “line”!</h2>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
+<section id="predictions" class="slide level2">
+<h2>Predictions</h2>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
 <section id="estimand-estimator-and-estimate" class="slide level2">
 <h2>Estimand, estimator, and estimate</h2>
 <div class="columns">
@@ -543,7 +737,7 @@ Edoardo "Dado" Marcora
           display:block!important;
       }</style></aside>
 </section>
-<section id="statistical-inference-globe-tossing-experiment-1" class="slide level2">
+<section id="statistical-inference-globe-tossing-experiment" class="slide level2">
 <h2>Statistical inference: Globe tossing experiment</h2>
 
 <img data-src="statistical-rethinking-2023-lecture-02/slide-002.png" class="r-stretch"></section>
@@ -655,7 +849,7 @@ x \sim \text{Binomial}(\pi, n)
 <h2>Estimate: Posterior</h2>
 
 <img data-src="images/Slide27.png" class="r-stretch"></section>
-<section id="statistical-inference-globe-tossing-experiment-2" class="slide level2">
+<section id="statistical-inference-globe-tossing-experiment-1" class="slide level2">
 <h2>Statistical inference: Globe tossing experiment</h2>
 <p>Prior information: About 71% of the Earth’s surface is covered by water [<a href="https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth">usgs.gov</a>]</p>
 <div class="columns">
@@ -669,7 +863,7 @@ x \sim \text{Binomial}(\pi, n)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-16-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -696,7 +890,7 @@ x \sim \text{Binomial}(\pi, n)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-18-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -717,7 +911,7 @@ x \sim \text{Binomial}(\pi, n)
 <p>&nbsp;</p>
 </div></div>
 </section>
-<section id="statistical-inference-globe-tossing-experiment-3" class="slide level2">
+<section id="statistical-inference-globe-tossing-experiment-2" class="slide level2">
 <h2>Statistical inference: Globe tossing experiment</h2>
 <p>Prior information: About 71% of the Earth’s surface is covered by water [<a href="https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth">usgs.gov</a>]</p>
 <div class="columns">
@@ -728,7 +922,7 @@ x \sim \text{Binomial}(\pi, n)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -768,7 +962,7 @@ sample estimates:
 <p>&nbsp;</p>
 </div></div>
 </section>
-<section id="statistical-inference-globe-tossing-experiment-4" class="slide level2">
+<section id="statistical-inference-globe-tossing-experiment-3" class="slide level2">
 <h2>Statistical inference: Globe tossing experiment</h2>
 <p>Prior information: About 71% of the Earth’s surface is covered by water [<a href="https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth">usgs.gov</a>]</p>
 <div class="columns">
@@ -779,7 +973,7 @@ sample estimates:
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-27-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -828,7 +1022,7 @@ sample estimates:
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-28-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-31-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -989,7 +1183,7 @@ E(x) = \mu \\
 <h2>The normal distribution as a statistical model</h2>
 <p>Monte Carlo simulation</p>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-30-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-33-1.png" width="960" class="r-stretch"></section>
 <section id="the-normal-distribution-as-a-statistical-model-2" class="slide level2">
 <h2>The normal distribution as a statistical model</h2>
 <p>Monte Carlo simulation</p>
@@ -1002,7 +1196,7 @@ E(x) = \mu \\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-31-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-34-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1071,7 +1265,7 @@ E(x) = \mu \\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-33-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-36-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1089,13 +1283,13 @@ E(x) = \mu \\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-34-1.png" width="576"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-37-1.png" width="576"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="identify-the-estimand-3" class="slide level2">
+<section id="identify-the-estimand-4" class="slide level2">
 <h2>Identify the estimand</h2>
 <p>The causal relationship between height (H) and weight (W) in adult humans</p>
 <div class="cell">
@@ -1104,7 +1298,7 @@ E(x) = \mu \\
 <span id="cb26-3"><a href=""></a><span class="fu">gf_point</span>(weight <span class="sc">~</span> height, <span class="at">color =</span> <span class="st">"skyblue4"</span>, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"black"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-35-1.png" width="576" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-38-1.png" width="576" class="r-stretch"></section>
 <section id="draw-a-causal-diagram" class="slide level2">
 <h2>Draw a causal diagram</h2>
 <p><strong>Directed acyclic graph (DAG)</strong>: A graphical representation of a causal model</p>
@@ -1117,7 +1311,7 @@ W = f(H, U)
 </div>
 <p>See also: <a href="https://www.dagitty.net/learn">educational resources</a> at <a href="http://dagitty.net/">dagitty.net</a></p>
 </section>
-<section id="build-a-statistical-model-1" class="slide level2">
+<section id="build-a-statistical-model" class="slide level2">
 <h2>Build a statistical model</h2>
 <p>of the causal relationship between height (H) and weight (W) in adult humans using a general <strong>linear model</strong> (LM)<span class="fragment">; using LM instead of GLM in order to avoid confusion with the broader class of <strong>generalized linear models</strong> (GLM)</span></p>
 <ul>
@@ -1219,7 +1413,7 @@ y_i = \beta_0 + \beta_1 x_i + \epsilon_i \\
 <li class="fragment"><p><span class="math inline">\(\epsilon_i\)</span> is the <strong>stochastic component</strong> of the general linear model</p></li>
 </ul>
 </section>
-<section id="build-a-statistical-model-2" class="slide level2">
+<section id="build-a-statistical-model-1" class="slide level2">
 <h2>Build a statistical model</h2>
 <p>of the causal relationship between height (H) and weight (W) in adult humans using a general linear model (LM)</p>
 <ul>
@@ -1232,7 +1426,7 @@ y_i = \beta_0 + \beta_1 x_i + \epsilon_i \\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-37-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-40-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1310,7 +1504,7 @@ y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu_i, \sigma) \\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-40-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-43-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1338,7 +1532,7 @@ y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu_i, \sigma) \\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-41-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-44-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1384,8 +1578,17 @@ y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu_i, \sigma) \\
 </div>
 </div>
 </section>
-<section id="section-1" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
+<section id="section-4" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
 <h2></h2>
+</section>
+<section id="key-take-home-messages" class="slide level2">
+<h2>Key take home messages</h2>
+<ul>
+<li class="fragment"><p>Be skeptical, thoughtful, and honest!</p></li>
+<li class="fragment"><p>If you can’t simulate it, you can’t analyze it!</p></li>
+<li class="fragment"><p>All models say only what they are told to say!</p></li>
+<li class="fragment"><p>Test before you est(imate)!</p></li>
+</ul>
 
 </section>
     </div>

@@ -40,48 +40,172 @@ set.seed(123)
 
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
--   Traditional probability (a.k.a. **data probability** or **likelihood**):
-
-    -   $P(X = x \mid M)$ = probability of the data ($x$) given a model of the DGP ($M$)
-
--   The problem of statistical inference
-
-    -   **Inverse probability**: $P(M \mid X = x)$ = probability of $M$ given $x$
-    -   [It's impossible to calculate the inverse probability!]{.underline}
-
--   The (more reasonable, limited) goal of statistical inference
-
-    -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
-    -   **Inferential probability**: $P(\theta \mid X = x, M^*)$ = probability of $\theta$ given $x$ and $M^*$
-    -   $P(\theta \mid x)$ \[simpler, alternative notation\]
-
--   [Learning (incl. statistical inference) is impossible without assumptions!]{.underline}
-
-::: notes
-Bayesian inference in a nutshell: A method for figuring out unobservable quantities/unknown facts given observable quantitities/know facts that uses probability to describe the uncertainty over the values of the unknown quantities
-
-Bayesian data analysis: The use of Bayesian inference to learn from data
+::: fragment
+$$
+\begin{array}{ll}
+1. & \text{data (observations/measurements)} \\
+2. & \text{model (DGP)} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
 :::
 
-## Statistical inference: Globe tossing experiment
+::: notes
+Inference is the process of using facts we know to learn about facts we do not know. A theory of inference gives assumptions necessary to get from the former to the latter, along with a definition for and summary of the resulting uncertainty. Any one theory of inference is neither right nor wrong, but merely an axiom that may or may not be useful. http://tinyurl.com/y3v8nfwh
+:::
+
+## Take homes from last week
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data probability** (a.k.a. **likelihood**):
+:::
+
+## Take homes from last week
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data probability** (a.k.a. **likelihood**):
+
+    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+:::
+
+-   **Inverse probability**:
+
+    -   $p(M \mid x)$ = probability of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+
+## Take homes from last week
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data probability** (a.k.a. **likelihood**):
+
+    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+:::
+
+::: nonincremental
+-   **Inverse probability**:
+
+    -   $p(M \mid x)$ = probability of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+:::
+
+::: nonincremental
+-   **Inferential probability** (a.k.a. **posterior**):
+:::
+
+## Take homes from last week
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data probability** (a.k.a. **likelihood**):
+
+    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+:::
+
+::: nonincremental
+-   **Inverse probability**:
+
+    -   $p(M \mid x)$ = probability of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+:::
+
+::: nonincremental
+-   **Inferential probability** (a.k.a. **posterior**):
+
+    -   $p(\theta \mid x, M^*)$ = probability of $\theta$ given $x$ and $M^*$
+:::
+
+## Take homes from last week
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data probability** (a.k.a. **likelihood**):
+
+    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+:::
+
+::: nonincremental
+-   **Inverse probability**:
+
+    -   $p(M \mid x)$ = probability of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+:::
+
+::: nonincremental
+-   **Inferential probability** (a.k.a. **posterior**):
+
+    -   $p(\theta \mid x)$ = probability of $\theta$ given $x$ and $M^*$
+:::
+
+## Bayes' theorem for statistical inference
+
+::: text-align-center
+![](images/Slide11.png)
+:::
+
+## Bayes' theorem for statistical inference
+
+::: text-align-center
+![](images/Slide12.png)
+:::
+
+## Bayes' theorem for statistical inference
+
+::: text-align-center
+![](images/Slide13.png)
+:::
+
+## Statistical inference: globe tossing
 
 ![](statistical-rethinking-2023-lecture-02/slide-002.png)
 
 ## Science before statistics
 
-Clearly state the *research question*, based on prior knowledge and domain expertise
+Clearly state the **research question**
 
 ![](images/Slide1.png)
 
 ## Identify the estimand
 
-From a *research question* to a *quantity of interest*: the **estimand**
+From the *research question* to the *quantity of interest*: the **estimand**
 
 ![](images/Slide2.png)
 
+::: notes
+quantitative empirical research question
+:::
+
 ## Identify the estimand
 
-The *estimand* should be identified before statistical data analysis is performed!
+The **estimand** should be identified before statistical data analysis is performed!
 
 ::: notes
 Questionable research practices: HARKing, cherry-picking, P-hacking, fishing, and data dredging or mining
@@ -93,52 +217,118 @@ Questionable research practices: HARKing, cherry-picking, P-hacking, fishing, an
 
 ## Identify the estimand
 
-The *estimand* is a *quantity of interest* that is out of reach and hidden from us
+The **estimand** is a *quantity of interest* that is out of reach and hidden from us
 
 ![](images/Slide3.png)
 
+## Identify the estimand
+
+The **estimand** is the target of statistical inference
+
+![](images/Slide3.png)
+
+::: notes
+the conclusion of an inductive argument
+:::
+
 ## Collect the data
 
-The *sampling process* (a crucial component of *study design*)
+The **sampling process**: a crucial component of *study design*
 
 ![](images/Slide4.png)
 
 ## Collect the data
 
-The *sampling process* (a crucial component of *study design*)
+The **sampling process**: a crucial component of *study design*
 
 ![](images/Slide5.png)
 
-## Build a statistical model
+## Build a model of the data generating process
 
-Build a probability *model* of the DGP [to capture important features of the *estimand* and *sampling process*]{.fragment}
+A **statistical model** (i.e., a probability distribution of one or more random variables) that captures important features of the DGP, including the *estimand* and *sampling process*
 
 ![](images/Slide6.png)
 
 ## Fit the statistical model to the data
 
-Condition the probability *model* of the DGP on the *data* using an **estimator** to obtain an **estimate** of the *estimand*
+Train the *statistical model* with the *data* using an **estimator** (i.e., an inference algorithm) in order to obtain an **estimate** of the *estimand*
 
 ![](images/Slide7.png)
 
 ## The estimate (in an ideal world)
 
- 
+With a perfect model and infinite amount of data, the estimate would be the estimand
 
 ![](images/Slide8.png)
 
-## The estimate (in reality)
+## The estimate (in reality, hopefully)
 
  
 
 ![](images/Slide9.png)
 
-## The estimate (in reality)
+## The estimate (in reality, hopefully not)
 
  
 
 ![](images/Slide10.png)
 
+
+##
+
+![](images/briggs2.png)
+
+
+## 
+
+![](images/briggs1.png)
+
+##
+
+![](images/briggs3.png)
+
+## Observations
+
+```{r}
+#| echo: false
+#| fig.height: 6
+datasauRus::datasaurus_dozen %>%
+  filter(dataset != "slant_down") %>%
+  gf_point(y ~ x, colour = ~ dataset, alpha = 0.5) +
+  coord_fixed(expand = FALSE) +
+  theme_void() +
+  theme(legend.position = "none", strip.text = element_blank()) +
+  facet_wrap(~ dataset, ncol = 4, nrow = 3)
+```
+## Model, say "line"!
+
+```{r}
+#| echo: false
+#| fig.height: 6
+datasauRus::datasaurus_dozen %>%
+  filter(dataset != "slant_down") %>%
+  gf_point(y ~ x, colour = ~ dataset, alpha = 0.5) +
+  coord_fixed(expand = FALSE) +
+  theme_void() +
+  theme(legend.position = "none", strip.text = element_blank()) +
+  facet_wrap(~ dataset, ncol = 4, nrow = 3)
+```
+
+## Predictions
+
+```{r}
+#| echo: false
+#| output-location: default
+#| fig.height: 6
+datasauRus::datasaurus_dozen %>%
+  filter(dataset != "slant_down") %>%
+  gf_point(y ~ x, colour = ~ dataset, alpha = 0.05) %>%
+  gf_lm(se = FALSE) +
+  coord_fixed(expand = FALSE) +
+  theme_void() +
+  theme(legend.position = "none", strip.text = element_blank()) +
+  facet_wrap(~ dataset, ncol = 4, nrow = 3)
+```
 ## Estimand, estimator, and estimate
 
 :::::: columns
@@ -1307,3 +1497,17 @@ performance::check_autocorrelation(m2)
 :::
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
+
+
+## Key take home messages
+
+-   Be skeptical, thoughtful, and honest!
+
+-   If you can't simulate it, you can't analyze it!
+
+-   All models say only what they are told to say!
+
+-   Test before you est(imate)!
+
+
+
