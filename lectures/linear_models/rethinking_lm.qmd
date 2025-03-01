@@ -22,6 +22,11 @@ theme_set(theme_bw())
 set.rseed(666)
 ```
 
+```{r}
+sample.size <- 20 # number of samples in the dataset
+n <- 1000         # number of samples used in Montecarlo simulations
+```
+
 ## Load data
 
 ```{r}
@@ -67,19 +72,24 @@ gf_point(weight ~ height, data = d.pop, alpha = 0.5, color = 4) %>%
   gf_labs(x = "Height (cm)", y = "Weight (kg)")
 ```
 
+```{r}
+cor(weight ~ height, data = d.pop)
+```
+
+
+
 ## Workflow
 
 1.  State a clear question/goal
 2.  Specify causal model (use a DAG to sketch your causal assumptions)
 3.  Use causal model to build generative model
 4.  Specify estimand (i.e., the unknown statistical quantity of interest)
-5.  Use generative model to build an estimator
-6.  Test estimator using data simulated with generative model
-7.  Estimate (fit/train model using observed data)
-8.  Check model assumptions
-9.  Test model using training data (posterior predictive check)
-10. Test model using new data (replication)
-11. Profit but keep testing
+5.  Use generative model to build estimator
+6.  Test estimator (using data simulated with generative model)
+7.  Fit/train model using observed data and estimate unknown quantity of interest
+8.  Check model assumptions and test model using training data (posterior predictive check)
+9.  Test model using new data (replication)
+10. Profit but keep testing (severely)
 
 ## State a clear question/goal
 
@@ -89,6 +99,8 @@ gf_point(weight ~ height, data = d.pop, alpha = 0.5, color = 4) %>%
 
 ## Specify causal model (DAG)
 
+### Deterministic function/relationship
+
 ```{mermaid}
 graph LR;
     H --> W;
@@ -96,20 +108,65 @@ graph LR;
 
 $$\text{W} = f(\text{H})$$
 
+### Probabilistic function/relationship
+
+```{mermaid}
+graph LR;
+    H --> W;
+    U --> W;
+```
+
+$$\text{W} = f(\text{H, U})$$
+
 ## Use causal model to build generative model
+
+### Deterministic function/relationship
+
+Linear relationship:
+
+$$
+y_i = \beta_0 + \beta_1 \cdot x_i
+$$
+
+```{r}
+sim_weight <- function(H, beta1) {
+  W <- beta1 * H
+  return(W)
+}
+```
+
+```{r}
+H <- rnorm(n = 350, mean = 155, sd = 8)
+W <- sim_weight(H, beta1 = 0.4)
+```
+
+```{r}
+d.sim <- tibble(height = H, weight = W)
+```
+
+```{r}
+gf_point(weight ~ height, data = d.sim, alpha = 0.5, color = 3) %>%
+  gf_smooth(linewidth = 1, color = 2, method = "loess") %>%
+  gf_labs(x = "Height (cm)", y = "Weight (kg)")
+```
+
+
+### Probabilistic function/relationship
 
 The likelihood of the general linear model:
 
 $$
-y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu = (\beta_0 + \beta_1 \cdot x_i), \sigma)
+y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i
+$$
+
+$$
+\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(0, \sigma)
 $$
 
 or (equivalently):
 
 $$
-y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i
-$$ $$
-\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(0, \sigma)
+y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu = (\beta_0 + \beta_1 \cdot x_i), \sigma)
 $$
 
 ```{r}
@@ -122,7 +179,7 @@ sim_weight <- function(H, beta1, sigma) {
 
 ```{r}
 H <- rnorm(n = 350, mean = 155, sd = 8)
-W <- sim_weight(H, beta1 = 0.4, sigma = 5)
+W <- sim_weight(H, beta1 = 0.4, sigma = 4)
 ```
 
 ```{r}
@@ -137,16 +194,14 @@ gf_point(weight ~ height, data = d.sim, alpha = 0.5, color = 3) %>%
 
 ## Specify estimand
 
-The unknown statistical quantity of interest
+The unknown statistical quantity of interest: the slope of the linear relationship between height and weight
 
-## Use generative model to build an estimator
+
+## Grid approximation
+
+### Use generative model to build estimator
 
 Build Bayesian estimator using grid approximation
-
-```{r}
-sample.size <- 20 # number of samples in the dataset
-n <- 1000         # number of samples used in Montecarlo simulations
-```
 
 ```{r}
 # parameter variables
@@ -159,7 +214,7 @@ ss <- expand_grid(beta0, beta1, sigma)
 
 # simulate data
 H <- rnorm(sample.size, mean = 155, sd = 8)
-W <- sim_weight(H, beta1 = 0.4, sigma = 5)
+W <- sim_weight(H, beta1 = 0.4, sigma = 4)
 
 # estimate using grid approximation
 post <- ss %>%
@@ -177,10 +232,10 @@ post <- ss %>%
 post
 ```
 
-## Test estimator
+### Test estimator
 
 $$
-\beta_0 = 0 \quad \beta_1 = 0.4 \quad \sigma = 5
+\beta_0 = 0 \quad \beta_1 = 0.4 \quad \sigma = 4
 $$
 
 ```{r}
@@ -198,11 +253,7 @@ mcmc_hist(draws, pars = "beta1", binwidth = 6/100)
 summary(draws)
 ```
 
-## Estimate
-
-Fit/train model using observed data
-
-### Grid approximation
+### Fit/train model using observed data and estimate unknown quantity of interest
 
 ```{r}
 # randomly sample data from population
@@ -242,7 +293,14 @@ mcmc_hist(draws, pars = "beta1", binwidth = 6/50)
 summary(draws)
 ```
 
-### Quadratic approximation
+
+### Check model assumptions and test model using training data
+
+XXX
+
+## Quadratic approximation
+
+### Use generative model to build estimator
 
 ```{r}
 m <- alist(
@@ -254,6 +312,22 @@ m <- alist(
 )
 ```
 
+### Test estimator
+
+$$
+\beta_0 = 0 \quad \beta_1 = 0.4 \quad \sigma = 4
+$$
+
+```{r}
+f <- quap(m, data = d.sim)
+```
+
+```{r}
+summary(f)
+```
+
+### Fit/train model using observed data and estimate unknown quantity of interest
+
 ```{r}
 f <- quap(m, data = d.smp)
 ```
@@ -262,12 +336,87 @@ f <- quap(m, data = d.smp)
 summary(f)
 ```
 
-### Bayesian linear model estimation
+### Check model assumptions and test model using training data
+
+XXX
+
+
+## Bayesian linear model estimation (uniform priors)
+
+### Use generative model to build estimator
+
+XXX
+
+### Test estimator
+
+$$
+\beta_0 = 0 \quad \beta_1 = 0.4 \quad \sigma = 4
+$$
+
+```{r}
+#| output: false
+bayes.est.unif <- stan_glm(weight ~ 1 + height, data = d.sim)
+```
+
+```{r}
+summary(bayes.est.unif)
+```
+
+```{r}
+estimate_slopes(bayes.est.unif, trend = "height")
+```
+
+### Fit/train model using observed data and estimate unknown quantity of interest
 
 ```{r}
 #| output: false
 bayes.est.unif <- stan_glm(weight ~ 1 + height, data = d.smp)
 ```
+
+```{r}
+summary(bayes.est.unif)
+```
+
+```{r}
+estimate_slopes(bayes.est.unif, trend = "height")
+```
+
+### Check model assumptions and test model using training data
+
+```{r}
+performance::check_model(bayes.est.unif)
+```
+
+## Bayesian linear model estimation (uniform priors)
+
+### Use generative model to build estimator
+
+XXX
+
+### Test estimator
+
+$$
+\beta_0 = 0 \quad \beta_1 = 0.4 \quad \sigma = 4
+$$
+
+```{r}
+#| output: false
+bayes.est.winf <- stan_glm(weight ~ 1 + height, data = d.sim,
+                           prior = normal(0, 1),
+                           prior_intercept = normal(0, 25),
+                           prior_aux = exponential(0.3))
+```
+
+
+```{r}
+summary(bayes.est.winf)
+```
+
+```{r}
+estimate_slopes(bayes.est.winf, trend = "height")
+```
+
+### Fit/train model using observed data and estimate unknown quantity of interest
 
 ```{r}
 #| output: false
@@ -277,78 +426,74 @@ bayes.est.winf <- stan_glm(weight ~ 1 + height, data = d.smp,
                            prior_aux = exponential(0.3))
 ```
 
-### Maximum likelihood linear model estimation
+```{r}
+summary(bayes.est.winf)
+```
+
+```{r}
+estimate_slopes(bayes.est.winf, trend = "height")
+```
+
+### Check model assumptions and test model using training data
+
+```{r}
+performance::check_model(bayes.est.winf)
+```
+
+## Maximum likelihood linear model estimation
+
+### Use generative model to build estimator
+
+XXX
+
+### Test estimator
+
+$$
+\beta_0 = 0 \quad \beta_1 = 0.4 \quad \sigma = 4
+$$
+
+```{r}
+ml.est <- lm(weight ~ 1 + height, data = d.sim)
+```
+
+```{r}
+summary(ml.est)
+```
+
+```{r}
+estimate_slopes(ml.est, trend = "height")
+```
+
+### Fit/train model using observed data and estimate unknown quantity of interest
 
 ```{r}
 ml.est <- lm(weight ~ 1 + height, data = d.smp)
 ```
 
-### Compare models
-
 ```{r}
-modelsummary::modelsummary(list(mle = ml.est, bayes.unif = bayes.est.unif, bayes.winf = bayes.est.winf), metrics = "all")
-```
-
-```{r}
-estimate_slopes(bayes.est.unif, trend = "height")
+summary(ml.est)
 ```
 
 ```{r}
 estimate_slopes(ml.est, trend = "height")
 ```
 
+### Check model assumptions and test model using training data
 
-## Check model assumptions
+```{r}
+performance::check_model(ml.est)
+```
 
-XXX
+## Compare models
 
-## Test model using training data
-
-XXX
+```{r}
+modelsummary::modelsummary(list(mle = ml.est, bayes.unif = bayes.est.unif, bayes.winf = bayes.est.winf), metrics = "all")
+```
 
 ## Test model using new data (replication)
 
 XXX
 
-## Profit but keep testing
+## Profit but keep testing (severely)
 
-
-## Population parameters
-
-```{r}
-f <- quap(m, data = d.pop)
-```
-
-```{r}
-summary(f)
-```
-
-```{r}
-#| output: false
-bayes.est.unif <- stan_glm(weight ~ 1 + height, data = d.pop)
-```
-
-```{r}
-#| output: false
-bayes.est.winf <- stan_glm(weight ~ 1 + height, data = d.pop,
-                           prior = normal(0, 1),
-                           prior_intercept = normal(0, 25),
-                           prior_aux = exponential(0.3))
-```
-
-```{r}
-ml.est <- lm(weight ~ 1 + height, data = d.pop)
-```
-
-```{r}
-modelsummary::modelsummary(list(mle = ml.est, bayes.unif = bayes.est.unif, bayes.winf = bayes.est.winf), metrics = "all")
-```
-
-```{r}
-estimate_slopes(bayes.est.unif, trend = "height")
-```
-
-```{r}
-estimate_slopes(ml.est, trend = "height")
-```
-
+XXX
