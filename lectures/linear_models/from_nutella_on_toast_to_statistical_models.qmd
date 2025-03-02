@@ -145,7 +145,6 @@ plot_model <- function(pdf, n = NULL) {
 }
 ```
 
-
 ## Grid, model and sampling parameters
 
 ```{r}
@@ -222,7 +221,6 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
 
 $p(X = x, Y = y \mid M_0)$
 
-
 ### Calculate joint probability
 
 ```{r}
@@ -237,7 +235,6 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
 
 $p(x, y)$
 
-
 $$P(X = 1, Y = 2 \mid M_0)$$
 
 ```{r}
@@ -248,7 +245,6 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
   filter(X == 1, Y == 2) %>% 
   summarize(P = sum(p)) %>% pull(P)
 ```
-
 
 ### Calculate marginal probability
 
@@ -353,7 +349,6 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
   summarize(P = sum(p)) %>% pull(P)
 ```
 
-
 ## Linear models
 
 ### Uniform model
@@ -376,8 +371,6 @@ ss %>%
   plot_model(n = sample.size)
 ```
 
-
-
 ### Linear model with no error
 
 ```{r}
@@ -393,14 +386,12 @@ ss %>%
   plot_model()
 ```
 
-
 $$
 \begin{aligned}
 p(x, y \mid M_1) & = p(x, y \mid y = 3 + x) \\
                  & = p(x, y \mid \beta_0 = 3, \beta_1 = 1, M_L) \quad M_L: y = \beta_0 + \beta_1 x
 \end{aligned}
 $$
-
 
 ```{r}
 ss %>% 
@@ -416,8 +407,6 @@ ss %>%
   plot_model(n = sample.size)
 ```
 
-
-
 ### Linear model with uniform error
 
 ```{r}
@@ -434,8 +423,6 @@ ss %>%
   plot_model()
 ```
 
-
-
 $$
 \begin{aligned}
 p(x, y \mid M_2) & = p(x, y \mid (y = 3 + x + e), e \in [-1, 1]) \\
@@ -446,7 +433,6 @@ p(x, y \mid M_2) & = p(x, y \mid (y = 3 + x + e), e \in [-1, 1]) \\
                  & M_{L+E_U}: y = \beta_0 + \beta_1 \cdot x + e \quad e \in [-s, s]
 \end{aligned}
 $$
-
 
 ```{r}
 ss %>% 
@@ -462,8 +448,6 @@ ss %>%
   plot_model(n = sample.size)
 ```
 
-
-
 ### Linear model with uniform error
 
 ```{r}
@@ -475,7 +459,6 @@ ss %>%
   plot_model()
 ```
 
-
 $$
 \begin{aligned}
 p(x, y \mid M_2) & = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Uniform}(\mu = 0, \sigma = 1)\bigr) \\
@@ -486,7 +469,6 @@ p(x, y \mid M_2) & = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Uniform}(\mu
                  & M_{L+E_\text{Uniform}}: y \sim \text{Uniform} \bigl(\mu = (\beta_0 + \beta_1 \cdot x), \sigma \bigr)
 \end{aligned}
 $$
-
 
 ```{r}
 ss %>%
@@ -550,7 +532,6 @@ p(x, y \mid M_2) & = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Cauchy}(\mu 
 \end{aligned}
 $$
 
-
 ```{r}
 ss %>% 
   mutate(
@@ -559,7 +540,6 @@ ss %>%
   mutate(p = p / sum(p)) %>% # normalize probability density to sum to 1
   plot_model(n = sample.size)
 ```
-
 
 ### Non-linear model with no error
 
@@ -675,7 +655,6 @@ ss %>%
   plot_model()
 ```
 
-
 $$
 \begin{aligned}
 p(x, y \mid M_1) & = p(x, y \mid y = 3 + x) \\
@@ -735,8 +714,6 @@ ss %>%
   mutate(p = if_else(M2, p / sum(p[M2]), 0)) %>%
   plot_model()
 ```
-
-
 
 $$
 \begin{aligned}
@@ -836,6 +813,35 @@ ss %>%
   filter(
     Y == 4) %>% 
   summarize(P = sum(p)) %>% pull(P)
+```
+
+## How to fit any dataset with a single parameter
+
+<https://arxiv.org/abs/1904.12320>
+
+> "*With four parameters I can fit an elephant and with five I can make him wiggle his trunk.*" from a discussion between physicists John von Neumann and Enrico Fermi
+
+[Von Neumann's elephant](https://en.wikipedia.org/wiki/Von_Neumann%27s_elephant)
+
+$$f(x) = \sin^2 (2^{x\tau} \arcsin \sqrt{\alpha})$$
+
+$\tau$ is a constant that controls the desired level of accuracy
+
+```{r}
+f <- function(x, tau, alpha) {
+  angle <- 2^(x * tau) * asin(sqrt(alpha))
+  sin(angle)^2
+}
+
+x <- seq(-1, 1, length.out = 1000)
+
+alpha <- 0.5
+
+y <- f(x, alpha = alpha, tau = 3)
+
+tibble(x = x, y = y) %>%
+  gf_point(y ~ x) %>%
+  gf_labs(x = "x", y = "f(x)")
 ```
 
 ## Print environment

@@ -145,6 +145,7 @@ window.Quarto = {
   <li><a href="#linear-model-with-uniform-error-2" id="toc-linear-model-with-uniform-error-2" class="nav-link" data-scroll-target="#linear-model-with-uniform-error-2">Linear model with uniform error</a></li>
   <li><a href="#linear-model-with-normal-error-1" id="toc-linear-model-with-normal-error-1" class="nav-link" data-scroll-target="#linear-model-with-normal-error-1">Linear model with normal error</a></li>
   </ul></li>
+  <li><a href="#how-to-fit-any-dataset-with-a-single-parameter" id="toc-how-to-fit-any-dataset-with-a-single-parameter" class="nav-link" data-scroll-target="#how-to-fit-any-dataset-with-a-single-parameter">How to fit any dataset with a single parameter</a></li>
   <li><a href="#print-environment" id="toc-print-environment" class="nav-link" data-scroll-target="#print-environment">Print environment</a></li>
   </ul>
 </nav>
@@ -1157,10 +1158,43 @@ p(x, y \mid M_2) &amp; = p\bigl(x, y \mid (y = 3 + x + e), e \sim \text{Normal}(
 </div>
 </section>
 </section>
+<section id="how-to-fit-any-dataset-with-a-single-parameter" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-fit-any-dataset-with-a-single-parameter">How to fit any dataset with a single parameter</h2>
+<p><a href="https://arxiv.org/abs/1904.12320" class="uri">https://arxiv.org/abs/1904.12320</a></p>
+<blockquote class="blockquote">
+<p>“<em>With four parameters I can fit an elephant and with five I can make him wiggle his trunk.</em>” from a discussion between physicists John von Neumann and Enrico Fermi</p>
+</blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Von_Neumann%27s_elephant">Von Neumann’s elephant</a></p>
+<p><span class="math display">\[f(x) = \sin^2 (2^{x\tau} \arcsin \sqrt{\alpha})\]</span></p>
+<p><span class="math inline">\(\tau\)</span> is a constant that controls the desired level of accuracy</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x, tau, alpha) {</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  angle <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">^</span>(x <span class="sc">*</span> tau) <span class="sc">*</span> <span class="fu">asin</span>(<span class="fu">sqrt</span>(alpha))</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sin</span>(angle)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">1000</span>)</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">f</span>(x, <span class="at">alpha =</span> alpha, <span class="at">tau =</span> <span class="dv">3</span>)</span>
+<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">x =</span> x, <span class="at">y =</span> y) <span class="sc">%&gt;%</span></span>
+<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_point</span>(y <span class="sc">~</span> x) <span class="sc">%&gt;%</span></span>
+<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"x"</span>, <span class="at">y =</span> <span class="st">"f(x)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="from_nutella_on_toast_to_statistical_models_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="print-environment" class="level2">
 <h2 class="anchored" data-anchor-id="print-environment">Print environment</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>─ Session info ───────────────────────────────────────────────────────────────
  setting  value

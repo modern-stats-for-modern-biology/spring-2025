@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -23,7 +23,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -34,7 +34,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -83,16 +83,42 @@ div.csl-indent {
 <script src="notes_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="notes_files/libs/quarto-html/anchor.min.js"></script>
 <link href="notes_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="notes_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="notes_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="notes_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="notes_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="notes_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-
+<link href="notes_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="notes_files/libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
 <script src="notes_files/libs/pagedtable-1.1/js/pagedtable.js"></script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -123,7 +149,9 @@ div.csl-indent {
   </div>
   
 
+
 </header>
+
 
 <section id="make-plot-of-posterior-estimate" class="level2">
 <h2 class="anchored" data-anchor-id="make-plot-of-posterior-estimate">Make plot of posterior estimate</h2>
@@ -132,7 +160,11 @@ div.csl-indent {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">y =</span> <span class="st">"p(θ | x)"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_theme</span>(<span class="fu">theme_minimal</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="notes_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="notes_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -290,7 +322,7 @@ y \sim \text{Bernoulli}(\pi = \frac{1}{1+e^{-(\beta_0 + \beta_1 x)}})
 </section>
 <section id="linear-regression-model-stan" class="level2">
 <h2 class="anchored" data-anchor-id="linear-regression-model-stan">Linear regression model: Stan</h2>
-<div class="cell" data-output.var="ex1" data-hash="notes_cache/html/unnamed-chunk-7_8dd669e8ae2a04d209f4dd50746bf409">
+<div class="cell" data-output.var="ex1">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode stan code-with-copy"><code class="sourceCode stan"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> { </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; N; </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">array</span>[N] <span class="dt">int</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>,<span class="kw">upper</span>=<span class="dv">1</span>&gt; y;</span>
@@ -318,7 +350,11 @@ y \sim \text{Bernoulli}(\pi = \frac{1}{1+e^{-(\beta_0 + \beta_1 x)}})
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(height <span class="sc">~</span> weight, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="notes_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="notes_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(height <span class="sc">~</span> weight, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -328,7 +364,7 @@ lm(formula = height ~ weight, data = d)
 
 Coefficients:
 (Intercept)       weight  
-       17.5          1.7  </code></pre>
+      21.22         1.68  </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -344,20 +380,9 @@ Coefficients:
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">ulam</span>(f, <span class="at">data =</span> d, <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Running MCMC with 4 parallel chains, with 1 thread(s) per chain...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 1 Rejecting initial value:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 1   Error evaluating the log probability at the initial value.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 1 Exception: normal_lpdf: Scale parameter is -0.0490912, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)
-Chain 1 Exception: normal_lpdf: Scale parameter is -0.0490912, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Chain 1 Iteration:   1 / 1000 [  0%]  (Warmup) 
+<pre><code>Running MCMC with 4 parallel chains, with 1 thread(s) per chain...
+
+Chain 1 Iteration:   1 / 1000 [  0%]  (Warmup) 
 Chain 1 Iteration: 100 / 1000 [ 10%]  (Warmup) 
 Chain 1 Iteration: 200 / 1000 [ 20%]  (Warmup) 
 Chain 1 Iteration: 300 / 1000 [ 30%]  (Warmup) 
@@ -377,8 +402,48 @@ Chain 1 Iteration: 1000 / 1000 [100%]  (Sampling) </code></pre>
 <pre><code>Chain 2   Error evaluating the log probability at the initial value.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Chain 2 Exception: normal_lpdf: Scale parameter is -1.56211, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)
-Chain 2 Exception: normal_lpdf: Scale parameter is -1.56211, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)</code></pre>
+<pre><code>Chain 2 Exception: normal_lpdf: Scale parameter is -0.535839, but must be positive! (in '/var/folders/mw/p6_qqf0j6dj3dsrhzbqwyt_r0000gn/T/RtmpfbsQDr/model-17c0f5f6348.stan', line 18, column 4 to column 34)
+Chain 2 Exception: normal_lpdf: Scale parameter is -0.535839, but must be positive! (in '/var/folders/mw/p6_qqf0j6dj3dsrhzbqwyt_r0000gn/T/RtmpfbsQDr/model-17c0f5f6348.stan', line 18, column 4 to column 34)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2 Rejecting initial value:</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2   Error evaluating the log probability at the initial value.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2 Exception: normal_lpdf: Scale parameter is -1.12288, but must be positive! (in '/var/folders/mw/p6_qqf0j6dj3dsrhzbqwyt_r0000gn/T/RtmpfbsQDr/model-17c0f5f6348.stan', line 18, column 4 to column 34)
+Chain 2 Exception: normal_lpdf: Scale parameter is -1.12288, but must be positive! (in '/var/folders/mw/p6_qqf0j6dj3dsrhzbqwyt_r0000gn/T/RtmpfbsQDr/model-17c0f5f6348.stan', line 18, column 4 to column 34)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2 Rejecting initial value:</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2   Error evaluating the log probability at the initial value.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2 Exception: normal_lpdf: Scale parameter is -1.19378, but must be positive! (in '/var/folders/mw/p6_qqf0j6dj3dsrhzbqwyt_r0000gn/T/RtmpfbsQDr/model-17c0f5f6348.stan', line 18, column 4 to column 34)
+Chain 2 Exception: normal_lpdf: Scale parameter is -1.19378, but must be positive! (in '/var/folders/mw/p6_qqf0j6dj3dsrhzbqwyt_r0000gn/T/RtmpfbsQDr/model-17c0f5f6348.stan', line 18, column 4 to column 34)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2 Rejecting initial value:</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2   Error evaluating the log probability at the initial value.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2 Exception: normal_lpdf: Scale parameter is -1.66524, but must be positive! (in '/var/folders/mw/p6_qqf0j6dj3dsrhzbqwyt_r0000gn/T/RtmpfbsQDr/model-17c0f5f6348.stan', line 18, column 4 to column 34)
+Chain 2 Exception: normal_lpdf: Scale parameter is -1.66524, but must be positive! (in '/var/folders/mw/p6_qqf0j6dj3dsrhzbqwyt_r0000gn/T/RtmpfbsQDr/model-17c0f5f6348.stan', line 18, column 4 to column 34)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2 Rejecting initial value:</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2   Error evaluating the log probability at the initial value.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Chain 2 Exception: normal_lpdf: Scale parameter is -0.384446, but must be positive! (in '/var/folders/mw/p6_qqf0j6dj3dsrhzbqwyt_r0000gn/T/RtmpfbsQDr/model-17c0f5f6348.stan', line 18, column 4 to column 34)
+Chain 2 Exception: normal_lpdf: Scale parameter is -0.384446, but must be positive! (in '/var/folders/mw/p6_qqf0j6dj3dsrhzbqwyt_r0000gn/T/RtmpfbsQDr/model-17c0f5f6348.stan', line 18, column 4 to column 34)</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Chain 2 Iteration:   1 / 1000 [  0%]  (Warmup) 
@@ -392,60 +457,8 @@ Chain 2 Iteration: 600 / 1000 [ 60%]  (Sampling)
 Chain 2 Iteration: 700 / 1000 [ 70%]  (Sampling) 
 Chain 2 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 2 Iteration: 900 / 1000 [ 90%]  (Sampling) 
-Chain 2 Iteration: 1000 / 1000 [100%]  (Sampling) </code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3 Rejecting initial value:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3   Error evaluating the log probability at the initial value.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3 Exception: normal_lpdf: Scale parameter is -0.444045, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)
-Chain 3 Exception: normal_lpdf: Scale parameter is -0.444045, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3 Rejecting initial value:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3   Error evaluating the log probability at the initial value.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3 Exception: normal_lpdf: Scale parameter is -1.2608, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)
-Chain 3 Exception: normal_lpdf: Scale parameter is -1.2608, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3 Rejecting initial value:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3   Error evaluating the log probability at the initial value.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3 Exception: normal_lpdf: Scale parameter is -0.0976867, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)
-Chain 3 Exception: normal_lpdf: Scale parameter is -0.0976867, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3 Rejecting initial value:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3   Error evaluating the log probability at the initial value.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3 Exception: normal_lpdf: Scale parameter is -0.585951, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)
-Chain 3 Exception: normal_lpdf: Scale parameter is -0.585951, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3 Rejecting initial value:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3   Error evaluating the log probability at the initial value.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 3 Exception: normal_lpdf: Scale parameter is -1.85803, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)
-Chain 3 Exception: normal_lpdf: Scale parameter is -1.85803, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Chain 3 Iteration:   1 / 1000 [  0%]  (Warmup) 
+Chain 2 Iteration: 1000 / 1000 [100%]  (Sampling) 
+Chain 3 Iteration:   1 / 1000 [  0%]  (Warmup) 
 Chain 3 Iteration: 100 / 1000 [ 10%]  (Warmup) 
 Chain 3 Iteration: 200 / 1000 [ 20%]  (Warmup) 
 Chain 3 Iteration: 300 / 1000 [ 30%]  (Warmup) 
@@ -456,20 +469,8 @@ Chain 3 Iteration: 600 / 1000 [ 60%]  (Sampling)
 Chain 3 Iteration: 700 / 1000 [ 70%]  (Sampling) 
 Chain 3 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 3 Iteration: 900 / 1000 [ 90%]  (Sampling) 
-Chain 3 Iteration: 1000 / 1000 [100%]  (Sampling) </code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 4 Rejecting initial value:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 4   Error evaluating the log probability at the initial value.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Chain 4 Exception: normal_lpdf: Scale parameter is -1.40808, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)
-Chain 4 Exception: normal_lpdf: Scale parameter is -1.40808, but must be positive! (in '/var/folders/t6/_00zz8yn7k3blc6cp556ys0h0000gn/T/RtmpBH9ZrJ/model-1100755b2697.stan', line 18, column 4 to column 34)</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Chain 4 Iteration:   1 / 1000 [  0%]  (Warmup) 
+Chain 3 Iteration: 1000 / 1000 [100%]  (Sampling) 
+Chain 4 Iteration:   1 / 1000 [  0%]  (Warmup) 
 Chain 4 Iteration: 100 / 1000 [ 10%]  (Warmup) 
 Chain 4 Iteration: 200 / 1000 [ 20%]  (Warmup) 
 Chain 4 Iteration: 300 / 1000 [ 30%]  (Warmup) 
@@ -481,7 +482,7 @@ Chain 4 Iteration: 700 / 1000 [ 70%]  (Sampling)
 Chain 4 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 4 Iteration: 900 / 1000 [ 90%]  (Sampling) 
 Chain 4 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 1 finished in 0.1 seconds.
+Chain 1 finished in 0.0 seconds.
 Chain 2 finished in 0.1 seconds.
 Chain 3 finished in 0.1 seconds.
 Chain 4 finished in 0.1 seconds.
@@ -490,12 +491,11 @@ All 4 chains finished successfully.
 Mean chain execution time: 0.1 seconds.
 Total execution time: 0.2 seconds.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">precis</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">precis</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mean"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["5.5%"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["94.5%"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["rhat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["ess_bulk"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"18.264","2":"5.15164","3":"10.54","4":"26.966","5":"1.006","6":"614.3","_rn_":"a"},{"1":"1.692","2":"0.07989","3":"1.56","4":"1.812","5":"1.005","6":"614.8","_rn_":"b"},{"1":"17.598","2":"1.24031","3":"15.70","4":"19.638","5":"1.010","6":"985.3","_rn_":"sigma"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mean"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["5.5%"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["94.5%"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["rhat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["ess_bulk"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"21.710","2":"4.37337","3":"14.620","4":"28.711","5":"1.005","6":"743.3","_rn_":"a"},{"1":"1.672","2":"0.06595","3":"1.565","4":"1.773","5":"1.005","6":"741.3","_rn_":"b"},{"1":"17.694","2":"1.22243","3":"15.844","4":"19.694","5":"1.006","6":"952.6","_rn_":"sigma"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -590,18 +590,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -633,11 +622,48 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -647,8 +673,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -660,7 +695,129 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -704,6 +861,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -729,6 +887,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -789,6 +973,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
