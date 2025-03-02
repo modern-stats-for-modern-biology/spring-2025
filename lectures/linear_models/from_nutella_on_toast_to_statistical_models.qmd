@@ -28,13 +28,18 @@ Once we have our sample space and probability distribution, we can:
 #| output: false
 library(tidyverse)
 library(ggformula)
+library(extraDistr)
 
 theme_set(theme_minimal())
 
 set.seed(666)
 ```
 
-## Helper function
+## Helper functions
+
+```{r}
+ddunif <- function(x, loc = 0, scale = 1) dunif(x, min = loc - scale, max = loc + scale)
+```
 
 ```{r}
 plot_model <- function(pdf, n = NULL) {

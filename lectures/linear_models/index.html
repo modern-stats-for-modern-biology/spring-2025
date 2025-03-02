@@ -119,6 +119,8 @@
   <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
     .reveal div.sourceCode {
@@ -234,13 +236,20 @@ Edoardo "Dado" Marcora
 <section id="take-homes-from-last-week" class="slide level2">
 <h2>Take homes from last week</h2>
 <ul>
+<li class="fragment"><p>Statistical models</p></li>
+<li class="fragment"><p>Bayesian inference: a simple example (globe tossing)</p></li>
+</ul>
+</section>
+<section id="statistical-inference" class="slide level2">
+<h2>Statistical inference</h2>
+<ul>
 <li class="fragment">Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</li>
 </ul>
 <div class="fragment">
 <p><span class="math display">\[
 \begin{array}{ll}
-1. &amp; \text{data (observations/measurements)} \\
-2. &amp; \text{model (DGP)} \\
+1. &amp; \text{data (measurements of observables)} \\
+2. &amp; \text{model of the DGP} \\
 \hline
 \therefore &amp; \text{unknown quantities} \\
 \end{array}
@@ -260,8 +269,786 @@ Edoardo "Dado" Marcora
           display:block!important;
       }</style></aside>
 </section>
-<section id="take-homes-from-last-week-1" class="slide level2">
-<h2>Take homes from last week</h2>
+<section id="statistical-inference-1" class="slide level2">
+<h2>Statistical inference</h2>
+<div>
+<ul>
+<li>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</li>
+</ul>
+</div>
+<p><span class="math display">\[
+\begin{array}{ll}
+1. &amp; \{ x_1, x_2, \ldots, x_n \} \\
+2. &amp; p(x \mid M) \\
+\hline
+\therefore &amp; \text{unknown quantities} \\
+\end{array}
+\]</span></p>
+</section>
+<section id="statistical-inference-2" class="slide level2">
+<h2>Statistical inference</h2>
+<div>
+<ul>
+<li>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</li>
+</ul>
+</div>
+<p><span class="math display">\[
+\begin{array}{ll}
+1. &amp; \{ (x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n) \} \\
+2. &amp; p(x, y \mid M) \\
+\hline
+\therefore &amp; \text{unknown quantities} \\
+\end{array}
+\]</span></p>
+</section>
+<section id="from-spreading-nutella-to-modeling-the-dgp" class="slide level2">
+<h2>From spreading Nutella to modeling the DGP</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/nutella-toast.webp" class="quarto-figure quarto-figure-center" height="250"></p>
+</figure>
+</div>
+<ul>
+<li class="fragment"><p>Imagine the toast as the sample space of all possible <span class="math inline">\((x, y)\)</span> outcomes</p></li>
+<li class="fragment"><p>Imagine spreading 1 Kg of Nutella (the total probability mass) on the toast</p></li>
+<li class="fragment"><p>Imagine the way the Nutella is spread on the toast as the probability distribution/statistical model</p></li>
+<li class="fragment"><p>The probability mass (or density) function <span class="math inline">\(p(x, y \mid M)\)</span> is a map of how thickly Nutella is spread on the toast—it shows the local mass (or density, <span class="math inline">\(p\)</span>) of Nutella at each square (or point) <span class="math inline">\((x, y)\)</span>, according to the spreading instructions (model assumptions, <span class="math inline">\(M\)</span>)</p></li>
+</ul>
+</section>
+<section id="from-spreading-nutella-to-modeling-the-dgp-1" class="slide level2">
+<h2>From spreading Nutella to modeling the DGP</h2>
+<p><span class="math display">\[p(x, y \mid M)\]</span></p>
+<ul>
+<li class="fragment"><p>Once we have the probability distribution, we can:</p>
+<ul>
+<li class="fragment"><p><strong>Infer</strong>: reason under uncertainty, i.e., calculate the probability of any proposition/event and estimate unknown quantities of interest</p></li>
+<li class="fragment"><p><strong>Predict</strong>: sample from it to generate data in accordance with the model</p></li>
+<li class="fragment"><p><strong>Explain</strong>: estimate causal effects (when combined with a causal model)</p></li>
+<li class="fragment"><p><strong>Decide</strong>: act under uncertainty (when combined with a decision model)</p></li>
+</ul></li>
+</ul>
+<aside class="notes">
+<p>A decision model outlines how uncertain outcomes relate to costs and benefits, enabling choices based on expected value/utility</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="helper-functions" class="slide level2">
+<h2>Helper functions</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># discretized and reparameterized probability density functions</span></span>
+<span id="cb1-2"><a href=""></a>ddunif <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">location =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">1</span>) <span class="fu">dunif</span>(x, location <span class="sc">-</span> scale, location <span class="sc">+</span> scale) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">dunif</span>(x, location <span class="sc">-</span> scale, location <span class="sc">+</span> scale))</span>
+<span id="cb1-3"><a href=""></a></span>
+<span id="cb1-4"><a href=""></a>ddnorm <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">location =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">1</span>) <span class="fu">dnorm</span>(x, location, scale) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">dnorm</span>(x, location, scale))</span>
+<span id="cb1-5"><a href=""></a></span>
+<span id="cb1-6"><a href=""></a>ddcauchy <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">location =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">1</span>) <span class="fu">dcauchy</span>(x, location, scale) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">dcauchy</span>(x, location, scale))</span>
+<span id="cb1-7"><a href=""></a></span>
+<span id="cb1-8"><a href=""></a><span class="co"># plot model helper</span></span>
+<span id="cb1-9"><a href=""></a>plot_model <span class="ot">&lt;-</span> <span class="cf">function</span>(df, <span class="at">n =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb1-10"><a href=""></a>  <span class="co"># df is expected to have X, Y, and p columns</span></span>
+<span id="cb1-11"><a href=""></a>  </span>
+<span id="cb1-12"><a href=""></a>  <span class="co"># count total number of cells</span></span>
+<span id="cb1-13"><a href=""></a>  n_cells <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df) </span>
+<span id="cb1-14"><a href=""></a>  </span>
+<span id="cb1-15"><a href=""></a>  <span class="co"># decide style based on total number of cells</span></span>
+<span id="cb1-16"><a href=""></a>  <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">100</span>) {</span>
+<span id="cb1-17"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="st">"black"</span></span>
+<span id="cb1-18"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb1-19"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb1-20"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">200</span>) {</span>
+<span id="cb1-21"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="st">"black"</span></span>
+<span id="cb1-22"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
+<span id="cb1-23"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb1-24"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">500</span>) {</span>
+<span id="cb1-25"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="st">"black"</span></span>
+<span id="cb1-26"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb1-27"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb1-28"><a href=""></a>  } <span class="cf">else</span> {</span>
+<span id="cb1-29"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb1-30"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb1-31"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb1-32"><a href=""></a>  }</span>
+<span id="cb1-33"><a href=""></a>  </span>
+<span id="cb1-34"><a href=""></a>  <span class="co"># if samples are requested, do not add text labels</span></span>
+<span id="cb1-35"><a href=""></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(n)) {</span>
+<span id="cb1-36"><a href=""></a>    text_size <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb1-37"><a href=""></a>  }</span>
+<span id="cb1-38"><a href=""></a>  </span>
+<span id="cb1-39"><a href=""></a>  <span class="co"># count number of distinct X and Y values for axis text sizing</span></span>
+<span id="cb1-40"><a href=""></a>  n_x <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(df<span class="sc">$</span>X))</span>
+<span id="cb1-41"><a href=""></a>  n_y <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(df<span class="sc">$</span>Y))</span>
+<span id="cb1-42"><a href=""></a>  </span>
+<span id="cb1-43"><a href=""></a>  axis_text_x_size <span class="ot">&lt;-</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">10</span>) { <span class="dv">12</span> } <span class="cf">else</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">20</span>) { <span class="dv">10</span> } <span class="cf">else</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">40</span>) { <span class="dv">8</span> } <span class="cf">else</span> { <span class="dv">6</span> }</span>
+<span id="cb1-44"><a href=""></a>  axis_text_y_size <span class="ot">&lt;-</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">10</span>) { <span class="dv">12</span> } <span class="cf">else</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">20</span>) { <span class="dv">10</span> } <span class="cf">else</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">40</span>) { <span class="dv">8</span> } <span class="cf">else</span> { <span class="dv">6</span> }</span>
+<span id="cb1-45"><a href=""></a>  </span>
+<span id="cb1-46"><a href=""></a>  max_x <span class="ot">&lt;-</span> <span class="fu">max</span>(df<span class="sc">$</span>X)</span>
+<span id="cb1-47"><a href=""></a>  max_y <span class="ot">&lt;-</span> <span class="fu">max</span>(df<span class="sc">$</span>Y)</span>
+<span id="cb1-48"><a href=""></a>  </span>
+<span id="cb1-49"><a href=""></a>  <span class="co"># determine the fill scale parameters based on n_cells:</span></span>
+<span id="cb1-50"><a href=""></a>  <span class="co"># dor small grids, the range of p is set higher (midpoint and limit are larger)</span></span>
+<span id="cb1-51"><a href=""></a>  <span class="co"># dor larger grids, the scale is "compressed" to better reflect small p values.</span></span>
+<span id="cb1-52"><a href=""></a>  <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">100</span>) {</span>
+<span id="cb1-53"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
+<span id="cb1-54"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb1-55"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">200</span>) {</span>
+<span id="cb1-56"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.125</span></span>
+<span id="cb1-57"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb1-58"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">500</span>) {</span>
+<span id="cb1-59"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.0625</span></span>
+<span id="cb1-60"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
+<span id="cb1-61"><a href=""></a>  } <span class="cf">else</span> {</span>
+<span id="cb1-62"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.03125</span></span>
+<span id="cb1-63"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="fl">0.125</span></span>
+<span id="cb1-64"><a href=""></a>  }</span>
+<span id="cb1-65"><a href=""></a>  </span>
+<span id="cb1-66"><a href=""></a>  fill_scale <span class="ot">&lt;-</span> <span class="fu">scale_fill_gradientn</span>(</span>
+<span id="cb1-67"><a href=""></a>    <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"chocolate4"</span>, <span class="st">"black"</span>),</span>
+<span id="cb1-68"><a href=""></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="dv">0</span>, mid_val, <span class="dv">1</span>),</span>
+<span id="cb1-69"><a href=""></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, limit_val),</span>
+<span id="cb1-70"><a href=""></a>    <span class="at">oob =</span> scales<span class="sc">::</span>squish</span>
+<span id="cb1-71"><a href=""></a>  )</span>
+<span id="cb1-72"><a href=""></a>  </span>
+<span id="cb1-73"><a href=""></a>  x_scale <span class="ot">&lt;-</span> <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, max_x))</span>
+<span id="cb1-74"><a href=""></a>  y_scale <span class="ot">&lt;-</span> <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, max_y))</span>
+<span id="cb1-75"><a href=""></a>  base_theme <span class="ot">&lt;-</span> <span class="fu">theme</span>(</span>
+<span id="cb1-76"><a href=""></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb1-77"><a href=""></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb1-78"><a href=""></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> axis_text_x_size, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-79"><a href=""></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> axis_text_y_size, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">r =</span> <span class="dv">2</span>, <span class="at">l =</span> <span class="dv">0</span>))</span>
+<span id="cb1-80"><a href=""></a>  )</span>
+<span id="cb1-81"><a href=""></a>  </span>
+<span id="cb1-82"><a href=""></a>  <span class="co"># visualize probability distribution as a tile plot</span></span>
+<span id="cb1-83"><a href=""></a>  plt <span class="ot">&lt;-</span> <span class="fu">gf_tile</span>(</span>
+<span id="cb1-84"><a href=""></a>    Y <span class="sc">~</span> X,</span>
+<span id="cb1-85"><a href=""></a>    <span class="at">data =</span> df,</span>
+<span id="cb1-86"><a href=""></a>    <span class="at">fill =</span> <span class="sc">~</span> p,</span>
+<span id="cb1-87"><a href=""></a>    <span class="at">color =</span> line_color,</span>
+<span id="cb1-88"><a href=""></a>    <span class="at">linewidth =</span> line_width) <span class="sc">%&gt;%</span></span>
+<span id="cb1-89"><a href=""></a>    <span class="fu">gf_refine</span>(</span>
+<span id="cb1-90"><a href=""></a>      fill_scale,</span>
+<span id="cb1-91"><a href=""></a>      x_scale,</span>
+<span id="cb1-92"><a href=""></a>      y_scale,</span>
+<span id="cb1-93"><a href=""></a>      base_theme) <span class="sc">+</span></span>
+<span id="cb1-94"><a href=""></a>    <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, max_x), <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, max_y)) <span class="sc">+</span></span>
+<span id="cb1-95"><a href=""></a>    <span class="fu">coord_fixed</span>(<span class="at">expand =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-96"><a href=""></a>  </span>
+<span id="cb1-97"><a href=""></a>  <span class="co"># optionally add text labels if text_size is applicable</span></span>
+<span id="cb1-98"><a href=""></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.na</span>(text_size)) {</span>
+<span id="cb1-99"><a href=""></a>    plt <span class="ot">&lt;-</span> plt <span class="sc">%&gt;%</span> <span class="fu">gf_text</span>(<span class="at">label =</span> <span class="sc">~</span> <span class="fu">sprintf</span>(<span class="st">"%0.4f"</span>, p), <span class="at">size =</span> text_size, <span class="at">alpha =</span> <span class="fl">0.75</span>)</span>
+<span id="cb1-100"><a href=""></a>  }</span>
+<span id="cb1-101"><a href=""></a>  </span>
+<span id="cb1-102"><a href=""></a>  <span class="co"># optionally overlay random sample points if n is provided</span></span>
+<span id="cb1-103"><a href=""></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(n)) {</span>
+<span id="cb1-104"><a href=""></a>    plt <span class="ot">&lt;-</span> plt <span class="sc">%&gt;%</span> <span class="fu">gf_point</span>(</span>
+<span id="cb1-105"><a href=""></a>      Y <span class="sc">~</span> X,</span>
+<span id="cb1-106"><a href=""></a>      <span class="co"># sample to generate data in accordance with the model</span></span>
+<span id="cb1-107"><a href=""></a>      <span class="at">data =</span> df <span class="sc">%&gt;%</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> n, <span class="at">weight_by =</span> p, <span class="at">replace =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb1-108"><a href=""></a>      <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb1-109"><a href=""></a>      <span class="at">color =</span> <span class="st">"red2"</span>,</span>
+<span id="cb1-110"><a href=""></a>      <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb1-111"><a href=""></a>      <span class="at">stroke =</span> <span class="dv">0</span></span>
+<span id="cb1-112"><a href=""></a>    )</span>
+<span id="cb1-113"><a href=""></a>  }</span>
+<span id="cb1-114"><a href=""></a>  </span>
+<span id="cb1-115"><a href=""></a>  <span class="fu">return</span>(plt)</span>
+<span id="cb1-116"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="uniform-probability-distribution" class="slide level2">
+<h2>Uniform probability distribution</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>ss <span class="ot">&lt;-</span></span>
+<span id="cb2-2"><a href=""></a>  <span class="fu">expand_grid</span>(</span>
+<span id="cb2-3"><a href=""></a>    <span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb2-4"><a href=""></a>    <span class="at">B =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span></span>
+<span id="cb2-6"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-7"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="co"># uniform probability distribution function</span></span>
+<span id="cb2-8"><a href=""></a></span>
+<span id="cb2-9"><a href=""></a>ss <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;">B</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="uniform-probability-distribution-1" class="slide level2">
+<h2>Uniform probability distribution</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>ss <span class="ot">&lt;-</span></span>
+<span id="cb3-2"><a href=""></a>  <span class="fu">expand_grid</span>(</span>
+<span id="cb3-3"><a href=""></a>    <span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb3-4"><a href=""></a>    <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span></span>
+<span id="cb3-6"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-7"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="co"># M0</span></span>
+<span id="cb3-8"><a href=""></a></span>
+<span id="cb3-9"><a href=""></a>ss <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ω</th>
+<th style="text-align: right;">X</th>
+<th style="text-align: right;">Y</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">⍵1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">⍵3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">⍵4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="uniform-spreading-of-nutella-on-a-toast" class="slide level2">
+<h2>Uniform spreading of Nutella on a toast</h2>
+<p><strong>Small toast</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-6-1.png" width="288"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="uniform-spreading-of-nutella-on-a-toast-1" class="slide level2">
+<h2>Uniform spreading of Nutella on a toast</h2>
+<p><strong>Medium toast</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-7-1.png" width="384"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="uniform-spreading-of-nutella-on-a-toast-2" class="slide level2">
+<h2>Uniform spreading of Nutella on a toast</h2>
+<p><strong>Large toast</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-8-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="calculate-joint-probability" class="slide level2">
+<h2>Calculate joint probability</h2>
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-9-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column">
+<p><span class="math display">\[P(X = 1, Y = 3 \mid M_0)\]</span></p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb7-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href=""></a>  <span class="fu">filter</span>(</span>
+<span id="cb7-6"><a href=""></a>    X <span class="sc">==</span> <span class="dv">1</span>, Y <span class="sc">==</span> <span class="dv">3</span></span>
+<span id="cb7-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-8"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-9"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0625</code></pre>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="calculate-marginal-probability" class="slide level2">
+<h2>Calculate marginal probability</h2>
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-11-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column">
+<p><span class="math display">\[P(X = 1 \mid M_0)\]</span></p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb9-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href=""></a>  <span class="fu">filter</span>(</span>
+<span id="cb9-6"><a href=""></a>    X <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb9-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-8"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-9"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.25</code></pre>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="calculate-marginal-probability-1" class="slide level2">
+<h2>Calculate marginal probability</h2>
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-13-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column">
+<p><span class="math display">\[P(Y = 3 \mid M_0)\]</span></p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb11-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a href=""></a>  <span class="fu">filter</span>(</span>
+<span id="cb11-6"><a href=""></a>    Y <span class="sc">==</span> <span class="dv">3</span></span>
+<span id="cb11-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-8"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-9"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.25</code></pre>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="calculate-conditional-probability" class="slide level2">
+<h2>Calculate conditional probability</h2>
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column">
+<p><span class="math display">\[P(Y = 3 \mid X = 1, M_0)\]</span></p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb13-4"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="calculate-conditional-probability-1" class="slide level2">
+<h2>Calculate conditional probability</h2>
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-17-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column">
+<p><span class="math display">\[P(Y = 3 \mid X = 1, M_0)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb14-4"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-6"><a href=""></a>    <span class="at">X1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb14-7"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div>
+</section>
+<section id="calculate-conditional-probability-2" class="slide level2">
+<h2>Calculate conditional probability</h2>
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-19-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column">
+<p><span class="math display">\[P(Y = 3 \mid X = 1, M_0)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb15-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-6"><a href=""></a>    <span class="at">X1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb15-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-9"><a href=""></a>    <span class="at">p =</span> <span class="fu">if_else</span>(X1, p <span class="sc">/</span> <span class="fu">sum</span>(p[X1]), <span class="dv">0</span>)</span>
+<span id="cb15-10"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div>
+</section>
+<section id="calculate-conditional-probability-3" class="slide level2">
+<h2>Calculate conditional probability</h2>
+<div class="columns">
+<div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-21-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column">
+<p><span class="math display">\[P(Y = 3 \mid X = 1, M_0)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb16-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-6"><a href=""></a>    <span class="at">X1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb16-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-9"><a href=""></a>    <span class="at">p =</span> <span class="fu">if_else</span>(X1, p <span class="sc">/</span> <span class="fu">sum</span>(p[X1]), <span class="dv">0</span>)</span>
+<span id="cb16-10"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-11"><a href=""></a>  <span class="fu">filter</span>(</span>
+<span id="cb16-12"><a href=""></a>    Y <span class="sc">==</span> <span class="dv">3</span></span>
+<span id="cb16-13"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-14"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-15"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.25</code></pre>
+</div>
+</div>
+</div></div>
+</section>
+<section id="uniform-model" class="slide level2">
+<h2>Uniform model</h2>
+<div class="columns">
+<div class="column">
+<p><span class="math inline">\(p(X = x, Y = y \mid M_0)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="co">#</span></span>
+<span id="cb18-2"><a href=""></a></span>
+<span id="cb18-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-5"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># M0</span></span>
+<span id="cb18-6"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="uniform-model-1" class="slide level2">
+<h2>Uniform model</h2>
+<div class="columns">
+<div class="column">
+<p><span class="math inline">\(p(x, y)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="co">#</span></span>
+<span id="cb19-2"><a href=""></a></span>
+<span id="cb19-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-5"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># M0</span></span>
+<span id="cb19-6"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-26-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="linear-model-with-no-error" class="slide level2">
+<h2>Linear model with no error</h2>
+<div class="columns">
+<div class="column">
+<p><span class="math inline">\(p(x, y \mid M_1)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb20-2"><a href=""></a></span>
+<span id="cb20-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-5"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># M0</span></span>
+<span id="cb20-6"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb20-7"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-8"><a href=""></a>    <span class="at">M1 =</span> (Y <span class="sc">==</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-9"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-10"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M1, p <span class="sc">/</span> <span class="fu">sum</span>(p[M1]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-11"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-29-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="linear-model-with-uniform-error" class="slide level2">
+<h2>Linear model with uniform error</h2>
+<div class="columns">
+<div class="column">
+<p><span class="math inline">\(p(x, y \mid M_2)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb21-2"><a href=""></a></span>
+<span id="cb21-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb21-5"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># M0</span></span>
+<span id="cb21-6"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb21-7"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb21-8"><a href=""></a>    <span class="at">M2 =</span> Y <span class="sc">%in%</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">seq</span>(<span class="sc">-</span>s, s))) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-9"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-10"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M2, p <span class="sc">/</span> <span class="fu">sum</span>(p[M2]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-11"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-31-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="linear-model-with-uniform-error-1" class="slide level2">
+<h2>Linear model with uniform error</h2>
+<div class="columns">
+<div class="column">
+<p><span class="math inline">\(p(x, y \mid M_2)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb22-2"><a href=""></a></span>
+<span id="cb22-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb22-5"><a href=""></a>    <span class="at">p =</span> <span class="fu">ddunif</span>(Y, <span class="at">location =</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X), <span class="at">scale =</span> s)) <span class="sc">%&gt;%</span> <span class="co"># M0, M2</span></span>
+<span id="cb22-6"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-33-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="linear-model-with-normal-gaussian-error" class="slide level2">
+<h2>Linear model with normal (Gaussian) error</h2>
+<div class="columns">
+<div class="column">
+<p><span class="math inline">\(p(x, y \mid M_3)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb23-2"><a href=""></a></span>
+<span id="cb23-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-5"><a href=""></a>    <span class="at">p =</span> <span class="fu">ddnorm</span>(Y, <span class="at">location =</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X), <span class="at">scale =</span> s)) <span class="sc">%&gt;%</span> <span class="co"># M0, M3</span></span>
+<span id="cb23-6"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-35-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="linear-model-with-cauchy-error" class="slide level2">
+<h2>Linear model with Cauchy error</h2>
+<div class="columns">
+<div class="column">
+<p><span class="math inline">\(p(x, y \mid M_4)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span>; e <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span>s, s)</span>
+<span id="cb24-2"><a href=""></a></span>
+<span id="cb24-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-5"><a href=""></a>    <span class="at">p =</span> <span class="fu">ddcauchy</span>(Y, <span class="at">location =</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X), <span class="at">scale =</span> s)) <span class="sc">%&gt;%</span> <span class="co"># M0, M4</span></span>
+<span id="cb24-6"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-37-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="statistical-inference-3" class="slide level2">
+<h2>Statistical inference</h2>
+<div>
+<ul>
+<li>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</li>
+</ul>
+</div>
+<p><span class="math display">\[
+\begin{array}{ll}
+1. &amp; \{ (x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n) \} \\
+2. &amp; p(x, y \mid M) \\
+\hline
+\therefore &amp; \text{unknown quantities} \\
+\end{array}
+\]</span></p>
+</section>
+<section id="statistical-inference-4" class="slide level2">
+<h2>Statistical inference</h2>
 <div>
 <ul>
 <li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
@@ -269,21 +1056,21 @@ Edoardo "Dado" Marcora
 </ul>
 </div>
 </section>
-<section id="take-homes-from-last-week-2" class="slide level2">
-<h2>Take homes from last week</h2>
+<section id="statistical-inference-5" class="slide level2">
+<h2>Statistical inference</h2>
 <div>
 <ul>
 <li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
 <li><p><strong>Data probability</strong> (a.k.a. <strong>likelihood</strong>):</p>
 <ul>
-<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given our knowledge of the DGP</li>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability distribution of the data given our knowledge of the DGP</li>
 </ul></li>
 </ul>
 </div>
 <ul>
 <li class="fragment"><p><strong>Inverse probability</strong>:</p>
 <ul>
-<li class="fragment"><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li class="fragment"><p><span class="math inline">\(p(M \mid x)\)</span> = probability distribution of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
 <li class="fragment"><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
 <li class="fragment"><p>The (more reasonable, limited) goal of statistical inference:</p>
 <ul>
@@ -292,14 +1079,14 @@ Edoardo "Dado" Marcora
 </ul></li>
 </ul>
 </section>
-<section id="take-homes-from-last-week-3" class="slide level2">
-<h2>Take homes from last week</h2>
+<section id="statistical-inference-6" class="slide level2">
+<h2>Statistical inference</h2>
 <div>
 <ul>
 <li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
 <li><p><strong>Data probability</strong> (a.k.a. <strong>likelihood</strong>):</p>
 <ul>
-<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given our knowledge of the DGP</li>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability distribution of the data given our knowledge of the DGP</li>
 </ul></li>
 </ul>
 </div>
@@ -307,7 +1094,7 @@ Edoardo "Dado" Marcora
 <ul>
 <li><p><strong>Inverse probability</strong>:</p>
 <ul>
-<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability distribution of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
 <li><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
 <li><p>The (more reasonable, limited) goal of statistical inference:</p>
 <ul>
@@ -322,14 +1109,14 @@ Edoardo "Dado" Marcora
 </ul>
 </div>
 </section>
-<section id="take-homes-from-last-week-4" class="slide level2">
-<h2>Take homes from last week</h2>
+<section id="statistical-inference-7" class="slide level2">
+<h2>Statistical inference</h2>
 <div>
 <ul>
 <li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
 <li><p><strong>Data probability</strong> (a.k.a. <strong>likelihood</strong>):</p>
 <ul>
-<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given our knowledge of the DGP</li>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability distribution of the data given our knowledge of the DGP</li>
 </ul></li>
 </ul>
 </div>
@@ -337,7 +1124,7 @@ Edoardo "Dado" Marcora
 <ul>
 <li><p><strong>Inverse probability</strong>:</p>
 <ul>
-<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability distribution of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
 <li><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
 <li><p>The (more reasonable, limited) goal of statistical inference:</p>
 <ul>
@@ -350,19 +1137,19 @@ Edoardo "Dado" Marcora
 <ul>
 <li><p><strong>Inferential probability</strong> (a.k.a. <strong>posterior</strong>):</p>
 <ul>
-<li><span class="math inline">\(p(\theta \mid x, M^*)\)</span> = probability of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span> and <span class="math inline">\(M^*\)</span></li>
+<li><span class="math inline">\(p(\theta \mid x, M^*)\)</span> = probability distribution of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span> and <span class="math inline">\(M^*\)</span></li>
 </ul></li>
 </ul>
 </div>
 </section>
-<section id="take-homes-from-last-week-5" class="slide level2">
-<h2>Take homes from last week</h2>
+<section id="statistical-inference-8" class="slide level2">
+<h2>Statistical inference</h2>
 <div>
 <ul>
 <li><p>Statistical inference is the process of using facts we know (the data) to learn about facts we don’t know (the DGP)</p></li>
 <li><p><strong>Data probability</strong> (a.k.a. <strong>likelihood</strong>):</p>
 <ul>
-<li><span class="math inline">\(p(x \mid M)\)</span> = probability of the data given our knowledge of the DGP</li>
+<li><span class="math inline">\(p(x \mid M)\)</span> = probability distribution of the data given our knowledge of the DGP</li>
 </ul></li>
 </ul>
 </div>
@@ -370,7 +1157,7 @@ Edoardo "Dado" Marcora
 <ul>
 <li><p><strong>Inverse probability</strong>:</p>
 <ul>
-<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
+<li><p><span class="math inline">\(p(M \mid x)\)</span> = probability distribution of <span class="math inline">\(M\)</span> given <span class="math inline">\(x\)</span></p></li>
 <li><p>The problem of statistical inference: It is impossible to calculate the inverse probability!</p></li>
 <li><p>The (more reasonable, limited) goal of statistical inference:</p>
 <ul>
@@ -383,7 +1170,7 @@ Edoardo "Dado" Marcora
 <ul>
 <li><p><strong>Inferential probability</strong> (a.k.a. <strong>posterior</strong>):</p>
 <ul>
-<li><span class="math inline">\(p(\theta \mid x)\)</span> = probability of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span> and <span class="math inline">\(M^*\)</span></li>
+<li><span class="math inline">\(p(\theta \mid x)\)</span> = probability distribution of <span class="math inline">\(\theta\)</span> given <span class="math inline">\(x\)</span> and <span class="math inline">\(M^*\)</span></li>
 </ul></li>
 </ul>
 </div>
@@ -525,15 +1312,15 @@ Edoardo "Dado" Marcora
 <section id="observations" class="slide level2">
 <h2>Observations</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-38-1.png" width="960" class="r-stretch"></section>
 <section id="model-say-line" class="slide level2">
 <h2>Model, say “line”!</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-39-1.png" width="960" class="r-stretch"></section>
 <section id="predictions" class="slide level2">
 <h2>Predictions</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-40-1.png" width="960" class="r-stretch"></section>
 <section id="estimand-estimator-and-estimate" class="slide level2">
 <h2>Estimand, estimator, and estimate</h2>
 <div class="columns">
@@ -747,7 +1534,7 @@ Edoardo "Dado" Marcora
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">dbinom</span>(x, <span class="at">prob =</span> π, <span class="at">size =</span> n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a><span class="fu">dbinom</span>(x, <span class="at">prob =</span> π, <span class="at">size =</span> n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -762,7 +1549,7 @@ x \sim \text{Binomial}(\pi, n)
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">dbeta</span>(π, <span class="at">shape1 =</span> α, <span class="at">shape2 =</span> β)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a><span class="fu">dbeta</span>(π, <span class="at">shape1 =</span> α, <span class="at">shape2 =</span> β)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
@@ -779,35 +1566,35 @@ x \sim \text{Binomial}(\pi, n)
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>π <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="dv">1</span>) <span class="co"># all possible values of π (estimand) for a four-sided globe</span></span>
-<span id="cb3-2"><a href=""></a>α <span class="ot">&lt;-</span> <span class="dv">1</span>; β <span class="ot">&lt;-</span> <span class="dv">1</span>                <span class="co"># parameters of the beta prior distribution (hyper-parameters)</span></span>
-<span id="cb3-3"><a href=""></a>x <span class="ot">&lt;-</span> <span class="dv">8</span>; n <span class="ot">&lt;-</span> <span class="dv">10</span>               <span class="co"># data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>π <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="dv">1</span>) <span class="co"># all possible values of π (estimand) for a four-sided globe</span></span>
+<span id="cb27-2"><a href=""></a>α <span class="ot">&lt;-</span> <span class="dv">1</span>; β <span class="ot">&lt;-</span> <span class="dv">1</span>                <span class="co"># parameters of the beta prior distribution (hyper-parameters)</span></span>
+<span id="cb27-3"><a href=""></a>x <span class="ot">&lt;-</span> <span class="dv">8</span>; n <span class="ot">&lt;-</span> <span class="dv">10</span>               <span class="co"># data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>likelihood <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(x, <span class="at">prob =</span> π, <span class="at">size =</span> n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>likelihood <span class="ot">&lt;-</span> <span class="fu">dbinom</span>(x, <span class="at">prob =</span> π, <span class="at">size =</span> n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>prior <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(π, <span class="at">shape1 =</span> α, <span class="at">shape2 =</span> β)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>prior <span class="ot">&lt;-</span> <span class="fu">dbeta</span>(π, <span class="at">shape1 =</span> α, <span class="at">shape2 =</span> β)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>posterior <span class="ot">&lt;-</span> prior <span class="sc">*</span> likelihood <span class="co"># unnormalized posterior</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>posterior <span class="ot">&lt;-</span> prior <span class="sc">*</span> likelihood <span class="co"># unnormalized posterior</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>posterior <span class="ot">&lt;-</span> posterior <span class="sc">/</span> <span class="fu">sum</span>(posterior) <span class="co"># normalize posterior</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>posterior <span class="ot">&lt;-</span> posterior <span class="sc">/</span> <span class="fu">sum</span>(posterior) <span class="co"># normalize posterior</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(π, prior, likelihood, posterior)</span>
-<span id="cb8-2"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(π, prior, likelihood, posterior)</span>
+<span id="cb32-2"><a href=""></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -832,14 +1619,14 @@ x \sim \text{Binomial}(\pi, n)
 <div class="column" style="width:38%;">
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
-<span id="cb9-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
+<span id="cb33-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-55-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -852,21 +1639,21 @@ x \sim \text{Binomial}(\pi, n)
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>|0.89 0.89| 
- 0.57  0.93 </code></pre>
+ 0.58  0.94 </code></pre>
 </div>
 </div>
 </div>
 </div><div class="column" style="width:38%;">
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
-<span id="cb11-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">29</span>, <span class="at">b =</span> <span class="dv">11</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
+<span id="cb35-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">29</span>, <span class="at">b =</span> <span class="dv">11</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-57-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -879,7 +1666,7 @@ x \sim \text{Binomial}(\pi, n)
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>|0.89 0.89| 
- 0.62  0.82 </code></pre>
+ 0.64  0.84 </code></pre>
 </div>
 </div>
 </div>
@@ -893,12 +1680,12 @@ x \sim \text{Binomial}(\pi, n)
 <div class="columns">
 <div class="column" style="width:38%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
-<span id="cb13-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
+<span id="cb37-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-59-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -909,14 +1696,14 @@ x \sim \text{Binomial}(\pi, n)
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>|0.89 0.89| 
- 0.57  0.93 </code></pre>
+ 0.58  0.94 </code></pre>
 </div>
 </div>
 </div><div class="column" style="width:38%;">
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">prop.test</span>(<span class="at">x =</span> <span class="dv">8</span>, <span class="at">n =</span> <span class="dv">10</span>, <span class="co"># [0.50, 0.95] with Yates' continuity correction</span></span>
-<span id="cb15-2"><a href=""></a>          <span class="at">conf.level =</span> .<span class="dv">89</span>, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href=""></a><span class="fu">prop.test</span>(<span class="at">x =</span> <span class="dv">8</span>, <span class="at">n =</span> <span class="dv">10</span>, <span class="co"># [0.50, 0.95] with Yates' continuity correction</span></span>
+<span id="cb39-2"><a href=""></a>          <span class="at">conf.level =</span> .<span class="dv">89</span>, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
@@ -944,12 +1731,12 @@ sample estimates:
 <div class="columns">
 <div class="column" style="width:38%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
-<span id="cb17-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>)) <span class="sc">%&gt;%</span> <span class="fu">gf_point</span>(<span class="at">x =</span> prop_test_ci<span class="sc">$</span>p, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"#357EC7"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_segment</span>(<span class="at">x =</span> prop_test_ci<span class="sc">$</span>lower, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">xend =</span> prop_test_ci<span class="sc">$</span>upper, <span class="at">yend =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"#357EC7"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href=""></a><span class="fu">globe_tossing_grid_approx</span>(<span class="at">w =</span> <span class="dv">8</span>, <span class="at">l =</span> <span class="dv">2</span>,</span>
+<span id="cb41-2"><a href=""></a>                          <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.007</span>)) <span class="sc">%&gt;%</span> <span class="fu">gf_point</span>(<span class="at">x =</span> prop_test_ci<span class="sc">$</span>p, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"#357EC7"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_segment</span>(<span class="at">x =</span> prop_test_ci<span class="sc">$</span>lower, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">xend =</span> prop_test_ci<span class="sc">$</span>upper, <span class="at">yend =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"#357EC7"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-27-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-63-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -960,13 +1747,13 @@ sample estimates:
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>|0.89 0.89| 
- 0.57  0.93 </code></pre>
+ 0.58  0.94 </code></pre>
 </div>
 </div>
 </div><div class="column" style="width:38%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">prop.test</span>(<span class="at">x =</span> <span class="dv">8</span>, <span class="at">n =</span> <span class="dv">10</span>, <span class="co"># [0.50, 0.95] with Yates' continuity correction</span></span>
-<span id="cb19-2"><a href=""></a>          <span class="at">conf.level =</span> .<span class="dv">89</span>, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href=""></a><span class="fu">prop.test</span>(<span class="at">x =</span> <span class="dv">8</span>, <span class="at">n =</span> <span class="dv">10</span>, <span class="co"># [0.50, 0.95] with Yates' continuity correction</span></span>
+<span id="cb43-2"><a href=""></a>          <span class="at">conf.level =</span> .<span class="dv">89</span>, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     1-sample proportions test without continuity correction
@@ -998,7 +1785,7 @@ sample estimates:
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-31-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-67-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1136,7 +1923,7 @@ sample estimates:
 p(X = x \mid \mu, \sigma, M^{\text{Normal}}) = \frac{1}{\sigma\sqrt{2\pi}} \cdot e^{-\frac{(x-\mu)^2}{2\sigma^2}}
 \]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">dnorm</span>(x, <span class="at">mean =</span> μ, <span class="at">sd =</span> σ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href=""></a><span class="fu">dnorm</span>(x, <span class="at">mean =</span> μ, <span class="at">sd =</span> σ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><span class="math display">\[
 x \sim \text{Normal}(\mu, \sigma)
@@ -1159,20 +1946,20 @@ E(x) = \mu \\
 <h2>The normal distribution as a statistical model</h2>
 <p>Monte Carlo simulation</p>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-33-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-69-1.png" width="960" class="r-stretch"></section>
 <section id="the-normal-distribution-as-a-statistical-model-2" class="slide level2">
 <h2>The normal distribution as a statistical model</h2>
 <p>Monte Carlo simulation</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>pos <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">sum</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="at">size =</span> <span class="dv">20</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb22-2"><a href=""></a></span>
-<span id="cb22-3"><a href=""></a><span class="fu">gf_density</span>(<span class="sc">~</span> pos, <span class="at">fill =</span> <span class="st">"skyblue4"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_dist</span>(<span class="st">"norm"</span>, <span class="at">sd =</span> <span class="fu">sd</span>(pos), <span class="at">color =</span> <span class="st">"black"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a>pos <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, <span class="fu">sum</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="at">size =</span> <span class="dv">20</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb46-2"><a href=""></a></span>
+<span id="cb46-3"><a href=""></a><span class="fu">gf_density</span>(<span class="sc">~</span> pos, <span class="at">fill =</span> <span class="st">"skyblue4"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_dist</span>(<span class="st">"norm"</span>, <span class="at">sd =</span> <span class="fu">sd</span>(pos), <span class="at">color =</span> <span class="st">"black"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-34-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-70-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1217,9 +2004,9 @@ E(x) = \mu \\
 <h2>Research question</h2>
 <p>What is the relationship between height and weight in humans?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="fu">data</span>(Howell1, <span class="at">package =</span> <span class="st">"rethinking"</span>)</span>
-<span id="cb23-2"><a href=""></a></span>
-<span id="cb23-3"><a href=""></a>Howell1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="fu">data</span>(Howell1, <span class="at">package =</span> <span class="st">"rethinking"</span>)</span>
+<span id="cb47-2"><a href=""></a></span>
+<span id="cb47-3"><a href=""></a>Howell1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -1235,13 +2022,13 @@ E(x) = \mu \\
 <h2>Research question</h2>
 <p>What is the relationship between height and weight in humans?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">gf_point</span>(weight <span class="sc">~</span> height, <span class="at">data =</span> Howell1, <span class="at">color =</span> <span class="sc">~</span>age)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href=""></a><span class="fu">gf_point</span>(weight <span class="sc">~</span> height, <span class="at">data =</span> Howell1, <span class="at">color =</span> <span class="sc">~</span>age)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-36-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-72-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1251,15 +2038,15 @@ E(x) = \mu \\
 <h2>Research question</h2>
 <p>What is the relationship between height and weight in <em>adult</em> humans?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>d <span class="ot">&lt;-</span> Howell1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(age <span class="sc">&gt;=</span> <span class="dv">18</span>)</span>
-<span id="cb25-2"><a href=""></a></span>
-<span id="cb25-3"><a href=""></a><span class="fu">gf_point</span>(weight <span class="sc">~</span> height, <span class="at">data =</span> d, <span class="at">color =</span> <span class="sc">~</span><span class="fu">factor</span>(male), <span class="at">show.legend =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a>d <span class="ot">&lt;-</span> Howell1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(age <span class="sc">&gt;=</span> <span class="dv">18</span>)</span>
+<span id="cb49-2"><a href=""></a></span>
+<span id="cb49-3"><a href=""></a><span class="fu">gf_point</span>(weight <span class="sc">~</span> height, <span class="at">data =</span> d, <span class="at">color =</span> <span class="sc">~</span><span class="fu">factor</span>(male), <span class="at">show.legend =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-37-1.png" width="576"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-73-1.png" width="576"></p>
 </figure>
 </div>
 </div>
@@ -1269,12 +2056,12 @@ E(x) = \mu \\
 <h2>Identify the estimand</h2>
 <p>The causal relationship between height (H) and weight (W) in adult humans</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>d <span class="ot">&lt;-</span> d <span class="sc">%&gt;%</span> <span class="fu">select</span>(weight, height) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">height_c =</span> height <span class="sc">-</span> <span class="fu">mean</span>(height))</span>
-<span id="cb26-2"><a href=""></a></span>
-<span id="cb26-3"><a href=""></a><span class="fu">gf_point</span>(weight <span class="sc">~</span> height, <span class="at">color =</span> <span class="st">"skyblue4"</span>, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"black"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href=""></a>d <span class="ot">&lt;-</span> d <span class="sc">%&gt;%</span> <span class="fu">select</span>(weight, height) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">height_c =</span> height <span class="sc">-</span> <span class="fu">mean</span>(height))</span>
+<span id="cb50-2"><a href=""></a></span>
+<span id="cb50-3"><a href=""></a><span class="fu">gf_point</span>(weight <span class="sc">~</span> height, <span class="at">color =</span> <span class="st">"skyblue4"</span>, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"black"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-38-1.png" width="576" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-74-1.png" width="576" class="r-stretch"></section>
 <section id="draw-a-causal-diagram" class="slide level2">
 <h2>Draw a causal diagram</h2>
 <p><strong>Directed acyclic graph (DAG)</strong>: A graphical representation of a causal model</p>
@@ -1302,7 +2089,7 @@ W = f(H, U)
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">lm</span>(<span class="at">formula =</span> weight <span class="sc">~</span> height, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href=""></a><span class="fu">lm</span>(<span class="at">formula =</span> weight <span class="sc">~</span> height, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
@@ -1402,7 +2189,7 @@ y_i = \beta_0 + \beta_1 x_i + \epsilon_i \\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-40-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-76-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1419,19 +2206,19 @@ y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu_i, \sigma) \\
 \sigma \sim \text{Uniform}(0,50) \\
 \]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>m1 <span class="ot">&lt;-</span> rethinking<span class="sc">::</span><span class="fu">quap</span>(<span class="fu">alist</span>( <span class="co"># model (likelihood and priors):</span></span>
-<span id="cb28-2"><a href=""></a>  y <span class="sc">~</span> <span class="fu">dnorm</span>(mu, sigma),       <span class="co">#   regression likelihood</span></span>
-<span id="cb28-3"><a href=""></a>  mu <span class="ot">&lt;-</span> b0 <span class="sc">+</span> b1<span class="sc">*</span>x,            <span class="co">#   linear predictor of mu</span></span>
-<span id="cb28-4"><a href=""></a>  b0 <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">178</span>,<span class="dv">20</span>),         <span class="co">#   prior of intercept</span></span>
-<span id="cb28-5"><a href=""></a>  b1 <span class="sc">~</span> <span class="fu">dlnorm</span>(<span class="dv">0</span>,<span class="dv">1</span>),           <span class="co">#   prior of slope</span></span>
-<span id="cb28-6"><a href=""></a>  sigma <span class="sc">~</span> <span class="fu">dunif</span>(<span class="dv">0</span>,<span class="dv">50</span>)         <span class="co">#   prior of sigma</span></span>
-<span id="cb28-7"><a href=""></a>), <span class="at">data =</span> <span class="fu">list</span>(<span class="at">y=</span>d<span class="sc">$</span>weight, <span class="at">x=</span>d<span class="sc">$</span>height_c)) <span class="co"># fit model to data</span></span>
-<span id="cb28-8"><a href=""></a></span>
-<span id="cb28-9"><a href=""></a>rethinking<span class="sc">::</span><span class="fu">precis</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href=""></a>m1 <span class="ot">&lt;-</span> rethinking<span class="sc">::</span><span class="fu">quap</span>(<span class="fu">alist</span>( <span class="co"># model (likelihood and priors):</span></span>
+<span id="cb52-2"><a href=""></a>  y <span class="sc">~</span> <span class="fu">dnorm</span>(mu, sigma),       <span class="co">#   regression likelihood</span></span>
+<span id="cb52-3"><a href=""></a>  mu <span class="ot">&lt;-</span> b0 <span class="sc">+</span> b1<span class="sc">*</span>x,            <span class="co">#   linear predictor of mu</span></span>
+<span id="cb52-4"><a href=""></a>  b0 <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">178</span>,<span class="dv">20</span>),         <span class="co">#   prior of intercept</span></span>
+<span id="cb52-5"><a href=""></a>  b1 <span class="sc">~</span> <span class="fu">dlnorm</span>(<span class="dv">0</span>,<span class="dv">1</span>),           <span class="co">#   prior of slope</span></span>
+<span id="cb52-6"><a href=""></a>  sigma <span class="sc">~</span> <span class="fu">dunif</span>(<span class="dv">0</span>,<span class="dv">50</span>)         <span class="co">#   prior of sigma</span></span>
+<span id="cb52-7"><a href=""></a>), <span class="at">data =</span> <span class="fu">list</span>(<span class="at">y=</span>d<span class="sc">$</span>weight, <span class="at">x=</span>d<span class="sc">$</span>height_c)) <span class="co"># fit model to data</span></span>
+<span id="cb52-8"><a href=""></a></span>
+<span id="cb52-9"><a href=""></a>rethinking<span class="sc">::</span><span class="fu">precis</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mean"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["5.5%"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["94.5%"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"45.007","2":"0.22540","3":"44.6468","4":"45.3672","_rn_":"b0"},{"1":"0.629","2":"0.02914","3":"0.5825","4":"0.6756","_rn_":"b1"},{"1":"4.229","2":"0.15935","3":"3.9743","4":"4.4837","_rn_":"sigma"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mean"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["5.5%"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["94.5%"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"45.0074","2":"0.22543","3":"44.6471","4":"45.3677","_rn_":"b0"},{"1":"0.6287","2":"0.02915","3":"0.5821","4":"0.6753","_rn_":"b1"},{"1":"4.2297","2":"0.15942","3":"3.9749","4":"4.4845","_rn_":"sigma"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -1446,11 +2233,11 @@ y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu_i, \sigma) \\
 <h2>Fit the statistical model to the data</h2>
 <p>Frequentist estimate is the maximum <strong>likelihood</strong> point estimate and confidence interval of the parameters <span class="math inline">\(\beta_0\)</span> (intercept) and <span class="math inline">\(\beta_1\)</span> (slope) given the data</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> weight <span class="sc">~</span> height_c, <span class="at">data =</span> d)</span>
-<span id="cb29-2"><a href=""></a></span>
-<span id="cb29-3"><a href=""></a>broom<span class="sc">::</span><span class="fu">tidy</span>(m2, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb29-4"><a href=""></a>  <span class="fu">select</span>(term, estimate, conf.low, conf.high, p.value) <span class="sc">%&gt;%</span></span>
-<span id="cb29-5"><a href=""></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(estimate, conf.low, conf.high, p.value), round, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href=""></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> weight <span class="sc">~</span> height_c, <span class="at">data =</span> d)</span>
+<span id="cb53-2"><a href=""></a></span>
+<span id="cb53-3"><a href=""></a>broom<span class="sc">::</span><span class="fu">tidy</span>(m2, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb53-4"><a href=""></a>  <span class="fu">select</span>(term, estimate, conf.low, conf.high, p.value) <span class="sc">%&gt;%</span></span>
+<span id="cb53-5"><a href=""></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(estimate, conf.low, conf.high, p.value), round, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1474,13 +2261,13 @@ y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu_i, \sigma) \\
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(m2, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"linearity"</span>, <span class="st">"normality"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(m2, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"linearity"</span>, <span class="st">"normality"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-43-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-79-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1502,13 +2289,13 @@ y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu_i, \sigma) \\
 </ul>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(m2, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"pp_check"</span>, <span class="st">"homogeneity"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(m2, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"pp_check"</span>, <span class="st">"homogeneity"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-44-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-80-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1529,11 +2316,11 @@ y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu_i, \sigma) \\
 </ul>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_autocorrelation</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_autocorrelation</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
-<pre><code>OK: Residuals appear to be independent and not autocorrelated (p = 0.184).</code></pre>
+<pre><code>OK: Residuals appear to be independent and not autocorrelated (p = 0.172).</code></pre>
 </div>
 </div>
 </section>
@@ -1605,6 +2392,7 @@ y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu_i, \sigma) \\
   <script src="index_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
   <script src="index_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="index_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="index_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
@@ -1626,7 +2414,8 @@ y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu_i, \sigma) \\
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
 'smaller': true,
  
         // Display controls in the bottom right corner
@@ -1797,7 +2586,7 @@ y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu_i, \sigma) \\
         },
 
         // reveal.js plugins
-        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
 
           RevealMath,
           RevealNotes,

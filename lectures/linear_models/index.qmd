@@ -14,6 +14,7 @@ format:
       warning: false
       fragment: true
     output-location: fragment
+    chalkboard: true
 df-print: paged
 bibliography: references.bib
 csl: nature-no-et-al.csl
@@ -38,13 +39,19 @@ set.seed(123)
 
 ## Take homes from last week
 
+-   Statistical models
+
+-   Bayesian inference: a simple example (globe tossing)
+
+## Statistical inference
+
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
 ::: fragment
 $$
 \begin{array}{ll}
-1. & \text{data (observations/measurements)} \\
-2. & \text{model (DGP)} \\
+1. & \text{data (measurements of observables)} \\
+2. & \text{model of the DGP} \\
 \hline
 \therefore & \text{unknown quantities} \\
 \end{array}
@@ -55,7 +62,879 @@ $$
 Inference is the process of using facts we know to learn about facts we do not know. A theory of inference gives assumptions necessary to get from the former to the latter, along with a definition for and summary of the resulting uncertainty. Any one theory of inference is neither right nor wrong, but merely an axiom that may or may not be useful. http://tinyurl.com/y3v8nfwh
 :::
 
-## Take homes from last week
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+:::
+
+$$
+\begin{array}{ll}
+1. & \{ x_1, x_2, \ldots, x_n \} \\
+2. & p(x \mid M) \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+:::
+
+$$
+\begin{array}{ll}
+1. & \{ (x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n) \} \\
+2. & p(x, y \mid M) \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+
+## From spreading Nutella to modeling the DGP
+
+![](images/nutella-toast.webp){fig-align="center" height="250"}
+
+-   Imagine the toast as the sample space of all possible $(x, y)$ outcomes
+
+-   Imagine spreading 1 Kg of Nutella (the total probability mass) on the toast
+
+-   Imagine the way the Nutella is spread on the toast as the probability distribution/statistical model
+
+-   The probability mass (or density) function $p(x, y \mid M)$ is a map of how thickly Nutella is spread on the toast—it shows the local mass (or density, $p$) of Nutella at each square (or point) $(x, y)$, according to the spreading instructions (model assumptions, $M$)
+
+## From spreading Nutella to modeling the DGP
+
+$$p(x, y \mid M)$$
+
+-   Once we have the probability distribution, we can:
+
+    -   **Infer**: reason under uncertainty, i.e., calculate the probability of any proposition/event and estimate unknown quantities of interest
+
+    -   **Predict**: sample from it to generate data in accordance with the model
+
+    -   **Explain**: estimate causal effects (when combined with a causal model)
+
+    -   **Decide**: act under uncertainty (when combined with a decision model)
+
+::: notes
+A decision model outlines how uncertain outcomes relate to costs and benefits, enabling choices based on expected value/utility
+:::
+
+## Helper functions
+
+```{r}
+#| output: false
+#| echo: false
+library(coursekata)
+
+theme_set(theme_minimal())
+
+set.seed(666)
+```
+
+```{r}
+#| output-location: default
+# discretized and reparameterized probability density functions
+ddunif <- function(x, location = 0, scale = 1) dunif(x, location - scale, location + scale) / sum(dunif(x, location - scale, location + scale))
+
+ddnorm <- function(x, location = 0, scale = 1) dnorm(x, location, scale) / sum(dnorm(x, location, scale))
+
+ddcauchy <- function(x, location = 0, scale = 1) dcauchy(x, location, scale) / sum(dcauchy(x, location, scale))
+
+# plot model helper
+plot_model <- function(df, n = NULL) {
+  # df is expected to have X, Y, and p columns
+  
+  # count total number of cells
+  n_cells <- nrow(df) 
+  
+  # decide style based on total number of cells
+  if (n_cells < 100) {
+    line_color  <- "black"
+    line_width  <- 0.5
+    text_size   <- 3
+  } else if (n_cells < 200) {
+    line_color  <- "black"
+    line_width  <- 0.3
+    text_size   <- 2
+  } else if (n_cells < 500) {
+    line_color  <- "black"
+    line_width  <- 0.2
+    text_size   <- NA
+  } else {
+    line_color  <- NA
+    line_width  <- 0
+    text_size   <- NA
+  }
+  
+  # if samples are requested, do not add text labels
+  if (!is.null(n)) {
+    text_size <- NA
+  }
+  
+  # count number of distinct X and Y values for axis text sizing
+  n_x <- length(unique(df$X))
+  n_y <- length(unique(df$Y))
+  
+  axis_text_x_size <- if(n_x < 10) { 12 } else if(n_x < 20) { 10 } else if(n_x < 40) { 8 } else { 6 }
+  axis_text_y_size <- if(n_y < 10) { 12 } else if(n_y < 20) { 10 } else if(n_y < 40) { 8 } else { 6 }
+  
+  max_x <- max(df$X)
+  max_y <- max(df$Y)
+  
+  # determine the fill scale parameters based on n_cells:
+  # dor small grids, the range of p is set higher (midpoint and limit are larger)
+  # dor larger grids, the scale is "compressed" to better reflect small p values.
+  if (n_cells < 100) {
+    mid_val   <- 0.25
+    limit_val <- 1
+  } else if (n_cells < 200) {
+    mid_val   <- 0.125
+    limit_val <- 0.5
+  } else if (n_cells < 500) {
+    mid_val   <- 0.0625
+    limit_val <- 0.25
+  } else {
+    mid_val   <- 0.03125
+    limit_val <- 0.125
+  }
+  
+  fill_scale <- scale_fill_gradientn(
+    colors = c("white", "chocolate4", "black"),
+    values = c(0, mid_val, 1),
+    limits = c(0, limit_val),
+    oob = scales::squish
+  )
+  
+  x_scale <- scale_x_continuous(breaks = seq(0, max_x))
+  y_scale <- scale_y_continuous(breaks = seq(0, max_y))
+  base_theme <- theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(size = axis_text_x_size, margin = margin(t = 2, b = 0)),
+    axis.text.y = element_text(size = axis_text_y_size, margin = margin(r = 2, l = 0))
+  )
+  
+  # visualize probability distribution as a tile plot
+  plt <- gf_tile(
+    Y ~ X,
+    data = df,
+    fill = ~ p,
+    color = line_color,
+    linewidth = line_width) %>%
+    gf_refine(
+      fill_scale,
+      x_scale,
+      y_scale,
+      base_theme) +
+    expand_limits(x = c(0, max_x), y = c(0, max_y)) +
+    coord_fixed(expand = FALSE)
+  
+  # optionally add text labels if text_size is applicable
+  if (!is.na(text_size)) {
+    plt <- plt %>% gf_text(label = ~ sprintf("%0.4f", p), size = text_size, alpha = 0.75)
+  }
+  
+  # optionally overlay random sample points if n is provided
+  if (!is.null(n)) {
+    plt <- plt %>% gf_point(
+      Y ~ X,
+      # sample to generate data in accordance with the model
+      data = df %>% slice_sample(n = n, weight_by = p, replace = TRUE), 
+      size = 4,
+      color = "red2",
+      alpha = 0.5,
+      stroke = 0
+    )
+  }
+  
+  return(plt)
+}
+```
+
+
+## Uniform probability distribution
+
+```{r}
+ss <-
+  expand_grid(
+    A = c(TRUE, FALSE),
+    B = c(TRUE, FALSE)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>%
+  select(Ω, everything()) %>% 
+  mutate(p = 1 / n()) # uniform probability distribution function
+
+ss %>% knitr::kable()
+```
+
+## Uniform probability distribution
+
+```{r}
+#| output-location: default
+ss <-
+  expand_grid(
+    X = c(0, 1),
+    Y = c(0, 1)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>%
+  select(Ω, everything()) %>% 
+  mutate(p = 1 / n()) # M0
+
+ss %>% knitr::kable()
+```
+
+## Uniform spreading of Nutella on a toast
+
+**Small toast**
+
+```{r}
+#| fig.width: 3
+#| fig.height: 3
+expand_grid(X = c(0, 1), Y = c(0, 1)) %>%
+  mutate(p = 1 / n()) %>%
+  plot_model()
+```
+
+## Uniform spreading of Nutella on a toast
+
+**Medium toast**
+
+```{r}
+#| fig.width: 4
+#| fig.height: 4
+expand_grid(X = c(0, 1, 2), Y = c(0, 1, 2)) %>%
+  mutate(p = 1 / n()) %>%
+  plot_model()
+```
+
+## Uniform spreading of Nutella on a toast
+
+**Large toast**
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(p = 1 / n()) %>%
+  plot_model()
+```
+
+
+## Calculate joint probability
+
+::: columns
+
+::: column
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(p = 1 / n()) %>%
+  plot_model()
+```
+
+:::
+
+::: column
+
+$$P(X = 1, Y = 3 \mid M_0)$$
+
+::: fragment
+```{r}
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  filter(
+    X == 1, Y == 3
+  ) %>% 
+  summarize(P = sum(p)) %>%
+  pull(P)
+```
+:::
+
+:::
+
+:::
+
+
+## Calculate marginal probability
+
+::: columns
+
+::: column
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(p = 1 / n()) %>%
+  plot_model()
+```
+
+:::
+
+::: column
+
+$$P(X = 1 \mid M_0)$$
+
+::: fragment
+```{r}
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  filter(
+    X == 1
+  ) %>% 
+  summarize(P = sum(p)) %>%
+  pull(P)
+```
+:::
+
+:::
+
+:::
+
+
+## Calculate marginal probability
+
+::: columns
+
+::: column
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(p = 1 / n()) %>%
+  plot_model()
+```
+:::
+
+::: column
+
+$$P(Y = 3 \mid M_0)$$
+
+::: fragment
+```{r}
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  filter(
+    Y == 3
+  ) %>% 
+  summarize(P = sum(p)) %>%
+  pull(P)
+```
+:::
+
+:::
+
+:::
+
+## Calculate conditional probability
+
+::: columns
+
+::: column
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(p = 1 / n()) %>%
+  plot_model()
+```
+:::
+
+::: column
+
+$$P(Y = 3 \mid X = 1, M_0)$$
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  )
+```
+:::
+
+:::
+
+:::
+
+## Calculate conditional probability
+
+::: columns
+
+::: column
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(p = 1 / n()) %>%
+  plot_model()
+```
+:::
+
+::: column
+
+$$P(Y = 3 \mid X = 1, M_0)$$
+
+```{r}
+#| eval: false
+#| output-location: default
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>% 
+  mutate(
+    X1 = (X == 1)
+  )
+```
+
+:::
+
+:::
+
+## Calculate conditional probability
+
+::: columns
+
+::: column
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(p = 1 / n()) %>%
+  mutate(
+    X1 = (X == 1)
+  ) %>% 
+  mutate(p = if_else(X1, p / sum(p[X1]), 0)) %>% 
+  plot_model()
+```
+:::
+
+::: column
+
+$$P(Y = 3 \mid X = 1, M_0)$$
+
+```{r}
+#| eval: false
+#| output-location: default
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  mutate(
+    X1 = (X == 1)
+  ) %>% 
+  mutate(
+    p = if_else(X1, p / sum(p[X1]), 0)
+  )
+```
+
+:::
+
+:::
+
+
+## Calculate conditional probability
+
+::: columns
+
+::: column
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(p = 1 / n()) %>%
+  mutate(
+    X1 = (X == 1)
+  ) %>% 
+  mutate(p = if_else(X1, p / sum(p[X1]), 0)) %>% 
+  plot_model()
+```
+:::
+
+::: column
+
+$$P(Y = 3 \mid X = 1, M_0)$$
+
+```{r}
+expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
+  mutate(
+    p = 1 / n() # M0
+  ) %>%
+  mutate(
+    X1 = (X == 1)
+  ) %>% 
+  mutate(
+    p = if_else(X1, p / sum(p[X1]), 0)
+  ) %>% 
+  filter(
+    Y == 3
+  ) %>%
+  summarize(P = sum(p)) %>%
+  pull(P)
+```
+
+:::
+
+:::
+
+
+## Uniform model
+
+::: columns
+
+::: column
+
+$p(X = x, Y = y \mid M_0)$
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| eval: false
+#| output-location: default
+#
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = 1 / n()) %>% # M0
+  plot_model()
+```
+
+:::
+
+::: column
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+#| output-location: default
+#
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = 1 / n()) %>% # M0
+  plot_model()
+```
+:::
+
+:::
+
+## Uniform model
+
+::: columns
+
+::: column
+
+$p(x, y)$
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| eval: false
+#| output-location: default
+#
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = 1 / n()) %>% # M0
+  plot_model()
+```
+
+:::
+
+::: column
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+#| output-location: default
+#
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = 1 / n()) %>% # M0
+  plot_model()
+```
+:::
+
+:::
+
+## Linear model with no error
+
+```{r}
+#| output: false
+#| echo: false
+sample.size <- 50
+grid.size <- 10
+
+b0 <- 3
+b1 <- 1
+s  <- 1
+e  <- seq(-s, s)
+```
+
+::: columns
+
+::: column
+
+$p(x, y \mid M_1)$
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| eval: false
+#| output-location: default
+b0 <- 3; b1 <- 1
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = 1 / n()) %>% # M0
+  rowwise() %>% 
+  mutate(
+    M1 = (Y == b0 + b1 * X)) %>% 
+  ungroup() %>%
+  mutate(p = if_else(M1, p / sum(p[M1]), 0)) %>%
+  plot_model()
+```
+
+:::
+
+::: column
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+#| output-location: default
+b0 <- 3; b1 <- 1
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = 1 / n()) %>% # M0
+  rowwise() %>% 
+  mutate(
+    M1 = (Y == b0 + b1 * X)) %>% 
+  ungroup() %>%
+  mutate(p = if_else(M1, p / sum(p[M1]), 0)) %>%
+  plot_model()
+```
+:::
+
+:::
+
+
+
+## Linear model with uniform error
+
+::: columns
+
+::: column
+
+$p(x, y \mid M_2)$
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| eval: false
+#| output-location: default
+b0 <- 3; b1 <- 1; s <- 1
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = 1 / n()) %>% # M0
+  rowwise() %>% 
+  mutate(
+    M2 = Y %in% (b0 + b1 * X + seq(-s, s))) %>% 
+  ungroup() %>%
+  mutate(p = if_else(M2, p / sum(p[M2]), 0)) %>%
+  plot_model()
+```
+
+:::
+
+::: column
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+#| output-location: default
+b0 <- 3; b1 <- 1; s <- 1
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = 1 / n()) %>% # M0
+  rowwise() %>% 
+  mutate(
+    M2 = Y %in% (b0 + b1 * X + seq(-s, s))) %>% 
+  ungroup() %>%
+  mutate(p = if_else(M2, p / sum(p[M2]), 0)) %>%
+  plot_model()
+```
+:::
+
+:::
+
+
+## Linear model with uniform error
+
+::: columns
+
+::: column
+
+$p(x, y \mid M_2)$
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| eval: false
+#| output-location: default
+b0 <- 3; b1 <- 1; s <- 1
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = ddunif(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M2
+  plot_model()
+```
+
+:::
+
+::: column
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+#| output-location: default
+b0 <- 3; b1 <- 1; s <- 1
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = ddunif(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M2
+  plot_model()
+```
+:::
+
+:::
+
+
+## Linear model with normal (Gaussian) error
+
+::: columns
+
+::: column
+
+$p(x, y \mid M_3)$
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| eval: false
+#| output-location: default
+b0 <- 3; b1 <- 1; s <- 1
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = ddnorm(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M3
+  plot_model()
+```
+
+:::
+
+::: column
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+#| output-location: default
+b0 <- 3; b1 <- 1; s <- 1
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = ddnorm(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M3
+  plot_model()
+```
+:::
+
+:::
+
+## Linear model with Cauchy error
+
+::: columns
+
+::: column
+
+$p(x, y \mid M_4)$
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| eval: false
+#| output-location: default
+b0 <- 3; b1 <- 1; s <- 1; e <- seq(-s, s)
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = ddcauchy(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M4
+  plot_model()
+```
+
+:::
+
+::: column
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+#| output-location: default
+b0 <- 3; b1 <- 1; s <- 1
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = ddcauchy(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M4
+  plot_model()
+```
+:::
+
+:::
+
+
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+:::
+
+$$
+\begin{array}{ll}
+1. & \{ (x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n) \} \\
+2. & p(x, y \mid M) \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+
+## Statistical inference
 
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
@@ -63,19 +942,19 @@ Inference is the process of using facts we know to learn about facts we do not k
 -   **Data probability** (a.k.a. **likelihood**):
 :::
 
-## Take homes from last week
+## Statistical inference
 
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
 -   **Data probability** (a.k.a. **likelihood**):
 
-    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+    -   $p(x \mid M)$ = probability distribution of the data given our knowledge of the DGP
 :::
 
 -   **Inverse probability**:
 
-    -   $p(M \mid x)$ = probability of $M$ given $x$
+    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
 
     -   The problem of statistical inference: It is impossible to calculate the inverse probability!
 
@@ -83,20 +962,20 @@ Inference is the process of using facts we know to learn about facts we do not k
 
         -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
 
-## Take homes from last week
+## Statistical inference
 
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
 -   **Data probability** (a.k.a. **likelihood**):
 
-    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+    -   $p(x \mid M)$ = probability distribution of the data given our knowledge of the DGP
 :::
 
 ::: nonincremental
 -   **Inverse probability**:
 
-    -   $p(M \mid x)$ = probability of $M$ given $x$
+    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
 
     -   The problem of statistical inference: It is impossible to calculate the inverse probability!
 
@@ -109,20 +988,20 @@ Inference is the process of using facts we know to learn about facts we do not k
 -   **Inferential probability** (a.k.a. **posterior**):
 :::
 
-## Take homes from last week
+## Statistical inference
 
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
 -   **Data probability** (a.k.a. **likelihood**):
 
-    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+    -   $p(x \mid M)$ = probability distribution of the data given our knowledge of the DGP
 :::
 
 ::: nonincremental
 -   **Inverse probability**:
 
-    -   $p(M \mid x)$ = probability of $M$ given $x$
+    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
 
     -   The problem of statistical inference: It is impossible to calculate the inverse probability!
 
@@ -134,23 +1013,23 @@ Inference is the process of using facts we know to learn about facts we do not k
 ::: nonincremental
 -   **Inferential probability** (a.k.a. **posterior**):
 
-    -   $p(\theta \mid x, M^*)$ = probability of $\theta$ given $x$ and $M^*$
+    -   $p(\theta \mid x, M^*)$ = probability distribution of $\theta$ given $x$ and $M^*$
 :::
 
-## Take homes from last week
+## Statistical inference
 
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 
 -   **Data probability** (a.k.a. **likelihood**):
 
-    -   $p(x \mid M)$ = probability of the data given our knowledge of the DGP
+    -   $p(x \mid M)$ = probability distribution of the data given our knowledge of the DGP
 :::
 
 ::: nonincremental
 -   **Inverse probability**:
 
-    -   $p(M \mid x)$ = probability of $M$ given $x$
+    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
 
     -   The problem of statistical inference: It is impossible to calculate the inverse probability!
 
@@ -162,7 +1041,7 @@ Inference is the process of using facts we know to learn about facts we do not k
 ::: nonincremental
 -   **Inferential probability** (a.k.a. **posterior**):
 
-    -   $p(\theta \mid x)$ = probability of $\theta$ given $x$ and $M^*$
+    -   $p(\theta \mid x)$ = probability distribution of $\theta$ given $x$ and $M^*$
 :::
 
 ## Bayes' theorem for statistical inference
@@ -363,8 +1242,6 @@ datasauRus::datasaurus_dozen %>%
 -   estimand = conclusion/hypothesis
 -   data and probability model of the DGP = premises/evidence/assumptions
 :::
-
-
 
 ## Statistical inference workflow
 
@@ -1479,7 +2356,6 @@ performance::check_autocorrelation(m2)
 -   All models say only what they are told to say!
 
 -   Test before you est(imate)!
-
 
 ## The taxonomy of estimands
 
