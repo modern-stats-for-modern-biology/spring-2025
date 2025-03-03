@@ -20,15 +20,9 @@ bibliography: references.bib
 csl: nature-no-et-al.csl
 ---
 
-## Setup environment
-
 ```{r}
-#| output: false
-#| output-location: default
+#| include: false
 library(coursekata)
-library(rethinking)
-library(rstanarm)
-library(performance)
 
 theme_set(theme_bw())
 
@@ -244,7 +238,7 @@ The **estimand** is a *quantity of interest* that is unknown
 
 ## Identify the estimand
 
-The **estimand** is the target of statistical inference (unknown quantity)
+The **estimand** is the inferential target of the study
 
 ![](images/Slide3.png)
 
@@ -272,7 +266,7 @@ A **statistical model** (i.e., a probability distribution of one or more random 
 
 ## Fit the model to the data
 
-Fit the *statistical model* to the *data* using an **estimator** (i.e., an inference algorithm) in order to obtain an **estimate** of the *estimand*
+Condition the *statistical model* to the *data* using an **estimator** (i.e., an inference algorithm) in order to obtain an **estimate** of the *estimand*
 
 ![](images/Slide7.png)
 
@@ -320,7 +314,7 @@ datasauRus::datasaurus_dozen %>%
   facet_wrap(~ dataset, ncol = 4, nrow = 3)
 ```
 
-## Model, say "line"!
+## Model, say "*line*"!
 
 ```{r}
 #| echo: false
@@ -334,7 +328,7 @@ datasauRus::datasaurus_dozen %>%
   facet_wrap(~ dataset, ncol = 4, nrow = 3)
 ```
 
-## Predictions
+## Model says: "*line*"! (predictions)
 
 ```{r}
 #| echo: false
@@ -986,9 +980,7 @@ Sir Ronald Aylmer Fisher (1890-1962), mathematical statistician and geneticist
 :::
 
 ::: {.column .fragment width="65%"}
-"*...Personally, the writer prefers to set a low standard of significance at the 5 per cent point, and ignore entirely all results which fails to reach this level. A scientific fact should be regarded as experimentally established only if a properly designed experiment rarely fails to give this level of significance...*"
-
-[Fisher RA 1926](https://doi.org/10.23637/rothamsted.8v61q)
+>"*...Personally, the writer prefers to set a low standard of significance at the 5 per cent point, and ignore entirely all results which fails to reach this level. A scientific fact should be regarded as experimentally established only if a properly designed experiment rarely fails to give this level of significance...*"  —  [Fisher RA 1926](https://doi.org/10.23637/rothamsted.8v61q)
 :::
 :::::
 
@@ -1438,11 +1430,13 @@ df %>%
 
 ::: {.column width="40%"}
 $$
-y_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(\mu_i, \sigma) \\[.5em]
-\mu_i = \beta_0 + \beta_1 x_i \\[.5em]
-\beta_0 \sim \text{Norm}(160,30) \\[.5em]
-\beta_1 \sim \text{Unif}(0,1) \\[.5em]
-\sigma \sim \text{Unif}(0,10)
+\begin{aligned}
+y_i & \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma), \\
+\mu_i & = \beta_0 + \beta_1 x_i, \\
+\beta_0 & \sim \text{Norm}(160, 30), \\
+\beta_1 & \sim \text{Unif}(0, 1), \\
+\sigma & \sim \text{Unif}(0, 10).
+\end{aligned}
 $$
 :::
 
@@ -1643,16 +1637,6 @@ A decision model outlines how uncertain outcomes relate to costs and benefits, e
 :::
 
 ## Helper functions
-
-```{r}
-#| output: false
-#| echo: false
-library(coursekata)
-
-theme_set(theme_minimal())
-
-set.seed(666)
-```
 
 ```{r}
 #| output-location: default
