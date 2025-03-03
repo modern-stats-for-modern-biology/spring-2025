@@ -1,6 +1,6 @@
 ---
 title: "Statistical inference"
-subtitle: "Data analysis workflow using linear models"
+subtitle: "Data analysis workflow and linear models"
 date: 2025-03-03
 author: Edoardo \"Dado\" Marcora
 format:
@@ -948,7 +948,7 @@ for (i in 1:num_simulations) {
         1.  If the *P*-value is below $\alpha$, we **reject** $H_0$ (though this does not prove it false)
         2.  Otherwise, we **fail to reject** $H_0$ (which does not prove it true)
     -   This approach requires specifying an alternative hypothesis $H_1$ and Type I/II error rates, and planning sample size for sufficient [statistical power](https://en.wikipedia.org/wiki/Power_of_a_test) (e.g., $1 - \beta = 0.80$)
-    -   In neuroscience, studies suffer from low power (8–31% [@Button2013]), which undermines the reliability of these decisions and inflates both Type I and Type II error rates
+    -   In neuroscience, studies suffer from low power (8–31% [@Button2013]), which undermines the reliability of these decisions by inflating both Type I and Type II error rates
     
 ::: notes
 `-log(0.05, 2) = 4.32` bits of evidence against the null hypothesis
@@ -1076,6 +1076,8 @@ A scientific fact should be regarded as experimentally established only if a pro
     -   [Interpreting P-values](https://www.nature.com/articles/nmeth.4210)
 :::
 
+# Data analysis using general linear models
+
 ## Statistical models
 
 ::::::: columns
@@ -1132,8 +1134,8 @@ $$
 
 ::: fragment
 $$
-E(x) = \mu \\
-\text{Var}(x) = \sigma^2
+E(X) = \mu \\
+\text{Var}(X) = \sigma^2
 $$
 :::
 ::::
@@ -1313,19 +1315,17 @@ of the causal linear association between height (H) and weight (W) in adult huma
 
 -   $\text{DATA} = \text{SIGNAL} + \text{NOISE}$
 
--   $y_i = \beta_0 + \beta_1 x_i + \epsilon_i$
-
  
 
 -   $\text{WEIGHT (W)} = \text{HEIGHT (H)} + \text{OTHER STUFF (U)}$
 
-::: fragment
-```{r}
-#| eval: false
-#| output-location: default
-lm(formula = weight ~ height, data = d)
-```
-:::
+-   $W = f(H, U)$
+
+ 
+
+-   $y_i = (\beta_0 + \beta_1 \cdot x_i) + \epsilon_i$ [$\quad \epsilon_i \sim \text{Norm}(0, \sigma)$]{.fragment}
+
+-   $y_i \sim \text{Norm}(\mu_i = (\beta_0 + \beta_1 \cdot x_i), \sigma)$
 
 ## Regression (variate-covariate) models
 
