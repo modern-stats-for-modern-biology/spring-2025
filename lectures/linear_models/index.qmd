@@ -1,6 +1,6 @@
 ---
 title: "Statistical inference"
-subtitle: "Data analysis workflow and linear models"
+subtitle: "Data analysis using linear models"
 date: 2025-03-03
 author: Edoardo \"Dado\" Marcora
 format:
@@ -1076,7 +1076,7 @@ A scientific fact should be regarded as experimentally established only if a pro
     -   [Interpreting P-values](https://www.nature.com/articles/nmeth.4210)
 :::
 
-# Data analysis using general linear models
+# Data analysis using linear models
 
 ## Statistical models
 
@@ -1396,12 +1396,12 @@ $$
 
 ::: fragment
 $$
-y_i = \beta_0 + \beta_1 x_i + \epsilon_i \\
+y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \\
 \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)
 $$
 :::
 
--   $\beta_0 + \beta_1 x_i$ is the **deterministic component** of the general linear model, and
+-   $\beta_0 + \beta_1 \cdot x_i$ is the **deterministic component** of the general linear model, and
 
 -   $\epsilon_i$ is the **stochastic component** of the general linear model
 
@@ -1411,9 +1411,9 @@ of the causal linear association between height (H) and weight (W) in adult huma
 
 -   $\text{WEIGHT (W)} = \text{HEIGHT (H)} + \text{OTHER STUFF (U)}$
 
--   $y_i = \beta_0 + \beta_1 x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$
+-   $y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$
 
--   $y_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(\mu_i, \sigma) \quad \quad \mu_i = \beta_0 + \beta_1 x_i$
+-   $y_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(\mu_i, \sigma) \quad \quad \mu_i = \beta_0 + \beta_1 \cdot x_i$
 
 ::: fragment
 ```{r}
@@ -1450,7 +1450,7 @@ df %>%
 $$
 \begin{aligned}
 y_i & \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma), \\
-\mu_i & = \beta_0 + \beta_1 x_i, \\
+\mu_i & = \beta_0 + \beta_1 \cdot x_i, \\
 \beta_0 & \sim \text{Norm}(160, 30), \\
 \beta_1 & \sim \text{Unif}(0, 1), \\
 \sigma & \sim \text{Unif}(0, 10).
@@ -1529,7 +1529,7 @@ modelsummary::msummary(list("bayes" = bayes.lm.fit, "mle" = mle.lm.fit))
 
 -   **Linearity of linear predictor**
 
-    -   $\mu_i = \beta_0 + \beta_1 x_i$
+    -   $\beta_0 + \beta_1 \cdot x_i$
 
 -   **Normality**, **homoscedasticity** and **independence of errors**
 
@@ -1547,7 +1547,7 @@ performance::check_model(mle.lm.fit, check = c("linearity", "normality"))
 ::: nonincremental
 -   **Linearity of linear predictor**
 
-    -   $\mu_i = \beta_0 + \beta_1 x_i$
+    -   $\beta_0 + \beta_1 \cdot x_i$
 
 -   **Normality**, **homoscedasticity** and **independence of errors**
 
@@ -1564,7 +1564,7 @@ performance::check_model(mle.lm.fit, check = c("homogeneity"))
 ::: nonincremental
 -   **Linearity of linear predictor**
 
-    -   $\mu_i = \beta_0 + \beta_1 x_i$
+    -   $\beta_0 + \beta_1 \cdot x_i$
 
 -   **Normality**, **homoscedasticity** and **independence of errors**
 
