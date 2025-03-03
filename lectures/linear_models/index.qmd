@@ -35,14 +35,6 @@ theme_set(theme_minimal())
 set.seed(123)
 ```
 
-##  {background-image="images/last_week_tonight.jpg" background-size="contain"}
-
-## Take homes from last week
-
--   Statistical models
-
--   Bayesian inference: a simple example (globe tossing)
-
 ## Statistical inference
 
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
@@ -81,12 +73,122 @@ $$
 
 ::: nonincremental
 -   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data model** (a.k.a. **process model** or **likelihood**):
+:::
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data model** (a.k.a. **process model** or **likelihood**):
+
+    -   $p(x \mid M)$ = probability distribution of data $x$ given model assumptions $M$
+:::
+
+-   **Inverse model**:
+
+    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data model** (a.k.a. **process model** or **likelihood**):
+
+    -   $p(x \mid M)$ = probability distribution of data $x$ given model assumptions $M$
+:::
+
+::: nonincremental
+-   **Inverse model**:
+
+    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+:::
+
+::: nonincremental
+-   **Inferential model** (a.k.a. **posterior**):
+:::
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data model** (a.k.a. **process model** or **likelihood**):
+
+    -   $p(x \mid M)$ = probability distribution of data $x$ given model assumptions $M$
+:::
+
+::: nonincremental
+-   **Inverse model**:
+
+    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+:::
+
+::: nonincremental
+-   **Inferential model** (a.k.a. **posterior**):
+
+    -   $p(\theta \mid x, M^*)$ = probability distribution of $\theta$ given $x$ and $M^*$
+:::
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+
+-   **Data model** (a.k.a. **process model** or **likelihood**):
+
+    -   $p(x \mid M)$ = probability distribution of data $x$ given model assumptions $M$
+:::
+
+::: nonincremental
+-   **Inverse model**:
+
+    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
+
+    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
+
+    -   The (more reasonable, limited) goal of statistical inference:
+
+        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
+:::
+
+::: nonincremental
+-   **Inferential model** (a.k.a. **posterior**):
+
+    -   $p(\theta \mid x)$ = probability distribution of $\theta$ given $x$ and $M^*$
+:::
+
+## Statistical inference
+
+::: nonincremental
+-   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
 :::
 
 $$
 \begin{array}{ll}
 1. & \{ (x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n) \} \\
-2. & p(x, y \mid M) \\
+2. & p(x, y \mid \theta, M^*) \\
 \hline
 \therefore & \text{unknown quantities} \\
 \end{array}
@@ -108,11 +210,11 @@ $$
 
 $$p(x, y \mid M)$$
 
--   Once we have the probability distribution, we can:
+-   With a probability distribution, we can:
 
-    -   **Infer**: reason under uncertainty, i.e., calculate the probability of any proposition/event and estimate unknown quantities of interest
+    -   **Infer**: reason under uncertainty (calculate the probability of any proposition/event)
 
-    -   **Predict**: sample from it to generate data in accordance with the model
+    -   **Predict**: generate data (simulations/predictions) in accordance with the model
 
     -   **Explain**: estimate causal effects (when combined with a causal model)
 
@@ -137,13 +239,11 @@ set.seed(666)
 ```{r}
 #| output-location: default
 # discretized and reparameterized probability density functions
-ddunif <- function(x, location = 0, scale = 1) dunif(x, location - scale, location + scale) / sum(dunif(x, location - scale, location + scale))
-
-ddnorm <- function(x, location = 0, scale = 1) dnorm(x, location, scale) / sum(dnorm(x, location, scale))
-
+ddunif   <- function(x, location = 0, scale = 1) dunif(x, location - scale, location + scale) / sum(dunif(x, location - scale, location + scale))
+ddnorm   <- function(x, location = 0, scale = 1) dnorm(x, location, scale) / sum(dnorm(x, location, scale))
 ddcauchy <- function(x, location = 0, scale = 1) dcauchy(x, location, scale) / sum(dcauchy(x, location, scale))
 
-# plot model helper
+# plot probability distribution as a tile plot
 plot_model <- function(df, n = NULL) {
   # df is expected to have X, Y, and p columns
   
@@ -254,7 +354,6 @@ plot_model <- function(df, n = NULL) {
 }
 ```
 
-
 ## Uniform probability distribution
 
 ```{r}
@@ -267,6 +366,13 @@ ss <-
   mutate(p = 1 / n()) # uniform probability distribution function
 
 ss %>% knitr::kable()
+```
+
+```{r}
+#| output: false
+#| echo: false
+sample.size <- 50
+grid.size <- 10
 ```
 
 ## Uniform probability distribution
@@ -320,12 +426,10 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
   plot_model()
 ```
 
-
 ## Calculate joint probability
 
-::: columns
-
-::: column
+:::::: columns
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -334,11 +438,9 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
   mutate(p = 1 / n()) %>%
   plot_model()
 ```
-
 :::
 
-::: column
-
+:::: {.column width="60%"}
 $$P(X = 1, Y = 3 \mid M_0)$$
 
 ::: fragment
@@ -354,17 +456,13 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
   pull(P)
 ```
 :::
-
-:::
-
-:::
-
+::::
+::::::
 
 ## Calculate marginal probability
 
-::: columns
-
-::: column
+:::::: columns
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -373,11 +471,9 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
   mutate(p = 1 / n()) %>%
   plot_model()
 ```
-
 :::
 
-::: column
-
+:::: {.column width="60%"}
 $$P(X = 1 \mid M_0)$$
 
 ::: fragment
@@ -393,17 +489,13 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
   pull(P)
 ```
 :::
-
-:::
-
-:::
-
+::::
+::::::
 
 ## Calculate marginal probability
 
-::: columns
-
-::: column
+:::::: columns
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -414,8 +506,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
 ```
 :::
 
-::: column
-
+:::: {.column width="60%"}
 $$P(Y = 3 \mid M_0)$$
 
 ::: fragment
@@ -431,16 +522,13 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
   pull(P)
 ```
 :::
-
-:::
-
-:::
+::::
+::::::
 
 ## Calculate conditional probability
 
-::: columns
-
-::: column
+:::::: columns
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -451,8 +539,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
 ```
 :::
 
-::: column
-
+:::: {.column width="60%"}
 $$P(Y = 3 \mid X = 1, M_0)$$
 
 ::: fragment
@@ -465,16 +552,13 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
   )
 ```
 :::
-
-:::
-
-:::
+::::
+::::::
 
 ## Calculate conditional probability
 
-::: columns
-
-::: column
+::::: columns
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -485,8 +569,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
 ```
 :::
 
-::: column
-
+::: {.column width="60%"}
 $$P(Y = 3 \mid X = 1, M_0)$$
 
 ```{r}
@@ -500,16 +583,13 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
     X1 = (X == 1)
   )
 ```
-
 :::
-
-:::
+:::::
 
 ## Calculate conditional probability
 
-::: columns
-
-::: column
+::::: columns
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -524,8 +604,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
 ```
 :::
 
-::: column
-
+::: {.column width="60%"}
 $$P(Y = 3 \mid X = 1, M_0)$$
 
 ```{r}
@@ -542,17 +621,13 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
     p = if_else(X1, p / sum(p[X1]), 0)
   )
 ```
-
 :::
-
-:::
-
+:::::
 
 ## Calculate conditional probability
 
-::: columns
-
-::: column
+::::: columns
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -567,8 +642,7 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
 ```
 :::
 
-::: column
-
+::: {.column width="60%"}
 $$P(Y = 3 \mid X = 1, M_0)$$
 
 ```{r}
@@ -588,18 +662,13 @@ expand_grid(X = c(0, 1, 2, 3), Y = c(0, 1, 2, 3)) %>%
   summarize(P = sum(p)) %>%
   pull(P)
 ```
-
 :::
-
-:::
-
+:::::
 
 ## Uniform model
 
-::: columns
-
-::: column
-
+::::: columns
+::: {.column width="60%"}
 $p(X = x, Y = y \mid M_0)$
 
 ```{r}
@@ -614,11 +683,9 @@ expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
     p = 1 / n()) %>% # M0
   plot_model()
 ```
-
 :::
 
-::: column
-
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -632,15 +699,12 @@ expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   plot_model()
 ```
 :::
-
-:::
+:::::
 
 ## Uniform model
 
-::: columns
-
-::: column
-
+::::: columns
+::: {.column width="60%"}
 $p(x, y)$
 
 ```{r}
@@ -655,11 +719,9 @@ expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
     p = 1 / n()) %>% # M0
   plot_model()
 ```
-
 :::
 
-::: column
-
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -673,27 +735,12 @@ expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   plot_model()
 ```
 :::
-
-:::
+:::::
 
 ## Linear model with no error
 
-```{r}
-#| output: false
-#| echo: false
-sample.size <- 50
-grid.size <- 10
-
-b0 <- 3
-b1 <- 1
-s  <- 1
-e  <- seq(-s, s)
-```
-
-::: columns
-
-::: column
-
+::::: columns
+::: {.column width="60%"}
 $p(x, y \mid M_1)$
 
 ```{r}
@@ -713,11 +760,9 @@ expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   mutate(p = if_else(M1, p / sum(p[M1]), 0)) %>%
   plot_model()
 ```
-
 :::
 
-::: column
-
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -736,17 +781,24 @@ expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   plot_model()
 ```
 :::
+:::::
 
+::: fragment
+$p(x, y \mid M_1) = p(x, y \mid \beta_0 = 3, \beta_1 = 1, M_L)$
 :::
 
+::: fragment
+$\quad \quad M_L: y = \beta_0 + \beta_1 \cdot x$
+:::
 
+::: fragment
+$p(x, y \mid M_1) = p(x, y \mid y = 3 + x)$
+:::
 
 ## Linear model with uniform error
 
-::: columns
-
-::: column
-
+::::: columns
+::: {.column width="60%"}
 $p(x, y \mid M_2)$
 
 ```{r}
@@ -766,11 +818,9 @@ expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   mutate(p = if_else(M2, p / sum(p[M2]), 0)) %>%
   plot_model()
 ```
-
 :::
 
-::: column
-
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -789,16 +839,28 @@ expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   plot_model()
 ```
 :::
+:::::
 
+::: fragment
+$p(x, y \mid M_2) = p(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_\text{Unif}})$
 :::
 
+::: fragment
+$\quad \quad M_{L+E_\text{Unif}}: y = \beta_0 + \beta_1 \cdot x + \epsilon \quad \quad \epsilon \in [-\sigma, \sigma]$
+:::
+
+::: fragment
+$p(x, y \mid M_2) = p(x, y \mid (y = 3 + x - 1) \lor (y = 3 + x + 0) \lor (y = 3 + x + 1))$
+:::
+
+::: fragment
+$p(x, y \mid M_2) = p(x, y \mid (y = 2 + x) \lor (y = 3 + x) \lor (y = 4 + x))$
+:::
 
 ## Linear model with uniform error
 
-::: columns
-
-::: column
-
+::::: columns
+::: {.column width="60%"}
 $p(x, y \mid M_2)$
 
 ```{r}
@@ -810,14 +872,13 @@ b0 <- 3; b1 <- 1; s <- 1
 
 expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   mutate(
-    p = ddunif(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M2
+    p = ddunif(Y, location = (b0 + b1 * X), # M2, M0
+                  scale = s)) %>%
   plot_model()
 ```
-
 :::
 
-::: column
-
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -827,20 +888,33 @@ b0 <- 3; b1 <- 1; s <- 1
 
 expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   mutate(
-    p = ddunif(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M2
+    p = ddunif(Y, location = (b0 + b1 * X), # M2, M0
+                  scale = s)) %>%
   plot_model()
 ```
 :::
+:::::
 
+::: fragment
+$p(x, y \mid M_2) = p(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_\text{Unif}})$
 :::
 
+::: fragment
+$\quad \quad M_{L+E_\text{Unif}}: y = \beta_0 + \beta_1 \cdot x + \epsilon \quad \quad \epsilon \sim \text{Unif}(\mu = 0, \sigma)$
+:::
+
+::: fragment
+$\quad \quad M_{L+E_\text{Unif}}: y \sim \text{Unif} (\mu = (\beta_0 + \beta_1 \cdot x), \sigma)$
+:::
+
+::: fragment
+$p(x, y \mid M_2) = p(x, y \mid \mu = (3 + 1 \cdot x), \sigma = 1, M_{\text{Unif}})$
+:::
 
 ## Linear model with normal (Gaussian) error
 
-::: columns
-
-::: column
-
+::::: columns
+::: {.column width="60%"}
 $p(x, y \mid M_3)$
 
 ```{r}
@@ -852,14 +926,13 @@ b0 <- 3; b1 <- 1; s <- 1
 
 expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   mutate(
-    p = ddnorm(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M3
+    p = ddnorm(Y, location = (b0 + b1 * X), # M3, M0
+                  scale = s)) %>%
   plot_model()
 ```
-
 :::
 
-::: column
-
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -869,19 +942,33 @@ b0 <- 3; b1 <- 1; s <- 1
 
 expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   mutate(
-    p = ddnorm(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M3
+    p = ddnorm(Y, location = (b0 + b1 * X), # M3, M0
+                  scale = s)) %>%
   plot_model()
 ```
 :::
+:::::
 
+::: fragment
+$p(x, y \mid M_3) = p(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_\text{Norm}})$
+:::
+
+::: fragment
+$\quad \quad M_{L+E_\text{Norm}}: y = \beta_0 + \beta_1 \cdot x + \epsilon \quad \quad \epsilon \sim \text{Norm}(\mu = 0, \sigma)$
+:::
+
+::: fragment
+$\quad \quad M_{L+E_\text{Norm}}: y \sim \text{Norm} (\mu = (\beta_0 + \beta_1 \cdot x), \sigma)$
+:::
+
+::: fragment
+$p(x, y \mid M_3) = p(x, y \mid \mu = (3 + 1 \cdot x), \sigma = 1, M_{\text{Norm}})$
 :::
 
 ## Linear model with Cauchy error
 
-::: columns
-
-::: column
-
+:::::: columns
+:::: {.column width="60%"}
 $p(x, y \mid M_4)$
 
 ```{r}
@@ -889,18 +976,21 @@ $p(x, y \mid M_4)$
 #| fig.height: 5
 #| eval: false
 #| output-location: default
-b0 <- 3; b1 <- 1; s <- 1; e <- seq(-s, s)
+b0 <- 3; b1 <- 1; s <- 1
 
 expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   mutate(
-    p = ddcauchy(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M4
+    p = ddcauchy(Y, location = (b0 + b1 * X), # M4, M0
+                    scale = s)) %>%
   plot_model()
 ```
 
+::: fragment
+![](images/Normal-vs-Cauchy-distribution.png){height="200"}
 :::
+::::
 
-::: column
-
+::: {.column width="40%"}
 ```{r}
 #| fig.width: 5
 #| fig.height: 5
@@ -910,165 +1000,90 @@ b0 <- 3; b1 <- 1; s <- 1
 
 expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
   mutate(
-    p = ddcauchy(Y, location = (b0 + b1 * X), scale = s)) %>% # M0, M4
+    p = ddcauchy(Y, location = (b0 + b1 * X), # M4, M0
+                    scale = s)) %>%
+  plot_model()
+```
+:::
+::::::
+
+## Linear model with Cauchy error
+
+::::: columns
+::: {.column width="60%"}
+$p(x, y \mid M_4)$
+
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| eval: false
+#| output-location: default
+b0 <- 3; b1 <- 1; s <- 1
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = ddcauchy(Y, location = (b0 + b1 * X), # M4, M0
+                    scale = s)) %>%
   plot_model()
 ```
 :::
 
+::: {.column width="40%"}
+```{r}
+#| fig.width: 5
+#| fig.height: 5
+#| echo: false
+#| output-location: default
+b0 <- 3; b1 <- 1; s <- 1
+
+expand_grid(X = seq(0, 10), Y = seq(0, 10)) %>%
+  mutate(
+    p = ddcauchy(Y, location = (b0 + b1 * X), # M4, M0
+                    scale = s)) %>%
+  plot_model()
+```
+:::
+:::::
+
+$p(x, y \mid M_4) = p(x, y \mid \beta_0 = 3, \beta_1 = 1, \sigma = 1, M_{L+E_\text{Cauchy}})$
+
+::: fragment
+$\quad \quad M_{L+E_\text{Cauchy}}: y = \beta_0 + \beta_1 \cdot x + \epsilon \quad \quad \epsilon \sim \text{Cauchy}(\mu = 0, \sigma)$
 :::
 
-
-
-## Statistical inference
-
-::: nonincremental
--   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
+::: fragment
+$\quad \quad M_{L+E_\text{Cauchy}}: y \sim \text{Cauchy} (\mu = (\beta_0 + \beta_1 \cdot x), \sigma)$
 :::
 
-$$
-\begin{array}{ll}
-1. & \{ (x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n) \} \\
-2. & p(x, y \mid M) \\
-\hline
-\therefore & \text{unknown quantities} \\
-\end{array}
-$$
-
-## Statistical inference
-
-::: nonincremental
--   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
-
--   **Data probability** (a.k.a. **likelihood**):
+::: fragment
+$p(x, y \mid M_4) = p(x, y \mid \mu = (3 + 1 \cdot x), \sigma = 1, M_{\text{Cauchy}})$
 :::
 
-## Statistical inference
-
-::: nonincremental
--   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
-
--   **Data probability** (a.k.a. **likelihood**):
-
-    -   $p(x \mid M)$ = probability distribution of the data given our knowledge of the DGP
-:::
-
--   **Inverse probability**:
-
-    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
-
-    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
-
-    -   The (more reasonable, limited) goal of statistical inference:
-
-        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
-
-## Statistical inference
-
-::: nonincremental
--   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
-
--   **Data probability** (a.k.a. **likelihood**):
-
-    -   $p(x \mid M)$ = probability distribution of the data given our knowledge of the DGP
-:::
-
-::: nonincremental
--   **Inverse probability**:
-
-    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
-
-    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
-
-    -   The (more reasonable, limited) goal of statistical inference:
-
-        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
-:::
-
-::: nonincremental
--   **Inferential probability** (a.k.a. **posterior**):
-:::
-
-## Statistical inference
-
-::: nonincremental
--   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
-
--   **Data probability** (a.k.a. **likelihood**):
-
-    -   $p(x \mid M)$ = probability distribution of the data given our knowledge of the DGP
-:::
-
-::: nonincremental
--   **Inverse probability**:
-
-    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
-
-    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
-
-    -   The (more reasonable, limited) goal of statistical inference:
-
-        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
-:::
-
-::: nonincremental
--   **Inferential probability** (a.k.a. **posterior**):
-
-    -   $p(\theta \mid x, M^*)$ = probability distribution of $\theta$ given $x$ and $M^*$
-:::
-
-## Statistical inference
-
-::: nonincremental
--   Statistical inference is the process of using facts we know (the data) to learn about facts we don't know (the DGP)
-
--   **Data probability** (a.k.a. **likelihood**):
-
-    -   $p(x \mid M)$ = probability distribution of the data given our knowledge of the DGP
-:::
-
-::: nonincremental
--   **Inverse probability**:
-
-    -   $p(M \mid x)$ = probability distribution of $M$ given $x$
-
-    -   The problem of statistical inference: It is impossible to calculate the inverse probability!
-
-    -   The (more reasonable, limited) goal of statistical inference:
-
-        -   Let $M = \{M^*, \theta\}$, where $M^*$ (the functional form of $M$) is assumed and $\theta$ are the parameters of $M^*$ to be learned from $x$
-:::
-
-::: nonincremental
--   **Inferential probability** (a.k.a. **posterior**):
-
-    -   $p(\theta \mid x)$ = probability distribution of $\theta$ given $x$ and $M^*$
-:::
-
-## Bayes' theorem for statistical inference
+## Bayes' theorem: The rule of statistical inference
 
 ::: text-align-center
 ![](images/Slide11.png)
 :::
 
-## Bayes' theorem for statistical inference
+## Bayes' theorem: The rule of statistical inference
 
 ::: text-align-center
 ![](images/Slide12.png)
 :::
 
-## Bayes' theorem for statistical inference
+## Bayes' theorem: The rule of statistical inference
 
 ::: text-align-center
 ![](images/Slide13.png)
 :::
 
-## Statistical inference: globe tossing
+## Bayesian inference: globe tossing
 
 ![](statistical-rethinking-2023-lecture-02/slide-002.png)
 
 ## Science before statistics
 
-Clearly state the **research question**
+Clearly state the **scientific question**
 
 ![](images/Slide1.png)
 
@@ -1082,17 +1097,13 @@ From the *research question* to the *quantity of interest*: the **estimand**
 quantitative empirical research question
 :::
 
-## Identify the estimand
-
+::: notes
 The **estimand** should be identified before statistical data analysis is performed!
 
-::: notes
 Questionable research practices: HARKing, cherry-picking, P-hacking, fishing, and data dredging or mining
 
 <https://youtu.be/0Rnq1NpHdmw>
 :::
-
-![](images/Slide2.png)
 
 ## Identify the estimand
 
@@ -1102,7 +1113,7 @@ The **estimand** is a *quantity of interest* that is out of reach and hidden fro
 
 ## Identify the estimand
 
-The **estimand** is the target of statistical inference
+The **estimand** is the target of statistical inference (unknown quantity)
 
 ![](images/Slide3.png)
 
@@ -1122,15 +1133,15 @@ The **sampling process**: a crucial component of *study design*
 
 ![](images/Slide5.png)
 
-## Build a model of the data generating process
+## Specify the data model
 
-A **statistical model** (i.e., a probability distribution of one or more random variables) that captures important features of the DGP, including the *estimand* and *sampling process*
+A **statistical model** (i.e., a probability distribution of one or more random variables) that captures relevant features of the DGP, including the *sampling process*
 
 ![](images/Slide6.png)
 
-## Fit the statistical model to the data
+## Fit the model to the data
 
-Train the *statistical model* with the *data* using an **estimator** (i.e., an inference algorithm) in order to obtain an **estimate** of the *estimand*
+Fit the *statistical model* to the *data* using an **estimator** (i.e., an inference algorithm) in order to obtain an **estimate** of the *estimand*
 
 ![](images/Slide7.png)
 
@@ -1210,54 +1221,43 @@ datasauRus::datasaurus_dozen %>%
 
 ## Estimand, estimator, and estimate
 
-:::::: columns
-::: {.column width="70%"}
 -   **Estimand** ([what you want]{style="color: orangered"})
 
-    -   Quantity of interest (QOI) that cannot be deduced with certainty (*inductive argument*)
+    -   Unknown quantity of interest (QOI) that cannot be deduced with certainty
 
 -   **Estimator** ([how you get it]{style="color: orangered"})
 
-    -   Statistical procedure used to infer value of estimand from the data and statistical model
+    -   Statistical procedure used to infer value of estimand from data and statistical model
 
 -   **Estimate** ([what you get]{style="color: orangered"})
 
     -   Inferred value of estimand, with measure of uncertainty
 
--   The data and statistical model are the *premises* (evidence/assumptions) of the inductive argument
+-   The data and statistical model are the *premises* (evidence/assumptions/KB)
 
--   The estimate is the uncertain *conclusion* (hypothesis/assertion) of the inductive argument
+-   The estimate is the uncertain *conclusion* (hypothesis/claim/query)
 
--   The estimator is the *inference rule* for strong inductive reasoning
-:::
+-   The estimator is the *inference algorithm* for strong inductive reasoning (e.g., Bayes' theorem or likelihood function)
 
-:::: {.column width="30%"}
-::: {.fragment .text-align-right}
-![](images/estimand_estimate_estimator_meme.png)
-:::
-::::
-::::::
+## Estimand, estimator, and estimate
 
-::: notes
--   estimand = conclusion/hypothesis
--   data and probability model of the DGP = premises/evidence/assumptions
-:::
+![](images/estimand_estimate_estimator_meme.png){fig-align="center"}
 
 ## Statistical inference workflow
 
 1.  **State** the scientific question (often qualitative, but must be clearly defined)
 
-2.  **Identify** the estimand/quantity of interest (QOI), [given question]{style="color: orangered"}
+2.  **Identify** the estimand/unknown quantity of interest (QOI), [given question]{style="color: orangered"}
 
 3.  **Collect** the data, [given estimand, question]{style="color: orangered"}
 
-4.  **Build** a probability model of the DGP to capture important features of the estimand and sampling process, [given data, estimand, question]{style="color: orangered"}
+4.  **Specify** the data model to capture relevant features of the DGP, incl. the sampling process, [given data, estimand, question]{style="color: orangered"}
 
-5.  **Test** the statistical model (e.g., with simulated data, sensitivity analysis, prior predictive checking), [given model, data, estimand, question]{style="color: orangered"}
+5.  **Choose** estimator and **test** (e.g., with simulated data, sensitivity analysis, prior predictive checks), [given model, data, estimand, question]{style="color: orangered"}
 
-6.  **Fit** the statistical model to the data using an estimator to obtain an estimate of the estimand, [given estimator, model, data, estimand, question]{style="color: orangered"}
+6.  **Fit** the model to the data using an estimator to obtain an estimate of the estimand, [given estimator, model, data, estimand, question]{style="color: orangered"}
 
-7.  **Evaluate** the estimate/fitted model with the collected data (e.g., cross-validation, residual analysis, posterior predictive checking), [given estimate, estimator, model, data, estimand, question]{style="color: orangered"}
+7.  **Evaluate** the estimate/fitted model with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), [given estimate, estimator, model, data, estimand, question]{style="color: orangered"}
 
 8.  **Replicate** (compare predictions of fitted model with new data), [given all of the above]{style="color: orangered"}
 
@@ -1266,18 +1266,26 @@ datasauRus::datasaurus_dozen %>%
 ## Bayesian vs. frequentist theories of inference
 
 -   **Bayesian inference**
-    -   **Belief-type probabilities**: applicable to both data and parameters
+    -   **Belief-type probabilities**: applicable to both observables (data) and unobservables (e.g., model parameters)
     -   **Estimator**: Bayes' theorem
     -   **Estimate**: Posterior probability distribution
 -   **Likelihood inference**[@Royall2023]
-    -   **Frequency-type probabilities**: only applicable to data (random samples)
+    -   **Frequency-type probabilities**: only applicable to observables (data)
     -   **Estimator**: Likelihood function
     -   **Estimate**: MLE (point estimate) with confidence interval
 -   **Null-hypothesis significance testing (NHST)**[@Perezgonzalez2015]
-    -   **Frequency-type probabilities**: only applicable to data (random samples)
+    -   **Frequency-type probabilities**: only applicable to observables (data)
     -   A monstrosity born out of the unholy marriage of:
         -   [Fisher's significance testing](https://en.wikipedia.org/wiki/Statistical_significance): A statistical tool, [not a theory of inference!]{.underline}
         -   [Neyman-Pearson hypothesis testing](https://en.wikipedia.org/wiki/Statistical_hypothesis_test): A decision theory, [not a theory of inference!]{.underline}
+        
+::: notes
+Bayesian inference produces a probability distribution over model parameters (the posterior), whereas likelihood inference produces a function of the parameters and NHST uses sampling distributions to guide decisions
+:::
+        
+::: notes
+The Neyman-Pearson framework is fundamentally a decision theory—it provides a method for making binary decisions (reject or fail to reject a null hypothesis) based on controlling long-run error rates (Type I and Type II errors), rather than a theory that quantifies uncertainty about hypotheses in a probabilistic way (as Bayesian inference does).
+:::
 
 ## Definition of a statistical inference problem {visibility="hidden"}
 
@@ -1309,7 +1317,7 @@ datasauRus::datasaurus_dozen %>%
 
 ## Bayes' theorem: The rule of statistical inference
 
-**Bayesian interpretation**: data are fixed, parameters are random
+**Bayesian interpretation**
 
 ::: text-align-center
 ![](images/Slide12.png)
@@ -1317,7 +1325,7 @@ datasauRus::datasaurus_dozen %>%
 
 ## Bayes' theorem: The rule of statistical inference
 
-**Bayesian interpretation**: data are fixed, parameters are random
+**Bayesian interpretation**
 
 ::: text-align-center
 ![](images/Slide13.png)
@@ -1325,7 +1333,7 @@ datasauRus::datasaurus_dozen %>%
 
 ## Bayes' theorem: The rule of statistical inference
 
-**Bayesian interpretation**: data are fixed, parameters are random
+**Bayesian interpretation**
 
 ::: text-align-center
 ![](images/Slide14.png)
@@ -1341,7 +1349,7 @@ datasauRus::datasaurus_dozen %>%
 
 ## Bayes' theorem: The rule of statistical inference
 
-**Frequentist interpretation**: data are random, parameters are fixed
+**Frequentist interpretation**
 
 ::: text-align-center
 ![](images/Slide16.png)
@@ -1349,7 +1357,7 @@ datasauRus::datasaurus_dozen %>%
 
 ## Bayes' theorem: The rule of statistical inference
 
-**Frequentist interpretation**: data are random, parameters are fixed
+**Frequentist interpretation**
 
 ::: text-align-center
 ![](images/Slide17.png)
@@ -1357,7 +1365,7 @@ datasauRus::datasaurus_dozen %>%
 
 ## Bayes' theorem: The rule of statistical inference
 
-**Frequentist interpretation**: data are random, parameters are fixed
+**Frequentist interpretation**
 
 ::: text-align-center
 ![](images/Slide18.png)
@@ -1365,7 +1373,7 @@ datasauRus::datasaurus_dozen %>%
 
 ## Bayes' theorem: The rule of statistical inference
 
-**Frequentist interpretation**: data are random, parameters are fixed
+**Frequentist interpretation**
 
 ::: text-align-center
 ![](images/Slide19.png)
@@ -1373,7 +1381,7 @@ datasauRus::datasaurus_dozen %>%
 
 ## Bayes' theorem: The rule of statistical inference
 
-**Frequentist interpretation**: data are random, parameters are fixed
+**Frequentist interpretation**
 
 ::: text-align-center
 ![](images/Slide20.png)
@@ -1381,7 +1389,7 @@ datasauRus::datasaurus_dozen %>%
 
 ## Bayes' theorem: The rule of statistical inference
 
-**Frequentist interpretation**: data are random, parameters are fixed
+**Frequentist interpretation**
 
 ::: text-align-center
 ![](images/Slide21.png)
@@ -1397,7 +1405,7 @@ $$
 $$
 :::
 
-## Statistical inference: Globe tossing experiment
+## Statistical inference: globe tossing
 
 ![](statistical-rethinking-2023-lecture-02/slide-002.png)
 
@@ -1612,7 +1620,7 @@ globe_tossing_grid_approx(w = 8, l = 2, a = 1, b = 1, dprior = dunif, grid_size 
 
 ![](images/Slide27.png)
 
-## Statistical inference: Globe tossing experiment
+## Statistical inference: globe tossing
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
@@ -1668,7 +1676,7 @@ rethinking::HPDI(globe_tossing_samples(w = 8, l = 2,
 :::
 ::::::::::::
 
-## Statistical inference: Globe tossing experiment
+## Statistical inference: globe tossing
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
@@ -1706,7 +1714,7 @@ prop.test(x = 8, n = 10, # [0.50, 0.95] with Yates' continuity correction
 :::
 ::::::::
 
-## Statistical inference: Globe tossing experiment
+## Statistical inference: globe tossing
 
 Prior information: About 71% of the Earth's surface is covered by water \[[usgs.gov](https://www.usgs.gov/special-topics/water-science-school/science/how-much-water-there-earth)\]
 
@@ -1804,33 +1812,20 @@ for (i in 1:num_simulations) {
 ::::
 :::::::::
 
-## *P*-values and confidence intervals
+## *P*-values, *S*-values, and confidence intervals
 
 -   **Fisher’s significance testing**
-
-    -   A low *p*-value suggests that either:
-
-        1.  The *null hypothesis* $H_0$ is false, or
-
-        2.  The *null hypothesis* $H_0$ is true, but an unlikely event has occurred
+    -   A low *p*-value indicates that the observed data are surprising if the *null hypothesis* $H_0$ were true
+    -   In this view, the *p*-value is a measure of surprise and we can transform it into an **S-value** defined as $S = -\log_2(p)$, where larger *S*-values (in bits) reflect greater surprise (or evidence) against $H_0$
 
 -   **Neyman–Pearson hypothesis testing**
+    -   The *p*-value is compared to a fixed significance level (e.g., $\alpha = 0.05$) in order to act/make decisions:
+        1. If the *p*-value is below $\alpha$, we **reject** $H_0$ (though this does not prove it false)
+        2. Otherwise, we **fail to reject** $H_0$ (which does not prove it true)
+    -   This approach requires specifying an alternative hypothesis $H_1$ and Type I/II error rates, and planning sample sizes for sufficient [statistical power](https://en.wikipedia.org/wiki/Power_of_a_test) (e.g., $1 - \beta = 0.80$)
+    -   In neuroscience, studies suffer from low power (8–31% [@Button2013]), which undermines the reliability of these decisions and inflates both Type I and Type II error rates
 
-    -   The *p*-value is compared to a [significance level](https://en.wikipedia.org/wiki/Statistical_significance) (e.g., $\alpha = 0.05$), and action is taken based on decision rule to minimize expected loss, given the costs of Type I/II errors:
-
-        1.  Reject the *null hypothesis* $H_0$ (does not prove it false), or
-
-        2.  Fail to reject the *null hypothesis* $H_0$ (does not prove it true)
-
-    -   Requires definition of the *alternative hypothesis* $H_1$
-
-    -   Requires calculation of Type I (false positive) and Type II (false negative) error costs
-
-    -   Requires calculation of sample size for good [statistical power](https://en.wikipedia.org/wiki/Power_of_a_test) (e.g., $1 - \beta = 0.80$)
-
-    -   Median statistical power of studies in neuroscience is 8-31%[@Button2013] 😿
-
-## *P*-values and confidence intervals
+## *P*-values, *S*-values, and confidence intervals
 
 **Null hypothesis significance testing** (NHST) combines elements from both Fisher's significance testing and Neyman-Pearson hypothesis testing, but it doesn't strictly adhere to either[@Perezgonzalez2015]. It involves calculating a *p*-value as in Fisher's significance testing and using a fixed significance level and decision rule as in Neyman-Pearson hypothesis testing, in order to assess whether an observed effect is "*statistically significant*". NHST became widely adopted in biomedical research and the social sciences due to its simplicity and ease of application, replacing statistical thinking with the mindless "*null ritual*"[@Gigerenzer2004].
 
@@ -1838,7 +1833,7 @@ for (i in 1:num_simulations) {
 
 <https://arxiv.org/abs/2002.07270>
 
-## *P*-values and confidence intervals
+## *P*-values, *S*-values, and confidence intervals
 
 > "The widespread use of 'statistical significance' (generally interpreted as '*p* ≤ 0.05') as a license for making a claim of a scientific finding (or implied truth) leads to considerable distortion of the scientific process." "It is time to stop using the term 'statistically significant' entirely!" — [The ASA statement on p-values](https://doi.org/10.1080/00031305.2016.1154108)
 
@@ -1854,7 +1849,7 @@ for (i in 1:num_simulations) {
 ![](images/shrimp_scampi.jpg){height="100"}
 :::
 
-## *P*-values and confidence intervals
+## *P*-values, *S*-values, and confidence intervals
 
 > "The widespread use of 'statistical significance' (generally interpreted as '*p* ≤ 0.05') as a license for making a claim of a scientific finding (or implied truth) leads to considerable distortion of the scientific process." "It is time to stop using the term 'statistically significant' entirely!" — [The ASA statement on p-values](https://doi.org/10.1080/00031305.2016.1154108)
 
@@ -1872,7 +1867,7 @@ for (i in 1:num_simulations) {
 [![](images/dosso_dossi-allegory_of_fortune.jpg){height="100"}](https://www.getty.edu/art/collection/object/103RJG)
 :::
 
-## *P*-values and confidence intervals
+## *P*-values, *S*-values, and confidence intervals
 
 ::: nonincremental
 -   [Why most published research findings are false](https://doi.org/10.1371/journal.pmed.1004085)
