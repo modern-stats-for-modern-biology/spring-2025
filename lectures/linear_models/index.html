@@ -1734,10 +1734,6 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>bayes.lm.fit <span class="ot">&lt;-</span> rstanarm<span class="sc">::</span><span class="fu">stan_glm</span>(weight <span class="sc">~</span> height_c, <span class="at">data =</span> d, <span class="at">family =</span> <span class="fu">gaussian</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<ul>
-<li class="fragment"><p>The <code>stan_glm</code> function uses the <a href="https://mc-stan.org/">Stan</a> probabilistic programming language to fit the model</p></li>
-<li class="fragment"><p>Unless specified, the <code>stan_glm</code> function uses <a href="https://mc-stan.org/rstanarm/articles/priors.html#default-weakly-informative-prior-distributions-1">weakly informative priors</a> by default</p></li>
-</ul>
 <div class="fragment">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(bayes.lm.fit, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.89</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1751,14 +1747,16 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 </div>
 </div>
 <ul>
-<li class="fragment"><a href="https://paulbuerkner.com/brms/"><code>brms</code></a> is a similar package that provides a more flexible and powerful <code>brm</code> function to fit Bayesian general (and generalized) linear models specified using the <a href="https://www.econometrics.blog/post/the-r-formula-cheatsheet/">R formula syntax</a></li>
+<li class="fragment"><p>The <code>stan_glm</code> function uses the <a href="https://mc-stan.org/">Stan</a> probabilistic programming language to fit the model to the data</p></li>
+<li class="fragment"><p>Unless specified, the <code>stan_glm</code> function uses <a href="https://mc-stan.org/rstanarm/articles/priors.html#default-weakly-informative-prior-distributions-1">weakly informative priors</a> by default</p></li>
+<li class="fragment"><p><a href="https://paulbuerkner.com/brms/"><code>brms</code></a> is a similar package that provides a more flexible and powerful <code>brm</code> function to fit Bayesian general (and generalized) linear models specified using the <a href="https://www.econometrics.blog/post/the-r-formula-cheatsheet/">R formula syntax</a></p></li>
 </ul>
 </section>
 <section id="fit-the-model-to-the-data-3" class="slide level2">
 <h2>Fit the model to the data</h2>
 <div>
 <ul>
-<li>The Bayesian estimate is the joint posterior <strong>probability</strong> distribution of the parameters <span class="math inline">\(\beta_0\)</span> (intercept), <span class="math inline">\(\beta_1\)</span> (slope), and <span class="math inline">\(\sigma\)</span> (error spread) given the data</li>
+<li>The Bayesian estimate is the joint posterior <strong>probability</strong> distribution of the parameters <span class="math inline">\(\beta_0\)</span> (intercept), <span class="math inline">\(\beta_1\)</span> (slope), and <span class="math inline">\(\sigma\)</span> (error spread) given the data and prior information</li>
 </ul>
 </div>
 
@@ -1767,7 +1765,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <h2>Fit the model to the data</h2>
 <div>
 <ul>
-<li>The Bayesian estimate is the joint posterior <strong>probability</strong> distribution of the parameters <span class="math inline">\(\beta_0\)</span> (intercept), <span class="math inline">\(\beta_1\)</span> (slope), and <span class="math inline">\(\sigma\)</span> given the data</li>
+<li>The Bayesian estimate is the joint posterior <strong>probability</strong> distribution of the parameters <span class="math inline">\(\beta_0\)</span> (intercept), <span class="math inline">\(\beta_1\)</span> (slope), and <span class="math inline">\(\sigma\)</span> (error spread) given the data and prior information</li>
 </ul>
 </div>
 <p><img data-src="images/ols_howell_learn.gif" height="400"></p>
@@ -1776,13 +1774,12 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <h2>Fit the model to the data</h2>
 <div>
 <ul>
-<li>The frequentist estimate is the maximum <strong>likelihood</strong> point estimate and confidence interval of the parameters <span class="math inline">\(\beta_0\)</span> (intercept) and <span class="math inline">\(\beta_1\)</span> (slope) given the data</li>
+<li>The frequentist estimate is the maximum <strong>likelihood</strong> point estimate and confidence interval of the parameters <span class="math inline">\(\beta_0\)</span> (intercept) and <span class="math inline">\(\beta_1\)</span> (slope), and <span class="math inline">\(\sigma\)</span> (error spread) given the data</li>
 </ul>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a>mle.lm.fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> weight <span class="sc">~</span> height_c, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>&nbsp;</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mle.lm.fit, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.89</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(term, estimate, conf.low, conf.high)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -1793,13 +1790,21 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 </div>
 </div>
 </div>
+<ul>
+<li class="fragment"><p>Unlike the Bayesian estimate, the frequentist estimate is not a probability distribution of the parameters given the data</p></li>
+<li class="fragment"><p>Bayesian inference provides a more complete and interpretable estimate of the parameters, enables more flexible and complex statistical modelling, and allows the incorporation of prior information</p></li>
+</ul>
 </section>
-<section id="compare-the-bayesian-and-frequentist-estimates" class="slide level2">
+<section id="compare-the-bayesian-and-frequentist-estimates" class="slide level2 scrollable">
 <h2>Compare the Bayesian and frequentist estimates</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a>modelsummary<span class="sc">::</span><span class="fu">msummary</span>(<span class="fu">list</span>(<span class="st">"bayes"</span> <span class="ot">=</span> bayes.lm.fit, <span class="st">"mle"</span> <span class="ot">=</span> mle.lm.fit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment">
+<div class="cell columns column-output-location">
+<div class="column">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a>modelsummary<span class="sc">::</span><span class="fu">msummary</span>(</span>
+<span id="cb35-2"><a href=""></a>  <span class="fu">list</span>(</span>
+<span id="cb35-3"><a href=""></a>    <span class="st">"bayesian"</span> <span class="ot">=</span> bayes.lm.fit,</span>
+<span id="cb35-4"><a href=""></a>    <span class="st">"frequentist"</span> <span class="ot">=</span> mle.lm.fit)</span>
+<span id="cb35-5"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div><div class="column">
 <div class="cell-output-display">
 <!-- preamble start -->
 
@@ -1891,8 +1896,8 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
         
               <tr>
                 <th scope="col"> </th>
-                <th scope="col">bayes</th>
-                <th scope="col">mle</th>
+                <th scope="col">bayesian</th>
+                <th scope="col">frequentist</th>
               </tr>
         </thead>
         
@@ -1987,7 +1992,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
     </div>
 <!-- hack to avoid NA insertion in last line -->
 </div>
-</div>
+</div></div>
 </section>
 <section id="assumptions-of-the-general-linear-model" class="slide level2">
 <h2>Assumptions of the general linear model</h2>

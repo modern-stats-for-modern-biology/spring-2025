@@ -1534,10 +1534,6 @@ summary(bayes.lm.fit)
 bayes.lm.fit <- rstanarm::stan_glm(weight ~ height_c, data = d, family = gaussian())
 ```
 
--   The `stan_glm` function uses the [Stan](https://mc-stan.org/) probabilistic programming language to fit the model
-
--   Unless specified, the `stan_glm` function uses [weakly informative priors](https://mc-stan.org/rstanarm/articles/priors.html#default-weakly-informative-prior-distributions-1) by default
-
 ::: fragment
 ```{r}
 #| output-location: default
@@ -1545,13 +1541,17 @@ broom.mixed::tidy(bayes.lm.fit, conf.int = TRUE, conf.level = 0.89)
 ```
 :::
 
+-   The `stan_glm` function uses the [Stan](https://mc-stan.org/) probabilistic programming language to fit the model to the data
+
+-   Unless specified, the `stan_glm` function uses [weakly informative priors](https://mc-stan.org/rstanarm/articles/priors.html#default-weakly-informative-prior-distributions-1) by default
+
 -   [`brms`](https://paulbuerkner.com/brms/) is a similar package that provides a more flexible and powerful `brm` function to fit Bayesian general (and generalized) linear models specified using the [R formula syntax](https://www.econometrics.blog/post/the-r-formula-cheatsheet/)
 
 
 ## Fit the model to the data
 
 ::: nonincremental
--   The Bayesian estimate is the joint posterior **probability** distribution of the parameters $\beta_0$ (intercept), $\beta_1$ (slope), and $\sigma$ (error spread) given the data
+-   The Bayesian estimate is the joint posterior **probability** distribution of the parameters $\beta_0$ (intercept), $\beta_1$ (slope), and $\sigma$ (error spread) given the data and prior information
 :::
 
 ```{r}
@@ -1570,7 +1570,7 @@ bayesplot::mcmc_pairs(posterior, diag_fun = "dens", off_diag_fun = "hex")
 ## Fit the model to the data
 
 ::: nonincremental
--   The Bayesian estimate is the joint posterior **probability** distribution of the parameters $\beta_0$ (intercept), $\beta_1$ (slope), and $\sigma$ given the data
+-   The Bayesian estimate is the joint posterior **probability** distribution of the parameters $\beta_0$ (intercept), $\beta_1$ (slope), and $\sigma$ (error spread) given the data and prior information
 :::
 
 ![](images/ols_howell_learn.gif){height="400"}
@@ -1578,7 +1578,7 @@ bayesplot::mcmc_pairs(posterior, diag_fun = "dens", off_diag_fun = "hex")
 ## Fit the model to the data
 
 ::: nonincremental
--   The frequentist estimate is the maximum **likelihood** point estimate and confidence interval of the parameters $\beta_0$ (intercept) and $\beta_1$ (slope) given the data
+-   The frequentist estimate is the maximum **likelihood** point estimate and confidence interval of the parameters $\beta_0$ (intercept) and $\beta_1$ (slope), and $\sigma$ (error spread) given the data
 :::
 
 ```{r}
@@ -1587,19 +1587,25 @@ bayesplot::mcmc_pairs(posterior, diag_fun = "dens", off_diag_fun = "hex")
 mle.lm.fit <- lm(formula = weight ~ height_c, data = d)
 ```
 
-&nbsp;
-
 ```{r}
 #| output-location: default
 broom::tidy(mle.lm.fit, conf.int = TRUE, conf.level = 0.89) %>% select(term, estimate, conf.low, conf.high)
 ```
 
+-   Unlike the Bayesian estimate, the frequentist estimate is not a probability distribution of the parameters given the data
+
+-   Bayesian inference provides a more complete and interpretable estimate of the parameters, enables more flexible and complex statistical modelling, and allows the incorporation of prior information
 
 
-## Compare the Bayesian and frequentist estimates
+## Compare the Bayesian and frequentist estimates {.scrollable}
 
 ```{r}
-modelsummary::msummary(list("bayes" = bayes.lm.fit, "mle" = mle.lm.fit))
+#| output-location: column
+modelsummary::msummary(
+  list(
+    "bayesian" = bayes.lm.fit,
+    "frequentist" = mle.lm.fit)
+  )
 ```
 
 ## Assumptions of the general linear model
