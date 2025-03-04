@@ -1348,7 +1348,7 @@ $W = f(H, U) \quad$
 
 ## Regression (variate-covariate) models
 
--   With $(x, y)$ data, the goal of statistical inference is often to estimate the association between *variates* ($y$) and *covariates* ($x$) [$\quad \quad p(y \mid M) \ne p(y \mid x, M)$]{.fragment}
+-   With $\{ (x_i, y_i) \}$ data, the goal of statistical inference is often to estimate the association between *variates* ($y$) and *covariates* ($x$) [$\quad \quad p(y \mid M) \ne p(y \mid x, M)$]{.fragment}
 
 -   **Likelihood**: The joint probability of the data $x$ and $y$ given a model of the DGP $M = \{\theta, M^* \}$
 
@@ -1449,7 +1449,7 @@ $$
 
 ::: fragment
 ```{r}
-#| fig-height: 3.6
+#| fig-height: 3.8
 #| echo: false
 #| warning: false
 beta0 <- 45
@@ -1467,7 +1467,7 @@ df <- bind_cols(tibble(H), as.data.frame(W)) %>%
 
 df %>%
   gf_density_ridges(H ~ W, linetype = 0, fill = "lightblue") %>%
-  gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(3), color = "skyblue4", size = 1) %>%
+  gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
   gf_model(W ~ H, color = "gray4") %>%
   gf_labs(title = TeX(r'(Monte Carlo simulation of $y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = 45, \beta_1 = 0.6, \sigma = 4$)'), y = "Height (cm, mean-centered)", x = "Weight (Kg)") %>%
   gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
