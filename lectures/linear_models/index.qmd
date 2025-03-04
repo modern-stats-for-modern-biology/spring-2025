@@ -1298,14 +1298,12 @@ gf_point(weight ~ height, color = "skyblue4", data = d) %>% gf_lm(color = "black
 ![](images/dagitty-model.1.png){height="300"}
 :::
 
-::: columns
-::: {.column .fragment width="20%"}
+::: fragment
 $W = f(H) \quad$
 :::
 
-::: {.column .fragment width="80%"}
+::: fragment
 "*weight ($W$) is some function of height ($H$)*"
-:::
 :::
 
 ## Specify the causal model
@@ -1318,19 +1316,17 @@ $W = f(H) \quad$
 
 ![](images/dagitty-model.2.png){height="300"}
 
-::: columns
-::: {.column width="20%"}
+::: fragment
 $W = f(H, U) \quad$
 :::
 
-::: {.column width="80%"}
+::: fragment
 "*weight ($W$) is some function of height ($H$) and other **unknown** factors ($U$)*"
-:::
 :::
 
 ## Specify the data model
 
--   Statistical model (e.g., a **general linear model**, LM) that describes the statistical relationship between height and weight in adult humans
+-   Specify the functional form of the statistical model (e.g., a **general linear model**, LM) that describes the statistical relationship between height and weight in adult humans
 
 -   LM instead of GLM in order to avoid confusion with the broader class of **generalized linear models**
 
@@ -1430,7 +1426,9 @@ $$
 
 ## Specify the data model
 
-of the causal linear association between height (H) and weight (W) in adult humans using a general linear model (LM)
+::: nonincremental
+-   Specify the functional form of the statistical model (e.g., a **general linear model**, LM) that describes the statistical relationship between height and weight in adult humans
+:::
 
 -   $\text{WEIGHT (W)} = \text{HEIGHT (H)} + \text{OTHER STUFF (U)}$
 
@@ -1438,9 +1436,20 @@ of the causal linear association between height (H) and weight (W) in adult huma
 
 -   $y_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(\mu_i, \sigma) \quad \quad \mu_i = \beta_0 + \beta_1 \cdot x_i$
 
+
+## Specify the data model
+
+::: nonincremental
+-   Specify the functional form of the statistical model (e.g., a **general linear model**, LM) that describes the statistical relationship between height and weight in adult humans
+:::
+
+-   The next step is to use an estimator to estimate the parameters $\beta_0$, $\beta_1$, and $\sigma$ that best fit the data $\{ (x_i, y_i) \}$
+
+-   Simulated data (predictions) can also be generated from this model by specifying the parameters $\beta_0$, $\beta_1$, and $\sigma$
+
 ::: fragment
 ```{r}
-#| fig-height: 3.5
+#| fig-height: 3.6
 #| echo: false
 #| warning: false
 alpha <- 45
@@ -1458,7 +1467,7 @@ df <- bind_cols(tibble(H), as.data.frame(W)) %>%
 
 df %>%
   gf_density_ridges(H ~ W, linetype = 0, fill = "lightblue") %>%
-  gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(3), color = "blue") %>% 
+  gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(3), color = "skyblue4") %>% 
   gf_labs(title = TeX(r'(Monte Carlo simulation of $y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = 45, \beta_1 = 0.6, \sigma = 4$)')) %>%
   gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   coord_flip()
