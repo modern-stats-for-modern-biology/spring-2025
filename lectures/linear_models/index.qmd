@@ -1276,7 +1276,7 @@ favstats(~ weight | male, data = d) %>% knitr::kable(digits = 2)
 favstats(~ height | male, data = d) %>% knitr::kable(digits = 2)
 ```
 
-## Identify the estimand
+## Identify estimand
 
 The causal linear association between height (H) and weight (W) in adult humans
 
@@ -1288,7 +1288,7 @@ d <- d %>% select(weight, height) %>% mutate(height_c = height - mean(height))
 gf_point(weight ~ height, color = "skyblue4", data = d) %>% gf_lm(color = "black")
 ```
 
-## Specify the causal model
+## Specify causal model
 
 -   **Causal model**: a set of variables and their causal relationships (causal assumptions)
 
@@ -1306,7 +1306,7 @@ $W = f(H) \quad$
 "*weight ($W$) is some function of height ($H$)*"
 :::
 
-## Specify the causal model
+## Specify causal model
 
 ::: nonincremental
 -   **Causal model**: a set of variables and their causal relationships (causal assumptions)
@@ -1324,7 +1324,7 @@ $W = f(H, U) \quad$
 "*weight ($W$) is some function of height ($H$) and other **unknown** factors ($U$)*"
 :::
 
-## Specify the data model
+## Specify data model
 
 -   Specify the functional form of the statistical model (e.g., a **general linear model**, LM) that describes the statistical relationship between height and weight in adult humans
 
@@ -1424,7 +1424,7 @@ $$
 
 -   $\epsilon_i$ is the **stochastic component** (noise) of the general linear model
 
-## Specify the data model
+## Specify data model
 
 ::: nonincremental
 -   Specify the functional form of the statistical model (e.g., a **general linear model**, LM) that describes the statistical relationship between height and weight in adult humans
@@ -1437,7 +1437,7 @@ $$
 -   $y_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(\mu_i, \sigma) \quad \quad \mu_i = \beta_0 + \beta_1 \cdot x_i$
 
 
-## Specify the data model
+## Specify data model
 
 ::: nonincremental
 -   Specify the functional form of the statistical model (e.g., a **general linear model**, LM) that describes the statistical relationship between height and weight in adult humans
@@ -1475,7 +1475,7 @@ df %>%
 ```
 :::
 
-## Fit the model to the data
+## Fit model to data
 
 ::::: columns
 ::: {.column width="35%"}
@@ -1522,7 +1522,7 @@ summary(bayes.lm.fit)
 ```
 :::
 
-## Fit the model to the data
+## Fit model to data
 
 ::: nonincremental
 -   [`rstanarm`](https://mc-stan.org/rstanarm/) is a package that provides the `stan_glm` function to fit Bayesian general (and generalized) linear models specified using the [R formula syntax](https://www.econometrics.blog/post/the-r-formula-cheatsheet/)
@@ -1548,7 +1548,7 @@ broom.mixed::tidy(bayes.lm.fit, conf.int = TRUE, conf.level = 0.89)
 -   [`brms`](https://paulbuerkner.com/brms/) is a similar package that provides a more flexible and powerful `brm` function to fit Bayesian general (and generalized) linear models specified using the [R formula syntax](https://www.econometrics.blog/post/the-r-formula-cheatsheet/)
 
 
-## Fit the model to the data
+## Fit model to data
 
 ::: nonincremental
 -   The Bayesian estimate is the joint posterior **probability** distribution of the parameters $\beta_0$ (intercept), $\beta_1$ (slope), and $\sigma$ (error spread) given the data and prior information
@@ -1567,7 +1567,7 @@ bayesplot::mcmc_pairs(posterior, diag_fun = "dens", off_diag_fun = "hex")
 ```
 
 
-## Fit the model to the data
+## Fit model to data
 
 ::: nonincremental
 -   The Bayesian estimate is the joint posterior **probability** distribution of the parameters $\beta_0$ (intercept), $\beta_1$ (slope), and $\sigma$ (error spread) given the data and prior information
@@ -1575,7 +1575,7 @@ bayesplot::mcmc_pairs(posterior, diag_fun = "dens", off_diag_fun = "hex")
 
 ![](images/ols_howell_learn.gif){height="400"}
 
-## Fit the model to the data
+## Fit model to data
 
 ::: nonincremental
 -   The frequentist estimate is the maximum **likelihood** point estimate and confidence interval of the parameters $\beta_0$ (intercept) and $\beta_1$ (slope), and $\sigma$ (error spread) given the data
@@ -1597,7 +1597,7 @@ broom::tidy(mle.lm.fit, conf.int = TRUE, conf.level = 0.89) %>% select(term, est
 -   Bayesian inference provides a more complete and interpretable estimate of the parameters, enables more flexible and complex statistical modelling, and allows the incorporation of prior information
 
 
-## Compare the Bayesian and frequentist estimates {.scrollable}
+## Compare Bayesian and frequentist estimates {.scrollable}
 
 ```{r}
 #| output-location: column
@@ -1620,7 +1620,7 @@ $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackre
 
     -   $\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$
 
-## Evaluate assumptions of the fitted model
+## Evaluate assumptions of fitted model
 
 $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
 
@@ -1632,7 +1632,7 @@ $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackre
 performance::check_model(mle.lm.fit, check = "linearity")
 ```
 
-## Evaluate assumptions of the fitted model
+## Evaluate assumptions of fitted model
 
 $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
 
@@ -1644,7 +1644,7 @@ $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackre
 performance::check_model(mle.lm.fit, check = "normality")
 ```
 
-## Evaluate assumptions of the fitted model
+## Evaluate assumptions of fitted model
 
 $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
 **Homoscedasticity (homogeneity of variance) of errors**
@@ -1655,7 +1655,7 @@ $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackre
 performance::check_model(mle.lm.fit, check = c("homogeneity"))
 ```
 
-## Evaluate assumptions of the fitted model
+## Evaluate assumptions of fitted model
 
 $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
 **Independence of errors**
@@ -1665,7 +1665,7 @@ $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackre
 performance::check_autocorrelation(mle.lm.fit)
 ```
 
-## Evaluate predictions of the fitted model
+## Evaluate predictions of fitted model
 
 $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
 **Posterior predictive check**
