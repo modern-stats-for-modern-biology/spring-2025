@@ -541,11 +541,11 @@ Edoardo "Dado" Marcora
 
 <img data-src="index_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
 <section id="model-say-line" class="slide level2">
-<h2>Model, say “<em>line</em>”</h2>
+<h2>Model, say “<em>line</em>”!</h2>
 
 <img data-src="index_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
-<section id="model-says-line-predictions" class="slide level2">
-<h2>Model says: “<em>line</em>”! (predictions)</h2>
+<section id="and-the-model-says-line-obs-predictions" class="slide level2">
+<h2>… and the model says: <span class="fragment">“<em>line</em>”!</span> <span class="fragment">obs ≠ predictions</span></h2>
 
 <img data-src="index_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
 <section id="estimand-estimator-and-estimate" class="slide level2">
@@ -579,8 +579,8 @@ Edoardo "Dado" Marcora
 <li class="fragment"><p><strong>Identify</strong> the estimand/unknown quantity of interest (QOI), <span style="color: orangered">given question</span></p></li>
 <li class="fragment"><p><strong>Collect</strong> the data, <span style="color: orangered">given estimand, question</span></p></li>
 <li class="fragment"><p><strong>Specify</strong> the data model to capture relevant features of the DGP, incl.&nbsp;the sampling process, <span style="color: orangered">given data, estimand, question</span></p></li>
-<li class="fragment"><p><strong>Choose</strong> estimator and <strong>test</strong> (e.g., with simulated data, sensitivity analysis, prior predictive checks), <span style="color: orangered">given model, data, estimand, question</span></p></li>
-<li class="fragment"><p><strong>Fit</strong> the model to the data using an estimator to obtain an estimate of the estimand, <span style="color: orangered">given estimator, model, data, estimand, question</span></p></li>
+<li class="fragment"><p><strong>Specify</strong> and <strong>test</strong> estimator (e.g., with simulated data, sensitivity analysis, prior predictive checks), <span style="color: orangered">given model, data, estimand, question</span></p></li>
+<li class="fragment"><p><strong>Fit</strong> the model to the data using the estimator to obtain an estimate of the estimand, <span style="color: orangered">given estimator, model, data, estimand, question</span></p></li>
 <li class="fragment"><p><strong>Evaluate</strong> the estimate/fitted model with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), <span style="color: orangered">given estimate, estimator, model, data, estimand, question</span></p></li>
 <li class="fragment"><p><strong>Replicate</strong> (compare predictions of fitted model with new data), <span style="color: orangered">given all of the above</span></p></li>
 <li class="fragment"><p><strong>Report</strong> <span style="color: orangered">all of the above</span> in an open and reproducible manner</p></li>
@@ -1141,10 +1141,17 @@ A scientific fact should be regarded as experimentally established only if a pro
 <h2><em>P</em>-values, <em>S</em>-values, and confidence intervals</h2>
 <p>“<em>caused by random chance</em>”</p>
 <p>&nbsp;</p>
+<div class="fragment">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="https://www.getty.edu/art/collection/object/103RJG"><img data-src="images/dosso_dossi-allegory_of_fortune.jpg" class="quarto-figure quarto-figure-center" height="440"></a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="https://www.getty.edu/art/collection/object/103RJG"><img data-src="images/dosso_dossi-allegory_of_fortune.jpg" class="quarto-figure quarto-figure-center" height="440" alt="The man on the right is Chance Tha God and the woman on the left is the goddess Fortune"></a></p>
 </figure>
+</div>
+<figcaption>The man on the right is Chance Tha God and the woman on the left is the goddess Fortune</figcaption>
+</figure>
+</div>
 </div>
 </section>
 <section id="p-values-s-values-and-confidence-intervals-5" class="slide level2">
@@ -1181,7 +1188,7 @@ A scientific fact should be regarded as experimentally established only if a pro
 </section>
 <section id="p-values-s-values-and-confidence-intervals-8" class="slide level2">
 <h2><em>P</em>-values, <em>S</em>-values, and confidence intervals</h2>
-<p>“<em>caused by shrimp shrimp</em>” 😱 unless effect were caused by 🦐 indigestion!</p>
+<p>“<em>caused by shrimp shrimp</em>” 🥴 valid only if effect were caused by 🦐 indigestion!</p>
 <p>&nbsp;</p>
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1501,22 +1508,43 @@ E(X) = \mu \\
 
 </div>
 <img data-src="index_files/figure-revealjs/unnamed-chunk-41-1.png" width="576" class="r-stretch"></section>
-<section id="draw-a-causal-diagram" class="slide level2">
-<h2>Draw a causal diagram</h2>
-<p><strong>Directed acyclic graph (DAG)</strong>: A graphical representation of a causal model</p>
-<p><strong>Causal model</strong>: A set of variables and their causal relationships = <u>causal assumptions</u></p>
-
-<img data-src="images/dagitty-model.png" class="r-stretch"><div class="fragment">
-<p><span class="math display">\[
-W = f(H, U)
-\]</span></p>
+<section id="specify-the-causal-model" class="slide level2">
+<h2>Specify the causal model</h2>
+<ul>
+<li class="fragment"><p><strong>Causal model</strong>: a set of variables and their causal relationships (causal assumptions)</p></li>
+<li class="fragment"><p><strong>Directed acyclic graph (DAG)</strong>: a graphical representation of a causal model</p></li>
+</ul>
+<div class="fragment">
+<p><img data-src="images/dagitty-model.1.png" height="300"></p>
 </div>
-<p>See also: <a href="https://www.dagitty.net/learn">educational resources</a> at <a href="http://dagitty.net/">dagitty.net</a></p>
+<div class="columns">
+<div class="column fragment" style="width:20%;">
+<p><span class="math inline">\(W = f(H) \quad\)</span></p>
+</div><div class="column fragment" style="width:80%;">
+<p>“<em>weight (<span class="math inline">\(W\)</span>) is some function of height (<span class="math inline">\(H\)</span>)</em>”</p>
+</div></div>
+</section>
+<section id="specify-the-causal-model-1" class="slide level2">
+<h2>Specify the causal model</h2>
+<div>
+<ul>
+<li><p><strong>Causal model</strong>: a set of variables and their causal relationships (causal assumptions)</p></li>
+<li><p><strong>Directed acyclic graph (DAG)</strong>: a graphical representation of a causal model</p></li>
+</ul>
+</div>
+<p><img data-src="images/dagitty-model.2.png" height="300"></p>
+<div class="columns">
+<div class="column" style="width:20%;">
+<p><span class="math inline">\(W = f(H, U) \quad\)</span></p>
+</div><div class="column" style="width:80%;">
+<p>“<em>weight (<span class="math inline">\(W\)</span>) is some function of height (<span class="math inline">\(H\)</span>) and other <strong>unknown</strong> factors (<span class="math inline">\(U\)</span>)</em>”</p>
+</div></div>
 </section>
 <section id="specify-the-data-model-1" class="slide level2">
 <h2>Specify the data model</h2>
-<p>of the causal linear association between height (H) and weight (W) in adult humans using a general <strong>linear model</strong> (LM)<span class="fragment">; using LM instead of GLM in order to avoid confusion with the broader class of <strong>generalized linear models</strong> (GLM)</span></p>
 <ul>
+<li class="fragment"><p>Statistical model (e.g., a <strong>general linear model</strong>, LM) that describes the statistical relationship between height and weight in adult humans</p></li>
+<li class="fragment"><p>LM instead of GLM in order to avoid confusion with the broader class of <strong>generalized linear models</strong></p></li>
 <li class="fragment"><p><span class="math inline">\(\text{DATA} = \text{MODEL} + \text{ERROR}\)</span></p></li>
 <li class="fragment"><p><span class="math inline">\(\text{DATA} = \text{SIGNAL} + \text{NOISE}\)</span></p></li>
 </ul>
@@ -1686,7 +1714,6 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma), \\
 <span id="cb31-2"><a href=""></a></span>
 <span id="cb31-3"><a href=""></a>bayes.lm.fit <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(weight <span class="sc">~</span> height_c, <span class="at">data =</span> d, <span class="at">family =</span> <span class="fu">gaussian</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>&nbsp;</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(bayes.lm.fit, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.89</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -2033,8 +2060,8 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma), \\
 <li><p><strong>Identify</strong> the estimand/unknown quantity of interest (QOI), <span style="color: orangered">given question</span></p></li>
 <li><p><strong>Collect</strong> the data, <span style="color: orangered">given estimand, question</span></p></li>
 <li><p><strong>Specify</strong> the data model to capture relevant features of the DGP, incl.&nbsp;the sampling process, <span style="color: orangered">given data, estimand, question</span></p></li>
-<li><p><strong>Choose</strong> estimator and <strong>test</strong> (e.g., with simulated data, sensitivity analysis, prior predictive checks), <span style="color: orangered">given model, data, estimand, question</span></p></li>
-<li><p><strong>Fit</strong> the model to the data using an estimator to obtain an estimate of the estimand, <span style="color: orangered">given estimator, model, data, estimand, question</span></p></li>
+<li><p><strong>Specify</strong> and <strong>test</strong> estimator (e.g., with simulated data, sensitivity analysis, prior predictive checks), <span style="color: orangered">given model, data, estimand, question</span></p></li>
+<li><p><strong>Fit</strong> the model to the data using the estimator to obtain an estimate of the estimand, <span style="color: orangered">given estimator, model, data, estimand, question</span></p></li>
 <li><p><strong>Evaluate</strong> the estimate/fitted model with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), <span style="color: orangered">given estimate, estimator, model, data, estimand, question</span></p></li>
 <li><p><strong>Replicate</strong> (compare predictions of fitted model with new data), <span style="color: orangered">given all of the above</span></p></li>
 <li><p><strong>Report</strong> <span style="color: orangered">all of the above</span> in an open and reproducible manner</p></li>

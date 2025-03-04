@@ -182,8 +182,6 @@ $$
     -   $p(\theta \mid x)$ = probability distribution of $\theta$ given $x$ and $M^*$
 :::
 
-
-
 ## Bayes' theorem: The rule of statistical inference
 
 ::: text-align-center
@@ -314,7 +312,7 @@ datasauRus::datasaurus_dozen %>%
   facet_wrap(~ dataset, ncol = 4, nrow = 3)
 ```
 
-## Model, say "*line*"
+## Model, say "*line*"!
 
 ```{r}
 #| echo: false
@@ -328,7 +326,7 @@ datasauRus::datasaurus_dozen %>%
   facet_wrap(~ dataset, ncol = 4, nrow = 3)
 ```
 
-## Model says: "*line*"! (predictions)
+## &hellip; and the model says: ["*line*"!]{.fragment} [obs ≠ predictions]{.fragment}
 
 ```{r}
 #| echo: false
@@ -378,16 +376,15 @@ datasauRus::datasaurus_dozen %>%
 
 4.  **Specify** the data model to capture relevant features of the DGP, incl. the sampling process, [given data, estimand, question]{style="color: orangered"}
 
-5.  **Choose** estimator and **test** (e.g., with simulated data, sensitivity analysis, prior predictive checks), [given model, data, estimand, question]{style="color: orangered"}
+5.  **Specify** and **test** estimator (e.g., with simulated data, sensitivity analysis, prior predictive checks), [given model, data, estimand, question]{style="color: orangered"}
 
-6.  **Fit** the model to the data using an estimator to obtain an estimate of the estimand, [given estimator, model, data, estimand, question]{style="color: orangered"}
+6.  **Fit** the model to the data using the estimator to obtain an estimate of the estimand, [given estimator, model, data, estimand, question]{style="color: orangered"}
 
 7.  **Evaluate** the estimate/fitted model with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), [given estimate, estimator, model, data, estimand, question]{style="color: orangered"}
 
 8.  **Replicate** (compare predictions of fitted model with new data), [given all of the above]{style="color: orangered"}
 
 9.  **Report** [all of the above]{style="color: orangered"} in an open and reproducible manner
-
 
 ## Bayesian vs. frequentist theories of inference
 
@@ -949,7 +946,7 @@ for (i in 1:num_simulations) {
         2.  Otherwise, we **fail to reject** $H_0$ (which does not prove it true)
     -   This approach requires specifying an alternative hypothesis $H_1$ and Type I/II error rates, and planning sample size for sufficient [statistical power](https://en.wikipedia.org/wiki/Power_of_a_test) (e.g., $1 - \beta = 0.80$)
     -   In neuroscience, studies suffer from low power (8–31% [@Button2013]), which undermines the reliability of these decisions by inflating both Type I and Type II error rates
-    
+
 ::: notes
 `-log(0.05, 2) = 4.32` bits of evidence against the null hypothesis
 
@@ -980,8 +977,8 @@ Sir Ronald Aylmer Fisher (1890-1962), mathematical statistician and geneticist
 :::
 
 ::: {.column .fragment width="65%"}
->"*Personally, the writer prefers to set a low standard of significance at the 5 per cent point, and ignore entirely all results which fails to reach this level. [&hellip;]\
-A scientific fact should be regarded as experimentally established only if a properly designed experiment rarely fails to give this level of significance.*"  —  [Fisher RA 1926](https://doi.org/10.23637/rothamsted.8v61q)
+> "*Personally, the writer prefers to set a low standard of significance at the 5 per cent point, and ignore entirely all results which fails to reach this level. \[…\]\
+> A scientific fact should be regarded as experimentally established only if a properly designed experiment rarely fails to give this level of significance.*" — [Fisher RA 1926](https://doi.org/10.23637/rothamsted.8v61q)
 :::
 :::::
 
@@ -993,10 +990,9 @@ A scientific fact should be regarded as experimentally established only if a pro
 :::
 
 ::: {.column .fragment width="65%"}
-> "The widespread use of 'statistical significance' (generally interpreted as '*p* ≤ 0.05') as a license for making a claim of a scientific finding (or implied truth) leads to considerable distortion of the scientific process. [&hellip;] It is time to stop using the term 'statistically significant' entirely!" — [The ASA statement on P-values](https://doi.org/10.1080/00031305.2016.1154108)
+> "The widespread use of 'statistical significance' (generally interpreted as '*p* ≤ 0.05') as a license for making a claim of a scientific finding (or implied truth) leads to considerable distortion of the scientific process. \[…\] It is time to stop using the term 'statistically significant' entirely!" — [The ASA statement on P-values](https://doi.org/10.1080/00031305.2016.1154108)
 :::
-
-:::
+:::::
 
 -   The *P*-value is *not* the probability that the null hypothesis is true, and 1 - *P*-value is not the probability that the alternative hypothesis is true
 
@@ -1010,15 +1006,17 @@ A scientific fact should be regarded as experimentally established only if a pro
 
 "*caused by random chance*"
 
-&nbsp;
+ 
 
-[![](images/dosso_dossi-allegory_of_fortune.jpg){fig-align="center" height="440"}](https://www.getty.edu/art/collection/object/103RJG)
+::: fragment
+[![The man on the right is Chance Tha God and the woman on the left is the goddess Fortune](images/dosso_dossi-allegory_of_fortune.jpg){fig-align="center" height="440"}](https://www.getty.edu/art/collection/object/103RJG)
+:::
 
 ## *P*-values, *S*-values, and confidence intervals
 
 "*caused by random chance*"
 
-&nbsp;
+ 
 
 ::: fragment
 [![](images/shrimp_scampi.jpg){fig-align="center" height="440"}](https://oliviaoven.com/is-shrimp-scampi-an-italian-dish/)
@@ -1028,7 +1026,7 @@ A scientific fact should be regarded as experimentally established only if a pro
 
 "*caused by shrimp scampi*" 😱
 
-&nbsp;
+ 
 
 [![](images/shrimp_scampi.jpg){fig-align="center" height="440"}](https://oliviaoven.com/is-shrimp-scampi-an-italian-dish/)
 
@@ -1036,15 +1034,15 @@ A scientific fact should be regarded as experimentally established only if a pro
 
 "*caused by shrimp shrimp*" 😱
 
-&nbsp;
+ 
 
 [![](images/shrimp_scampi.jpg){fig-align="center" height="440"}](https://oliviaoven.com/is-shrimp-scampi-an-italian-dish/)
 
 ## *P*-values, *S*-values, and confidence intervals
 
-"*caused by shrimp shrimp*" 😱 unless effect were caused by 🦐 indigestion!
+"*caused by shrimp shrimp*" 🥴 valid only if effect were caused by 🦐 indigestion!
 
-&nbsp;
+ 
 
 [![](images/shrimp_scampi.jpg){fig-align="center" height="440"}](https://oliviaoven.com/is-shrimp-scampi-an-italian-dish/)
 
@@ -1269,7 +1267,7 @@ What is the relationship between height and weight in *adult* humans?
 favstats(~ weight | male, data = d) %>% knitr::kable(digits = 2)
 ```
 
-&nbsp;
+ 
 
 **Height by gender**
 
@@ -1277,7 +1275,6 @@ favstats(~ weight | male, data = d) %>% knitr::kable(digits = 2)
 #| output-location: default
 favstats(~ height | male, data = d) %>% knitr::kable(digits = 2)
 ```
-
 
 ## Identify the estimand
 
@@ -1291,25 +1288,51 @@ d <- d %>% select(weight, height) %>% mutate(height_c = height - mean(height))
 gf_point(weight ~ height, color = "skyblue4", data = d) %>% gf_lm(color = "black")
 ```
 
-## Draw a causal diagram
+## Specify the causal model
 
-**Directed acyclic graph (DAG)**: A graphical representation of a causal model
+-   **Causal model**: a set of variables and their causal relationships (causal assumptions)
 
-**Causal model**: A set of variables and their causal relationships = [causal assumptions]{.underline}
-
-![](images/dagitty-model.png)
+-   **Directed acyclic graph (DAG)**: a graphical representation of a causal model
 
 ::: fragment
-$$
-W = f(H, U)
-$$
+![](images/dagitty-model.1.png){height="300"}
 :::
 
-See also: [educational resources](https://www.dagitty.net/learn) at [dagitty.net](http://dagitty.net/)
+::: columns
+::: {.column .fragment width="20%"}
+$W = f(H) \quad$
+:::
+
+::: {.column .fragment width="80%"}
+"*weight ($W$) is some function of height ($H$)*"
+:::
+:::
+
+## Specify the causal model
+
+::: nonincremental
+-   **Causal model**: a set of variables and their causal relationships (causal assumptions)
+
+-   **Directed acyclic graph (DAG)**: a graphical representation of a causal model
+:::
+
+![](images/dagitty-model.2.png){height="300"}
+
+::: columns
+::: {.column width="20%"}
+$W = f(H, U) \quad$
+:::
+
+::: {.column width="80%"}
+"*weight ($W$) is some function of height ($H$) and other **unknown** factors ($U$)*"
+:::
+:::
 
 ## Specify the data model
 
-of the causal linear association between height (H) and weight (W) in adult humans using a general **linear model** (LM)[; using LM instead of GLM in order to avoid confusion with the broader class of **generalized linear models** (GLM)]{.fragment}
+-   Statistical model (e.g., a **general linear model**, LM) that describes the statistical relationship between height and weight in adult humans
+
+-   LM instead of GLM in order to avoid confusion with the broader class of **generalized linear models**
 
 -   $\text{DATA} = \text{MODEL} + \text{ERROR}$
 
@@ -1444,8 +1467,7 @@ df %>%
 
 ## Fit the model to the data
 
-::: columns
-
+::::: columns
 ::: {.column width="40%"}
 $$
 \begin{aligned}
@@ -1479,8 +1501,7 @@ bayes.lm.fit <- quap(alist( # model = likelihood + priors
 ), data = list(y=d$weight, x=d$height_c))
 ```
 :::
-
-:::
+:::::
 
 ```{r}
 summary(bayes.lm.fit)
@@ -1496,7 +1517,7 @@ library(rstanarm)
 bayes.lm.fit <- stan_glm(weight ~ height_c, data = d, family = gaussian())
 ```
 
-&nbsp;
+ 
 
 ```{r}
 broom.mixed::tidy(bayes.lm.fit, conf.int = TRUE, conf.level = 0.89)
@@ -1597,9 +1618,9 @@ performance::check_model(mle.lm.fit, check = c("pp_check"))
 
 4.  **Specify** the data model to capture relevant features of the DGP, incl. the sampling process, [given data, estimand, question]{style="color: orangered"}
 
-5.  **Choose** estimator and **test** (e.g., with simulated data, sensitivity analysis, prior predictive checks), [given model, data, estimand, question]{style="color: orangered"}
+5.  **Specify** and **test** estimator (e.g., with simulated data, sensitivity analysis, prior predictive checks), [given model, data, estimand, question]{style="color: orangered"}
 
-6.  **Fit** the model to the data using an estimator to obtain an estimate of the estimand, [given estimator, model, data, estimand, question]{style="color: orangered"}
+6.  **Fit** the model to the data using the estimator to obtain an estimate of the estimand, [given estimator, model, data, estimand, question]{style="color: orangered"}
 
 7.  **Evaluate** the estimate/fitted model with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), [given estimate, estimator, model, data, estimand, question]{style="color: orangered"}
 
@@ -1609,7 +1630,6 @@ performance::check_model(mle.lm.fit, check = c("pp_check"))
 :::
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
-
 
 ## Statistical inference
 
@@ -2480,8 +2500,6 @@ $\quad \quad M^{L+E_\text{Cauchy}}: y \sim \text{Cauchy} (\mu = (\beta_0 + \beta
 ::: fragment
 $p(x, y \mid M_4) = p(x, y \mid \mu = (3 + 1 \cdot x), \sigma = 1, M^{\text{Cauchy}})$
 :::
-
-
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
