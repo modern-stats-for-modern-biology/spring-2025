@@ -1443,9 +1443,9 @@ $$
 -   Specify the functional form of the statistical model (e.g., a **general linear model**, LM) that describes the statistical relationship between height and weight in adult humans
 :::
 
--   The next step is to use an estimator to estimate the parameters $\beta_0$, $\beta_1$, and $\sigma$ that best fit the data $\{ (x_i, y_i) \}$
+-   The next step is to use an estimator to estimate the parameters $\beta_0$ (intercept), $\beta_1$ (slope), and $\sigma$ (error spread) that best fit the data $\{ (x_i, y_i) \}$
 
--   Simulated data (predictions) can be generated from this model by specifying values for the parameters $\beta_0$, $\beta_1$, and $\sigma$
+-   Simulated data (predictions) can be generated from this model by specifying values for the parameters
 
 ::: fragment
 ```{r}
@@ -1478,19 +1478,19 @@ df %>%
 ## Fit the model to the data
 
 ::::: columns
-::: {.column width="40%"}
+::: {.column width="35%"}
 $$
 \begin{aligned}
-y_i & \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma), \\
-\mu_i & = \beta_0 + \beta_1 \cdot x_i, \\
-\beta_0 & \sim \text{Norm}(160, 30), \\
-\beta_1 & \sim \text{Unif}(0, 1), \\
-\sigma & \sim \text{Unif}(0, 10).
+y_i & \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
+\mu_i & = \beta_0 + \beta_1 \cdot x_i\\
+\beta_0 & \sim \text{Norm}(160, 30)\\
+\beta_1 & \sim \text{Unif}(0, 1)\\
+\sigma & \sim \text{Unif}(0, 10)
 \end{aligned}
 $$
 :::
 
-::: {.column width="60%"}
+::: {.column width="65%"}
 ```{r}
 #| output: false
 #| output-location: default
@@ -1513,42 +1513,88 @@ bayes.lm.fit <- quap(alist( # model = likelihood + priors
 :::
 :::::
 
+&nbsp;
+
+::: fragment
 ```{r}
+#| output-location: default
 summary(bayes.lm.fit)
 ```
+:::
 
 ## Fit the model to the data
+
+::: nonincremental
+-   [`rstanarm`](https://mc-stan.org/rstanarm/) is a package that provides the `stan_glm` function to fit Bayesian general (and generalized) linear models specified using the [R formula syntax](https://www.econometrics.blog/post/the-r-formula-cheatsheet/)
+:::
 
 ```{r}
 #| output: false
 #| output-location: default
-library(rstanarm)
-
-bayes.lm.fit <- stan_glm(weight ~ height_c, data = d, family = gaussian())
+bayes.lm.fit <- rstanarm::stan_glm(weight ~ height_c, data = d, family = gaussian())
 ```
 
- 
+-   The `stan_glm` function uses the [Stan](https://mc-stan.org/) probabilistic programming language to fit the model
 
+-   Unless specified, the `stan_glm` function uses [weakly informative priors](https://mc-stan.org/rstanarm/articles/priors.html#default-weakly-informative-prior-distributions-1) by default
+
+::: fragment
 ```{r}
+#| output-location: default
 broom.mixed::tidy(bayes.lm.fit, conf.int = TRUE, conf.level = 0.89)
 ```
+:::
+
+-   [`brms`](https://paulbuerkner.com/brms/) is a similar package that provides a more flexible and powerful `brms` function to fit Bayesian general (and generalized) linear models specified using the [R formula syntax](https://www.econometrics.blog/post/the-r-formula-cheatsheet/)
+
 
 ## Fit the model to the data
 
-Bayesian estimate is the joint posterior **probability** distribution of the parameters $\beta_0$ (intercept), $\beta_1$ (slope), and $\sigma$ given the data
+::: nonincremental
+-   The Bayesian estimate is the joint posterior **probability** distribution of the parameters $\beta_0$ (intercept), $\beta_1$ (slope), and $\sigma$ (error spread) given the data
+:::
+
+```{r}
+#| output-location: default
+#| echo: false
+posterior <- as.matrix(bayes.lm.fit)
+```
+
+```{r}
+#| output-location: default
+#| echo: false
+bayesplot::mcmc_pairs(posterior, diag_fun = "dens", off_diag_fun = "hex")
+```
+
+
+## Fit the model to the data
+
+::: nonincremental
+-   The Bayesian estimate is the joint posterior **probability** distribution of the parameters $\beta_0$ (intercept), $\beta_1$ (slope), and $\sigma$ given the data
+:::
 
 ![](images/ols_howell_learn.gif){height="400"}
 
 ## Fit the model to the data
 
-Frequentist estimate is the maximum **likelihood** point estimate and confidence interval of the parameters $\beta_0$ (intercept) and $\beta_1$ (slope), and $\sigma$ given the data
+::: nonincremental
+-   The frequentist estimate is the maximum **likelihood** point estimate and confidence interval of the parameters $\beta_0$ (intercept) and $\beta_1$ (slope) given the data
+:::
+
+```{r}
+#| output: false
+#| output-location: default
+mle.lm.fit <- lm(formula = weight ~ height_c, data = d)
+```
+
+&nbsp;
 
 ```{r}
 #| output-location: default
-mle.lm.fit <- lm(formula = weight ~ height_c, data = d)
-
 broom::tidy(mle.lm.fit, conf.int = TRUE, conf.level = 0.89) %>% select(term, estimate, conf.low, conf.high)
 ```
+
+
 
 ## Compare the Bayesian and frequentist estimates
 
