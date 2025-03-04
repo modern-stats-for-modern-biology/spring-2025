@@ -581,8 +581,8 @@ Edoardo "Dado" Marcora
 <li class="fragment"><p><strong>Specify</strong> the data model to capture relevant features of the DGP, incl.&nbsp;the sampling process, <span style="color: orangered">given data, estimand, question</span></p></li>
 <li class="fragment"><p><strong>Specify</strong> and <strong>test</strong> estimator (e.g., with simulated data, sensitivity analysis, prior predictive checks), <span style="color: orangered">given model, data, estimand, question</span></p></li>
 <li class="fragment"><p><strong>Fit</strong> the model to the data using the estimator to obtain an estimate of the estimand, <span style="color: orangered">given estimator, model, data, estimand, question</span></p></li>
-<li class="fragment"><p><strong>Evaluate</strong> the fitted model assumptions and predictions with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), <span style="color: orangered">given estimate, estimator, model, data, estimand, question</span></p></li>
-<li class="fragment"><p><strong>Replicate</strong> (compare predictions of fitted model with new data), <span style="color: orangered">given all of the above</span></p></li>
+<li class="fragment"><p><strong>Evaluate</strong> assumptions and predictions of the fitted model with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), <span style="color: orangered">given estimate, estimator, model, data, estimand, question</span></p></li>
+<li class="fragment"><p><strong>Replicate</strong> (compare predictions of the fitted model with new data), <span style="color: orangered">given all of the above</span></p></li>
 <li class="fragment"><p><strong>Report</strong> <span style="color: orangered">all of the above</span> in an open and reproducible manner</p></li>
 </ol>
 </section>
@@ -2008,8 +2008,8 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 </ul></li>
 </ul>
 </section>
-<section id="evaluate-fitted-model-assumptions" class="slide level2">
-<h2>Evaluate fitted model assumptions</h2>
+<section id="evaluate-assumptions-of-the-fitted-model" class="slide level2">
+<h2>Evaluate assumptions of the fitted model</h2>
 <p><span class="math display">\[y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\]</span></p>
 <p><strong>Linearity of linear predictor</strong></p>
 <div class="cell">
@@ -2017,8 +2017,8 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 
 </div>
 <img data-src="index_files/figure-revealjs/unnamed-chunk-52-1.png" width="960" class="r-stretch"></section>
-<section id="evaluate-fitted-model-assumptions-1" class="slide level2">
-<h2>Evaluate fitted model assumptions</h2>
+<section id="evaluate-assumptions-of-the-fitted-model-1" class="slide level2">
+<h2>Evaluate assumptions of the fitted model</h2>
 <p><span class="math display">\[y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\]</span></p>
 <p><strong>Normality of errors</strong></p>
 <div class="cell">
@@ -2026,16 +2026,16 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 
 </div>
 <img data-src="index_files/figure-revealjs/unnamed-chunk-53-1.png" width="960" class="r-stretch"></section>
-<section id="evaluate-fitted-model-assumptions-2" class="slide level2">
-<h2>Evaluate fitted model assumptions</h2>
+<section id="evaluate-assumptions-of-the-fitted-model-2" class="slide level2">
+<h2>Evaluate assumptions of the fitted model</h2>
 <p><span class="math display">\[y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\]</span> <strong>Homoscedasticity (homogeneity of variance) of errors</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(mle.lm.fit, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"homogeneity"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="index_files/figure-revealjs/unnamed-chunk-54-1.png" width="960" class="r-stretch"></section>
-<section id="evaluate-fitted-model-assumptions-3" class="slide level2">
-<h2>Evaluate fitted model assumptions</h2>
+<section id="evaluate-assumptions-of-the-fitted-model-3" class="slide level2">
+<h2>Evaluate assumptions of the fitted model</h2>
 <p><span class="math display">\[y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\]</span> <strong>Independence of errors</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_autocorrelation</span>(mle.lm.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2044,8 +2044,8 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 </div>
 </div>
 </section>
-<section id="evaluate-fitted-model-predictions" class="slide level2">
-<h2>Evaluate fitted model predictions</h2>
+<section id="evaluate-predictions-of-the-fitted-model" class="slide level2">
+<h2>Evaluate predictions of the fitted model</h2>
 <p><span class="math display">\[y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\]</span> <strong>Posterior predictive check</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(mle.lm.fit, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"pp_check"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2079,8 +2079,8 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <li><p><strong>Specify</strong> the data model to capture relevant features of the DGP, incl.&nbsp;the sampling process, <span style="color: orangered">given data, estimand, question</span></p></li>
 <li><p><strong>Specify</strong> and <strong>test</strong> estimator (e.g., with simulated data, sensitivity analysis, prior predictive checks), <span style="color: orangered">given model, data, estimand, question</span></p></li>
 <li><p><strong>Fit</strong> the model to the data using the estimator to obtain an estimate of the estimand, <span style="color: orangered">given estimator, model, data, estimand, question</span></p></li>
-<li><p><strong>Evaluate</strong> the fitted model assumptions and predictions with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), <span style="color: orangered">given estimate, estimator, model, data, estimand, question</span></p></li>
-<li><p><strong>Replicate</strong> (compare predictions of fitted model with new data), <span style="color: orangered">given all of the above</span></p></li>
+<li><p><strong>Evaluate</strong> assumptions and predictions of the fitted model with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), <span style="color: orangered">given estimate, estimator, model, data, estimand, question</span></p></li>
+<li><p><strong>Replicate</strong> (compare predictions of the fitted model with new data), <span style="color: orangered">given all of the above</span></p></li>
 <li><p><strong>Report</strong> <span style="color: orangered">all of the above</span> in an open and reproducible manner</p></li>
 </ol>
 </div>
