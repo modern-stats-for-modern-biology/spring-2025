@@ -1445,20 +1445,20 @@ $$
 
 -   The next step is to use an estimator to estimate the parameters $\beta_0$, $\beta_1$, and $\sigma$ that best fit the data $\{ (x_i, y_i) \}$
 
--   Simulated data (predictions) can also be generated from this model by specifying the parameters $\beta_0$, $\beta_1$, and $\sigma$
+-   Simulated data (predictions) can also be generated from this model by additionally specifying the parameters $\beta_0$, $\beta_1$, and $\sigma$
 
 ::: fragment
 ```{r}
 #| fig-height: 3.6
 #| echo: false
 #| warning: false
-alpha <- 45
-beta <- 0.6
+beta0 <- 45
+beta1 <- 0.6
 sigma <- 4
 
-H <- seq(130, 180)
+H <- seq(-20, 20) # height_c is mean centered height
 n <- length(H)
-mu <- alpha + beta * H
+mu <- beta0 + beta1 * H
 W <- replicate(1000, rnorm(n, mu, sigma))
 
 df <- bind_cols(tibble(H), as.data.frame(W)) %>%
@@ -1467,8 +1467,9 @@ df <- bind_cols(tibble(H), as.data.frame(W)) %>%
 
 df %>%
   gf_density_ridges(H ~ W, linetype = 0, fill = "lightblue") %>%
-  gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(3), color = "skyblue4") %>% 
-  gf_labs(title = TeX(r'(Monte Carlo simulation of $y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = 45, \beta_1 = 0.6, \sigma = 4$)')) %>%
+  gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(3), color = "skyblue4", size = 1) %>%
+  gf_model(W ~ H, color = "gray4") %>%
+  gf_labs(title = TeX(r'(Monte Carlo simulation of $y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = 45, \beta_1 = 0.6, \sigma = 4$)'), y = "Height (cm, mean-centered)", x = "Weight (Kg)") %>%
   gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   coord_flip()
 ```
