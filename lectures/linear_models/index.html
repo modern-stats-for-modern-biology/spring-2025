@@ -581,7 +581,7 @@ Edoardo "Dado" Marcora
 <li class="fragment"><p><strong>Specify</strong> the data model to capture relevant features of the DGP, incl.&nbsp;the sampling process, <span style="color: orangered">given data, estimand, question</span></p></li>
 <li class="fragment"><p><strong>Specify</strong> and <strong>test</strong> estimator (e.g., with simulated data, sensitivity analysis, prior predictive checks), <span style="color: orangered">given model, data, estimand, question</span></p></li>
 <li class="fragment"><p><strong>Fit</strong> the model to the data using the estimator to obtain an estimate of the estimand, <span style="color: orangered">given estimator, model, data, estimand, question</span></p></li>
-<li class="fragment"><p><strong>Evaluate</strong> the estimate/fitted model with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), <span style="color: orangered">given estimate, estimator, model, data, estimand, question</span></p></li>
+<li class="fragment"><p><strong>Evaluate</strong> the fitted model assumptions and predictions with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), <span style="color: orangered">given estimate, estimator, model, data, estimand, question</span></p></li>
 <li class="fragment"><p><strong>Replicate</strong> (compare predictions of fitted model with new data), <span style="color: orangered">given all of the above</span></p></li>
 <li class="fragment"><p><strong>Report</strong> <span style="color: orangered">all of the above</span> in an open and reproducible manner</p></li>
 </ol>
@@ -1996,6 +1996,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 </section>
 <section id="assumptions-of-the-general-linear-model" class="slide level2">
 <h2>Assumptions of the general linear model</h2>
+<p><span class="math display">\[y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\]</span></p>
 <ul>
 <li class="fragment"><p><strong>Linearity of linear predictor</strong></p>
 <ul>
@@ -2006,86 +2007,50 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <li class="fragment"><span class="math inline">\(\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\)</span></li>
 </ul></li>
 </ul>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(mle.lm.fit, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"linearity"</span>, <span class="st">"normality"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell fragment">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-52-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
 </section>
-<section id="assumptions-of-the-general-linear-model-1" class="slide level2">
-<h2>Assumptions of the general linear model</h2>
-<div>
-<ul>
-<li><p><strong>Linearity of linear predictor</strong></p>
-<ul>
-<li><span class="math inline">\(\beta_0 + \beta_1 \cdot x_i\)</span></li>
-</ul></li>
-<li><p><strong>Normality</strong>, <strong>homoscedasticity</strong> and <strong>independence of errors</strong></p>
-<ul>
-<li><span class="math inline">\(\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\)</span></li>
-</ul></li>
-</ul>
-</div>
+<section id="evaluate-fitted-model-assumptions" class="slide level2">
+<h2>Evaluate fitted model assumptions</h2>
+<p><span class="math display">\[y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\]</span> ### Linearity of linear predictor</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(mle.lm.fit, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"homogeneity"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(mle.lm.fit, <span class="at">check =</span> <span class="st">"linearity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
-<div class="cell fragment">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-53-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="assumptions-of-the-general-linear-model-2" class="slide level2">
-<h2>Assumptions of the general linear model</h2>
-<div>
-<ul>
-<li><p><strong>Linearity of linear predictor</strong></p>
-<ul>
-<li><span class="math inline">\(\beta_0 + \beta_1 \cdot x_i\)</span></li>
-</ul></li>
-<li><p><strong>Normality</strong>, <strong>homoscedasticity</strong> and <strong>independence of errors</strong></p>
-<ul>
-<li><span class="math inline">\(\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\)</span></li>
-</ul></li>
-</ul>
-</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-52-1.png" width="960" class="r-stretch"></section>
+<section id="evaluate-fitted-model-assumptions-1" class="slide level2">
+<h2>Evaluate fitted model assumptions</h2>
+<p><span class="math display">\[y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\]</span></p>
+<p><strong>Normality of errors</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_autocorrelation</span>(mle.lm.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(mle.lm.fit, <span class="at">check =</span> <span class="st">"normality"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
-<div class="cell fragment">
+<img data-src="index_files/figure-revealjs/unnamed-chunk-53-1.png" width="960" class="r-stretch"></section>
+<section id="evaluate-fitted-model-assumptions-2" class="slide level2">
+<h2>Evaluate fitted model assumptions</h2>
+<p><span class="math display">\[y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\]</span> <strong>Homoscedasticity (homogeneity of variance) of errors</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(mle.lm.fit, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"homogeneity"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-54-1.png" width="960" class="r-stretch"></section>
+<section id="evaluate-fitted-model-assumptions-3" class="slide level2">
+<h2>Evaluate fitted model assumptions</h2>
+<p><span class="math display">\[y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\]</span> <strong>Independence of errors</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_autocorrelation</span>(mle.lm.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>OK: Residuals appear to be independent and not autocorrelated (p = 0.150).</code></pre>
 </div>
 </div>
 </section>
-<section id="evaluate-the-fitted-model-with-the-training-data" class="slide level2">
-<h2>Evaluate the fitted model with the training data</h2>
+<section id="evaluate-fitted-model-predictions" class="slide level2">
+<h2>Evaluate fitted model predictions</h2>
+<p><span class="math display">\[y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)\]</span> <strong>Posterior predictive check</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(mle.lm.fit, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"pp_check"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href=""></a>performance<span class="sc">::</span><span class="fu">check_model</span>(mle.lm.fit, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"pp_check"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
-<div class="cell fragment">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-55-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-56-1.png" width="960" class="r-stretch"></section>
 <section id="references" class="slide level2 smaller scrollable">
 <h2>References</h2>
 <div id="refs" class="references csl-bib-body" data-entry-spacing="0" data-line-spacing="2" role="list">
@@ -2113,7 +2078,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <li><p><strong>Specify</strong> the data model to capture relevant features of the DGP, incl.&nbsp;the sampling process, <span style="color: orangered">given data, estimand, question</span></p></li>
 <li><p><strong>Specify</strong> and <strong>test</strong> estimator (e.g., with simulated data, sensitivity analysis, prior predictive checks), <span style="color: orangered">given model, data, estimand, question</span></p></li>
 <li><p><strong>Fit</strong> the model to the data using the estimator to obtain an estimate of the estimand, <span style="color: orangered">given estimator, model, data, estimand, question</span></p></li>
-<li><p><strong>Evaluate</strong> the estimate/fitted model with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), <span style="color: orangered">given estimate, estimator, model, data, estimand, question</span></p></li>
+<li><p><strong>Evaluate</strong> the fitted model assumptions and predictions with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), <span style="color: orangered">given estimate, estimator, model, data, estimand, question</span></p></li>
 <li><p><strong>Replicate</strong> (compare predictions of fitted model with new data), <span style="color: orangered">given all of the above</span></p></li>
 <li><p><strong>Report</strong> <span style="color: orangered">all of the above</span> in an open and reproducible manner</p></li>
 </ol>
@@ -2181,134 +2146,134 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <section id="helper-functions" class="slide level2">
 <h2>Helper functions</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href=""></a><span class="co"># discretized and reparameterized probability density functions</span></span>
-<span id="cb41-2"><a href=""></a>ddunif   <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">location =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">1</span>) <span class="fu">dunif</span>(x, location <span class="sc">-</span> scale, location <span class="sc">+</span> scale) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">dunif</span>(x, location <span class="sc">-</span> scale, location <span class="sc">+</span> scale))</span>
-<span id="cb41-3"><a href=""></a>ddnorm   <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">location =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">1</span>) <span class="fu">dnorm</span>(x, location, scale) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">dnorm</span>(x, location, scale))</span>
-<span id="cb41-4"><a href=""></a>ddcauchy <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">location =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">1</span>) <span class="fu">dcauchy</span>(x, location, scale) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">dcauchy</span>(x, location, scale))</span>
-<span id="cb41-5"><a href=""></a></span>
-<span id="cb41-6"><a href=""></a><span class="co"># plot probability distribution as a tile plot</span></span>
-<span id="cb41-7"><a href=""></a>plot_model <span class="ot">&lt;-</span> <span class="cf">function</span>(df, <span class="at">n =</span> <span class="cn">NULL</span>) {</span>
-<span id="cb41-8"><a href=""></a>  <span class="co"># df is expected to have X, Y, and p columns</span></span>
-<span id="cb41-9"><a href=""></a>  </span>
-<span id="cb41-10"><a href=""></a>  <span class="co"># count total number of cells</span></span>
-<span id="cb41-11"><a href=""></a>  n_cells <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df) </span>
-<span id="cb41-12"><a href=""></a>  </span>
-<span id="cb41-13"><a href=""></a>  <span class="co"># decide style based on total number of cells</span></span>
-<span id="cb41-14"><a href=""></a>  <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">100</span>) {</span>
-<span id="cb41-15"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="st">"black"</span></span>
-<span id="cb41-16"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
-<span id="cb41-17"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb41-18"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">200</span>) {</span>
-<span id="cb41-19"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="st">"black"</span></span>
-<span id="cb41-20"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
-<span id="cb41-21"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb41-22"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">500</span>) {</span>
-<span id="cb41-23"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="st">"black"</span></span>
-<span id="cb41-24"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
-<span id="cb41-25"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb41-26"><a href=""></a>  } <span class="cf">else</span> {</span>
-<span id="cb41-27"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb41-28"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb41-29"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb41-30"><a href=""></a>  }</span>
-<span id="cb41-31"><a href=""></a>  </span>
-<span id="cb41-32"><a href=""></a>  <span class="co"># if samples are requested, do not add text labels</span></span>
-<span id="cb41-33"><a href=""></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(n)) {</span>
-<span id="cb41-34"><a href=""></a>    text_size <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb41-35"><a href=""></a>  }</span>
-<span id="cb41-36"><a href=""></a>  </span>
-<span id="cb41-37"><a href=""></a>  <span class="co"># count number of distinct X and Y values for axis text sizing</span></span>
-<span id="cb41-38"><a href=""></a>  n_x <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(df<span class="sc">$</span>X))</span>
-<span id="cb41-39"><a href=""></a>  n_y <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(df<span class="sc">$</span>Y))</span>
-<span id="cb41-40"><a href=""></a>  </span>
-<span id="cb41-41"><a href=""></a>  axis_text_x_size <span class="ot">&lt;-</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">10</span>) { <span class="dv">12</span> } <span class="cf">else</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">20</span>) { <span class="dv">10</span> } <span class="cf">else</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">40</span>) { <span class="dv">8</span> } <span class="cf">else</span> { <span class="dv">6</span> }</span>
-<span id="cb41-42"><a href=""></a>  axis_text_y_size <span class="ot">&lt;-</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">10</span>) { <span class="dv">12</span> } <span class="cf">else</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">20</span>) { <span class="dv">10</span> } <span class="cf">else</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">40</span>) { <span class="dv">8</span> } <span class="cf">else</span> { <span class="dv">6</span> }</span>
-<span id="cb41-43"><a href=""></a>  </span>
-<span id="cb41-44"><a href=""></a>  max_x <span class="ot">&lt;-</span> <span class="fu">max</span>(df<span class="sc">$</span>X)</span>
-<span id="cb41-45"><a href=""></a>  max_y <span class="ot">&lt;-</span> <span class="fu">max</span>(df<span class="sc">$</span>Y)</span>
-<span id="cb41-46"><a href=""></a>  </span>
-<span id="cb41-47"><a href=""></a>  <span class="co"># determine the fill scale parameters based on n_cells:</span></span>
-<span id="cb41-48"><a href=""></a>  <span class="co"># dor small grids, the range of p is set higher (midpoint and limit are larger)</span></span>
-<span id="cb41-49"><a href=""></a>  <span class="co"># dor larger grids, the scale is "compressed" to better reflect small p values.</span></span>
-<span id="cb41-50"><a href=""></a>  <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">100</span>) {</span>
-<span id="cb41-51"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
-<span id="cb41-52"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb41-53"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">200</span>) {</span>
-<span id="cb41-54"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.125</span></span>
-<span id="cb41-55"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
-<span id="cb41-56"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">500</span>) {</span>
-<span id="cb41-57"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.0625</span></span>
-<span id="cb41-58"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
-<span id="cb41-59"><a href=""></a>  } <span class="cf">else</span> {</span>
-<span id="cb41-60"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.03125</span></span>
-<span id="cb41-61"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="fl">0.125</span></span>
-<span id="cb41-62"><a href=""></a>  }</span>
-<span id="cb41-63"><a href=""></a>  </span>
-<span id="cb41-64"><a href=""></a>  fill_scale <span class="ot">&lt;-</span> <span class="fu">scale_fill_gradientn</span>(</span>
-<span id="cb41-65"><a href=""></a>    <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"chocolate4"</span>, <span class="st">"black"</span>),</span>
-<span id="cb41-66"><a href=""></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="dv">0</span>, mid_val, <span class="dv">1</span>),</span>
-<span id="cb41-67"><a href=""></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, limit_val),</span>
-<span id="cb41-68"><a href=""></a>    <span class="at">oob =</span> scales<span class="sc">::</span>squish</span>
-<span id="cb41-69"><a href=""></a>  )</span>
-<span id="cb41-70"><a href=""></a>  </span>
-<span id="cb41-71"><a href=""></a>  x_scale <span class="ot">&lt;-</span> <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, max_x))</span>
-<span id="cb41-72"><a href=""></a>  y_scale <span class="ot">&lt;-</span> <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, max_y))</span>
-<span id="cb41-73"><a href=""></a>  base_theme <span class="ot">&lt;-</span> <span class="fu">theme</span>(</span>
-<span id="cb41-74"><a href=""></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb41-75"><a href=""></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb41-76"><a href=""></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> axis_text_x_size, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">0</span>)),</span>
-<span id="cb41-77"><a href=""></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> axis_text_y_size, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">r =</span> <span class="dv">2</span>, <span class="at">l =</span> <span class="dv">0</span>))</span>
-<span id="cb41-78"><a href=""></a>  )</span>
-<span id="cb41-79"><a href=""></a>  </span>
-<span id="cb41-80"><a href=""></a>  <span class="co"># visualize probability distribution as a tile plot</span></span>
-<span id="cb41-81"><a href=""></a>  plt <span class="ot">&lt;-</span> <span class="fu">gf_tile</span>(</span>
-<span id="cb41-82"><a href=""></a>    Y <span class="sc">~</span> X,</span>
-<span id="cb41-83"><a href=""></a>    <span class="at">data =</span> df,</span>
-<span id="cb41-84"><a href=""></a>    <span class="at">fill =</span> <span class="sc">~</span> p,</span>
-<span id="cb41-85"><a href=""></a>    <span class="at">color =</span> line_color,</span>
-<span id="cb41-86"><a href=""></a>    <span class="at">linewidth =</span> line_width) <span class="sc">%&gt;%</span></span>
-<span id="cb41-87"><a href=""></a>    <span class="fu">gf_refine</span>(</span>
-<span id="cb41-88"><a href=""></a>      fill_scale,</span>
-<span id="cb41-89"><a href=""></a>      x_scale,</span>
-<span id="cb41-90"><a href=""></a>      y_scale,</span>
-<span id="cb41-91"><a href=""></a>      base_theme) <span class="sc">+</span></span>
-<span id="cb41-92"><a href=""></a>    <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, max_x), <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, max_y)) <span class="sc">+</span></span>
-<span id="cb41-93"><a href=""></a>    <span class="fu">coord_fixed</span>(<span class="at">expand =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb41-94"><a href=""></a>  </span>
-<span id="cb41-95"><a href=""></a>  <span class="co"># optionally add text labels if text_size is applicable</span></span>
-<span id="cb41-96"><a href=""></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.na</span>(text_size)) {</span>
-<span id="cb41-97"><a href=""></a>    plt <span class="ot">&lt;-</span> plt <span class="sc">%&gt;%</span> <span class="fu">gf_text</span>(<span class="at">label =</span> <span class="sc">~</span> <span class="fu">sprintf</span>(<span class="st">"%0.4f"</span>, p), <span class="at">size =</span> text_size, <span class="at">alpha =</span> <span class="fl">0.75</span>)</span>
-<span id="cb41-98"><a href=""></a>  }</span>
-<span id="cb41-99"><a href=""></a>  </span>
-<span id="cb41-100"><a href=""></a>  <span class="co"># optionally overlay random sample points if n is provided</span></span>
-<span id="cb41-101"><a href=""></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(n)) {</span>
-<span id="cb41-102"><a href=""></a>    plt <span class="ot">&lt;-</span> plt <span class="sc">%&gt;%</span> <span class="fu">gf_point</span>(</span>
-<span id="cb41-103"><a href=""></a>      Y <span class="sc">~</span> X,</span>
-<span id="cb41-104"><a href=""></a>      <span class="co"># sample to generate data in accordance with the model</span></span>
-<span id="cb41-105"><a href=""></a>      <span class="at">data =</span> df <span class="sc">%&gt;%</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> n, <span class="at">weight_by =</span> p, <span class="at">replace =</span> <span class="cn">TRUE</span>), </span>
-<span id="cb41-106"><a href=""></a>      <span class="at">size =</span> <span class="dv">4</span>,</span>
-<span id="cb41-107"><a href=""></a>      <span class="at">color =</span> <span class="st">"red2"</span>,</span>
-<span id="cb41-108"><a href=""></a>      <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
-<span id="cb41-109"><a href=""></a>      <span class="at">stroke =</span> <span class="dv">0</span></span>
-<span id="cb41-110"><a href=""></a>    )</span>
-<span id="cb41-111"><a href=""></a>  }</span>
-<span id="cb41-112"><a href=""></a>  </span>
-<span id="cb41-113"><a href=""></a>  <span class="fu">return</span>(plt)</span>
-<span id="cb41-114"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a><span class="co"># discretized and reparameterized probability density functions</span></span>
+<span id="cb42-2"><a href=""></a>ddunif   <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">location =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">1</span>) <span class="fu">dunif</span>(x, location <span class="sc">-</span> scale, location <span class="sc">+</span> scale) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">dunif</span>(x, location <span class="sc">-</span> scale, location <span class="sc">+</span> scale))</span>
+<span id="cb42-3"><a href=""></a>ddnorm   <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">location =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">1</span>) <span class="fu">dnorm</span>(x, location, scale) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">dnorm</span>(x, location, scale))</span>
+<span id="cb42-4"><a href=""></a>ddcauchy <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">location =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">1</span>) <span class="fu">dcauchy</span>(x, location, scale) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">dcauchy</span>(x, location, scale))</span>
+<span id="cb42-5"><a href=""></a></span>
+<span id="cb42-6"><a href=""></a><span class="co"># plot probability distribution as a tile plot</span></span>
+<span id="cb42-7"><a href=""></a>plot_model <span class="ot">&lt;-</span> <span class="cf">function</span>(df, <span class="at">n =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb42-8"><a href=""></a>  <span class="co"># df is expected to have X, Y, and p columns</span></span>
+<span id="cb42-9"><a href=""></a>  </span>
+<span id="cb42-10"><a href=""></a>  <span class="co"># count total number of cells</span></span>
+<span id="cb42-11"><a href=""></a>  n_cells <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df) </span>
+<span id="cb42-12"><a href=""></a>  </span>
+<span id="cb42-13"><a href=""></a>  <span class="co"># decide style based on total number of cells</span></span>
+<span id="cb42-14"><a href=""></a>  <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">100</span>) {</span>
+<span id="cb42-15"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="st">"black"</span></span>
+<span id="cb42-16"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb42-17"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb42-18"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">200</span>) {</span>
+<span id="cb42-19"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="st">"black"</span></span>
+<span id="cb42-20"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
+<span id="cb42-21"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb42-22"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">500</span>) {</span>
+<span id="cb42-23"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="st">"black"</span></span>
+<span id="cb42-24"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb42-25"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb42-26"><a href=""></a>  } <span class="cf">else</span> {</span>
+<span id="cb42-27"><a href=""></a>    line_color  <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb42-28"><a href=""></a>    line_width  <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb42-29"><a href=""></a>    text_size   <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb42-30"><a href=""></a>  }</span>
+<span id="cb42-31"><a href=""></a>  </span>
+<span id="cb42-32"><a href=""></a>  <span class="co"># if samples are requested, do not add text labels</span></span>
+<span id="cb42-33"><a href=""></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(n)) {</span>
+<span id="cb42-34"><a href=""></a>    text_size <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb42-35"><a href=""></a>  }</span>
+<span id="cb42-36"><a href=""></a>  </span>
+<span id="cb42-37"><a href=""></a>  <span class="co"># count number of distinct X and Y values for axis text sizing</span></span>
+<span id="cb42-38"><a href=""></a>  n_x <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(df<span class="sc">$</span>X))</span>
+<span id="cb42-39"><a href=""></a>  n_y <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(df<span class="sc">$</span>Y))</span>
+<span id="cb42-40"><a href=""></a>  </span>
+<span id="cb42-41"><a href=""></a>  axis_text_x_size <span class="ot">&lt;-</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">10</span>) { <span class="dv">12</span> } <span class="cf">else</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">20</span>) { <span class="dv">10</span> } <span class="cf">else</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">40</span>) { <span class="dv">8</span> } <span class="cf">else</span> { <span class="dv">6</span> }</span>
+<span id="cb42-42"><a href=""></a>  axis_text_y_size <span class="ot">&lt;-</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">10</span>) { <span class="dv">12</span> } <span class="cf">else</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">20</span>) { <span class="dv">10</span> } <span class="cf">else</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">40</span>) { <span class="dv">8</span> } <span class="cf">else</span> { <span class="dv">6</span> }</span>
+<span id="cb42-43"><a href=""></a>  </span>
+<span id="cb42-44"><a href=""></a>  max_x <span class="ot">&lt;-</span> <span class="fu">max</span>(df<span class="sc">$</span>X)</span>
+<span id="cb42-45"><a href=""></a>  max_y <span class="ot">&lt;-</span> <span class="fu">max</span>(df<span class="sc">$</span>Y)</span>
+<span id="cb42-46"><a href=""></a>  </span>
+<span id="cb42-47"><a href=""></a>  <span class="co"># determine the fill scale parameters based on n_cells:</span></span>
+<span id="cb42-48"><a href=""></a>  <span class="co"># dor small grids, the range of p is set higher (midpoint and limit are larger)</span></span>
+<span id="cb42-49"><a href=""></a>  <span class="co"># dor larger grids, the scale is "compressed" to better reflect small p values.</span></span>
+<span id="cb42-50"><a href=""></a>  <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">100</span>) {</span>
+<span id="cb42-51"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
+<span id="cb42-52"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb42-53"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">200</span>) {</span>
+<span id="cb42-54"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.125</span></span>
+<span id="cb42-55"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb42-56"><a href=""></a>  } <span class="cf">else</span> <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">500</span>) {</span>
+<span id="cb42-57"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.0625</span></span>
+<span id="cb42-58"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
+<span id="cb42-59"><a href=""></a>  } <span class="cf">else</span> {</span>
+<span id="cb42-60"><a href=""></a>    mid_val   <span class="ot">&lt;-</span> <span class="fl">0.03125</span></span>
+<span id="cb42-61"><a href=""></a>    limit_val <span class="ot">&lt;-</span> <span class="fl">0.125</span></span>
+<span id="cb42-62"><a href=""></a>  }</span>
+<span id="cb42-63"><a href=""></a>  </span>
+<span id="cb42-64"><a href=""></a>  fill_scale <span class="ot">&lt;-</span> <span class="fu">scale_fill_gradientn</span>(</span>
+<span id="cb42-65"><a href=""></a>    <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"chocolate4"</span>, <span class="st">"black"</span>),</span>
+<span id="cb42-66"><a href=""></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="dv">0</span>, mid_val, <span class="dv">1</span>),</span>
+<span id="cb42-67"><a href=""></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, limit_val),</span>
+<span id="cb42-68"><a href=""></a>    <span class="at">oob =</span> scales<span class="sc">::</span>squish</span>
+<span id="cb42-69"><a href=""></a>  )</span>
+<span id="cb42-70"><a href=""></a>  </span>
+<span id="cb42-71"><a href=""></a>  x_scale <span class="ot">&lt;-</span> <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, max_x))</span>
+<span id="cb42-72"><a href=""></a>  y_scale <span class="ot">&lt;-</span> <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, max_y))</span>
+<span id="cb42-73"><a href=""></a>  base_theme <span class="ot">&lt;-</span> <span class="fu">theme</span>(</span>
+<span id="cb42-74"><a href=""></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb42-75"><a href=""></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb42-76"><a href=""></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> axis_text_x_size, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">0</span>)),</span>
+<span id="cb42-77"><a href=""></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> axis_text_y_size, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">r =</span> <span class="dv">2</span>, <span class="at">l =</span> <span class="dv">0</span>))</span>
+<span id="cb42-78"><a href=""></a>  )</span>
+<span id="cb42-79"><a href=""></a>  </span>
+<span id="cb42-80"><a href=""></a>  <span class="co"># visualize probability distribution as a tile plot</span></span>
+<span id="cb42-81"><a href=""></a>  plt <span class="ot">&lt;-</span> <span class="fu">gf_tile</span>(</span>
+<span id="cb42-82"><a href=""></a>    Y <span class="sc">~</span> X,</span>
+<span id="cb42-83"><a href=""></a>    <span class="at">data =</span> df,</span>
+<span id="cb42-84"><a href=""></a>    <span class="at">fill =</span> <span class="sc">~</span> p,</span>
+<span id="cb42-85"><a href=""></a>    <span class="at">color =</span> line_color,</span>
+<span id="cb42-86"><a href=""></a>    <span class="at">linewidth =</span> line_width) <span class="sc">%&gt;%</span></span>
+<span id="cb42-87"><a href=""></a>    <span class="fu">gf_refine</span>(</span>
+<span id="cb42-88"><a href=""></a>      fill_scale,</span>
+<span id="cb42-89"><a href=""></a>      x_scale,</span>
+<span id="cb42-90"><a href=""></a>      y_scale,</span>
+<span id="cb42-91"><a href=""></a>      base_theme) <span class="sc">+</span></span>
+<span id="cb42-92"><a href=""></a>    <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, max_x), <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, max_y)) <span class="sc">+</span></span>
+<span id="cb42-93"><a href=""></a>    <span class="fu">coord_fixed</span>(<span class="at">expand =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb42-94"><a href=""></a>  </span>
+<span id="cb42-95"><a href=""></a>  <span class="co"># optionally add text labels if text_size is applicable</span></span>
+<span id="cb42-96"><a href=""></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.na</span>(text_size)) {</span>
+<span id="cb42-97"><a href=""></a>    plt <span class="ot">&lt;-</span> plt <span class="sc">%&gt;%</span> <span class="fu">gf_text</span>(<span class="at">label =</span> <span class="sc">~</span> <span class="fu">sprintf</span>(<span class="st">"%0.4f"</span>, p), <span class="at">size =</span> text_size, <span class="at">alpha =</span> <span class="fl">0.75</span>)</span>
+<span id="cb42-98"><a href=""></a>  }</span>
+<span id="cb42-99"><a href=""></a>  </span>
+<span id="cb42-100"><a href=""></a>  <span class="co"># optionally overlay random sample points if n is provided</span></span>
+<span id="cb42-101"><a href=""></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(n)) {</span>
+<span id="cb42-102"><a href=""></a>    plt <span class="ot">&lt;-</span> plt <span class="sc">%&gt;%</span> <span class="fu">gf_point</span>(</span>
+<span id="cb42-103"><a href=""></a>      Y <span class="sc">~</span> X,</span>
+<span id="cb42-104"><a href=""></a>      <span class="co"># sample to generate data in accordance with the model</span></span>
+<span id="cb42-105"><a href=""></a>      <span class="at">data =</span> df <span class="sc">%&gt;%</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> n, <span class="at">weight_by =</span> p, <span class="at">replace =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb42-106"><a href=""></a>      <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb42-107"><a href=""></a>      <span class="at">color =</span> <span class="st">"red2"</span>,</span>
+<span id="cb42-108"><a href=""></a>      <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb42-109"><a href=""></a>      <span class="at">stroke =</span> <span class="dv">0</span></span>
+<span id="cb42-110"><a href=""></a>    )</span>
+<span id="cb42-111"><a href=""></a>  }</span>
+<span id="cb42-112"><a href=""></a>  </span>
+<span id="cb42-113"><a href=""></a>  <span class="fu">return</span>(plt)</span>
+<span id="cb42-114"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="uniform-probability-distribution" class="slide level2">
 <h2>Uniform probability distribution</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a>ss <span class="ot">&lt;-</span></span>
-<span id="cb42-2"><a href=""></a>  <span class="fu">expand_grid</span>(</span>
-<span id="cb42-3"><a href=""></a>    <span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
-<span id="cb42-4"><a href=""></a>    <span class="at">B =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb42-5"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span></span>
-<span id="cb42-6"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb42-7"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="co"># uniform probability distribution function</span></span>
-<span id="cb42-8"><a href=""></a></span>
-<span id="cb42-9"><a href=""></a>ss <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href=""></a>ss <span class="ot">&lt;-</span></span>
+<span id="cb43-2"><a href=""></a>  <span class="fu">expand_grid</span>(</span>
+<span id="cb43-3"><a href=""></a>    <span class="at">A =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb43-4"><a href=""></a>    <span class="at">B =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb43-5"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span></span>
+<span id="cb43-6"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb43-7"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="co"># uniform probability distribution function</span></span>
+<span id="cb43-8"><a href=""></a></span>
+<span id="cb43-9"><a href=""></a>ss <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -2354,15 +2319,15 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <section id="uniform-probability-distribution-1" class="slide level2">
 <h2>Uniform probability distribution</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href=""></a>ss <span class="ot">&lt;-</span></span>
-<span id="cb43-2"><a href=""></a>  <span class="fu">expand_grid</span>(</span>
-<span id="cb43-3"><a href=""></a>    <span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
-<span id="cb43-4"><a href=""></a>    <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb43-5"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span></span>
-<span id="cb43-6"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb43-7"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="co"># M0</span></span>
-<span id="cb43-8"><a href=""></a></span>
-<span id="cb43-9"><a href=""></a>ss <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a>ss <span class="ot">&lt;-</span></span>
+<span id="cb44-2"><a href=""></a>  <span class="fu">expand_grid</span>(</span>
+<span id="cb44-3"><a href=""></a>    <span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb44-4"><a href=""></a>    <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb44-5"><a href=""></a>  <span class="fu">mutate</span>(Ω <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"⍵"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span></span>
+<span id="cb44-6"><a href=""></a>  <span class="fu">select</span>(Ω, <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb44-7"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="co"># M0</span></span>
+<span id="cb44-8"><a href=""></a></span>
+<span id="cb44-9"><a href=""></a>ss <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top">
 <thead>
@@ -2407,15 +2372,15 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <h2>Uniform spreading of Nutella on a toast</h2>
 <p><strong>Small toast</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb44-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb44-3"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb45-3"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-60-1.png" width="288"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-61-1.png" width="288"></p>
 </figure>
 </div>
 </div>
@@ -2425,15 +2390,15 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <h2>Uniform spreading of Nutella on a toast</h2>
 <p><strong>Medium toast</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb45-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb45-3"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb46-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb46-3"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-61-1.png" width="384"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-62-1.png" width="384"></p>
 </figure>
 </div>
 </div>
@@ -2443,15 +2408,15 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <h2>Uniform spreading of Nutella on a toast</h2>
 <p><strong>Large toast</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb46-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb46-3"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb47-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb47-3"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-62-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-63-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2465,7 +2430,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-63-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-64-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2474,15 +2439,15 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <p><span class="math display">\[P(X = 1, Y = 3 \mid M_0)\]</span></p>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb47-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb47-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
-<span id="cb47-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb47-5"><a href=""></a>  <span class="fu">filter</span>(</span>
-<span id="cb47-6"><a href=""></a>    X <span class="sc">==</span> <span class="dv">1</span>, Y <span class="sc">==</span> <span class="dv">3</span></span>
-<span id="cb47-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb47-8"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
-<span id="cb47-9"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb48-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb48-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb48-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb48-5"><a href=""></a>  <span class="fu">filter</span>(</span>
+<span id="cb48-6"><a href=""></a>    X <span class="sc">==</span> <span class="dv">1</span>, Y <span class="sc">==</span> <span class="dv">3</span></span>
+<span id="cb48-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-8"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
+<span id="cb48-9"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
@@ -2500,7 +2465,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-65-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-66-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2509,15 +2474,15 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <p><span class="math display">\[P(X = 1 \mid M_0)\]</span></p>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb49-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb49-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
-<span id="cb49-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb49-5"><a href=""></a>  <span class="fu">filter</span>(</span>
-<span id="cb49-6"><a href=""></a>    X <span class="sc">==</span> <span class="dv">1</span></span>
-<span id="cb49-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb49-8"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
-<span id="cb49-9"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb50-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb50-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb50-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb50-5"><a href=""></a>  <span class="fu">filter</span>(</span>
+<span id="cb50-6"><a href=""></a>    X <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb50-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-8"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
+<span id="cb50-9"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
@@ -2535,7 +2500,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-67-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-68-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2544,15 +2509,15 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <p><span class="math display">\[P(Y = 3 \mid M_0)\]</span></p>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb51-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb51-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
-<span id="cb51-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb51-5"><a href=""></a>  <span class="fu">filter</span>(</span>
-<span id="cb51-6"><a href=""></a>    Y <span class="sc">==</span> <span class="dv">3</span></span>
-<span id="cb51-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb51-8"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
-<span id="cb51-9"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb52-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb52-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb52-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb52-5"><a href=""></a>  <span class="fu">filter</span>(</span>
+<span id="cb52-6"><a href=""></a>    Y <span class="sc">==</span> <span class="dv">3</span></span>
+<span id="cb52-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-8"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
+<span id="cb52-9"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
@@ -2570,7 +2535,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-69-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-70-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2579,10 +2544,10 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <p><span class="math display">\[P(Y = 3 \mid X = 1, M_0)\]</span></p>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb53-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb53-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
-<span id="cb53-4"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb54-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb54-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb54-4"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div></div>
@@ -2595,7 +2560,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-71-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-72-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2603,13 +2568,13 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 </div><div class="column" style="width:60%;">
 <p><span class="math display">\[P(Y = 3 \mid X = 1, M_0)\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb54-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb54-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
-<span id="cb54-4"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb54-6"><a href=""></a>    <span class="at">X1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb54-7"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb55-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb55-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb55-4"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb55-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb55-6"><a href=""></a>    <span class="at">X1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb55-7"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div>
 </section>
@@ -2621,36 +2586,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-73-1.png" width="480"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:60%;">
-<p><span class="math display">\[P(Y = 3 \mid X = 1, M_0)\]</span></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb55-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb55-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
-<span id="cb55-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb55-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb55-6"><a href=""></a>    <span class="at">X1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb55-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb55-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb55-9"><a href=""></a>    <span class="at">p =</span> <span class="fu">if_else</span>(X1, p <span class="sc">/</span> <span class="fu">sum</span>(p[X1]), <span class="dv">0</span>)</span>
-<span id="cb55-10"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div></div>
-</section>
-<section id="calculate-conditional-probability-3" class="slide level2">
-<h2>Calculate conditional probability</h2>
-<div class="columns">
-<div class="column" style="width:40%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-75-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-74-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2667,12 +2603,41 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <span id="cb56-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
 <span id="cb56-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
 <span id="cb56-9"><a href=""></a>    <span class="at">p =</span> <span class="fu">if_else</span>(X1, p <span class="sc">/</span> <span class="fu">sum</span>(p[X1]), <span class="dv">0</span>)</span>
-<span id="cb56-10"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb56-11"><a href=""></a>  <span class="fu">filter</span>(</span>
-<span id="cb56-12"><a href=""></a>    Y <span class="sc">==</span> <span class="dv">3</span></span>
-<span id="cb56-13"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb56-14"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
-<span id="cb56-15"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb56-10"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div>
+</section>
+<section id="calculate-conditional-probability-3" class="slide level2">
+<h2>Calculate conditional probability</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-76-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<p><span class="math display">\[P(Y = 3 \mid X = 1, M_0)\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb57-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb57-3"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>() <span class="co"># M0</span></span>
+<span id="cb57-4"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb57-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb57-6"><a href=""></a>    <span class="at">X1 =</span> (X <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb57-7"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-8"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb57-9"><a href=""></a>    <span class="at">p =</span> <span class="fu">if_else</span>(X1, p <span class="sc">/</span> <span class="fu">sum</span>(p[X1]), <span class="dv">0</span>)</span>
+<span id="cb57-10"><a href=""></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-11"><a href=""></a>  <span class="fu">filter</span>(</span>
+<span id="cb57-12"><a href=""></a>    Y <span class="sc">==</span> <span class="dv">3</span></span>
+<span id="cb57-13"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb57-14"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">P =</span> <span class="fu">sum</span>(p)) <span class="sc">%&gt;%</span></span>
+<span id="cb57-15"><a href=""></a>  <span class="fu">pull</span>(P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
@@ -2687,31 +2652,6 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="column" style="width:60%;">
 <p><span class="math inline">\(p(X = x, Y = y \mid M_0)\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href=""></a><span class="co">#</span></span>
-<span id="cb58-2"><a href=""></a></span>
-<span id="cb58-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb58-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb58-5"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># M0</span></span>
-<span id="cb58-6"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div><div class="column" style="width:40%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-78-1.png" width="480"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="uniform-model-1" class="slide level2">
-<h2>Uniform model</h2>
-<div class="columns">
-<div class="column" style="width:60%;">
-<p><span class="math inline">\(p(x, y)\)</span></p>
-<div class="cell">
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href=""></a><span class="co">#</span></span>
 <span id="cb59-2"><a href=""></a></span>
 <span id="cb59-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
@@ -2724,7 +2664,32 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-80-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-79-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="uniform-model-1" class="slide level2">
+<h2>Uniform model</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p><span class="math inline">\(p(x, y)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href=""></a><span class="co">#</span></span>
+<span id="cb60-2"><a href=""></a></span>
+<span id="cb60-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb60-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb60-5"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># M0</span></span>
+<span id="cb60-6"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-81-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2737,24 +2702,24 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="column" style="width:60%;">
 <p><span class="math inline">\(p(x, y \mid M_1)\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb60-2"><a href=""></a></span>
-<span id="cb60-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb60-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb60-5"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># M0</span></span>
-<span id="cb60-6"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb60-7"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb60-8"><a href=""></a>    <span class="at">M1 =</span> (Y <span class="sc">==</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X)) <span class="sc">%&gt;%</span> </span>
-<span id="cb60-9"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb60-10"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M1, p <span class="sc">/</span> <span class="fu">sum</span>(p[M1]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb60-11"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb61-2"><a href=""></a></span>
+<span id="cb61-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb61-5"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># M0</span></span>
+<span id="cb61-6"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb61-7"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb61-8"><a href=""></a>    <span class="at">M1 =</span> (Y <span class="sc">==</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> X)) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-9"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb61-10"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M1, p <span class="sc">/</span> <span class="fu">sum</span>(p[M1]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-11"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:40%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-82-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-83-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2776,24 +2741,24 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="column" style="width:60%;">
 <p><span class="math inline">\(p(x, y \mid M_2)\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb61-2"><a href=""></a></span>
-<span id="cb61-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb61-5"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># M0</span></span>
-<span id="cb61-6"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb61-7"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb61-8"><a href=""></a>    <span class="at">M2 =</span> Y <span class="sc">%in%</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">seq</span>(<span class="sc">-</span>s, s))) <span class="sc">%&gt;%</span> </span>
-<span id="cb61-9"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb61-10"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M2, p <span class="sc">/</span> <span class="fu">sum</span>(p[M2]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb61-11"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb62-2"><a href=""></a></span>
+<span id="cb62-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb62-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb62-5"><a href=""></a>    <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="co"># M0</span></span>
+<span id="cb62-6"><a href=""></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb62-7"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb62-8"><a href=""></a>    <span class="at">M2 =</span> Y <span class="sc">%in%</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">seq</span>(<span class="sc">-</span>s, s))) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-9"><a href=""></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb62-10"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(M2, p <span class="sc">/</span> <span class="fu">sum</span>(p[M2]), <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb62-11"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:40%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-84-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-85-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2818,20 +2783,20 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="column" style="width:60%;">
 <p><span class="math inline">\(p(x, y \mid M_2)\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb62-2"><a href=""></a></span>
-<span id="cb62-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb62-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb62-5"><a href=""></a>    <span class="at">p =</span> <span class="fu">ddunif</span>(Y, <span class="at">location =</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X), <span class="co"># M2, M0</span></span>
-<span id="cb62-6"><a href=""></a>                  <span class="at">scale =</span> s)) <span class="sc">%&gt;%</span></span>
-<span id="cb62-7"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb63-2"><a href=""></a></span>
+<span id="cb63-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb63-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb63-5"><a href=""></a>    <span class="at">p =</span> <span class="fu">ddunif</span>(Y, <span class="at">location =</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X), <span class="co"># M2, M0</span></span>
+<span id="cb63-6"><a href=""></a>                  <span class="at">scale =</span> s)) <span class="sc">%&gt;%</span></span>
+<span id="cb63-7"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:40%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-86-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-87-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2856,20 +2821,20 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="column" style="width:60%;">
 <p><span class="math inline">\(p(x, y \mid M_3)\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb63-2"><a href=""></a></span>
-<span id="cb63-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb63-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb63-5"><a href=""></a>    <span class="at">p =</span> <span class="fu">ddnorm</span>(Y, <span class="at">location =</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X), <span class="co"># M3, M0</span></span>
-<span id="cb63-6"><a href=""></a>                  <span class="at">scale =</span> s)) <span class="sc">%&gt;%</span></span>
-<span id="cb63-7"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb64-2"><a href=""></a></span>
+<span id="cb64-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb64-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb64-5"><a href=""></a>    <span class="at">p =</span> <span class="fu">ddnorm</span>(Y, <span class="at">location =</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X), <span class="co"># M3, M0</span></span>
+<span id="cb64-6"><a href=""></a>                  <span class="at">scale =</span> s)) <span class="sc">%&gt;%</span></span>
+<span id="cb64-7"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:40%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-88-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-89-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2894,13 +2859,13 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="column" style="width:60%;">
 <p><span class="math inline">\(p(x, y \mid M_4)\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb64-2"><a href=""></a></span>
-<span id="cb64-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb64-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb64-5"><a href=""></a>    <span class="at">p =</span> <span class="fu">ddcauchy</span>(Y, <span class="at">location =</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X), <span class="co"># M4, M0</span></span>
-<span id="cb64-6"><a href=""></a>                    <span class="at">scale =</span> s)) <span class="sc">%&gt;%</span></span>
-<span id="cb64-7"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb65-2"><a href=""></a></span>
+<span id="cb65-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb65-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb65-5"><a href=""></a>    <span class="at">p =</span> <span class="fu">ddcauchy</span>(Y, <span class="at">location =</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X), <span class="co"># M4, M0</span></span>
+<span id="cb65-6"><a href=""></a>                    <span class="at">scale =</span> s)) <span class="sc">%&gt;%</span></span>
+<span id="cb65-7"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="fragment">
 <p><img data-src="images/Normal-vs-Cauchy-distribution.png" height="200"></p>
@@ -2910,7 +2875,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-90-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-91-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -2923,20 +2888,20 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <div class="column" style="width:60%;">
 <p><span class="math inline">\(p(x, y \mid M_4)\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb65-2"><a href=""></a></span>
-<span id="cb65-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb65-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb65-5"><a href=""></a>    <span class="at">p =</span> <span class="fu">ddcauchy</span>(Y, <span class="at">location =</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X), <span class="co"># M4, M0</span></span>
-<span id="cb65-6"><a href=""></a>                    <span class="at">scale =</span> s)) <span class="sc">%&gt;%</span></span>
-<span id="cb65-7"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href=""></a>b0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b1 <span class="ot">&lt;-</span> <span class="dv">1</span>; s <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb66-2"><a href=""></a></span>
+<span id="cb66-3"><a href=""></a><span class="fu">expand_grid</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">Y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb66-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb66-5"><a href=""></a>    <span class="at">p =</span> <span class="fu">ddcauchy</span>(Y, <span class="at">location =</span> (b0 <span class="sc">+</span> b1 <span class="sc">*</span> X), <span class="co"># M4, M0</span></span>
+<span id="cb66-6"><a href=""></a>                    <span class="at">scale =</span> s)) <span class="sc">%&gt;%</span></span>
+<span id="cb66-7"><a href=""></a>  <span class="fu">plot_model</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:40%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-92-1.png" width="480"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-93-1.png" width="480"></p>
 </figure>
 </div>
 </div>

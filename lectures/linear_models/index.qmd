@@ -380,7 +380,7 @@ datasauRus::datasaurus_dozen %>%
 
 6.  **Fit** the model to the data using the estimator to obtain an estimate of the estimand, [given estimator, model, data, estimand, question]{style="color: orangered"}
 
-7.  **Evaluate** the estimate/fitted model with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), [given estimate, estimator, model, data, estimand, question]{style="color: orangered"}
+7.  **Evaluate** the fitted model assumptions and predictions with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), [given estimate, estimator, model, data, estimand, question]{style="color: orangered"}
 
 8.  **Replicate** (compare predictions of fitted model with new data), [given all of the above]{style="color: orangered"}
 
@@ -1610,6 +1610,8 @@ modelsummary::msummary(
 
 ## Assumptions of the general linear model
 
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
+
 -   **Linearity of linear predictor**
 
     -   $\beta_0 + \beta_1 \cdot x_i$
@@ -1618,49 +1620,58 @@ modelsummary::msummary(
 
     -   $\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$
 
-::: fragment
+## Evaluate fitted model assumptions
+
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
+### Linearity of linear predictor
+
 ```{r}
-#| fig-height: 4
-performance::check_model(mle.lm.fit, check = c("linearity", "normality"))
+#| fig-height: 5
+#| output-location: default
+performance::check_model(mle.lm.fit, check = "linearity")
 ```
-:::
 
-## Assumptions of the general linear model
+## Evaluate fitted model assumptions
 
-::: nonincremental
--   **Linearity of linear predictor**
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
 
-    -   $\beta_0 + \beta_1 \cdot x_i$
-
--   **Normality**, **homoscedasticity** and **independence of errors**
-
-    -   $\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$
-:::
+**Normality of errors**
 
 ```{r}
-#| fig-height: 4
+#| fig-height: 5
+#| output-location: default
+performance::check_model(mle.lm.fit, check = "normality")
+```
+
+## Evaluate fitted model assumptions
+
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
+**Homoscedasticity (homogeneity of variance) of errors**
+
+```{r}
+#| fig-height: 5
+#| output-location: default
 performance::check_model(mle.lm.fit, check = c("homogeneity"))
 ```
 
-## Assumptions of the general linear model
+## Evaluate fitted model assumptions
 
-::: nonincremental
--   **Linearity of linear predictor**
-
-    -   $\beta_0 + \beta_1 \cdot x_i$
-
--   **Normality**, **homoscedasticity** and **independence of errors**
-
-    -   $\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$
-:::
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
+**Independence of errors**
 
 ```{r}
+#| output-location: default
 performance::check_autocorrelation(mle.lm.fit)
 ```
 
-## Evaluate the fitted model with the training data
+## Evaluate fitted model predictions
+
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
+**Posterior predictive check**
 
 ```{r}
+#| fig-height: 5
+#| output-location: default
 performance::check_model(mle.lm.fit, check = c("pp_check"))
 ```
 
@@ -1684,7 +1695,7 @@ performance::check_model(mle.lm.fit, check = c("pp_check"))
 
 6.  **Fit** the model to the data using the estimator to obtain an estimate of the estimand, [given estimator, model, data, estimand, question]{style="color: orangered"}
 
-7.  **Evaluate** the estimate/fitted model with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), [given estimate, estimator, model, data, estimand, question]{style="color: orangered"}
+7.  **Evaluate** the fitted model assumptions and predictions with the training data (e.g., cross-validation, residual analysis, posterior predictive checks), [given estimate, estimator, model, data, estimand, question]{style="color: orangered"}
 
 8.  **Replicate** (compare predictions of fitted model with new data), [given all of the above]{style="color: orangered"}
 
