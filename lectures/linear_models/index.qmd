@@ -204,7 +204,7 @@ $$
 
 ![](statistical-rethinking-2023-lecture-02/slide-002.png)
 
-## State scientific question
+## Science before statistics
 
 Clearly state the **scientific question**
 
@@ -325,8 +325,22 @@ datasauRus::datasaurus_dozen %>%
   theme(legend.position = "none", strip.text = element_blank()) +
   facet_wrap(~ dataset, ncol = 4, nrow = 3)
 ```
+## … and the model says:
 
-## &hellip; and the model says: ["*line*"!]{.fragment} [obs ≠ predictions]{.fragment}
+```{r}
+#| echo: false
+#| fig.height: 6
+datasauRus::datasaurus_dozen %>%
+  filter(dataset != "slant_down") %>%
+  gf_point(y ~ x, colour = ~ dataset, alpha = 0.5) +
+  coord_fixed(expand = FALSE) +
+  theme_void() +
+  theme(legend.position = "none", strip.text = element_blank()) +
+  facet_wrap(~ dataset, ncol = 4, nrow = 3)
+```
+
+
+## … and the model says: "*line*"! [obs ≠ predictions]{.fragment}
 
 ```{r}
 #| echo: false
@@ -1303,7 +1317,7 @@ $W = f(H) \quad$
 :::
 
 ::: fragment
-"*weight ($W$) is some function of height ($H$)*"
+"*weight (*$W$) is some function of height ($H$)"
 :::
 
 ## Specify causal model
@@ -1321,7 +1335,7 @@ $W = f(H, U) \quad$
 :::
 
 ::: fragment
-"*weight ($W$) is some function of height ($H$) and other **unknown** factors ($U$)*"
+"*weight (*$W$) is some function of height ($H$) and other **unknown** factors ($U$)"
 :::
 
 ## Specify data model
@@ -1436,7 +1450,6 @@ $$
 
 -   $y_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(\mu_i, \sigma) \quad \quad \mu_i = \beta_0 + \beta_1 \cdot x_i$
 
-
 ## Specify data model
 
 ::: nonincremental
@@ -1513,7 +1526,7 @@ bayes.lm.fit <- quap(alist( # model = likelihood + priors
 :::
 :::::
 
-&nbsp;
+ 
 
 ::: fragment
 ```{r}
@@ -1547,7 +1560,6 @@ broom.mixed::tidy(bayes.lm.fit, conf.int = TRUE, conf.level = 0.89)
 
 -   [`brms`](https://paulbuerkner.com/brms/) is a similar package that provides a more flexible and powerful `brm` function to fit Bayesian general (and generalized) linear models specified using the [R formula syntax](https://www.econometrics.blog/post/the-r-formula-cheatsheet/)
 
-
 ## Fit model to data
 
 ::: nonincremental
@@ -1565,7 +1577,6 @@ posterior <- as.matrix(bayes.lm.fit)
 #| echo: false
 bayesplot::mcmc_pairs(posterior, diag_fun = "dens", off_diag_fun = "hex")
 ```
-
 
 ## Fit model to data
 
@@ -1595,7 +1606,6 @@ broom::tidy(mle.lm.fit, conf.int = TRUE, conf.level = 0.89) %>% select(term, est
 -   Unlike the Bayesian estimate, the frequentist estimate is not a probability distribution of the parameters given the data
 
 -   Bayesian inference provides a more complete and interpretable estimate of the parameters, enables more flexible and complex statistical modelling, and allows the incorporation of prior information
-
 
 ## Compare Bayesian and frequentist estimates {.scrollable}
 
@@ -1641,24 +1651,22 @@ $$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackre
 ```{r}
 #| fig-height: 5
 #| output-location: default
-performance::check_model(mle.lm.fit, check = "normality")
+performance::check_model(mle.lm.fit, check = c("qq", "normality"))
 ```
 
 ## Evaluate assumptions of fitted model
 
-$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
-**Homoscedasticity (homogeneity of variance) of errors**
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$ **Homoscedasticity (homogeneity of variance) of errors**
 
 ```{r}
 #| fig-height: 5
 #| output-location: default
-performance::check_model(mle.lm.fit, check = c("homogeneity"))
+performance::check_model(mle.lm.fit, check = "homogeneity")
 ```
 
 ## Evaluate assumptions of fitted model
 
-$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
-**Independence of errors**
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$ **Independence of errors**
 
 ```{r}
 #| output-location: default
@@ -1667,8 +1675,7 @@ performance::check_autocorrelation(mle.lm.fit)
 
 ## Evaluate predictions of fitted model
 
-$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$
-**Posterior predictive check**
+$$y_i = \beta_0 + \beta_1 \cdot x_i + \epsilon_i \quad \quad \epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Norm}(0, \sigma)$$ **Posterior predictive check**
 
 ```{r}
 #| fig-height: 5
