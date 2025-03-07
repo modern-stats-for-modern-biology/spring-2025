@@ -68,60 +68,14 @@ csl: nature-no-et-al.csl
 
 [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
 
-## Elemental confounds
 
-```{r}
-library(tidyverse)
-library(dagitty)
-library(ggdag)
+## Models of the solar system
 
-theme_set(theme_minimal())
-```
+![](causal_salad/part1.slide_11.pdf)
 
-```{r}
-coords <- list(x = c(X = 0, Y = 2, Z = 1), y = c(X = 0, Y = 0, Z = 1))
 
-fork <- dagify(
-  X ~ Z,
-  Y ~ Z,
-  exposure = "X",
-  outcome = "Y",
-  coords = coords
-)
 
-chain <- dagify(
-  Z ~ X,
-  Y ~ Z,
-  exposure = "X",
-  outcome = "Y",
-  coords = coords
-)
 
-collider <- dagify(
-  Z ~ X + Y,
-  exposure = "X",
-  outcome = "Y",
-  coords = coords
-)
-```
-
-## Fork
-
-```{r}
-ggdag(fork, text = TRUE) + theme_dag()
-```
-
-## Chain
-
-```{r}
-ggdag(chain, text = TRUE) + theme_dag()
-```
-
-## Collider
-
-```{r}
-ggdag(collider, text = TRUE) + theme_dag()
-```
 
 
 ## Causal inference
