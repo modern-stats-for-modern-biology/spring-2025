@@ -27,6 +27,8 @@ library(coursekata)
 theme_set(theme_bw())
 
 set.rseed(666)
+
+m = 100000
 ```
 
 ```{r}
@@ -325,6 +327,7 @@ datasauRus::datasaurus_dozen %>%
   theme(legend.position = "none", strip.text = element_blank()) +
   facet_wrap(~ dataset, ncol = 4, nrow = 3)
 ```
+
 ## … and the model says:
 
 ```{r}
@@ -338,7 +341,6 @@ datasauRus::datasaurus_dozen %>%
   theme(legend.position = "none", strip.text = element_blank()) +
   facet_wrap(~ dataset, ncol = 4, nrow = 3)
 ```
-
 
 ## … and the model says: "*line*"! [obs ≠ predictions]{.fragment}
 
@@ -1297,9 +1299,9 @@ The causal linear association between height (H) and weight (W) in adult humans
 ```{r}
 #| fig-width: 6
 #| output-location: default
-d <- d %>% select(weight, height) %>% mutate(height_c = height - mean(height))
+d <- d %>% select(weight, height) %>% mutate(height_c = scale(height, center = TRUE, scale = FALSE))
 
-gf_point(weight ~ height, color = "skyblue4", data = d) %>% gf_lm(color = "black")
+gf_point(weight ~ height_c, color = "skyblue4", data = d) %>% gf_lm(color = "black")
 ```
 
 ## Specify causal model
@@ -1466,13 +1468,13 @@ $$
 #| echo: false
 #| warning: false
 beta0 <- 45
-beta1 <- 0.6
+beta1 <- 0.634
 sigma <- 4
 
 H <- seq(-20, 20) # height_c is mean centered height
 n <- length(H)
 mu <- beta0 + beta1 * H
-W <- replicate(1000, rnorm(n, mu, sigma))
+W <- replicate(m, rnorm(n, mu, sigma))
 
 df <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
@@ -1482,7 +1484,7 @@ df %>%
   gf_density_ridges(H ~ W, linetype = 0, fill = "lightblue") %>%
   gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
   gf_model(W ~ H, color = "gray4") %>%
-  gf_labs(title = TeX(r'(Monte Carlo simulation of $y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = 45, \beta_1 = 0.6, \sigma = 4$)'), y = "Height (cm, mean-centered)", x = "Weight (Kg)") %>%
+  gf_labs(title = TeX(r'(Model $y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = 45, \beta_1 = 0.634, \sigma = 4$ and its predictions)'), y = "Height (cm, mean-centered)", x = "Weight (Kg)") %>%
   gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   coord_flip()
 ```

@@ -20,6 +20,40 @@ bibliography: references.bib
 csl: nature-no-et-al.csl
 ---
 
+```{r}
+#| include: false
+library(coursekata)
+
+theme_set(theme_bw())
+
+m = 100000
+```
+
+```{r}
+#| include: false
+library(tidyverse)
+library(ggridges)
+library(latex2exp)
+```
+
+```{r}
+#| include: false
+data(Howell1, package = "rethinking")
+
+df.obs <-
+  Howell1 %>%
+  filter(age >= 18) %>%
+  select(weight, height) %>%
+  round() %>% 
+  select(H = height, W = weight)
+
+df.obs
+
+range(df.obs$H)
+
+mle.lm.fit <- lm(W ~ H, data = df.obs)
+```
+
 ##  {background-image="images/last_week_tonight.jpg" background-size="contain"}
 
 ## Statistical inference is inductive reasoning
@@ -37,6 +71,72 @@ csl: nature-no-et-al.csl
 ## Statistical inference is inductive reasoning
 
 ![](images/Slide5.png)
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide6.png)
+
+## Statistical inference is inductive reasoning
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- -70
+beta1 <- 0.7
+sigma <- 5
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(m, rnorm(n, mu, sigma))
+
+df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+df %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  # gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Model 1 $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -70, \beta_1 = 0.7, \sigma = 5$)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
+
+## Statistical inference is inductive reasoning
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- 230
+beta1 <- -1.2
+sigma <- 2
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(m, rnorm(n, mu, sigma))
+
+df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+df %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  # gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Model 2 $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = 230, \beta_1 = -1.2, \sigma = 2$)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
 
 ## Statistical inference is inductive reasoning
 
@@ -90,6 +190,16 @@ Hence, to treat the likelihood as truly the “data‐generating process model,�
 
 ## Modern science: statistical (+ causal) inference
 
+![](images/Slide1.png){fig-align="center" width="979"}
+
+See also: [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To explain or to predict?
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide11.png)
+
+## Modern science: statistical (+ causal) inference
+
 ![](images/Slide12.png)
 
 ## Modern science: statistical (+ causal) inference
@@ -102,16 +212,167 @@ Hence, to treat the likelihood as truly the “data‐generating process model,�
 
 ## Modern science: statistical (+ causal) inference
 
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- -53
+beta1 <- 0.634
+sigma <- 4
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(m, rnorm(n, mu, sigma))
+
+df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+df %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4$)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
+
+## Modern science: statistical (+ causal) inference
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- -53
+beta1 <- 0.634
+sigma <- 4
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(m, rnorm(n, mu, sigma))
+
+df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+df %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4 \;$ and its predictions)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide14.png)
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide15.png)
+
+## Modern science: statistical (+ causal) inference
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- -53
+beta1 <- 0.634
+sigma <- 4
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(m, rnorm(n, mu, sigma))
+
+df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+df %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4 \;$ and its predictions)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
+
+## Modern science: statistical (+ causal) inference
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- -53
+beta1 <- 0.634
+sigma <- 4
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(m, rnorm(n, mu, sigma))
+
+df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+df.obs <- df.obs %>%
+  mutate(H = factor(H, levels = levels(df$H)))
+
+df %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  #gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
+  gf_point(H ~ W, data = df.obs, color = "green4", size = 1) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4 \;$ and observed data used for training)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
+
+
+## Modern science: statistical (+ causal) inference
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| output-location: default
+performance::check_predictions(mle.lm.fit) %>%
+  plot() +
+  labs(x = "Weight (Kg)") +
+  scale_color_manual(values = c("Observed data" = "green4", "Model-predicted data" = "darkorange"))
+```
+
+## Modern science: statistical (+ causal) inference
+
 ![](images/Slide15.png)
 
 ## Modern science: statistical (+ causal) inference
 
 ![](images/Slide16.png)
 
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide17.png)
+
 ## Severe testing textbooks
 
 ::::::: columns
-
 :::: {.column width="56%"}
 ::: text-align-center
 ![](images/lakens.improving_your_statistical_inferences.jpg){height="440"}
@@ -127,13 +388,11 @@ Hence, to treat the likelihood as truly the “data‐generating process model,�
 <https://doi.org/10.1017/9781107286184>
 :::
 ::::
-
 :::::::
 
  
 
 See also: [Gelman and Shalizi (2012)](https://doi.org/10.1111/j.2044-8317.2011.02037.x) Philosophy and the practice of Bayesian statistics
-
 
 ##  {background-image="causal_salad/part.03.slide.14.png" background-size="contain"}
 
@@ -171,10 +430,6 @@ See also: [Gelman and Shalizi (2012)](https://doi.org/10.1111/j.2044-8317.2011.0
 
 ## The ladder of causation
 
-![](images/Slide17.png){fig-align="center"}
-
-## The taxonomy of estimands {visibility="hidden"}
-
 ![](images/Slide18.png){fig-align="center"}
 
 ## Experiments are no refuge
@@ -203,15 +458,15 @@ See also: [Gelman and Shalizi (2012)](https://doi.org/10.1111/j.2044-8317.2011.0
 
 ## Statistical learning is cause-blind
 
-![](images/Slide19.png){fig-align="center"}
-
-## Statistical learning is cause-blind
-
 ![](images/Slide20.png){fig-align="center"}
 
 ## Statistical learning is cause-blind
 
 ![](images/Slide21.png){fig-align="center"}
+
+## Statistical learning is cause-blind
+
+![](images/Slide22.png){fig-align="center"}
 
 ##  {background-image="causal_salad/part.01.slide.28.png" background-size="66%"}
 
@@ -379,7 +634,7 @@ See also: [Gelman and Shalizi (2012)](https://doi.org/10.1111/j.2044-8317.2011.0
 
 ## The taxonomy of estimands
 
-![](images/Slide12.png)
+![](images/Slide19.png){fig-align="center"}
 
 ## Causal inference textbooks
 
