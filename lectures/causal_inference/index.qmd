@@ -118,20 +118,20 @@ Hence, to treat the likelihood as truly the “data‐generating process model,�
 
 ## What is causal inference?
 
-- **Statistical inference**: learning **statistical relationships** (patterns of association) between random variables
+-   **Statistical inference**: learning **statistical relationships** (patterns of association) between random variables
 
-  - Predict **unobserved outcomes** under **same** conditions  
-    [*What if I see this?*]{.gray}
+    -   Predict **unobserved outcomes** under **same** conditions\
+        [*What if I see this?*]{.gray}
 
-- **Causal inference**: learning **cause-and-effect relationships** between random variables
+-   **Causal inference**: learning **cause-and-effect relationships** between random variables
 
-  - Predict **unobserved outcomes** under **changed** conditions:
-    - **consequences of interventions** (causal prediction, forward-looking)  
-      [*What if I do this?*]{.gray}
+    -   Predict **unobserved outcomes** under **changed** conditions:
+        -   **consequences of interventions** (causal prediction, forward-looking)\
+            [*What if I do this?*]{.gray}
 
-    - **counterfactual outcomes** (causal imputation, backward-looking)  
-      [*What if I had done something else?*]{.gray}
-    
+        -   **counterfactual outcomes** (causal imputation, backward-looking)\
+            [*What if I had done something else?*]{.gray}
+
 ##  {background-image="causal_salad/part.01.slide.10.png" background-size="50%"}
 
 ##  {background-image="causal_salad/part.01.slide.11.png" background-size="50%"}
@@ -252,7 +252,7 @@ Source: <https://tylervigen.com/spurious-correlations>
 :::
 :::::
 
-##  Sometime correlation/association is causation!
+## Sometime correlation/association is causation!
 
 -   If there are no confounders and there is a linear relationship between the treatment and the outcome, then correlation is causation
 
@@ -264,7 +264,7 @@ Source: <https://tylervigen.com/spurious-correlations>
 
 ## Causal inference workflow
 
-1.  **Specify causal question** (estimand, e.g., average treatment effect of exposure on outcome)
+1.  **Specify causal question/estimand** (e.g., average treatment effect)
 
 2.  **Make causal model** (e.g., draw causal diagram)
 
@@ -361,11 +361,9 @@ set.seed(666)
 plot(net_dag)
 ```
 
-
 ## Translate DAG into statistical model
 
-::: columns
-
+::::: columns
 ::: column
 ![](images/fig-net-data-dag-1.png){fig-align="center"}
 :::
@@ -373,8 +371,7 @@ plot(net_dag)
 ::: column
 ![](images/fig-net-data-confounding-1.png){fig-align="center"}
 :::
-
-:::
+:::::
 
 ## Translate DAG into statistical model
 
@@ -431,7 +428,7 @@ $$
 -   A causal model represents our knowledge about the data generating process (DGP)
 
     -   For example, domain knowledge and previous studies/experiments
-    
+
     -   A causal model is a set of assumptions about the causal relationships between variables
 
 -   A causal model is often represented graphically as a directed acyclic graph (DAG)
@@ -447,7 +444,7 @@ $$
 -   Cause-effect relationships are arrows:
 
     -   $A \rightarrow B$
-    
+
     -   "$A$ is a possible cause of $B$"
 
 -   Absence of arrow from $A$ to $B$ is a stronger assumption:
@@ -477,8 +474,6 @@ $$
     -   A **path** is a sequence of arrows through variables, regardless of the directions of arrows
 
 -   Examples:
-
-
 
 ##  {background-image="causal_salad/part.02.slide.09.png" background-size="50%"}
 
@@ -562,7 +557,6 @@ $$X \rightarrow Z \leftarrow Y$$
 
 ![](images/clipboard-2521184635.png)
 
-
 ##  {background-image="causal_salad/part.02.slide.41.png" background-size="50%"}
 
 ##  {background-image="causal_salad/part.02.slide.42.png" background-size="50%"}
@@ -603,13 +597,13 @@ $$X \rightarrow Z \leftarrow Y$$
 
 ## Table 2 fallacy
 
-- Do not present or interpret individual coefficients as causal effects
+-   Do not present or interpret individual coefficients as causal effects
 
-- Interpretation depends upon the causal model, not just the statistical model
+-   Interpretation depends upon the causal model, not just the statistical model
 
-- A statistical model designed to identify $X \to Y$ will NOT also identify the causal effect of all other variables
+-   A statistical model designed to identify $X \to Y$ will NOT also identify the causal effect of all other variables
 
-- Each causal query requires its own, bespoke statistical model
+-   Each causal query requires its own, bespoke statistical model
 
 ::: fragment
 [Westreich and Greenland (2013)](https://doi.org/10.1093/aje/kws412)
@@ -619,20 +613,20 @@ $$X \rightarrow Z \leftarrow Y$$
 
 ## Good and bad controls
 
-- **"Control" variable**: A variable introduced in a statistical model specifically to enable a causal estimate; it is not of intrinsic interest by itself
+-   **"Control" variable**: A variable introduced in a statistical model specifically to enable a causal estimate; it is not of intrinsic interest by itself
 
-- **Common heuristics** for choosing control variables:
-  
-  - Anything in the spreadsheet (YOLO! causal salad)
-  
-  - Any variables not highly collinear
+-   **Common heuristics** for choosing control variables:
 
-  - Any variable that is statistically significantly associated with the outcome
+    -   Anything in the spreadsheet (YOLO! causal salad)
 
-  - Any variable that improves predictive performance (e.g., using automatic variable selection) 
-  
-  - Any pre-treatment variable (baseline measurements)
-  
+    -   Any variables not highly collinear
+
+    -   Any variable that is statistically significantly associated with the outcome
+
+    -   Any variable that improves predictive performance (e.g., using automatic variable selection)
+
+    -   Any pre-treatment variable (baseline measurements)
+
 ::: notes
 -   Don't adjust for the future (post-treatment measurements) if you are estimating the total causal effect of exposure on outcome!
 :::
@@ -661,59 +655,51 @@ $$X \rightarrow Z \leftarrow Y$$
 
 ## Estimate causal effect using statistical model
 
-- Sometimes the causal model implies you need a **regression model**
+-   Sometimes the causal model implies you need a **regression model**
 
-- But this is NOT always the case
+-   But this is NOT always the case
 
-- Other models and approaches are available, e.g., **stratification**, **matching**, **propensity scores**, **instrumental variables**, **structural equation models**, **causal AI**, etc.
+-   Other models and approaches are available, e.g., **stratification**, **matching**, **propensity scores**, **instrumental variables**, **structural equation models**, **causal AI**, etc.
 
-- **Bayesian networks** are a **general approach** to handle arbitrary causal models
+-   **Bayesian networks** are a **general approach** to handle arbitrary causal models
 
 ##  {background-image="images/clipboard-3308191871.png" background-size="75%"}
 
 ## Much much more
 
-- **Computation of treatment effects**: NOT a single parameter
+-   **Computation of treatment effects**: NOT a single parameter
 
-- **Post-stratification**: effect for the population, not the sample
+-   **Post-stratification**: effect for the population, not the sample
 
-- **Partial-identification**: confounded but learning
+-   **Partial-identification**: confounded but learning
 
-- **Research design**
+-   **Research design**
 
 ## Full luxury causal workflow
 
-1. Derive candidate **causal model** using "science" (domain knowledge, theory, etc.)
+1.  Derive candidate **causal model** using "science" (domain knowledge, theory, etc.)
 
-2. Program causal model as a **generative simulation** (e.g., a Bayesian network)
+2.  Program causal model as a **generative simulation** (e.g., a Bayesian network)
 
-3. Design research and validate your statistical analysis using (2)
+3.  Design research and validate your statistical analysis using (2)
 
-4. Confront model with data; celebrate both wins and losses
+4.  Confront model with data; celebrate both wins and losses
 
-5. Revise and repeat
+5.  Revise and repeat
 
 ## Full sadness non-causal workflow
 
-1. Find or collect some variables that are **conceptually** (but not **logically**) related to the phenomenon
+1.  Find or collect some variables that are **conceptually** (but not **logically**) related to the phenomenon
 
-2. Probe the data anyway you can to reveal **asterisks**
+2.  Probe the data anyway you can to reveal **asterisks**
 
-3. Tell a **hopeful causal story** about why these asterisks exist
+3.  Tell a **hopeful causal story** about why these asterisks exist
 
-4. Never state the **assumptions** licensing this story
+4.  Never state the **assumptions** licensing this story
 
-5. **Revel** in your magnificent *h*-index
+5.  **Revel** in your magnificent *h*-index
 
 ## Causal inference textbooks and online courses
-
-![](images/clipboard-851192339.png)
-
-## Free, open-source causal inference tools
-
-![](images/clipboard-2664055651.png)
-
-## Causal inference textbooks
 
 ::::::: columns
 :::: {.column width="50%"}
@@ -729,6 +715,54 @@ $$X \rightarrow Z \leftarrow Y$$
 ![](images/book_of_why-cover.jpg){height="440"}
 
 <http://bayes.cs.ucla.edu/WHY>
+:::
+::::
+:::::::
+
+ 
+
+See also: [How to learn causal inference on your own for free](https://towardsdatascience.com/how-to-learn-causal-inference-on-your-own-for-free-98503abc0a06)
+
+## Causal inference textbooks and online courses
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/the_effect_book_cover.png){height="440"}
+
+<https://theeffectbook.net/>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/what_if_book_cover.jpg){height="440"}
+
+<https://miguelhernan.org/whatifbook>
+:::
+::::
+:::::::
+
+ 
+
+See also: [Causal inference in R](https://www.r-causal.org/)
+
+## Free and open-source causal inference software tools
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/clipboard-2036735477.png){width="440"}
+
+<https://www.dagitty.net/>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/clipboard-2089884039.png){width="440"}
+
+<https://www.pywhy.org/dowhy>
 :::
 ::::
 :::::::
@@ -851,7 +885,6 @@ df %>%
 
 See also: [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To explain or to predict?
 
-
 ## Modern science: statistical (+ causal) inference
 
 ![](images/Slide10.png)
@@ -869,7 +902,6 @@ See also: [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To explain or to p
 ## Modern science: statistical (+ causal) inference
 
 ![](images/ols_howell_learn.gif){height="400"}
-
 
 ## Modern science: statistical (+ causal) inference
 
@@ -1082,7 +1114,6 @@ See also: [Gelman and Shalizi (2012)](https://doi.org/10.1111/j.2044-8317.2011.0
 
 -   Test before you est(imate)!
 
-
 ## The taxonomy of estimands
 
 ![](images/Slide19.png){fig-align="center"}
@@ -1134,8 +1165,3 @@ $$
 ![](causal_salad/journal.pone.0256607.g012.png)
 
 [Farrar et al. (2021)](https://doi.org/10.1371/journal.pone.0256607)
-
-
-
-
-
