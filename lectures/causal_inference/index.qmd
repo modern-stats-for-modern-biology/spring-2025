@@ -26,7 +26,7 @@ library(coursekata)
 
 theme_set(theme_bw())
 
-m = 100000
+m = 1000
 ```
 
 ```{r}
@@ -345,7 +345,6 @@ df %>%
   expand_limits(x = c(0, 80))
 ```
 
-
 ## Modern science: statistical (+ causal) inference
 
 ```{r}
@@ -431,6 +430,14 @@ See also: [Gelman and Shalizi (2012)](https://doi.org/10.1111/j.2044-8317.2011.0
 ## The ladder of causation
 
 ![](images/Slide18.png){fig-align="center"}
+
+-   The primary tasks of data science:
+
+    -   Description
+
+    -   Prediction
+
+    -   Causal inference
 
 ## Experiments are no refuge
 
@@ -695,3 +702,276 @@ y_i \sim \text{Norm}\bigl(\sin(\alpha \cdot x_i), 1/\tau\bigr)
 $$
 
 [Boué (2019)](https://arxiv.org/abs/1904.12320) "*Real numbers, data science and chaos: how to fit any dataset with a single parameter*"
+
+## Spurious correlations: correlation is not causation
+
+Source: <https://tylervigen.com/spurious-correlations>
+
+::::: columns
+::: {.column width="60%"}
+![](images/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska.svg)
+:::
+
+::: {.column width="40%"}
+![](images/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska_scatterplot.png)
+:::
+:::::
+
+## Spurious correlations: correlation is not causation
+
+Source: <https://tylervigen.com/spurious-correlations>
+
+::::: columns
+::: {.column width="40%"}
+![](images/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska_ai-image_large_1705049007.jpg)
+:::
+
+::: {.column width="60%"}
+> As the distance between Jupiter and the Sun increases, the gravitational pull on Earth fluctuates, leading to a rise in cosmic productivity waves. These waves, when they reach Alaska, have been found to have a magnetic effect on the influx of secretarial energy, prompting more individuals to pursue careers in Alaska as professional secretaries. It's like a celestial calling for secretarial excellence in the land of the midnight sun.
+:::
+:::::
+
+## Spurious correlations: correlation is not causation
+
+![](images/clipboard-3737784678.png)
+
+## Spurious correlations: correlation is not causation
+
+::::: columns
+::: column
+![](images/clipboard-1705799335.png){fig-align="center" width="330"}
+:::
+
+::: column
+![](images/clipboard-3293300046.png){fig-align="center" width="330"}
+:::
+:::::
+
+## Association is not causation!
+
+-   All commonly used statistical inference/machine learning methods are based on statistical relationships (i.e., associations) between random variables
+
+-   For example, the estimated slope of a simple GLM is the correlation between $X$ and $Y$:
+
+::: fragment
+$$
+\begin{aligned}
+y_i & = \beta_0 + \beta_1 \cdot x_i + \epsilon_i\\[6pt]
+b_1 & = r \cdot \frac{s_Y}{s_X}
+\end{aligned}
+$$
+:::
+
+-   Statistical relationships are not causal relationships
+
+-   Therefore, answering a scientific question about causes requires more than just statistical inference/machine learning
+
+-   For example, "*What is the effect of* $X$ on $Y$?" is a causal question
+
+# Causal inference in Python: Theory to practice
+
+[https://youtu.be/XwYHUv2nH34](https://youtu.be/XwYHUv2nH34?si=nQ6J5zModeUS9oV1)
+
+## Causal inference workflow
+
+![](images/clipboard-3203447617.png)
+
+## State scientific question/define the problem
+
+XXX
+
+## Draw graphical causal model
+
+-   A graphical causal model is also known as a causal diagram or directed acyclic graph (DAG)
+
+-   "*No causes in, no causes out*": data alone isn't enough
+
+-   Knowledge base/assumptions about data generating process (DGP)
+
+    -   For example, domain knowledge, previous studies/experiments
+
+-   Variables are nodes
+
+-   Cause-effect relationships are arrows:
+
+    -   $A \rightarrow B$ = "$A$ is a possible cause of $B$"
+
+-   Absence of arrow from A to B is a stronger assumption (e.g., temporal precedence): "$A$ is **definitely not** a cause of $B$"
+
+-   Create DAG with team and stakeholders as a transparent representation of causal assumptions/shared understanding of the world
+
+-   Include all possible causal variables (even if not in data) and arrows
+
+-   Complexity is okay, reality is complex!
+
+\[\[example here from the book\]\]
+
+## Graphical causal models (DAGs): terminology
+
+-   $A \rightarrow B \rightarrow C$:
+
+    -   $A$ is a **parent** of $B$
+
+    -   $B$ is a **child** of $A$
+
+    -   $C$ is a **descendant** of $A$
+
+    -   $A$ is an **ancestor** of $C$
+
+    -   If a variable has parent(s) it is an **endogeneous** variable, otherwise it is an **exogeneous** variable
+
+    -   A **path** is a sequence of arrows through variables, regardless of the directions of arrows
+
+## DAGs represent joint probability distributions
+
+-   A DAG is a mathematical object, i.e., a joint probability distribution:
+
+$$
+P(X, Y, Z) = P(X)\,P(Y \mid X)\,P(Z \mid X, Y)
+$$
+
+-   Causal assumptions: Endogeneous variables only depend on their parents (can check vs. data)
+
+-   The fork: $Z$ **is a common cause of** $X$ **and** $Y$**, with** $X$ **also causing** $Y$
+
+    -   DAG: $Z \to X$, $Z \to Y$, and $X \to Y$
+
+$$
+P(X, Y, Z) = P(X \mid Z) \cdot P(Y \mid X, Z) \cdot P(Z)
+$$
+
+-   The collider: $Z$ **is a common effect of** $X$ **and** $Y$**, with** $X$ **also causing** $Y$
+    -   DAG: $X \to Z$, $Y \to Z$, and $X \to Y$
+
+$$
+P(X, Y, Z) = P(X) \cdot P(Y \mid X) \cdot P(Z \mid X, Y)
+$$
+
+-   The pipe (or chain): $X$ **causes** $Y$ **via** $Z$
+    -   DAG: $X \to Z \to Y$
+
+$$
+P(X, Y, Z) = P(X) \cdot P(Y \mid Z) \cdot P(Z \mid X)
+$$
+
+## Identify effect
+
+-   Identification: Isolating the causal effect of $X$ on $Y$
+
+-   From the causal structure represented by the DAG, identify which variables to adjust for to estimate the pure causal effect of $X$ (the treatment) on $Y$ (the outcome), free from spurious associations (bias)
+
+-   Adjusting/controlling for $Z$ = grouping by/segregating by/stratifying on $Z$, e.g., using regression or matching
+
+-   Adjusting/controlling for ALL variables can introduce bias (Berkson's paradox). Rather, use *just the right* variables
+
+## Interventions
+
+![](images/clipboard-1480930042.png)
+
+## Identify effect: Blocking or d-separation
+
+## ![](images/clipboard-2767095917.png)Identify effect: Backdoor criterion
+
+![](images/clipboard-978367041.png)
+
+## Simpson's paradox
+
+![](images/clipboard-4012926030.png)
+
+## Simpson's paradox
+
+![](images/clipboard-2005749411.png)
+
+## Berkson's paradox
+
+![](images/clipboard-2619765555.png)
+
+## Berkson's paradox
+
+![](images/clipboard-2521184635.png)
+
+## Estimate using data
+
+![](images/clipboard-3115424937.png)
+
+## Validate model
+
+![](images/clipboard-2113635429.png)
+
+## Explain
+
+![](images/clipboard-3308191871.png)
+
+## Resources
+
+![](images/clipboard-851192339.png)
+
+## Practice
+
+![](images/clipboard-2664055651.png)
+
+## Causal inference workflow
+
+-   At the heart of causal inference is the causal question
+
+## Description, prediction, and explanation
+
+-   Questions about description, prediction, and explanation are fundamentally different
+
+-   Causal questions cannot be answered with predictive models
+
+-   Causal questions require causal models
+
+-   Causal models are generative models
+
+-   Predictive modeling generally uses a different workflow than the workflow for causal modeling
+
+-   Predictive modeling goal is to maximize predictive accuracy while retaining generalization to new data
+
+-   The key measure of validity in prediction modeling is predictive accuracy. A convenient detail about predictive modeling is that we can often assess if we're right, which is not true of descriptive statistics for which we only have a subset of data, or causal inference for which we don’t know the true causal structure.
+
+-   Often, people mistakenly use methods for selecting features (variables) for prediction models to select confounders in causal models
+
+-   Prediction metrics cannot determine the causal structure of your question, and predictive value for the outcome does not make a variable a confounder
+
+-   In general, background knowledge (not prediction or associational statistics) should help you select variables for causal models
+
+-   Prediction is nevertheless crucial to causal inference. From a philosophical perspective, we’re comparing predictions from different what if scenarios: What would the outcome had one thing happened vs. if another thing happened?
+
+## Causal inference
+
+-   The goal of causal inference is to understand the impact that a variable, sometimes called an exposure, has on another variable, sometimes called an outcome. “Exposure” and “outcome” are the terms we’ll use in this book to describe the causal relationship we’re interested in. Importantly, our goal is to answer this question clearly and precisely. In practice, this means using techniques like study design (e.g., a randomized trial) or statistical methods (like propensity scores) to calculate an unbiased effect of the exposure on the outcome.
+
+-   As with prediction and description, it’s better to start with a clear, precise question to get a clear, precise answer
+
+-   Making valid causal inferences requires several assumptions that we’ll discuss in Section 3.2. Unlike prediction, we generally cannot confirm that our causal models are correct. In other words, most assumptions we need to make are unverifiable. We’ll come back to this topic time and time again in the book—from the basics of these assumptions to practical decision-making to probing our models for problems.
+
+## Why isn’t the right causal model just the best prediction model?
+
+At this point, you may wonder why the right causal model isn’t just the best prediction model. It makes sense that the two would be related: naturally, things that cause other things would be predictors. It’s causality all the way down, so any predictive information is related, in some capacity, to the causal structure of the thing we’re predicting. Doesn’t it stand to reason that a model that predicts well is causal, too? It’s true that some predictive models can be great causal models and vice versa. Unfortunately, this is not always the case; causal effects needn’t predict particularly well, and good predictors needn’t be causally unbiased (Shmueli 2010).
+
+Descriptive, predictive, and causal analyses will always contain some aspect of each other. A predictive model gains some of its predictive power from the causal structure of the outcome, and a causal model has some predictive power because it contains information about the outcome. However, the same model in the same data with different goals will have different usefulness depending on those goals.
+
+## Table 2 fallacy
+
+A closely related idea is the Table Two Fallacy, so-called because, in health research papers, descriptive analyses are often presented in Table 1, and regression models are often presented in Table 2 (Westreich and Greenland 2013). The Table Two Fallacy is when a researcher presents confounders and other non-exposure variables, particularly when they interpret those coefficients as if they, too, were causal. The problem is that in some situations, the model to estimate an unbiased effect of one variable may not be the same model to estimate an unbiased effect of another variable. In other words, we can’t interpret the effects of confounders as causal because they might themselves be confounded by another variable unrelated to the original exposure.
+
+## Causal inference workflow
+
+We’ll play the whole game of causal analysis using a few key steps:
+
+-   Specify a causal question
+
+-   Draw our assumptions using a causal diagram
+
+-   Model our assumptions
+
+-   Diagnose our models
+
+-   Estimate the causal effect
+
+-   Conduct sensitivity analysis on the effect estimate
+
+## Potential outcomes
+
+Factual outcomes and counterfactual outcomes are two realizations of potential outcomes.
