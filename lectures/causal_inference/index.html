@@ -327,10 +327,6 @@ Edoardo "Dado" Marcora
 </figure>
 </div>
 </div>
-<ul>
-<li class="fragment"><p>The data themselves do not contain information about causes</p></li>
-<li class="fragment"><p>It is not possible to reliably learn causes from data alone</p></li>
-</ul>
 </section>
 <section id="section-3" class="slide level2" data-background-image="causal_salad/part.01.slide.07.png" data-background-size="50%">
 <h2></h2>
@@ -341,12 +337,12 @@ Edoardo "Dado" Marcora
 <section id="what-is-causal-inference" class="slide level2">
 <h2>What is causal inference?</h2>
 <ul>
-<li class="fragment"><p>Causal inference is more than learning a <strong>statistical relationship</strong>/association between random variables and predicting observations [<em>What if I see this?</em>]</p></li>
-<li class="fragment"><p>Causal inference is about learning a <strong>cause-and-effect relationship</strong> between random variables</p></li>
+<li class="fragment"><p>Statistical inference is about learning <strong>statistical relationships</strong>/associations between random variables and predicting observations [<em>What if I see this?</em>]</p></li>
+<li class="fragment"><p>Causal inference is about learning <strong>cause-and-effect relationships</strong> between random variables</p></li>
 <li class="fragment"><p>Two perspectives:</p>
 <ul>
-<li class="fragment"><p>Causal inference is <strong>prediction of the effect of an intervention</strong> [<em>What if I do this?</em>]</p></li>
-<li class="fragment"><p>Causal inference is <strong>imputation of missing data</strong> (counterfactuals) [<em>What if I had done something else?</em>]</p></li>
+<li class="fragment"><p>Causal inference as <strong>prediction of the consequences of an intervention</strong> [<em>What if I do this?</em>]</p></li>
+<li class="fragment"><p>Causal inference as <strong>imputation of missing data</strong> (unobserved counterfactual outcomes) [<em>What if I had done something else?</em>]</p></li>
 </ul></li>
 </ul>
 </section>
@@ -359,215 +355,212 @@ Edoardo "Dado" Marcora
 <section id="the-ladder-of-causation" class="slide level2">
 <h2>The ladder of causation</h2>
 
-<img data-src="images/Slide18.png" class="quarto-figure quarto-figure-center r-stretch"><ul>
-<li class="fragment"><p>The primary tasks of data science:</p>
-<ul>
-<li class="fragment"><p>Description</p></li>
-<li class="fragment"><p>Prediction</p></li>
-<li class="fragment"><p>Causal inference</p></li>
-</ul></li>
-</ul>
-</section>
-<section id="experiments-are-no-refuge" class="slide level2">
-<h2>Experiments are no refuge</h2>
-<ul>
-<li class="fragment"><p>Why do experiments work? When do they work (or not)?</p></li>
-<li class="fragment"><p>Should you test for balance after randomization?</p></li>
-<li class="fragment"><p>What if treatment allocation were imperfect?</p></li>
-<li class="fragment"><p>Should you control for anything? Everything?</p></li>
-<li class="fragment"><p>What is the causal effect in the target population?</p></li>
-<li class="fragment"><p><strong>Answers to these and other questions about experiments depend upon causal assumptions</strong></p></li>
-</ul>
-</section>
-<section id="description-is-no-refuge" class="slide level2">
-<h2>Description is no refuge</h2>
-<ul>
-<li class="fragment"><p>The goal is to describe populations, not samples</p></li>
-<li class="fragment"><p>Sampling bias, stratified sampling, post-stratification, missing data, measurement error, etc.</p></li>
-<li class="fragment"><p><strong>In order to describe populations, we need to make causal assumptions about how the sample was generated</strong></p></li>
-</ul>
-</section>
-<section id="section-7" class="slide level2" data-background-image="causal_salad/part.01.slide.23.png" data-background-size="contain">
-<h2></h2>
-</section>
+<img data-src="images/Slide18.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+
+
 <section id="statistical-learning-is-cause-blind" class="slide level2">
 <h2>Statistical learning is cause-blind</h2>
-
-<img data-src="images/Slide20.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<div class="fragment">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/Slide20.png" class="quarto-figure quarto-figure-center" height="440"></p>
+</figure>
+</div>
+</div>
+</section>
 <section id="statistical-learning-is-cause-blind-1" class="slide level2">
 <h2>Statistical learning is cause-blind</h2>
-
-<img data-src="images/Slide21.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/Slide21.png" class="quarto-figure quarto-figure-center" height="440"></p>
+</figure>
+</div>
+</section>
 <section id="statistical-learning-is-cause-blind-2" class="slide level2">
 <h2>Statistical learning is cause-blind</h2>
-
-<img data-src="images/Slide22.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-8" class="slide level2" data-background-image="causal_salad/part.01.slide.28.png" data-background-size="66%">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/Slide22.png" class="quarto-figure quarto-figure-center" height="440"></p>
+</figure>
+</div>
+</section>
+<section id="no-causes-in-no-causes-out" class="slide level2">
+<h2>No causes in, no causes out!</h2>
+<div class="columns">
+<div class="column" style="width:66%;">
+<ul>
+<li class="fragment"><p>The data themselves do not contain information about causes</p></li>
+<li class="fragment"><p>It is not possible to reliably learn causes from data alone</p></li>
+<li class="fragment"><p>Statistical models alone are insufficient; they do not contain causal information</p></li>
+<li class="fragment"><p>Statistical learning methods (incl.&nbsp;multivariate linear regression) do not distinguish causes from confounds</p></li>
+<li class="fragment"><p>p-values are not causal statements</p></li>
+<li class="fragment"><p>AIC etc. are purely predictive</p></li>
+</ul>
+</div><div class="column" style="width:34%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="https://academic.oup.com/book/27760"><img data-src="images/cartwright_book_cover.jpg" class="quarto-figure quarto-figure-center"></a></p>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="section-7" class="slide level2" data-background-image="causal_salad/part.01.slide.28.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-9" class="slide level2" data-background-image="causal_salad/part.01.slide.30.png" data-background-size="66%">
+<section id="section-8" class="slide level2" data-background-image="causal_salad/part.02.slide.06.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-10" class="slide level2" data-background-image="causal_salad/part.02.slide.01.png" data-background-size="contain">
+<section id="section-9" class="slide level2" data-background-image="causal_salad/part.02.slide.07.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-11" class="slide level2" data-background-image="causal_salad/part.02.slide.05.png" data-background-size="66%">
+<section id="section-10" class="slide level2" data-background-image="causal_salad/part.02.slide.08.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-12" class="slide level2" data-background-image="causal_salad/part.02.slide.06.png" data-background-size="66%">
+<section id="section-11" class="slide level2" data-background-image="causal_salad/part.02.slide.09.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-13" class="slide level2" data-background-image="causal_salad/part.02.slide.07.png" data-background-size="66%">
+<section id="section-12" class="slide level2" data-background-image="causal_salad/part.02.slide.10.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-14" class="slide level2" data-background-image="causal_salad/part.02.slide.08.png" data-background-size="66%">
+<section id="section-13" class="slide level2" data-background-image="causal_salad/part.02.slide.11.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-15" class="slide level2" data-background-image="causal_salad/part.02.slide.09.png" data-background-size="66%">
+<section id="section-14" class="slide level2" data-background-image="causal_salad/part.02.slide.12.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-16" class="slide level2" data-background-image="causal_salad/part.02.slide.10.png" data-background-size="66%">
+<section id="section-15" class="slide level2" data-background-image="causal_salad/part.02.slide.13.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-17" class="slide level2" data-background-image="causal_salad/part.02.slide.11.png" data-background-size="66%">
+<section id="section-16" class="slide level2" data-background-image="causal_salad/part.02.slide.30.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-18" class="slide level2" data-background-image="causal_salad/part.02.slide.12.png" data-background-size="66%">
+<section id="section-17" class="slide level2" data-background-image="causal_salad/part.02.slide.31.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-19" class="slide level2" data-background-image="causal_salad/part.02.slide.13.png" data-background-size="66%">
+<section id="section-18" class="slide level2" data-background-image="causal_salad/part.02.slide.32.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-20" class="slide level2" data-background-image="causal_salad/part.02.slide.30.png" data-background-size="66%">
+<section id="section-19" class="slide level2" data-background-image="causal_salad/part.02.slide.33.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-21" class="slide level2" data-background-image="causal_salad/part.02.slide.31.png" data-background-size="66%">
+<section id="section-20" class="slide level2" data-background-image="causal_salad/part.02.slide.34.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-22" class="slide level2" data-background-image="causal_salad/part.02.slide.32.png" data-background-size="66%">
+<section id="section-21" class="slide level2" data-background-image="causal_salad/part.02.slide.35.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-23" class="slide level2" data-background-image="causal_salad/part.02.slide.33.png" data-background-size="66%">
+<section id="section-22" class="slide level2" data-background-image="causal_salad/part.02.slide.36.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-24" class="slide level2" data-background-image="causal_salad/part.02.slide.34.png" data-background-size="66%">
+<section id="section-23" class="slide level2" data-background-image="causal_salad/part.02.slide.37.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-25" class="slide level2" data-background-image="causal_salad/part.02.slide.35.png" data-background-size="66%">
+<section id="section-24" class="slide level2" data-background-image="causal_salad/part.02.slide.38.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-26" class="slide level2" data-background-image="causal_salad/part.02.slide.36.png" data-background-size="66%">
+<section id="section-25" class="slide level2" data-background-image="causal_salad/part.02.slide.39.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-27" class="slide level2" data-background-image="causal_salad/part.02.slide.37.png" data-background-size="66%">
+<section id="section-26" class="slide level2" data-background-image="causal_salad/part.02.slide.40.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-28" class="slide level2" data-background-image="causal_salad/part.02.slide.38.png" data-background-size="66%">
+<section id="section-27" class="slide level2" data-background-image="causal_salad/part.02.slide.41.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-29" class="slide level2" data-background-image="causal_salad/part.02.slide.39.png" data-background-size="66%">
+<section id="section-28" class="slide level2" data-background-image="causal_salad/part.02.slide.42.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-30" class="slide level2" data-background-image="causal_salad/part.02.slide.40.png" data-background-size="66%">
+<section id="section-29" class="slide level2" data-background-image="causal_salad/part.02.slide.43.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-31" class="slide level2" data-background-image="causal_salad/part.02.slide.41.png" data-background-size="66%">
+<section id="section-30" class="slide level2" data-background-image="causal_salad/part.02.slide.44.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-32" class="slide level2" data-background-image="causal_salad/part.02.slide.42.png" data-background-size="66%">
+<section id="section-31" class="slide level2" data-background-image="causal_salad/part.02.slide.45.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-33" class="slide level2" data-background-image="causal_salad/part.02.slide.43.png" data-background-size="66%">
+<section id="section-32" class="slide level2" data-background-image="causal_salad/part.02.slide.46.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-34" class="slide level2" data-background-image="causal_salad/part.02.slide.44.png" data-background-size="66%">
+<section id="section-33" class="slide level2" data-background-image="causal_salad/part.02.slide.47.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-35" class="slide level2" data-background-image="causal_salad/part.02.slide.45.png" data-background-size="66%">
+<section id="section-34" class="slide level2" data-background-image="causal_salad/part.02.slide.48.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-36" class="slide level2" data-background-image="causal_salad/part.02.slide.46.png" data-background-size="66%">
+<section id="section-35" class="slide level2" data-background-image="causal_salad/part.02.slide.49.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-37" class="slide level2" data-background-image="causal_salad/part.02.slide.47.png" data-background-size="66%">
+<section id="section-36" class="slide level2" data-background-image="causal_salad/part.02.slide.50.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-38" class="slide level2" data-background-image="causal_salad/part.02.slide.48.png" data-background-size="66%">
+<section id="section-37" class="slide level2" data-background-image="causal_salad/part.02.slide.51.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-39" class="slide level2" data-background-image="causal_salad/part.02.slide.49.png" data-background-size="66%">
+<section id="section-38" class="slide level2" data-background-image="causal_salad/part.02.slide.52.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-40" class="slide level2" data-background-image="causal_salad/part.02.slide.50.png" data-background-size="66%">
+<section id="section-39" class="slide level2" data-background-image="causal_salad/part.02.slide.53.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-41" class="slide level2" data-background-image="causal_salad/part.02.slide.51.png" data-background-size="66%">
+<section id="section-40" class="slide level2" data-background-image="causal_salad/part.02.slide.54.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-42" class="slide level2" data-background-image="causal_salad/part.02.slide.52.png" data-background-size="66%">
+<section id="section-41" class="slide level2" data-background-image="causal_salad/part.02.slide.55.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-43" class="slide level2" data-background-image="causal_salad/part.02.slide.53.png" data-background-size="66%">
+<section id="section-42" class="slide level2" data-background-image="causal_salad/part.02.slide.56.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-44" class="slide level2" data-background-image="causal_salad/part.02.slide.54.png" data-background-size="66%">
+<section id="section-43" class="slide level2" data-background-image="causal_salad/part.02.slide.57.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-45" class="slide level2" data-background-image="causal_salad/part.02.slide.55.png" data-background-size="66%">
+<section id="section-44" class="slide level2" data-background-image="causal_salad/part.02.slide.58.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-46" class="slide level2" data-background-image="causal_salad/part.02.slide.56.png" data-background-size="66%">
+<section id="section-45" class="slide level2" data-background-image="causal_salad/part.02.slide.59.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-47" class="slide level2" data-background-image="causal_salad/part.02.slide.57.png" data-background-size="66%">
+<section id="section-46" class="slide level2" data-background-image="causal_salad/part.02.slide.60.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-48" class="slide level2" data-background-image="causal_salad/part.02.slide.58.png" data-background-size="66%">
+<section id="section-47" class="slide level2" data-background-image="causal_salad/part.02.slide.61.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-49" class="slide level2" data-background-image="causal_salad/part.02.slide.59.png" data-background-size="66%">
+<section id="section-48" class="slide level2" data-background-image="causal_salad/part.02.slide.62.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-50" class="slide level2" data-background-image="causal_salad/part.02.slide.60.png" data-background-size="66%">
+<section id="section-49" class="slide level2" data-background-image="causal_salad/part.02.slide.63.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-51" class="slide level2" data-background-image="causal_salad/part.02.slide.61.png" data-background-size="66%">
+<section id="section-50" class="slide level2" data-background-image="causal_salad/part.02.slide.64.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-52" class="slide level2" data-background-image="causal_salad/part.02.slide.62.png" data-background-size="66%">
+<section id="section-51" class="slide level2" data-background-image="causal_salad/part.02.slide.65.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-53" class="slide level2" data-background-image="causal_salad/part.02.slide.63.png" data-background-size="66%">
+<section id="section-52" class="slide level2" data-background-image="causal_salad/part.02.slide.66.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-54" class="slide level2" data-background-image="causal_salad/part.02.slide.64.png" data-background-size="66%">
+<section id="section-53" class="slide level2" data-background-image="causal_salad/part.02.slide.67.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-55" class="slide level2" data-background-image="causal_salad/part.02.slide.65.png" data-background-size="66%">
+<section id="section-54" class="slide level2" data-background-image="causal_salad/part.02.slide.68.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-56" class="slide level2" data-background-image="causal_salad/part.02.slide.66.png" data-background-size="66%">
+<section id="section-55" class="slide level2" data-background-image="causal_salad/part.02.slide.69.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-57" class="slide level2" data-background-image="causal_salad/part.02.slide.67.png" data-background-size="66%">
+<section id="section-56" class="slide level2" data-background-image="causal_salad/part.02.slide.70.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-58" class="slide level2" data-background-image="causal_salad/part.02.slide.68.png" data-background-size="66%">
+<section id="section-57" class="slide level2" data-background-image="causal_salad/part.02.slide.71.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-59" class="slide level2" data-background-image="causal_salad/part.02.slide.69.png" data-background-size="66%">
+<section id="section-58" class="slide level2" data-background-image="causal_salad/part.02.slide.72.png" data-background-size="66%">
 <h2></h2>
 </section>
-<section id="section-60" class="slide level2" data-background-image="causal_salad/part.02.slide.70.png" data-background-size="66%">
-<h2></h2>
-</section>
-<section id="section-61" class="slide level2" data-background-image="causal_salad/part.02.slide.71.png" data-background-size="66%">
-<h2></h2>
-</section>
-<section id="section-62" class="slide level2" data-background-image="causal_salad/part.02.slide.72.png" data-background-size="66%">
-<h2></h2>
-</section>
-<section id="section-63" class="slide level2" data-background-image="causal_salad/part.02.slide.73.png" data-background-size="66%">
+<section id="section-59" class="slide level2" data-background-image="causal_salad/part.02.slide.73.png" data-background-size="66%">
 <h2></h2>
 </section>
 <section id="causal-models-are-generative-models" class="slide level2">
@@ -578,34 +571,34 @@ Edoardo "Dado" Marcora
 <li class="fragment"><p>Causal/generative models have causal/generative implications</p></li>
 </ul>
 </section>
-<section id="section-64" class="slide level2" data-background-image="causal_salad/part.03.slide.01.png" data-background-size="contain">
+<section id="section-60" class="slide level2" data-background-image="causal_salad/part.03.slide.01.png" data-background-size="contain">
 <h2></h2>
 </section>
-<section id="section-65" class="slide level2" data-background-image="causal_salad/part.03.slide.02.png" data-background-size="contain">
+<section id="section-61" class="slide level2" data-background-image="causal_salad/part.03.slide.02.png" data-background-size="contain">
 <h2></h2>
 </section>
-<section id="section-66" class="slide level2" data-background-image="causal_salad/part.03.slide.03.png" data-background-size="contain">
+<section id="section-62" class="slide level2" data-background-image="causal_salad/part.03.slide.03.png" data-background-size="contain">
 <h2></h2>
 </section>
-<section id="section-67" class="slide level2" data-background-image="causal_salad/part.03.slide.04.png" data-background-size="contain">
+<section id="section-63" class="slide level2" data-background-image="causal_salad/part.03.slide.04.png" data-background-size="contain">
 <h2></h2>
 </section>
-<section id="section-68" class="slide level2" data-background-image="causal_salad/part.03.slide.12.png" data-background-size="contain">
+<section id="section-64" class="slide level2" data-background-image="causal_salad/part.03.slide.12.png" data-background-size="contain">
 <h2></h2>
 </section>
-<section id="section-69" class="slide level2" data-background-image="causal_salad/part.03.slide.14.png" data-background-size="contain">
+<section id="section-65" class="slide level2" data-background-image="causal_salad/part.03.slide.14.png" data-background-size="contain">
 <h2></h2>
 </section>
-<section id="section-70" class="slide level2" data-background-image="causal_salad/part.03.slide.15.png" data-background-size="contain">
+<section id="section-66" class="slide level2" data-background-image="causal_salad/part.03.slide.15.png" data-background-size="contain">
 <h2></h2>
 </section>
-<section id="section-71" class="slide level2" data-background-image="causal_salad/part.03.slide.16.png" data-background-size="contain">
+<section id="section-67" class="slide level2" data-background-image="causal_salad/part.03.slide.16.png" data-background-size="contain">
 <h2></h2>
 </section>
-<section id="section-72" class="slide level2" data-background-image="causal_salad/part.03.slide.17.png" data-background-size="contain">
+<section id="section-68" class="slide level2" data-background-image="causal_salad/part.03.slide.17.png" data-background-size="contain">
 <h2></h2>
 </section>
-<section id="section-73" class="slide level2" data-background-image="causal_salad/part.03.slide.18.png" data-background-size="contain">
+<section id="section-69" class="slide level2" data-background-image="causal_salad/part.03.slide.18.png" data-background-size="contain">
 <h2></h2>
 </section>
 <section id="scientists-attitudes-toward-bias-replicability-and-scientific-practice" class="slide level2">
@@ -627,7 +620,7 @@ Edoardo "Dado" Marcora
 <li class="fragment"><p>Test before you est(imate)!</p></li>
 </ul>
 </section>
-<section id="section-74" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="contain">
+<section id="section-70" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="contain">
 <h2></h2>
 </section>
 <section id="the-taxonomy-of-estimands" class="slide level2">
