@@ -760,7 +760,7 @@ X \to Y
 <li class="fragment">“<span class="math inline">\(A\)</span> is <strong>definitely not</strong> a cause of <span class="math inline">\(B\)</span>”</li>
 </ul></li>
 <li class="fragment"><p>Create DAG with team and stakeholders as a transparent representation of your shared understanding of the DGP and the causal assumptions that inform data collection and statistical analysis</p></li>
-<li class="fragment"><p>Include all possible causal variables (<strong>even if not in data</strong>) and arrows</p></li>
+<li class="fragment"><p>Include all possible causal variables (<strong>even if not in the data</strong>) and arrows</p></li>
 <li class="fragment"><p>Complexity is okay, reality is complex!</p></li>
 </ul>
 </section>
@@ -843,6 +843,110 @@ X \to Y
 <div class="fragment">
 <p><span class="math display">\[X \rightarrow Z \leftarrow Y\]</span></p>
 </div>
+</section>
+<section id="the-pipe" class="slide level2">
+<h2>The pipe</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>rbern <span class="ot">&lt;-</span> <span class="cf">function</span>(n, <span class="at">p =</span> <span class="fl">0.5</span>) <span class="fu">rbinom</span>(n, <span class="dv">1</span>, p)</span>
+<span id="cb11-2"><a href=""></a>inv_logit <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>&nbsp;</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb12-2"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb12-3"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N,<span class="fu">inv_logit</span>(X))</span>
+<span id="cb12-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,(<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:55%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-17-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-18-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="the-fork" class="slide level2">
+<h2>The fork</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb15-2"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N)</span>
+<span id="cb15-3"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>)</span>
+<span id="cb15-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,(<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:55%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="the-collider" class="slide level2">
+<h2>The collider</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb18-2"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb18-3"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb18-4"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N,<span class="fu">inv_logit</span>(<span class="dv">2</span><span class="sc">*</span>X<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>Y<span class="dv">-2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:55%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
 </section>
 <section id="section-16" class="slide level2" data-background-image="causal_salad/part.02.slide.32.png" data-background-size="50%">
 <h2></h2>
@@ -1135,11 +1239,11 @@ X \to Y
 <section id="statistical-inference-is-inductive-reasoning-5" class="slide level2">
 <h2>Statistical inference is inductive reasoning</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-25-1.png" width="960" class="r-stretch"></section>
 <section id="statistical-inference-is-inductive-reasoning-6" class="slide level2">
 <h2>Statistical inference is inductive reasoning</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-26-1.png" width="960" class="r-stretch"></section>
 <section id="statistical-inference-is-inductive-reasoning-7" class="slide level2">
 <h2>Statistical inference is inductive reasoning</h2>
 
@@ -1201,11 +1305,11 @@ X \to Y
 <section id="modern-science-statistical-causal-inference-11" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-17-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-27-1.png" width="960" class="r-stretch"></section>
 <section id="modern-science-statistical-causal-inference-12" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-28-1.png" width="960" class="r-stretch"></section>
 <section id="modern-science-statistical-causal-inference-13" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
@@ -1217,15 +1321,15 @@ X \to Y
 <section id="modern-science-statistical-causal-inference-15" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-19-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-29-1.png" width="960" class="r-stretch"></section>
 <section id="modern-science-statistical-causal-inference-16" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-30-1.png" width="960" class="r-stretch"></section>
 <section id="modern-science-statistical-causal-inference-17" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-21-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-31-1.png" width="960" class="r-stretch"></section>
 <section id="modern-science-statistical-causal-inference-18" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 

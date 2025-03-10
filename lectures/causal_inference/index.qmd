@@ -48,7 +48,7 @@ net_dag <- dagitty(
 #| include: false
 library(coursekata)
 
-theme_set(theme_bw())
+theme_set(theme_minimal())
 
 m = 1000
 ```
@@ -453,7 +453,7 @@ $$
 
 -   Create DAG with team and stakeholders as a transparent representation of your shared understanding of the DGP and the causal assumptions that inform data collection and statistical analysis
 
--   Include all possible causal variables (**even if not in data**) and arrows
+-   Include all possible causal variables (**even if not in the data**) and arrows
 
 -   Complexity is okay, reality is complex!
 
@@ -523,6 +523,101 @@ $$X \rightarrow Z \rightarrow Y$$
 
 ::: fragment
 $$X \rightarrow Z \leftarrow Y$$
+:::
+
+
+## The pipe
+
+::: columns
+
+::: {.column width="45%"}
+```{r}
+#| output-location: default
+rbern <- function(n, p = 0.5) rbinom(n, 1, p)
+inv_logit <- function(x) 1 / (1 + exp(-x))
+```
+
+&nbsp;
+
+```{r}
+#| output-location: default
+N <- 1000
+X <- rnorm(N)
+Z <- rbern(N,inv_logit(X))
+Y <- rnorm(N,(2*Z-1))
+```
+:::
+
+::: {.column width="55%"}
+```{r}
+#| output-location: default
+gf_point(Y ~ X, data = tibble(X, Y, Z)) %>% gf_lm()
+```
+
+```{r}
+#| output-location: default
+gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm()
+```
+:::
+
+:::
+
+## The fork
+
+::: columns
+
+::: {.column width="45%"}
+```{r}
+#| output-location: default
+N <- 1000
+Z <- rbern(N)
+X <- rnorm(N,2*Z-1)
+Y <- rnorm(N,(2*Z-1))
+```
+:::
+
+::: {.column width="55%"}
+```{r}
+#| output-location: default
+gf_point(Y ~ X, data = tibble(X, Y, Z)) %>% gf_lm()
+```
+
+```{r}
+#| output-location: default
+gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm()
+```
+:::
+
+:::
+
+## The collider
+
+::: columns
+
+::: {.column width="45%"}
+
+```{r}
+#| output-location: default
+N <- 1000
+X <- rnorm(N)
+Y <- rnorm(N)
+Z <- rbern(N,inv_logit(2*X+2*Y-2))
+```
+
+:::
+
+::: {.column width="55%"}
+```{r}
+#| output-location: default
+gf_point(Y ~ X, data = tibble(X, Y, Z)) %>% gf_lm()
+```
+
+```{r}
+#| output-location: default
+gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm()
+```
+:::
+
 :::
 
 ##  {background-image="causal_salad/part.02.slide.32.png" background-size="50%"}
