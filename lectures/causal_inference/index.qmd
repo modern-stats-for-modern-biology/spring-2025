@@ -22,6 +22,30 @@ csl: nature-no-et-al.csl
 
 ```{r}
 #| include: false
+library(dagitty)
+
+net_dag <- dagitty(
+'dag {
+  malaria_risk [outcome]
+  net [exposure]
+  eligible -> net
+  health -> malaria_risk
+  health -> net
+  household -> eligible
+  household -> net
+  income -> eligible
+  income -> health
+  income -> malaria_risk
+  income -> net
+  net -> malaria_risk
+  resistance -> malaria_risk
+  temperature -> malaria_risk
+  temperature -> net    
+}')
+```
+
+```{r}
+#| include: false
 library(coursekata)
 
 theme_set(theme_bw())
@@ -409,19 +433,23 @@ See also: [Gelman and Shalizi (2012)](https://doi.org/10.1111/j.2044-8317.2011.0
 
 ## What is causal inference?
 
--   Statistical inference is about learning **statistical relationships**/associations between random variables and predicting observations \[*What if I see this?*\]
+- **Statistical inference**: learning **statistical relationships** (patterns of association) between random variables
 
--   Causal inference is about learning **cause-and-effect relationships** between random variables
+  - Predict **unobserved outcomes** under **same** conditions  
+    [*What if I see this?*]{.gray}
 
--   Two perspectives:
+- **Causal inference**: learning **cause-and-effect relationships** between random variables
 
-    -   Causal inference as **prediction of the consequences of an intervention** \[*What if I do this?*\]
+  - Predict **unobserved outcomes** under **changed** conditions:
+    - **consequences of interventions** (causal prediction, forward-looking)  
+      [*What if I do this?*]{.gray}
 
-    -   Causal inference as **imputation of missing data** (unobserved counterfactual outcomes) \[*What if I had done something else?*\]
+    - **counterfactual outcomes** (causal imputation, backward-looking)  
+      [*What if I had done something else?*]{.gray}
+    
+##  {background-image="causal_salad/part.01.slide.10.png" background-size="50%"}
 
-##  {background-image="causal_salad/part.01.slide.10.png" background-size="66%"}
-
-##  {background-image="causal_salad/part.01.slide.11.png" background-size="66%"}
+##  {background-image="causal_salad/part.01.slide.11.png" background-size="50%"}
 
 ## The ladder of causation
 
@@ -485,111 +513,332 @@ See also: [Gelman and Shalizi (2012)](https://doi.org/10.1111/j.2044-8317.2011.0
 :::
 :::::
 
-##  {background-image="causal_salad/part.01.slide.28.png" background-size="66%"}
+##  {background-image="causal_salad/part.01.slide.28.png" background-size="50%"}
 
-##  {background-image="causal_salad/part.02.slide.06.png" background-size="66%"}
+##  {background-image="causal_salad/part.02.slide.06.png" background-size="50%"}
 
-##  {background-image="causal_salad/part.02.slide.07.png" background-size="66%"}
+##  Sometime correlation is causation!
 
-##  {background-image="causal_salad/part.02.slide.08.png" background-size="66%"}
+-   When there are no confounders and there is a linear relationship between the treatment and the outcome, then correlation is causation
 
-##  {background-image="causal_salad/part.02.slide.09.png" background-size="66%"}
+-   Adjusting for baseline covariates can make an estimate more precise
 
-##  {background-image="causal_salad/part.02.slide.10.png" background-size="66%"}
+## Causal inference workflow
 
-##  {background-image="causal_salad/part.02.slide.11.png" background-size="66%"}
+1.  **Specify causal question** (e.g., estimand of randomized control trial)
 
-##  {background-image="causal_salad/part.02.slide.12.png" background-size="66%"}
+2.  **Make causal model** (e.g., draw causal diagram)
 
-##  {background-image="causal_salad/part.02.slide.13.png" background-size="66%"}
+3.  **Test causal model**
 
-##  {background-image="causal_salad/part.02.slide.30.png" background-size="66%"}
+4.  **Translate DAG into statistical model** (e.g., multivariate linear regression)
 
-##  {background-image="causal_salad/part.02.slide.31.png" background-size="66%"}
+5.  **Test statistical model**
 
-##  {background-image="causal_salad/part.02.slide.32.png" background-size="66%"}
+6.  **Estimate causal effect using statistical model** (e.g., regression coefficient)
 
-##  {background-image="causal_salad/part.02.slide.33.png" background-size="66%"}
+## Specify causal question
 
-##  {background-image="causal_salad/part.02.slide.34.png" background-size="66%"}
+"*Does using a bed net reduce the risk of malaria?*"
 
-##  {background-image="causal_salad/part.02.slide.35.png" background-size="66%"}
+```{r}
+#| output-location: default
+data(net_data, package="causalworkshop") # https://r-causal.github.io/causal_workshop_website
 
-##  {background-image="causal_salad/part.02.slide.36.png" background-size="66%"}
+net_data
+```
 
-##  {background-image="causal_salad/part.02.slide.37.png" background-size="66%"}
+## Specify causal question
 
-##  {background-image="causal_salad/part.02.slide.38.png" background-size="66%"}
+"*Does using a bed net reduce the risk of malaria?*"
 
-##  {background-image="causal_salad/part.02.slide.39.png" background-size="66%"}
+```{r}
+#| output-location: default
+gf_density(~ malaria_risk, fill = ~ net, data = net_data)
+```
 
-##  {background-image="causal_salad/part.02.slide.40.png" background-size="66%"}
+## Specify causal question
 
-##  {background-image="causal_salad/part.02.slide.41.png" background-size="66%"}
+"*Does using a bed net reduce the risk of malaria?*"
 
-##  {background-image="causal_salad/part.02.slide.42.png" background-size="66%"}
+```{r}
+#| output-location: default
+favstats(malaria_risk ~ net, data = net_data) %>% knitr::kable()
+```
 
-##  {background-image="causal_salad/part.02.slide.43.png" background-size="66%"}
+## Specify causal question
 
-##  {background-image="causal_salad/part.02.slide.44.png" background-size="66%"}
+"*Does using a bed net reduce the risk of malaria?*"
 
-##  {background-image="causal_salad/part.02.slide.45.png" background-size="66%"}
+```{r}
+#| output-location: default
+lm(malaria_risk ~ net, data = net_data) %>%
+  broom::tidy(conf.int = TRUE) %>% select(term, estimate, conf.low, conf.high) %>% knitr::kable()
+```
 
-##  {background-image="causal_salad/part.02.slide.46.png" background-size="66%"}
+## Draw causal diagram
 
-##  {background-image="causal_salad/part.02.slide.47.png" background-size="66%"}
+![](images/fig-net-data-dag-1.png){fig-align="center"}
 
-##  {background-image="causal_salad/part.02.slide.48.png" background-size="66%"}
+## Draw causal diagram
 
-##  {background-image="causal_salad/part.02.slide.49.png" background-size="66%"}
+```{r}
+#| output-location: default
+#| eval: false
+library(dagitty)
 
-##  {background-image="causal_salad/part.02.slide.50.png" background-size="66%"}
+net_dag <- dagitty(
+'dag {
+  malaria_risk [outcome]
+  net [exposure]
+  eligible -> net
+  health -> malaria_risk
+  health -> net
+  household -> eligible
+  household -> net
+  income -> eligible
+  income -> health
+  income -> malaria_risk
+  income -> net
+  net -> malaria_risk
+  resistance -> malaria_risk
+  temperature -> malaria_risk
+  temperature -> net    
+}')
+```
 
-##  {background-image="causal_salad/part.02.slide.51.png" background-size="66%"}
+## Draw causal diagram
 
-##  {background-image="causal_salad/part.02.slide.52.png" background-size="66%"}
+```{r}
+#| output-location: default
+set.seed(666)
+plot(net_dag)
+```
 
-##  {background-image="causal_salad/part.02.slide.53.png" background-size="66%"}
+## Translate DAG into statistical model
 
-##  {background-image="causal_salad/part.02.slide.54.png" background-size="66%"}
+::: columns
 
-##  {background-image="causal_salad/part.02.slide.55.png" background-size="66%"}
+::: column
+![](images/fig-net-data-dag-1.png){fig-align="center"}
+:::
 
-##  {background-image="causal_salad/part.02.slide.56.png" background-size="66%"}
+::: column
+![](images/fig-net-data-confounding-1.png){fig-align="center"}
+:::
 
-##  {background-image="causal_salad/part.02.slide.57.png" background-size="66%"}
+:::
 
-##  {background-image="causal_salad/part.02.slide.58.png" background-size="66%"}
+## Translate DAG into statistical model
 
-##  {background-image="causal_salad/part.02.slide.59.png" background-size="66%"}
+```{r}
+#| output-location: default
+as_tibble(paths(net_dag)) %>% filter(open) %>% knitr::kable()
+```
 
-##  {background-image="causal_salad/part.02.slide.60.png" background-size="66%"}
+## Translate DAG into statistical model
 
-##  {background-image="causal_salad/part.02.slide.61.png" background-size="66%"}
+```{r}
+#| output-location: default
+adjustmentSets(net_dag)
+```
 
-##  {background-image="causal_salad/part.02.slide.62.png" background-size="66%"}
+These three variables are a minimal adjustment set, the minimum set of variables to adjust for in order to block all backdoor paths/confounding effects between treatment and outcome
 
-##  {background-image="causal_salad/part.02.slide.63.png" background-size="66%"}
+## Estimate causal effect using statistical model
 
-##  {background-image="causal_salad/part.02.slide.64.png" background-size="66%"}
+```{r}
+#| output-location: default
+lm(malaria_risk ~ net + health + income + temperature, data = net_data) %>% 
+  broom::tidy(conf.int = TRUE) %>% select(term, estimate, conf.low, conf.high) %>% knitr::kable()
+```
 
-##  {background-image="causal_salad/part.02.slide.65.png" background-size="66%"}
+##  {background-image="causal_salad/part.02.slide.06.png" background-size="50%"}
 
-##  {background-image="causal_salad/part.02.slide.66.png" background-size="66%"}
+##  {background-image="causal_salad/part.02.slide.07.png" background-size="50%"}
 
-##  {background-image="causal_salad/part.02.slide.67.png" background-size="66%"}
+## Make a causal model
 
-##  {background-image="causal_salad/part.02.slide.68.png" background-size="66%"}
+-   Fundamental component of a causal model: A function that determines how a variable is influenced by others
 
-##  {background-image="causal_salad/part.02.slide.69.png" background-size="66%"}
+::: fragment
+$$
+Y = f(X)
+$$
+:::
 
-##  {background-image="causal_salad/part.02.slide.70.png" background-size="66%"}
+-   In a graphical causal model (a.k.a. a causal diagram or DAG), this function is represented by an arrow that connects two variables
 
-##  {background-image="causal_salad/part.02.slide.71.png" background-size="66%"}
+::: fragment
+$$
+X \to Y
+$$
+:::
 
-##  {background-image="causal_salad/part.02.slide.72.png" background-size="66%"}
+-   There is no method for making causal models other than **science**
 
-##  {background-image="causal_salad/part.02.slide.73.png" background-size="66%"}
+-   There is no method for science other than **honest anarchy**
+
+##  {background-image="causal_salad/part.02.slide.08.png" background-size="50%"}
+
+## Make a causal model
+
+-   A DAG only says which variables influence which
+
+-   It does not say how variables influence one another
+
+-   Examples:
+
+
+##  {background-image="causal_salad/part.02.slide.09.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.10.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.11.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.12.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.13.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.30.png" background-size="50%"}
+
+## Analyze a causal model
+
+-   Causal model can be complicated
+
+-   But rules for analyzing them are simple
+
+-   Analysis allows:
+
+    -   Testing the causal model
+
+    -   Translating the causal model into a statistical model
+
+-   All of this requires understanding **d-separation** 
+
+
+
+
+##  {background-image="causal_salad/part.02.slide.31.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.32.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.33.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.34.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.35.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.36.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.37.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.38.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.39.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.40.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.41.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.42.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.43.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.44.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.45.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.46.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.47.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.48.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.49.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.50.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.51.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.52.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.53.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.54.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.55.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.56.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.57.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.58.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.59.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.60.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.61.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.62.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.63.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.64.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.65.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.66.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.67.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.68.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.69.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.70.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.71.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.72.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.73.png" background-size="50%"}
+
+
+
+
+
+## Make a causal model
+
+1.  Specify the causal question
+
+2.  Use domain knowledge
+
+3.  Write variables as nodes
+
+4.  Write causal relationships as arrows (directed edges)
+
+
+## Causal effects and backdoor paths
+
+Ok, correlation != causation. But why not?
+
+## Closing backdoor paths
+
+-   A backdoor path is a path between a treatment and an outcome that contains an arrow into the treatment node
+
+-   In experimental studies like a randomized controlled trial, randomized treatment allocation blocks all backdoor paths
+
+-   In observational studies, we need to block all backdoor paths to estimate the causal effect of the treatment on the outcome
+
+-   Stratification, adjustment, weighting, matching, etc. can be used to block backdoor paths
+
+-   Don't adjust for the future!
+
+
+
+
 
 ## Causal models are generative models
 
