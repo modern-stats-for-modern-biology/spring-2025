@@ -210,6 +210,15 @@ Edoardo "Dado" Marcora
 
   <p class="date">2025-03-10</p>
 </section>
+<section class="slide level2">
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>rbern <span class="ot">&lt;-</span> <span class="cf">function</span>(n, <span class="at">p =</span> <span class="fl">0.5</span>) <span class="fu">rbinom</span>(n, <span class="dv">1</span>, p)</span>
+<span id="cb1-2"><a href=""></a>inv_logit <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>x))</span>
+<span id="cb1-3"><a href=""></a>M <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
+<span id="cb1-4"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 <section id="section" class="slide level2" data-background-image="images/last_week_tonight.jpg" data-background-size="contain">
 <h2></h2>
 </section>
@@ -433,9 +442,9 @@ Edoardo "Dado" Marcora
 <h2>Specify causal question</h2>
 <p>“<em>Does using a bed net reduce the risk of malaria?</em>”</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">data</span>(net_data, <span class="at">package=</span><span class="st">"causalworkshop"</span>) <span class="co"># https://r-causal.github.io/causal_workshop_website</span></span>
-<span id="cb1-2"><a href=""></a></span>
-<span id="cb1-3"><a href=""></a>net_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">data</span>(net_data, <span class="at">package=</span><span class="st">"causalworkshop"</span>) <span class="co"># https://r-causal.github.io/causal_workshop_website</span></span>
+<span id="cb2-2"><a href=""></a></span>
+<span id="cb2-3"><a href=""></a>net_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -449,15 +458,15 @@ Edoardo "Dado" Marcora
 <h2>Specify causal question</h2>
 <p>“<em>Does using a bed net reduce the risk of malaria?</em>”</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">gf_density</span>(<span class="sc">~</span> malaria_risk, <span class="at">fill =</span> <span class="sc">~</span> net, <span class="at">data =</span> net_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">gf_density</span>(<span class="sc">~</span> malaria_risk, <span class="at">fill =</span> <span class="sc">~</span> net, <span class="at">data =</span> net_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
 <section id="specify-causal-question-2" class="slide level2">
 <h2>Specify causal question</h2>
 <p>“<em>Does using a bed net reduce the risk of malaria?</em>”</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">favstats</span>(malaria_risk <span class="sc">~</span> net, <span class="at">data =</span> net_data) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">favstats</span>(malaria_risk <span class="sc">~</span> net, <span class="at">data =</span> net_data) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top">
 <thead>
@@ -508,8 +517,8 @@ Edoardo "Dado" Marcora
 <h2>Specify causal question</h2>
 <p>“<em>Does using a bed net reduce the risk of malaria?</em>”</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">lm</span>(malaria_risk <span class="sc">~</span> net, <span class="at">data =</span> net_data) <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href=""></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(term, estimate, conf.low, conf.high) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">lm</span>(malaria_risk <span class="sc">~</span> net, <span class="at">data =</span> net_data) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href=""></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(term, estimate, conf.low, conf.high) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top">
 <thead>
@@ -545,37 +554,38 @@ Edoardo "Dado" Marcora
 <section id="draw-causal-diagram-dag-1" class="slide level2">
 <h2>Draw causal diagram (DAG)</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">library</span>(dagitty)</span>
-<span id="cb5-2"><a href=""></a></span>
-<span id="cb5-3"><a href=""></a>net_dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(</span>
-<span id="cb5-4"><a href=""></a><span class="st">'dag {</span></span>
-<span id="cb5-5"><a href=""></a><span class="st">  malaria_risk [outcome]</span></span>
-<span id="cb5-6"><a href=""></a><span class="st">  net [exposure]</span></span>
-<span id="cb5-7"><a href=""></a><span class="st">  eligible -&gt; net</span></span>
-<span id="cb5-8"><a href=""></a><span class="st">  health -&gt; malaria_risk</span></span>
-<span id="cb5-9"><a href=""></a><span class="st">  health -&gt; net</span></span>
-<span id="cb5-10"><a href=""></a><span class="st">  household -&gt; eligible</span></span>
-<span id="cb5-11"><a href=""></a><span class="st">  household -&gt; net</span></span>
-<span id="cb5-12"><a href=""></a><span class="st">  income -&gt; eligible</span></span>
-<span id="cb5-13"><a href=""></a><span class="st">  income -&gt; health</span></span>
-<span id="cb5-14"><a href=""></a><span class="st">  income -&gt; malaria_risk</span></span>
-<span id="cb5-15"><a href=""></a><span class="st">  income -&gt; net</span></span>
-<span id="cb5-16"><a href=""></a><span class="st">  net -&gt; malaria_risk</span></span>
-<span id="cb5-17"><a href=""></a><span class="st">  resistance -&gt; malaria_risk</span></span>
-<span id="cb5-18"><a href=""></a><span class="st">  temperature -&gt; malaria_risk</span></span>
-<span id="cb5-19"><a href=""></a><span class="st">  temperature -&gt; net    </span></span>
-<span id="cb5-20"><a href=""></a><span class="st">}'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">library</span>(dagitty)</span>
+<span id="cb6-2"><a href=""></a></span>
+<span id="cb6-3"><a href=""></a>net_dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(</span>
+<span id="cb6-4"><a href=""></a><span class="st">'dag {</span></span>
+<span id="cb6-5"><a href=""></a><span class="st">  malaria_risk [outcome]</span></span>
+<span id="cb6-6"><a href=""></a><span class="st">  net [exposure]</span></span>
+<span id="cb6-7"><a href=""></a><span class="st">  eligible -&gt; net</span></span>
+<span id="cb6-8"><a href=""></a><span class="st">  health -&gt; malaria_risk</span></span>
+<span id="cb6-9"><a href=""></a><span class="st">  health -&gt; net</span></span>
+<span id="cb6-10"><a href=""></a><span class="st">  household -&gt; eligible</span></span>
+<span id="cb6-11"><a href=""></a><span class="st">  household -&gt; net</span></span>
+<span id="cb6-12"><a href=""></a><span class="st">  income -&gt; eligible</span></span>
+<span id="cb6-13"><a href=""></a><span class="st">  income -&gt; health</span></span>
+<span id="cb6-14"><a href=""></a><span class="st">  income -&gt; malaria_risk</span></span>
+<span id="cb6-15"><a href=""></a><span class="st">  income -&gt; net</span></span>
+<span id="cb6-16"><a href=""></a><span class="st">  net -&gt; malaria_risk</span></span>
+<span id="cb6-17"><a href=""></a><span class="st">  resistance -&gt; malaria_risk</span></span>
+<span id="cb6-18"><a href=""></a><span class="st">  temperature -&gt; malaria_risk</span></span>
+<span id="cb6-19"><a href=""></a><span class="st">  temperature -&gt; net    </span></span>
+<span id="cb6-20"><a href=""></a><span class="st">}'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="draw-causal-diagram-dag-2" class="slide level2">
 <h2>Draw causal diagram (DAG)</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">plot</span>(net_dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">plot</span>(net_dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"></section>
 <section id="translate-dag-into-statistical-model" class="slide level2">
 <h2>Translate DAG into statistical model</h2>
+<p>Find all open backdoor paths between treatment and outcome</p>
 <div class="columns">
 <div class="column">
 <div class="quarto-figure quarto-figure-center">
@@ -593,8 +603,9 @@ Edoardo "Dado" Marcora
 </section>
 <section id="translate-dag-into-statistical-model-1" class="slide level2">
 <h2>Translate DAG into statistical model</h2>
+<p>Find all open backdoor paths between treatment and outcome</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">as_tibble</span>(<span class="fu">paths</span>(net_dag)) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(open) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">as_tibble</span>(<span class="fu">paths</span>(net_dag)) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(open) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top">
 <thead>
@@ -643,8 +654,9 @@ Edoardo "Dado" Marcora
 </section>
 <section id="translate-dag-into-statistical-model-2" class="slide level2">
 <h2>Translate DAG into statistical model</h2>
+<p>Find minimal adjustment sets</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">adjustmentSets</span>(net_dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">adjustmentSets</span>(net_dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>{ health, income, temperature }</code></pre>
 </div>
@@ -656,9 +668,10 @@ Edoardo "Dado" Marcora
 </section>
 <section id="estimate-causal-effect-using-statistical-model" class="slide level2">
 <h2>Estimate causal effect using statistical model</h2>
+<p>Use linear regression with covariates in adjustment set to estimate the causal effect of bed net use on malaria risk</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">lm</span>(malaria_risk <span class="sc">~</span> net <span class="sc">+</span> health <span class="sc">+</span> income <span class="sc">+</span> temperature, <span class="at">data =</span> net_data) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-2"><a href=""></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(term, estimate, conf.low, conf.high) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">lm</span>(malaria_risk <span class="sc">~</span> net <span class="sc">+</span> health <span class="sc">+</span> income <span class="sc">+</span> temperature, <span class="at">data =</span> net_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href=""></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(term, estimate, conf.low, conf.high) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top">
 <thead>
@@ -807,7 +820,7 @@ X \to Y
 <li class="fragment"><p>Testing the causal model</p></li>
 <li class="fragment"><p>Translating the causal model into a statistical model</p></li>
 </ul></li>
-<li class="fragment"><p>All of this requires understanding <a href="https://www.dagitty.net/learn/dsep/"><em>d</em>-separation</a>, i.e., identifying and blocking all backdoor paths</p></li>
+<li class="fragment"><p>All of this requires understanding <a href="https://www.dagitty.net/learn/dsep/"><em>d</em>-separation</a>, i.e., identifying and blocking all open backdoor paths</p></li>
 </ul>
 </section>
 <section id="the-three-elemental-confounds" class="slide level2">
@@ -844,24 +857,21 @@ X \to Y
 <p><span class="math display">\[X \rightarrow Z \leftarrow Y\]</span></p>
 </div>
 </section>
+<section id="section-16" class="slide level2" data-background-image="causal_salad/part.02.slide.32.png" data-background-size="50%">
+<h2></h2>
+</section>
 <section id="the-pipe" class="slide level2">
 <h2>The pipe</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb12-2"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N,<span class="fu">inv_logit</span>(X))</span>
+<span id="cb12-3"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,(<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <div class="columns">
-<div class="column" style="width:45%;">
+<div class="column">
+<p><strong>Unstratified</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>rbern <span class="ot">&lt;-</span> <span class="cf">function</span>(n, <span class="at">p =</span> <span class="fl">0.5</span>) <span class="fu">rbinom</span>(n, <span class="dv">1</span>, p)</span>
-<span id="cb11-2"><a href=""></a>inv_logit <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>&nbsp;</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb12-2"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb12-3"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N,<span class="fu">inv_logit</span>(X))</span>
-<span id="cb12-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,(<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div><div class="column" style="width:55%;">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="st">"grey"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"darkgrey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -870,8 +880,10 @@ X \to Y
 </div>
 </div>
 </div>
+</div><div class="column">
+<p><strong>Stratified by <span class="math inline">\(Z\)</span></strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -882,19 +894,21 @@ X \to Y
 </div>
 </div></div>
 </section>
+<section id="section-17" class="slide level2" data-background-image="causal_salad/part.02.slide.33.png" data-background-size="50%">
+<h2></h2>
+</section>
 <section id="the-fork" class="slide level2">
 <h2>The fork</h2>
-<div class="columns">
-<div class="column" style="width:45%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb15-2"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N)</span>
-<span id="cb15-3"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>)</span>
-<span id="cb15-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,(<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N)</span>
+<span id="cb15-2"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>)</span>
+<span id="cb15-3"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,(<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div><div class="column" style="width:55%;">
+<div class="columns">
+<div class="column">
+<p><strong>Unstratified</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="st">"grey"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"darkgrey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -903,8 +917,10 @@ X \to Y
 </div>
 </div>
 </div>
+</div><div class="column">
+<p><strong>Stratified by <span class="math inline">\(Z\)</span></strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -915,19 +931,21 @@ X \to Y
 </div>
 </div></div>
 </section>
+<section id="section-18" class="slide level2" data-background-image="causal_salad/part.02.slide.34.png" data-background-size="50%">
+<h2></h2>
+</section>
 <section id="the-collider" class="slide level2">
 <h2>The collider</h2>
-<div class="columns">
-<div class="column" style="width:45%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb18-2"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb18-3"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb18-4"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N,<span class="fu">inv_logit</span>(<span class="dv">2</span><span class="sc">*</span>X<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>Y<span class="dv">-2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb18-2"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb18-3"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N,<span class="fu">inv_logit</span>(<span class="dv">2</span><span class="sc">*</span>X<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>Y<span class="dv">-2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div><div class="column" style="width:55%;">
+<div class="columns">
+<div class="column">
+<p><strong>Unstratified</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="st">"grey"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"darkgrey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -936,8 +954,10 @@ X \to Y
 </div>
 </div>
 </div>
+</div><div class="column">
+<p><strong>Stratified by <span class="math inline">\(Z\)</span></strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -947,15 +967,6 @@ X \to Y
 </div>
 </div>
 </div></div>
-</section>
-<section id="section-16" class="slide level2" data-background-image="causal_salad/part.02.slide.32.png" data-background-size="50%">
-<h2></h2>
-</section>
-<section id="section-17" class="slide level2" data-background-image="causal_salad/part.02.slide.33.png" data-background-size="50%">
-<h2></h2>
-</section>
-<section id="section-18" class="slide level2" data-background-image="causal_salad/part.02.slide.34.png" data-background-size="50%">
-<h2></h2>
 </section>
 <section id="section-19" class="slide level2" data-background-image="causal_salad/part.02.slide.35.png" data-background-size="50%">
 <h2></h2>

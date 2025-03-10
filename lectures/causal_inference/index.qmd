@@ -21,6 +21,15 @@ csl: nature-no-et-al.csl
 ---
 
 ```{r}
+#| output-location: default
+rbern <- function(n, p = 0.5) rbinom(n, 1, p)
+inv_logit <- function(x) 1 / (1 + exp(-x))
+M <- 100000
+N <- 1000
+```
+
+
+```{r}
 #| include: false
 library(dagitty)
 
@@ -49,8 +58,6 @@ net_dag <- dagitty(
 library(coursekata)
 
 theme_set(theme_minimal())
-
-m = 1000
 ```
 
 ```{r}
@@ -363,6 +370,8 @@ plot(net_dag)
 
 ## Translate DAG into statistical model
 
+Find all open backdoor paths between treatment and outcome
+
 ::::: columns
 ::: column
 ![](images/fig-net-data-dag-1.png){fig-align="center"}
@@ -375,12 +384,16 @@ plot(net_dag)
 
 ## Translate DAG into statistical model
 
+Find all open backdoor paths between treatment and outcome
+
 ```{r}
 #| output-location: default
 as_tibble(paths(net_dag)) %>% filter(open) %>% knitr::kable()
 ```
 
 ## Translate DAG into statistical model
+
+Find minimal adjustment sets
 
 ```{r}
 #| output-location: default
@@ -392,6 +405,8 @@ adjustmentSets(net_dag)
 -   such that the estimate of the statistical association between exposure and outcome can be interpreted as an estimate of the causal effect of the exposure on the outcome
 
 ## Estimate causal effect using statistical model
+
+Use linear regression with covariates in adjustment set to estimate the causal effect of bed net use on malaria risk
 
 ```{r}
 #| output-location: default
@@ -499,7 +514,7 @@ $$
 
     -   Translating the causal model into a statistical model
 
--   All of this requires understanding [*d*-separation](https://www.dagitty.net/learn/dsep/), i.e., identifying and blocking all backdoor paths
+-   All of this requires understanding [*d*-separation](https://www.dagitty.net/learn/dsep/), i.e., identifying and blocking all open backdoor paths
 
 ## The three elemental confounds
 
@@ -526,105 +541,110 @@ $$X \rightarrow Z \leftarrow Y$$
 :::
 
 
+##  {background-image="causal_salad/part.02.slide.32.png" background-size="50%"}
+
 ## The pipe
 
-::: columns
-
-::: {.column width="45%"}
 ```{r}
 #| output-location: default
-rbern <- function(n, p = 0.5) rbinom(n, 1, p)
-inv_logit <- function(x) 1 / (1 + exp(-x))
-```
-
-&nbsp;
-
-```{r}
-#| output-location: default
-N <- 1000
 X <- rnorm(N)
 Z <- rbern(N,inv_logit(X))
 Y <- rnorm(N,(2*Z-1))
 ```
-:::
-
-::: {.column width="55%"}
-```{r}
-#| output-location: default
-gf_point(Y ~ X, data = tibble(X, Y, Z)) %>% gf_lm()
-```
-
-```{r}
-#| output-location: default
-gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm()
-```
-:::
-
-:::
-
-## The fork
 
 ::: columns
 
-::: {.column width="45%"}
+::: column
+**Unstratified**
+
 ```{r}
 #| output-location: default
-N <- 1000
+#| fig-height: 8
+gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkgrey")
+```
+:::
+
+::: column
+**Stratified by $Z$**
+
+```{r}
+#| output-location: default
+#| fig-height: 8
+gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+```
+:::
+
+:::
+
+##  {background-image="causal_salad/part.02.slide.33.png" background-size="50%"}
+
+## The fork
+
+```{r}
+#| output-location: default
 Z <- rbern(N)
 X <- rnorm(N,2*Z-1)
 Y <- rnorm(N,(2*Z-1))
 ```
-:::
-
-::: {.column width="55%"}
-```{r}
-#| output-location: default
-gf_point(Y ~ X, data = tibble(X, Y, Z)) %>% gf_lm()
-```
-
-```{r}
-#| output-location: default
-gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm()
-```
-:::
-
-:::
-
-## The collider
 
 ::: columns
 
-::: {.column width="45%"}
+::: column
+**Unstratified**
 
 ```{r}
 #| output-location: default
-N <- 1000
+#| fig-height: 8
+gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkgrey")
+```
+:::
+
+::: column
+**Stratified by $Z$**
+
+```{r}
+#| output-location: default
+#| fig-height: 8
+gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+```
+:::
+
+:::
+
+##  {background-image="causal_salad/part.02.slide.34.png" background-size="50%"}
+
+## The collider
+
+```{r}
+#| output-location: default
 X <- rnorm(N)
 Y <- rnorm(N)
 Z <- rbern(N,inv_logit(2*X+2*Y-2))
 ```
 
-:::
+::: columns
 
-::: {.column width="55%"}
-```{r}
-#| output-location: default
-gf_point(Y ~ X, data = tibble(X, Y, Z)) %>% gf_lm()
-```
+::: column
+**Unstratified**
 
 ```{r}
 #| output-location: default
-gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm()
+#| fig-height: 8
+gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkgrey")
+```
+:::
+
+::: column
+**Stratified by $Z$**
+
+```{r}
+#| output-location: default
+#| fig-height: 8
+gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
 ```
 :::
 
 :::
-
-##  {background-image="causal_salad/part.02.slide.32.png" background-size="50%"}
-
-##  {background-image="causal_salad/part.02.slide.33.png" background-size="50%"}
-
-##  {background-image="causal_salad/part.02.slide.34.png" background-size="50%"}
 
 ##  {background-image="causal_salad/part.02.slide.35.png" background-size="50%"}
 
@@ -907,7 +927,7 @@ set.seed(666)
 H <- seq(137, 179)
 n <- length(H)
 mu <- beta0 + beta1 * H
-W <- replicate(m, rnorm(n, mu, sigma))
+W <- replicate(M, rnorm(n, mu, sigma))
 
 df <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
@@ -938,7 +958,7 @@ set.seed(666)
 H <- seq(137, 179)
 n <- length(H)
 mu <- beta0 + beta1 * H
-W <- replicate(m, rnorm(n, mu, sigma))
+W <- replicate(M, rnorm(n, mu, sigma))
 
 df <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
@@ -1029,7 +1049,7 @@ set.seed(666)
 H <- seq(137, 179)
 n <- length(H)
 mu <- beta0 + beta1 * H
-W <- replicate(m, rnorm(n, mu, sigma))
+W <- replicate(M, rnorm(n, mu, sigma))
 
 df <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
@@ -1059,7 +1079,7 @@ set.seed(666)
 H <- seq(137, 179)
 n <- length(H)
 mu <- beta0 + beta1 * H
-W <- replicate(m, rnorm(n, mu, sigma))
+W <- replicate(M, rnorm(n, mu, sigma))
 
 df <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
@@ -1098,7 +1118,7 @@ set.seed(666)
 H <- seq(137, 179)
 n <- length(H)
 mu <- beta0 + beta1 * H
-W <- replicate(m, rnorm(n, mu, sigma))
+W <- replicate(M, rnorm(n, mu, sigma))
 
 df <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
@@ -1129,7 +1149,7 @@ set.seed(666)
 H <- seq(137, 179)
 n <- length(H)
 mu <- beta0 + beta1 * H
-W <- replicate(m, rnorm(n, mu, sigma))
+W <- replicate(M, rnorm(n, mu, sigma))
 
 df <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
