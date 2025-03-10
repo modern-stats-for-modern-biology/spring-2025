@@ -713,6 +713,30 @@ $$X \rightarrow Z \leftarrow Y$$
 
 ![](images/clipboard-2664055651.png)
 
+## Causal inference textbooks
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/primer-cover.jpg){height="440"}
+
+<http://bayes.cs.ucla.edu/PRIMER>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/book_of_why-cover.jpg){height="440"}
+
+<http://bayes.cs.ucla.edu/WHY>
+:::
+::::
+:::::::
+
+ 
+
+See also: [How to learn causal inference on your own for free](https://towardsdatascience.com/how-to-learn-causal-inference-on-your-own-for-free-98503abc0a06)
+
 ## Modern science: statistical (+ causal) inference
 
 ![](images/Slide1.png){fig-align="center" width="979"}
@@ -1063,30 +1087,6 @@ See also: [Gelman and Shalizi (2012)](https://doi.org/10.1111/j.2044-8317.2011.0
 
 ![](images/Slide19.png){fig-align="center"}
 
-## Causal inference textbooks
-
-::::::: columns
-:::: {.column width="50%"}
-::: text-align-center
-![](images/primer-cover.jpg){height="440"}
-
-<http://bayes.cs.ucla.edu/PRIMER>
-:::
-::::
-
-:::: {.column width="50%"}
-::: text-align-center
-![](images/book_of_why-cover.jpg){height="440"}
-
-<http://bayes.cs.ucla.edu/WHY>
-:::
-::::
-:::::::
-
- 
-
-See also: [How to learn causal inference on your own for free](https://towardsdatascience.com/how-to-learn-causal-inference-on-your-own-for-free-98503abc0a06)
-
 ## What is a model? What is a good model?
 
 -   All models only say what they are told to say (and nothing more)!
@@ -1123,88 +1123,6 @@ $$
 
 [Boué (2019)](https://arxiv.org/abs/1904.12320) "*Real numbers, data science and chaos: how to fit any dataset with a single parameter*"
 
-
-
-
-## Causal inference workflow
-
--   At the heart of causal inference is the causal question
-
-## Description, prediction, and explanation
-
--   Questions about description, prediction, and explanation are fundamentally different
-
--   Causal questions cannot be answered with predictive models
-
--   Causal questions require causal models
-
--   Causal models are generative models
-
--   Predictive modeling generally uses a different workflow than the workflow for causal modeling
-
--   Predictive modeling goal is to maximize predictive accuracy while retaining generalization to new data
-
--   The key measure of validity in prediction modeling is predictive accuracy. A convenient detail about predictive modeling is that we can often assess if we're right, which is not true of descriptive statistics for which we only have a subset of data, or causal inference for which we don’t know the true causal structure.
-
--   Often, people mistakenly use methods for selecting features (variables) for prediction models to select confounders in causal models
-
--   Prediction metrics cannot determine the causal structure of your question, and predictive value for the outcome does not make a variable a confounder
-
--   In general, background knowledge (not prediction or associational statistics) should help you select variables for causal models
-
--   Prediction is nevertheless crucial to causal inference. From a philosophical perspective, we’re comparing predictions from different what if scenarios: What would the outcome had one thing happened vs. if another thing happened?
-
-## Causal inference
-
--   The goal of causal inference is to understand the impact that a variable, sometimes called an exposure, has on another variable, sometimes called an outcome. “Exposure” and “outcome” are the terms we’ll use in this book to describe the causal relationship we’re interested in. Importantly, our goal is to answer this question clearly and precisely. In practice, this means using techniques like study design (e.g., a randomized trial) or statistical methods (like propensity scores) to calculate an unbiased effect of the exposure on the outcome.
-
--   As with prediction and description, it’s better to start with a clear, precise question to get a clear, precise answer
-
--   Making valid causal inferences requires several assumptions that we’ll discuss in Section 3.2. Unlike prediction, we generally cannot confirm that our causal models are correct. In other words, most assumptions we need to make are unverifiable. We’ll come back to this topic time and time again in the book—from the basics of these assumptions to practical decision-making to probing our models for problems.
-
-## Why isn’t the right causal model just the best prediction model?
-
-At this point, you may wonder why the right causal model isn’t just the best prediction model. It makes sense that the two would be related: naturally, things that cause other things would be predictors. It’s causality all the way down, so any predictive information is related, in some capacity, to the causal structure of the thing we’re predicting. Doesn’t it stand to reason that a model that predicts well is causal, too? It’s true that some predictive models can be great causal models and vice versa. Unfortunately, this is not always the case; causal effects needn’t predict particularly well, and good predictors needn’t be causally unbiased (Shmueli 2010).
-
-Descriptive, predictive, and causal analyses will always contain some aspect of each other. A predictive model gains some of its predictive power from the causal structure of the outcome, and a causal model has some predictive power because it contains information about the outcome. However, the same model in the same data with different goals will have different usefulness depending on those goals.
-
-## Table 2 fallacy
-
-A closely related idea is the Table Two Fallacy, so-called because, in health research papers, descriptive analyses are often presented in Table 1, and regression models are often presented in Table 2 (Westreich and Greenland 2013). The Table Two Fallacy is when a researcher presents confounders and other non-exposure variables, particularly when they interpret those coefficients as if they, too, were causal. The problem is that in some situations, the model to estimate an unbiased effect of one variable may not be the same model to estimate an unbiased effect of another variable. In other words, we can’t interpret the effects of confounders as causal because they might themselves be confounded by another variable unrelated to the original exposure.
-
-## Causal inference workflow
-
-We’ll play the whole game of causal analysis using a few key steps:
-
--   Specify a causal question
-
--   Draw our assumptions using a causal diagram
-
--   Model our assumptions
-
--   Diagnose our models
-
--   Estimate the causal effect
-
--   Conduct sensitivity analysis on the effect estimate
-
-## Potential outcomes
-
-Factual outcomes and counterfactual outcomes are two realizations of potential outcomes
-
-
-
-
-
-
-
-
----
-
-
-
----
-
 ## Scientists’ attitudes toward bias, replicability and scientific practice
 
 ![](causal_salad/journal.pone.0256607.g009.png)
@@ -1217,106 +1135,6 @@ Factual outcomes and counterfactual outcomes are two realizations of potential o
 
 [Farrar et al. (2021)](https://doi.org/10.1371/journal.pone.0256607)
 
-
-# Causal inference in Python: Theory to practice
-
-[https://youtu.be/XwYHUv2nH34](https://youtu.be/XwYHUv2nH34?si=nQ6J5zModeUS9oV1)
-
-
-## Causal inference workflow
-
-![](images/clipboard-3203447617.png)
-
-
-## DAGs represent joint probability distributions
-
--   A DAG is a mathematical object, i.e., a joint probability distribution:
-
-$$
-P(X, Y, Z) = P(X)\,P(Y \mid X)\,P(Z \mid X, Y)
-$$
-
--   Causal assumptions: Endogeneous variables only depend on their parents (can check vs. data)
-
--   The fork: $Z$ **is a common cause of** $X$ **and** $Y$**, with** $X$ **also causing** $Y$
-
-    -   DAG: $Z \to X$, $Z \to Y$, and $X \to Y$
-
-$$
-P(X, Y, Z) = P(X \mid Z) \cdot P(Y \mid X, Z) \cdot P(Z)
-$$
-
--   The collider: $Z$ **is a common effect of** $X$ **and** $Y$**, with** $X$ **also causing** $Y$
-    -   DAG: $X \to Z$, $Y \to Z$, and $X \to Y$
-
-$$
-P(X, Y, Z) = P(X) \cdot P(Y \mid X) \cdot P(Z \mid X, Y)
-$$
-
--   The pipe (or chain): $X$ **causes** $Y$ **via** $Z$
-    -   DAG: $X \to Z \to Y$
-
-$$
-P(X, Y, Z) = P(X) \cdot P(Y \mid Z) \cdot P(Z \mid X)
-$$
-
-## Identify effect
-
--   Identification: Isolating the causal effect of $X$ on $Y$
-
--   From the causal structure represented by the DAG, identify which variables to adjust for to estimate the pure causal effect of $X$ (the treatment) on $Y$ (the outcome), free from spurious associations (bias)
-
--   Adjusting/controlling for $Z$ = grouping by/segregating by/stratifying on $Z$, e.g., using regression or matching
-
--   Adjusting/controlling for ALL variables can introduce bias (Berkson's paradox). Rather, use *just the right* variables
-
-## Interventions
-
-![](images/clipboard-1480930042.png)
-
-## Identify effect: Blocking or d-separation
-
-![](images/clipboard-2767095917.png)
-
-## Identify effect: Backdoor criterion
-
-![](images/clipboard-978367041.png)
-
-## Simpson's paradox
-
-![](images/clipboard-4012926030.png)
-
-## Simpson's paradox
-
-![](images/clipboard-2005749411.png)
-
-## Berkson's paradox
-
-![](images/clipboard-2619765555.png)
-
-## Berkson's paradox
-
-![](images/clipboard-2521184635.png)
-
-## Estimate using data
-
-![](images/clipboard-3115424937.png)
-
-## Validate model
-
-![](images/clipboard-2113635429.png)
-
-## Explain
-
-![](images/clipboard-3308191871.png)
-
-## Resources
-
-![](images/clipboard-851192339.png)
-
-## Practice
-
-![](images/clipboard-2664055651.png)
 
 
 

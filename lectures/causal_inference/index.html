@@ -1064,6 +1064,23 @@ X \to Y
 <h2>Free, open-source causal inference tools</h2>
 
 <img data-src="images/clipboard-2664055651.png" class="r-stretch"></section>
+<section id="causal-inference-textbooks" class="slide level2">
+<h2>Causal inference textbooks</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="text-align-center">
+<p><img data-src="images/primer-cover.jpg" height="440"></p>
+<p><a href="http://bayes.cs.ucla.edu/PRIMER" class="uri">http://bayes.cs.ucla.edu/PRIMER</a></p>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="text-align-center">
+<p><img data-src="images/book_of_why-cover.jpg" height="440"></p>
+<p><a href="http://bayes.cs.ucla.edu/WHY" class="uri">http://bayes.cs.ucla.edu/WHY</a></p>
+</div>
+</div></div>
+<p>&nbsp;</p>
+<p>See also: <a href="https://towardsdatascience.com/how-to-learn-causal-inference-on-your-own-for-free-98503abc0a06">How to learn causal inference on your own for free</a></p>
+</section>
 <section id="modern-science-statistical-causal-inference-1" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
@@ -1228,23 +1245,6 @@ X \to Y
 <h2>The taxonomy of estimands</h2>
 
 <img data-src="images/Slide19.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="causal-inference-textbooks" class="slide level2">
-<h2>Causal inference textbooks</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="text-align-center">
-<p><img data-src="images/primer-cover.jpg" height="440"></p>
-<p><a href="http://bayes.cs.ucla.edu/PRIMER" class="uri">http://bayes.cs.ucla.edu/PRIMER</a></p>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="text-align-center">
-<p><img data-src="images/book_of_why-cover.jpg" height="440"></p>
-<p><a href="http://bayes.cs.ucla.edu/WHY" class="uri">http://bayes.cs.ucla.edu/WHY</a></p>
-</div>
-</div></div>
-<p>&nbsp;</p>
-<p>See also: <a href="https://towardsdatascience.com/how-to-learn-causal-inference-on-your-own-for-free-98503abc0a06">How to learn causal inference on your own for free</a></p>
-</section>
 <section id="what-is-a-model-what-is-a-good-model" class="slide level2">
 <h2>What is a model? What is a good model?</h2>
 <ul>
@@ -1275,64 +1275,6 @@ y_i \sim \text{Norm}\bigl(\sin(\alpha \cdot x_i), 1/\tau\bigr)
 \]</span></p>
 <p><a href="https://arxiv.org/abs/1904.12320">Boué (2019)</a> “<em>Real numbers, data science and chaos: how to fit any dataset with a single parameter</em>”</p>
 </section>
-<section id="causal-inference-workflow-1" class="slide level2">
-<h2>Causal inference workflow</h2>
-<ul>
-<li class="fragment">At the heart of causal inference is the causal question</li>
-</ul>
-</section>
-<section id="description-prediction-and-explanation" class="slide level2">
-<h2>Description, prediction, and explanation</h2>
-<ul>
-<li class="fragment"><p>Questions about description, prediction, and explanation are fundamentally different</p></li>
-<li class="fragment"><p>Causal questions cannot be answered with predictive models</p></li>
-<li class="fragment"><p>Causal questions require causal models</p></li>
-<li class="fragment"><p>Causal models are generative models</p></li>
-<li class="fragment"><p>Predictive modeling generally uses a different workflow than the workflow for causal modeling</p></li>
-<li class="fragment"><p>Predictive modeling goal is to maximize predictive accuracy while retaining generalization to new data</p></li>
-<li class="fragment"><p>The key measure of validity in prediction modeling is predictive accuracy. A convenient detail about predictive modeling is that we can often assess if we’re right, which is not true of descriptive statistics for which we only have a subset of data, or causal inference for which we don’t know the true causal structure.</p></li>
-<li class="fragment"><p>Often, people mistakenly use methods for selecting features (variables) for prediction models to select confounders in causal models</p></li>
-<li class="fragment"><p>Prediction metrics cannot determine the causal structure of your question, and predictive value for the outcome does not make a variable a confounder</p></li>
-<li class="fragment"><p>In general, background knowledge (not prediction or associational statistics) should help you select variables for causal models</p></li>
-<li class="fragment"><p>Prediction is nevertheless crucial to causal inference. From a philosophical perspective, we’re comparing predictions from different what if scenarios: What would the outcome had one thing happened vs.&nbsp;if another thing happened?</p></li>
-</ul>
-</section>
-<section id="causal-inference" class="slide level2">
-<h2>Causal inference</h2>
-<ul>
-<li class="fragment"><p>The goal of causal inference is to understand the impact that a variable, sometimes called an exposure, has on another variable, sometimes called an outcome. “Exposure” and “outcome” are the terms we’ll use in this book to describe the causal relationship we’re interested in. Importantly, our goal is to answer this question clearly and precisely. In practice, this means using techniques like study design (e.g., a randomized trial) or statistical methods (like propensity scores) to calculate an unbiased effect of the exposure on the outcome.</p></li>
-<li class="fragment"><p>As with prediction and description, it’s better to start with a clear, precise question to get a clear, precise answer</p></li>
-<li class="fragment"><p>Making valid causal inferences requires several assumptions that we’ll discuss in Section 3.2. Unlike prediction, we generally cannot confirm that our causal models are correct. In other words, most assumptions we need to make are unverifiable. We’ll come back to this topic time and time again in the book—from the basics of these assumptions to practical decision-making to probing our models for problems.</p></li>
-</ul>
-</section>
-<section id="why-isnt-the-right-causal-model-just-the-best-prediction-model" class="slide level2">
-<h2>Why isn’t the right causal model just the best prediction model?</h2>
-<p>At this point, you may wonder why the right causal model isn’t just the best prediction model. It makes sense that the two would be related: naturally, things that cause other things would be predictors. It’s causality all the way down, so any predictive information is related, in some capacity, to the causal structure of the thing we’re predicting. Doesn’t it stand to reason that a model that predicts well is causal, too? It’s true that some predictive models can be great causal models and vice versa. Unfortunately, this is not always the case; causal effects needn’t predict particularly well, and good predictors needn’t be causally unbiased (Shmueli 2010).</p>
-<p>Descriptive, predictive, and causal analyses will always contain some aspect of each other. A predictive model gains some of its predictive power from the causal structure of the outcome, and a causal model has some predictive power because it contains information about the outcome. However, the same model in the same data with different goals will have different usefulness depending on those goals.</p>
-</section>
-<section id="table-2-fallacy-1" class="slide level2">
-<h2>Table 2 fallacy</h2>
-<p>A closely related idea is the Table Two Fallacy, so-called because, in health research papers, descriptive analyses are often presented in Table 1, and regression models are often presented in Table 2 (Westreich and Greenland 2013). The Table Two Fallacy is when a researcher presents confounders and other non-exposure variables, particularly when they interpret those coefficients as if they, too, were causal. The problem is that in some situations, the model to estimate an unbiased effect of one variable may not be the same model to estimate an unbiased effect of another variable. In other words, we can’t interpret the effects of confounders as causal because they might themselves be confounded by another variable unrelated to the original exposure.</p>
-</section>
-<section id="causal-inference-workflow-2" class="slide level2">
-<h2>Causal inference workflow</h2>
-<p>We’ll play the whole game of causal analysis using a few key steps:</p>
-<ul>
-<li class="fragment"><p>Specify a causal question</p></li>
-<li class="fragment"><p>Draw our assumptions using a causal diagram</p></li>
-<li class="fragment"><p>Model our assumptions</p></li>
-<li class="fragment"><p>Diagnose our models</p></li>
-<li class="fragment"><p>Estimate the causal effect</p></li>
-<li class="fragment"><p>Conduct sensitivity analysis on the effect estimate</p></li>
-</ul>
-</section>
-<section id="potential-outcomes" class="slide level2">
-<h2>Potential outcomes</h2>
-<p>Factual outcomes and counterfactual outcomes are two realizations of potential outcomes</p>
-</section>
-<section class="slide level2">
-
-</section>
 <section id="scientists-attitudes-toward-bias-replicability-and-scientific-practice" class="slide level2">
 <h2>Scientists’ attitudes toward bias, replicability and scientific practice</h2>
 
@@ -1342,111 +1284,8 @@ y_i \sim \text{Norm}\bigl(\sin(\alpha \cdot x_i), 1/\tau\bigr)
 <h2>Scientists’ attitudes toward bias, replicability and scientific practice</h2>
 
 <img data-src="causal_salad/journal.pone.0256607.g012.png" class="r-stretch"><p><a href="https://doi.org/10.1371/journal.pone.0256607">Farrar et al.&nbsp;(2021)</a></p>
+
 </section>
-<section>
-<section id="causal-inference-in-python-theory-to-practice" class="title-slide slide level1 center">
-<h1>Causal inference in Python: Theory to practice</h1>
-<p><a href="https://youtu.be/XwYHUv2nH34?si=nQ6J5zModeUS9oV1">https://youtu.be/XwYHUv2nH34</a></p>
-</section>
-<section id="causal-inference-workflow-3" class="slide level2">
-<h2>Causal inference workflow</h2>
-
-<img data-src="images/clipboard-3203447617.png" class="r-stretch"></section>
-<section id="dags-represent-joint-probability-distributions" class="slide level2">
-<h2>DAGs represent joint probability distributions</h2>
-<ul>
-<li class="fragment">A DAG is a mathematical object, i.e., a joint probability distribution:</li>
-</ul>
-<p><span class="math display">\[
-P(X, Y, Z) = P(X)\,P(Y \mid X)\,P(Z \mid X, Y)
-\]</span></p>
-<ul>
-<li class="fragment"><p>Causal assumptions: Endogeneous variables only depend on their parents (can check vs.&nbsp;data)</p></li>
-<li class="fragment"><p>The fork: <span class="math inline">\(Z\)</span> <strong>is a common cause of</strong> <span class="math inline">\(X\)</span> <strong>and</strong> <span class="math inline">\(Y\)</span><strong>, with</strong> <span class="math inline">\(X\)</span> <strong>also causing</strong> <span class="math inline">\(Y\)</span></p>
-<ul>
-<li class="fragment">DAG: <span class="math inline">\(Z \to X\)</span>, <span class="math inline">\(Z \to Y\)</span>, and <span class="math inline">\(X \to Y\)</span></li>
-</ul></li>
-</ul>
-<p><span class="math display">\[
-P(X, Y, Z) = P(X \mid Z) \cdot P(Y \mid X, Z) \cdot P(Z)
-\]</span></p>
-<ul>
-<li class="fragment">The collider: <span class="math inline">\(Z\)</span> <strong>is a common effect of</strong> <span class="math inline">\(X\)</span> <strong>and</strong> <span class="math inline">\(Y\)</span><strong>, with</strong> <span class="math inline">\(X\)</span> <strong>also causing</strong> <span class="math inline">\(Y\)</span>
-<ul>
-<li class="fragment">DAG: <span class="math inline">\(X \to Z\)</span>, <span class="math inline">\(Y \to Z\)</span>, and <span class="math inline">\(X \to Y\)</span></li>
-</ul></li>
-</ul>
-<p><span class="math display">\[
-P(X, Y, Z) = P(X) \cdot P(Y \mid X) \cdot P(Z \mid X, Y)
-\]</span></p>
-<ul>
-<li class="fragment">The pipe (or chain): <span class="math inline">\(X\)</span> <strong>causes</strong> <span class="math inline">\(Y\)</span> <strong>via</strong> <span class="math inline">\(Z\)</span>
-<ul>
-<li class="fragment">DAG: <span class="math inline">\(X \to Z \to Y\)</span></li>
-</ul></li>
-</ul>
-<p><span class="math display">\[
-P(X, Y, Z) = P(X) \cdot P(Y \mid Z) \cdot P(Z \mid X)
-\]</span></p>
-</section>
-<section id="identify-effect" class="slide level2">
-<h2>Identify effect</h2>
-<ul>
-<li class="fragment"><p>Identification: Isolating the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span></p></li>
-<li class="fragment"><p>From the causal structure represented by the DAG, identify which variables to adjust for to estimate the pure causal effect of <span class="math inline">\(X\)</span> (the treatment) on <span class="math inline">\(Y\)</span> (the outcome), free from spurious associations (bias)</p></li>
-<li class="fragment"><p>Adjusting/controlling for <span class="math inline">\(Z\)</span> = grouping by/segregating by/stratifying on <span class="math inline">\(Z\)</span>, e.g., using regression or matching</p></li>
-<li class="fragment"><p>Adjusting/controlling for ALL variables can introduce bias (Berkson’s paradox). Rather, use <em>just the right</em> variables</p></li>
-</ul>
-</section>
-<section id="interventions" class="slide level2">
-<h2>Interventions</h2>
-
-<img data-src="images/clipboard-1480930042.png" class="r-stretch"></section>
-<section id="identify-effect-blocking-or-d-separation" class="slide level2">
-<h2>Identify effect: Blocking or d-separation</h2>
-
-<img data-src="images/clipboard-2767095917.png" class="r-stretch"></section>
-<section id="identify-effect-backdoor-criterion" class="slide level2">
-<h2>Identify effect: Backdoor criterion</h2>
-
-<img data-src="images/clipboard-978367041.png" class="r-stretch"></section>
-<section id="simpsons-paradox-2" class="slide level2">
-<h2>Simpson’s paradox</h2>
-
-<img data-src="images/clipboard-4012926030.png" class="r-stretch"></section>
-<section id="simpsons-paradox-3" class="slide level2">
-<h2>Simpson’s paradox</h2>
-
-<img data-src="images/clipboard-2005749411.png" class="r-stretch"></section>
-<section id="berksons-paradox-2" class="slide level2">
-<h2>Berkson’s paradox</h2>
-
-<img data-src="images/clipboard-2619765555.png" class="r-stretch"></section>
-<section id="berksons-paradox-3" class="slide level2">
-<h2>Berkson’s paradox</h2>
-
-<img data-src="images/clipboard-2521184635.png" class="r-stretch"></section>
-<section id="estimate-using-data" class="slide level2">
-<h2>Estimate using data</h2>
-
-<img data-src="images/clipboard-3115424937.png" class="r-stretch"></section>
-<section id="validate-model" class="slide level2">
-<h2>Validate model</h2>
-
-<img data-src="images/clipboard-2113635429.png" class="r-stretch"></section>
-<section id="explain" class="slide level2">
-<h2>Explain</h2>
-
-<img data-src="images/clipboard-3308191871.png" class="r-stretch"></section>
-<section id="resources" class="slide level2">
-<h2>Resources</h2>
-
-<img data-src="images/clipboard-851192339.png" class="r-stretch"></section>
-<section id="practice" class="slide level2">
-<h2>Practice</h2>
-
-
-<img data-src="images/clipboard-2664055651.png" class="r-stretch"></section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
