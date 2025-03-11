@@ -741,19 +741,23 @@ https://youtu.be/XwYHUv2nH34
 
 ## A crash course in good and bad controls
 
--   **"Control" variable**: A variable introduced in a statistical model specifically to enable a causal estimate; it is not of intrinsic interest by itself
+-   **"Control" variable**: A variable included in the statistical model to enable estimation of the causal effect of another variable; it is NOT just any predictor!
 
--   **Common heuristics** for choosing control variables:
+-   **Common but bad heuristics** for choosing control variables:
 
     -   Anything in the spreadsheet (YOLO! causal salad)
 
     -   Any variables not highly collinear
 
-    -   Any variable that is statistically significantly associated with the outcome
+    -   Any variable significantly associated with the outcome
 
     -   Any variable that improves predictive performance (e.g., using automatic variable selection)
 
     -   Any pre-treatment variable (baseline measurements)
+    
+-   The right question: Does this variable block confounding without introducing new bias?
+
+-   A better approach: Use a DAG to justify each control variable
 
 ::: notes
 -   Don't adjust for the future (post-treatment measurements) if you are estimating the total causal effect of exposure on outcome!
