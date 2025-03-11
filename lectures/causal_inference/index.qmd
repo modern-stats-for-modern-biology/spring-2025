@@ -24,10 +24,7 @@ csl: nature-no-et-al.csl
 #| output-location: default
 rbern <- function(n, p = 0.5) rbinom(n, 1, p)
 inv_logit <- function(x) 1 / (1 + exp(-x))
-M <- 100000
-N <- 1000
 ```
-
 
 ```{r}
 #| include: false
@@ -58,6 +55,8 @@ net_dag <- dagitty(
 library(coursekata)
 
 theme_set(theme_minimal())
+
+M <- 100000
 ```
 
 ```{r}
@@ -540,20 +539,19 @@ $$X \rightarrow Z \rightarrow Y$$
 $$X \rightarrow Z \leftarrow Y$$
 :::
 
-
 ##  {background-image="causal_salad/part.02.slide.32.png" background-size="50%"}
 
 ## The pipe
 
 ```{r}
 #| output-location: default
+N <- 1000
 X <- rnorm(N)
 Z <- rbern(N,inv_logit(X))
 Y <- rnorm(N,(2*Z-1))
 ```
 
-::: columns
-
+::::: columns
 ::: column
 **Unstratified**
 
@@ -565,7 +563,7 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkg
 :::
 
 ::: column
-**Stratified by $Z$**
+**Stratified by** $Z$
 
 ```{r}
 #| output-location: default
@@ -573,8 +571,7 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkg
 gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
 ```
 :::
-
-:::
+:::::
 
 ##  {background-image="causal_salad/part.02.slide.33.png" background-size="50%"}
 
@@ -582,13 +579,13 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_
 
 ```{r}
 #| output-location: default
+N <- 1000
 Z <- rbern(N)
 X <- rnorm(N,2*Z-1)
 Y <- rnorm(N,(2*Z-1))
 ```
 
-::: columns
-
+::::: columns
 ::: column
 **Unstratified**
 
@@ -600,7 +597,7 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkg
 :::
 
 ::: column
-**Stratified by $Z$**
+**Stratified by** $Z$
 
 ```{r}
 #| output-location: default
@@ -608,8 +605,7 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkg
 gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
 ```
 :::
-
-:::
+:::::
 
 ##  {background-image="causal_salad/part.02.slide.34.png" background-size="50%"}
 
@@ -617,13 +613,13 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_
 
 ```{r}
 #| output-location: default
+N <- 1000
 X <- rnorm(N)
 Y <- rnorm(N)
 Z <- rbern(N,inv_logit(2*X+2*Y-2))
 ```
 
-::: columns
-
+::::: columns
 ::: column
 **Unstratified**
 
@@ -635,7 +631,7 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkg
 :::
 
 ::: column
-**Stratified by $Z$**
+**Stratified by** $Z$
 
 ```{r}
 #| output-location: default
@@ -643,8 +639,7 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkg
 gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
 ```
 :::
-
-:::
+:::::
 
 ##  {background-image="causal_salad/part.02.slide.35.png" background-size="50%"}
 
