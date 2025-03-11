@@ -75,6 +75,27 @@ $$
 -   A **model** is a function that maps **known quantities** to **unknown quantities**
 :::
 
+$$\text{model} : \text{known quantities} \rightarrow \text{unknown quantities}$$
+
+## Statistical inference is logical reasoning
+
+::: nonincremental
+-   Statistical inference is **logical reasoning** using 1) known (or assumed) quantities and 2) a model, to infer unknown quantities
+:::
+
+$$
+\begin{array}{ll}
+1. & \text{known quantities} \\
+2. & \text{model} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+
+::: nonincremental
+-   A **model** is a function that maps **known quantities** to **unknown quantities**
+:::
+
 ```{r}
 #| output-location: default
 X <- 1                           # known quantity    X = 1
@@ -83,7 +104,7 @@ model <- function(X) 10 - 7 * X  # model             Y = 10 - 7 * X
                                  # ----------------
 Y <- NA                          # unknown quantity  Y
 
-Y <- model(X)                    # infer Y from X and model
+model(X) -> Y                    # infer Y from X and model
 
 Y                                #                   Y = 3
 ```
