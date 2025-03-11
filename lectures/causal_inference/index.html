@@ -670,7 +670,7 @@ Edoardo "Dado" Marcora
 </section>
 <section id="estimate-causal-effect-using-statistical-model" class="slide level2">
 <h2>Estimate causal effect using statistical model</h2>
-<p>Use linear regression with covariates in adjustment set to estimate the causal effect of bed net use on malaria risk</p>
+<p>Use linear regression to adjust for variables in adjustment set in order to estimate the causal effect of bed net use on malaria risk free of confounding effects (assuming statistical and causal models are good approximation of reality)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">lm</span>(malaria_risk <span class="sc">~</span> net <span class="sc">+</span> health <span class="sc">+</span> income <span class="sc">+</span> temperature, <span class="at">data =</span> net_data) <span class="sc">%&gt;%</span> </span>
 <span id="cb11-2"><a href=""></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(term, estimate, conf.low, conf.high) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
