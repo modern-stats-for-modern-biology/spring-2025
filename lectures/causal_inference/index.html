@@ -670,7 +670,7 @@ Edoardo "Dado" Marcora
 </section>
 <section id="estimate-causal-effect-using-statistical-model" class="slide level2">
 <h2>Estimate causal effect using statistical model</h2>
-<p>Use linear regression to adjust for variables in adjustment set in order to estimate the causal effect of bed net use on malaria risk free of confounding effects (assuming statistical and causal models are good approximation of reality)</p>
+<p>Use linear regression to adjust for variables in adjustment set</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">lm</span>(malaria_risk <span class="sc">~</span> net <span class="sc">+</span> health <span class="sc">+</span> income <span class="sc">+</span> temperature, <span class="at">data =</span> net_data) <span class="sc">%&gt;%</span> </span>
 <span id="cb11-2"><a href=""></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(term, estimate, conf.low, conf.high) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -719,6 +719,9 @@ Edoardo "Dado" Marcora
 </table>
 </div>
 </div>
+<ul>
+<li class="fragment">Assuming the statistical and causal models are a good approximation of reality, this is an estimate of the causal effect of bed net use on malaria risk, free of confounding effects</li>
+</ul>
 </section>
 <section id="section-9" class="slide level2" data-background-image="causal_salad/part.02.slide.06.png" data-background-size="50%">
 <h2></h2>
@@ -870,8 +873,8 @@ X \to Y
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
 <span id="cb12-2"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb12-3"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N,<span class="fu">inv_logit</span>(X))</span>
-<span id="cb12-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,(<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-3"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N, <span class="fu">inv_logit</span>(X))</span>
+<span id="cb12-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, (<span class="dv">2</span> <span class="sc">*</span> Z <span class="sc">-</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="columns">
 <div class="column">
@@ -911,8 +914,8 @@ X \to Y
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
 <span id="cb15-2"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N)</span>
-<span id="cb15-3"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>)</span>
-<span id="cb15-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N,(<span class="dv">2</span><span class="sc">*</span>Z<span class="dv">-1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-3"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, (<span class="dv">2</span> <span class="sc">*</span> Z <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb15-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, (<span class="dv">2</span> <span class="sc">*</span> Z <span class="sc">-</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="columns">
 <div class="column">
@@ -956,7 +959,7 @@ X \to Y
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
 <span id="cb18-2"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
 <span id="cb18-3"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb18-4"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N,<span class="fu">inv_logit</span>(<span class="dv">2</span><span class="sc">*</span>X<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>Y<span class="dv">-2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-4"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N, <span class="fu">inv_logit</span>(<span class="dv">2</span> <span class="sc">*</span> X <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> Y <span class="sc">-</span> <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="columns">
 <div class="column">

@@ -411,13 +411,15 @@ adjustmentSets(net_dag)
 
 ## Estimate causal effect using statistical model
 
-Use linear regression to adjust for variables in adjustment set in order to estimate the causal effect of bed net use on malaria risk free of confounding effects (assuming statistical and causal models are good approximation of reality)
+Use linear regression to adjust for variables in adjustment set
 
 ```{r}
 #| output-location: default
 lm(malaria_risk ~ net + health + income + temperature, data = net_data) %>% 
   broom::tidy(conf.int = TRUE) %>% select(term, estimate, conf.low, conf.high) %>% knitr::kable()
 ```
+
+-   Assuming the statistical and causal models are a good approximation of reality, this is an estimate of the causal effect of bed net use on malaria risk, free of confounding effects
 
 ##  {background-image="causal_salad/part.02.slide.06.png" background-size="50%"}
 
@@ -555,8 +557,8 @@ $$X \rightarrow Z \leftarrow Y$$
 #| output-location: default
 N <- 1000
 X <- rnorm(N)
-Z <- rbern(N,inv_logit(X))
-Y <- rnorm(N,(2*Z-1))
+Z <- rbern(N, inv_logit(X))
+Y <- rnorm(N, (2 * Z - 1))
 ```
 
 ::::: columns
@@ -591,8 +593,8 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_
 #| output-location: default
 N <- 1000
 Z <- rbern(N)
-X <- rnorm(N,2*Z-1)
-Y <- rnorm(N,(2*Z-1))
+X <- rnorm(N, (2 * Z - 1))
+Y <- rnorm(N, (2 * Z - 1))
 ```
 
 ::::: columns
@@ -630,7 +632,7 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_
 N <- 1000
 X <- rnorm(N)
 Y <- rnorm(N)
-Z <- rbern(N,inv_logit(2*X+2*Y-2))
+Z <- rbern(N, inv_logit(2 * X + 2 * Y - 2))
 ```
 
 ::::: columns
