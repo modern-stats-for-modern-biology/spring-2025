@@ -21,12 +21,6 @@ csl: nature-no-et-al.csl
 ---
 
 ```{r}
-#| output-location: default
-rbern <- function(n, p = 0.5) rbinom(n, 1, p)
-inv_logit <- function(x) 1 / (1 + exp(-x))
-```
-
-```{r}
 #| include: false
 library(dagitty)
 
@@ -57,6 +51,12 @@ library(coursekata)
 theme_set(theme_minimal())
 
 M <- 100000 # number of Montecarlo sims used to build linear model plots
+```
+
+```{r}
+#| output-location: default
+rbern <- function(n, p = 0.5) rbinom(n, 1, p)
+inv_logit <- function(x) 1 / (1 + exp(-x))
 ```
 
 ```{r}
@@ -563,6 +563,7 @@ N <- 1000
 X <- rnorm(N)
 Z <- rbern(N, inv_logit(X))
 Y <- rnorm(N, (2 * Z - 1))
+df <- tibble(X, Y, Z)
 ```
 
 ::::: columns
@@ -571,8 +572,13 @@ Y <- rnorm(N, (2 * Z - 1))
 
 ```{r}
 #| output-location: default
-#| fig-height: 8
-gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkgrey")
+#| fig-height: 6
+gf_point(Y ~ X, data = df, color = "grey") %>% gf_lm(color = "darkgrey")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X, data = df) %>% coef()
 ```
 :::
 
@@ -581,8 +587,13 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkg
 
 ```{r}
 #| output-location: default
-#| fig-height: 8
-gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+#| fig-height: 6
+gf_point(Y ~ X, data = df, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X + Z, data = df) %>% coef()
 ```
 :::
 :::::
@@ -599,6 +610,7 @@ N <- 1000
 Z <- rbern(N)
 X <- rnorm(N, (2 * Z - 1))
 Y <- rnorm(N, (2 * Z - 1))
+df <- tibble(X, Y, Z)
 ```
 
 ::::: columns
@@ -607,8 +619,13 @@ Y <- rnorm(N, (2 * Z - 1))
 
 ```{r}
 #| output-location: default
-#| fig-height: 8
-gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkgrey")
+#| fig-height: 6
+gf_point(Y ~ X, data = df, color = "grey") %>% gf_lm(color = "darkgrey")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X, data = df) %>% coef()
 ```
 :::
 
@@ -617,8 +634,13 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkg
 
 ```{r}
 #| output-location: default
-#| fig-height: 8
-gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+#| fig-height: 6
+gf_point(Y ~ X, data = df, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X + Z, data = df) %>% coef()
 ```
 :::
 :::::
@@ -637,6 +659,7 @@ N <- 1000
 X <- rnorm(N)
 Y <- rnorm(N)
 Z <- rbern(N, inv_logit(2 * X + 2 * Y - 2))
+df <- tibble(X, Y, Z)
 ```
 
 ::::: columns
@@ -645,8 +668,13 @@ Z <- rbern(N, inv_logit(2 * X + 2 * Y - 2))
 
 ```{r}
 #| output-location: default
-#| fig-height: 8
-gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkgrey")
+#| fig-height: 6
+gf_point(Y ~ X, data = df, color = "grey") %>% gf_lm(color = "darkgrey")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X, data = df) %>% coef()
 ```
 :::
 
@@ -655,8 +683,13 @@ gf_point(Y ~ X, data = tibble(X, Y, Z), color = "grey") %>% gf_lm(color = "darkg
 
 ```{r}
 #| output-location: default
-#| fig-height: 8
-gf_point(Y ~ X, data = tibble(X, Y, Z), color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+#| fig-height: 6
+gf_point(Y ~ X, data = df, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X + Z, data = df) %>% coef()
 ```
 :::
 :::::

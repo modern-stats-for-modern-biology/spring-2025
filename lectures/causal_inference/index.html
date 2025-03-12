@@ -878,13 +878,14 @@ X \to Y
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
 <span id="cb12-2"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
 <span id="cb12-3"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N, <span class="fu">inv_logit</span>(X))</span>
-<span id="cb12-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, (<span class="dv">2</span> <span class="sc">*</span> Z <span class="sc">-</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, (<span class="dv">2</span> <span class="sc">*</span> Z <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb12-5"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(X, Y, Z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="columns">
 <div class="column">
 <p><strong>Unstratified</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="st">"grey"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"darkgrey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> df, <span class="at">color =</span> <span class="st">"grey"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"darkgrey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -893,16 +894,30 @@ X \to Y
 </div>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">lm</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> df) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)           X 
+    0.06913     0.39355 </code></pre>
+</div>
+</div>
 </div><div class="column">
 <p><strong>Stratified by</strong> <span class="math inline">\(Z\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> df, <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-18-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
 </figure>
 </div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">lm</span>(Y <span class="sc">~</span> X <span class="sc">+</span> Z, <span class="at">data =</span> df) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)           X           Z 
+  -0.894731   -0.005672    1.912146 </code></pre>
 </div>
 </div>
 </div></div>
@@ -916,34 +931,49 @@ X \to Y
 <section id="the-fork" class="slide level2">
 <h2>The fork</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb15-2"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N)</span>
-<span id="cb15-3"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, (<span class="dv">2</span> <span class="sc">*</span> Z <span class="sc">-</span> <span class="dv">1</span>))</span>
-<span id="cb15-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, (<span class="dv">2</span> <span class="sc">*</span> Z <span class="sc">-</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb19-2"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N)</span>
+<span id="cb19-3"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, (<span class="dv">2</span> <span class="sc">*</span> Z <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb19-4"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, (<span class="dv">2</span> <span class="sc">*</span> Z <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb19-5"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(X, Y, Z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="columns">
 <div class="column">
 <p><strong>Unstratified</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="st">"grey"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"darkgrey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> df, <span class="at">color =</span> <span class="st">"grey"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"darkgrey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-22-1.png" width="960"></p>
 </figure>
 </div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">lm</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> df) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)           X 
+     0.0320      0.5136 </code></pre>
 </div>
 </div>
 </div><div class="column">
 <p><strong>Stratified by</strong> <span class="math inline">\(Z\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> df, <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="960"></p>
 </figure>
 </div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">lm</span>(Y <span class="sc">~</span> X <span class="sc">+</span> Z, <span class="at">data =</span> df) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)           X           Z 
+   -1.03488    -0.01074     2.10802 </code></pre>
 </div>
 </div>
 </div></div>
@@ -960,34 +990,49 @@ X \to Y
 <section id="the-collider" class="slide level2">
 <h2>The collider</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb18-2"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb18-3"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb18-4"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N, <span class="fu">inv_logit</span>(<span class="dv">2</span> <span class="sc">*</span> X <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> Y <span class="sc">-</span> <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb26-2"><a href=""></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb26-3"><a href=""></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb26-4"><a href=""></a>Z <span class="ot">&lt;-</span> <span class="fu">rbern</span>(N, <span class="fu">inv_logit</span>(<span class="dv">2</span> <span class="sc">*</span> X <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> Y <span class="sc">-</span> <span class="dv">2</span>))</span>
+<span id="cb26-5"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(X, Y, Z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="columns">
 <div class="column">
 <p><strong>Unstratified</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="st">"grey"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"darkgrey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> df, <span class="at">color =</span> <span class="st">"grey"</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>(<span class="at">color =</span> <span class="st">"darkgrey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-27-1.png" width="960"></p>
 </figure>
 </div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a><span class="fu">lm</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> df) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)           X 
+    0.04677    -0.02447 </code></pre>
 </div>
 </div>
 </div><div class="column">
 <p><strong>Stratified by</strong> <span class="math inline">\(Z\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> <span class="fu">tibble</span>(X, Y, Z), <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a><span class="fu">gf_point</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> df, <span class="at">color =</span> <span class="sc">~</span> <span class="fu">factor</span>(Z)) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-29-1.png" width="960"></p>
 </figure>
 </div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a><span class="fu">lm</span>(Y <span class="sc">~</span> X <span class="sc">+</span> Z, <span class="at">data =</span> df) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)           X           Z 
+    -0.2830     -0.2528      1.1894 </code></pre>
 </div>
 </div>
 </div></div>
@@ -1273,11 +1318,11 @@ X \to Y
 <section id="statistical-inference-is-inductive-reasoning-5" class="slide level2">
 <h2>Statistical inference is inductive reasoning</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-25-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-31-1.png" width="960" class="r-stretch"></section>
 <section id="statistical-inference-is-inductive-reasoning-6" class="slide level2">
 <h2>Statistical inference is inductive reasoning</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-26-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-32-1.png" width="960" class="r-stretch"></section>
 <section id="statistical-inference-is-inductive-reasoning-7" class="slide level2">
 <h2>Statistical inference is inductive reasoning</h2>
 
@@ -1339,11 +1384,11 @@ X \to Y
 <section id="modern-science-statistical-causal-inference-11" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-27-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-33-1.png" width="960" class="r-stretch"></section>
 <section id="modern-science-statistical-causal-inference-12" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-28-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-34-1.png" width="960" class="r-stretch"></section>
 <section id="modern-science-statistical-causal-inference-13" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
@@ -1355,15 +1400,15 @@ X \to Y
 <section id="modern-science-statistical-causal-inference-15" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-29-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-35-1.png" width="960" class="r-stretch"></section>
 <section id="modern-science-statistical-causal-inference-16" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-30-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-36-1.png" width="960" class="r-stretch"></section>
 <section id="modern-science-statistical-causal-inference-17" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-31-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-37-1.png" width="960" class="r-stretch"></section>
 <section id="modern-science-statistical-causal-inference-18" class="slide level2">
 <h2>Modern science: statistical (+ causal) inference</h2>
 
