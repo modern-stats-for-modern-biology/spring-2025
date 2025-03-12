@@ -268,9 +268,9 @@ After adjusting for the confounder (season/income), the statistical association 
 
 ## … but sometime correlation is causation!
 
--   If there are no confounders and there is a linear relationship between the treatment and the outcome, then correlation is causation!
+-   If there are no confounders and there is a linear relationship between the exposure and the outcome, then correlation is causation!
 
--   If there are no confounders and there is a statistical relationship between the treatment and the outcome, then association is causation!
+-   If there are no confounders and there is a statistical relationship between the exposure and the outcome, then association is causation!
 
 ::: notes
 -   Adjusting for baseline covariates can make an estimate more precise
@@ -379,7 +379,7 @@ plot(net_dag)
 
 ## Translate DAG into statistical model
 
-Find all open backdoor paths between treatment and outcome
+Find all open backdoor paths between exposure and outcome
 
 ::::: columns
 ::: column
@@ -391,14 +391,18 @@ Find all open backdoor paths between treatment and outcome
 :::
 :::::
 
+-   Backdoor paths are paths connecting exposure and outcome nodes with an arrow going into the exposure node
+
 ## Translate DAG into statistical model
 
-Find all open backdoor paths between treatment and outcome
+Find all open backdoor paths between exposure and outcome
 
 ```{r}
 #| output-location: default
 as_tibble(paths(net_dag)) %>% filter(open) %>% knitr::kable()
 ```
+
+-   Backdoor paths are paths that, if left open, bias/confound the estimate of the causal effect of the exposure on the outcome 
 
 ## Translate DAG into statistical model
 
@@ -409,9 +413,9 @@ Find minimal adjustment sets
 adjustmentSets(net_dag)
 ```
 
--   These three variables are a **minimal adjustment set**, i.e., the minimum set of variables to adjust for in order to block all backdoor paths/confounding effects between treatment and outcome,
+-   These three variables are a **minimal adjustment set**, i.e., the minimum set of variables to adjust for in order to block all backdoor paths between exposure and outcome,
 
--   such that the estimate of the statistical association between exposure and outcome can be interpreted as an estimate of the causal effect of the exposure on the outcome
+-   such that the estimate of the statistical association between exposure and outcome can be interpreted as an estimate of the causal effect of the exposure on the outcome, not contaminated by confounding effects
 
 ## Estimate causal effect using statistical model
 

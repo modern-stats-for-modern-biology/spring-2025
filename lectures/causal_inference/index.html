@@ -412,8 +412,8 @@ Edoardo "Dado" Marcora
 <section id="but-sometime-correlation-is-causation" class="slide level2">
 <h2>… but sometime correlation is causation!</h2>
 <ul>
-<li class="fragment"><p>If there are no confounders and there is a linear relationship between the treatment and the outcome, then correlation is causation!</p></li>
-<li class="fragment"><p>If there are no confounders and there is a statistical relationship between the treatment and the outcome, then association is causation!</p></li>
+<li class="fragment"><p>If there are no confounders and there is a linear relationship between the exposure and the outcome, then correlation is causation!</p></li>
+<li class="fragment"><p>If there are no confounders and there is a statistical relationship between the exposure and the outcome, then association is causation!</p></li>
 </ul>
 <aside class="notes">
 <ul>
@@ -591,7 +591,7 @@ Edoardo "Dado" Marcora
 <img data-src="index_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"></section>
 <section id="translate-dag-into-statistical-model" class="slide level2">
 <h2>Translate DAG into statistical model</h2>
-<p>Find all open backdoor paths between treatment and outcome</p>
+<p>Find all open backdoor paths between exposure and outcome</p>
 <div class="columns">
 <div class="column">
 <div class="quarto-figure quarto-figure-center">
@@ -606,10 +606,13 @@ Edoardo "Dado" Marcora
 </figure>
 </div>
 </div></div>
+<ul>
+<li class="fragment">Backdoor paths are paths connecting exposure and outcome nodes with an arrow going into the exposure node</li>
+</ul>
 </section>
 <section id="translate-dag-into-statistical-model-1" class="slide level2">
 <h2>Translate DAG into statistical model</h2>
-<p>Find all open backdoor paths between treatment and outcome</p>
+<p>Find all open backdoor paths between exposure and outcome</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">as_tibble</span>(<span class="fu">paths</span>(net_dag)) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(open) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -657,6 +660,9 @@ Edoardo "Dado" Marcora
 </table>
 </div>
 </div>
+<ul>
+<li class="fragment">Backdoor paths are paths that, if left open, bias/confound the estimate of the causal effect of the exposure on the outcome</li>
+</ul>
 </section>
 <section id="translate-dag-into-statistical-model-2" class="slide level2">
 <h2>Translate DAG into statistical model</h2>
@@ -668,8 +674,8 @@ Edoardo "Dado" Marcora
 </div>
 </div>
 <ul>
-<li class="fragment"><p>These three variables are a <strong>minimal adjustment set</strong>, i.e., the minimum set of variables to adjust for in order to block all backdoor paths/confounding effects between treatment and outcome,</p></li>
-<li class="fragment"><p>such that the estimate of the statistical association between exposure and outcome can be interpreted as an estimate of the causal effect of the exposure on the outcome</p></li>
+<li class="fragment"><p>These three variables are a <strong>minimal adjustment set</strong>, i.e., the minimum set of variables to adjust for in order to block all backdoor paths between exposure and outcome,</p></li>
+<li class="fragment"><p>such that the estimate of the statistical association between exposure and outcome can be interpreted as an estimate of the causal effect of the exposure on the outcome, not contaminated by confounding effects</p></li>
 </ul>
 </section>
 <section id="estimate-causal-effect-using-statistical-model" class="slide level2">
