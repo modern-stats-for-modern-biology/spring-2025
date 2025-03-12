@@ -70,18 +70,18 @@ library(latex2exp)
 #| include: false
 data(Howell1, package = "rethinking")
 
-df.obs <-
+d.obs <-
   Howell1 %>%
   filter(age >= 18) %>%
   select(weight, height) %>%
   round() %>% 
   select(H = height, W = weight)
 
-df.obs
+d.obs
 
-range(df.obs$H)
+range(d.obs$H)
 
-mle.lm.fit <- lm(W ~ H, data = df.obs)
+mle.lm.fit <- lm(W ~ H, data = d.obs)
 ```
 
 ##  {background-image="images/last_week_tonight.jpg" background-size="contain"}
@@ -563,7 +563,7 @@ N <- 1000
 X <- rnorm(N)
 Z <- rbern(N, inv_logit(X))
 Y <- rnorm(N, (2 * Z - 1))
-df <- tibble(X, Y, Z)
+d <- tibble(X, Y, Z)
 ```
 
 ::::: columns
@@ -573,12 +573,12 @@ df <- tibble(X, Y, Z)
 ```{r}
 #| output-location: default
 #| fig-height: 6
-gf_point(Y ~ X, data = df, color = "grey") %>% gf_lm(color = "darkgrey")
+gf_point(Y ~ X, data = d, color = "grey") %>% gf_lm(color = "darkgrey")
 ```
 
 ```{r}
 #| output-location: default
-lm(Y ~ X, data = df) %>% coef()
+lm(Y ~ X, data = d) %>% coef()
 ```
 :::
 
@@ -588,12 +588,12 @@ lm(Y ~ X, data = df) %>% coef()
 ```{r}
 #| output-location: default
 #| fig-height: 6
-gf_point(Y ~ X, data = df, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+gf_point(Y ~ X, data = d, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
 ```
 
 ```{r}
 #| output-location: default
-lm(Y ~ X + Z, data = df) %>% coef()
+lm(Y ~ X + Z, data = d) %>% coef()
 ```
 :::
 :::::
@@ -610,7 +610,7 @@ N <- 1000
 Z <- rbern(N)
 X <- rnorm(N, (2 * Z - 1))
 Y <- rnorm(N, (2 * Z - 1))
-df <- tibble(X, Y, Z)
+d <- tibble(X, Y, Z)
 ```
 
 ::::: columns
@@ -620,12 +620,12 @@ df <- tibble(X, Y, Z)
 ```{r}
 #| output-location: default
 #| fig-height: 6
-gf_point(Y ~ X, data = df, color = "grey") %>% gf_lm(color = "darkgrey")
+gf_point(Y ~ X, data = d, color = "grey") %>% gf_lm(color = "darkgrey")
 ```
 
 ```{r}
 #| output-location: default
-lm(Y ~ X, data = df) %>% coef()
+lm(Y ~ X, data = d) %>% coef()
 ```
 :::
 
@@ -635,12 +635,12 @@ lm(Y ~ X, data = df) %>% coef()
 ```{r}
 #| output-location: default
 #| fig-height: 6
-gf_point(Y ~ X, data = df, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+gf_point(Y ~ X, data = d, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
 ```
 
 ```{r}
 #| output-location: default
-lm(Y ~ X + Z, data = df) %>% coef()
+lm(Y ~ X + Z, data = d) %>% coef()
 ```
 :::
 :::::
@@ -659,7 +659,7 @@ N <- 1000
 X <- rnorm(N)
 Y <- rnorm(N)
 Z <- rbern(N, inv_logit(2 * X + 2 * Y - 2))
-df <- tibble(X, Y, Z)
+d <- tibble(X, Y, Z)
 ```
 
 ::::: columns
@@ -669,12 +669,12 @@ df <- tibble(X, Y, Z)
 ```{r}
 #| output-location: default
 #| fig-height: 6
-gf_point(Y ~ X, data = df, color = "grey") %>% gf_lm(color = "darkgrey")
+gf_point(Y ~ X, data = d, color = "grey") %>% gf_lm(color = "darkgrey")
 ```
 
 ```{r}
 #| output-location: default
-lm(Y ~ X, data = df) %>% coef()
+lm(Y ~ X, data = d) %>% coef()
 ```
 :::
 
@@ -684,12 +684,12 @@ lm(Y ~ X, data = df) %>% coef()
 ```{r}
 #| output-location: default
 #| fig-height: 6
-gf_point(Y ~ X, data = df, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+gf_point(Y ~ X, data = d, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
 ```
 
 ```{r}
 #| output-location: default
-lm(Y ~ X + Z, data = df) %>% coef()
+lm(Y ~ X + Z, data = d) %>% coef()
 ```
 :::
 :::::
@@ -987,13 +987,13 @@ n <- length(H)
 mu <- beta0 + beta1 * H
 W <- replicate(M, rnorm(n, mu, sigma))
 
-df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
   mutate(H = factor(H))
 
-df %>%
+d %>%
   gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
-  # gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
+  # gf_point(H ~ W, data = d %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
   gf_model(W ~ H, color = "darkorange") %>%
   gf_labs(title = TeX(r'(Model 1 $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -70, \beta_1 = 0.7, \sigma = 5$)'), y = "Height (cm)", x = "Weight (Kg)") %>%
   gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -1018,13 +1018,13 @@ n <- length(H)
 mu <- beta0 + beta1 * H
 W <- replicate(M, rnorm(n, mu, sigma))
 
-df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
   mutate(H = factor(H))
 
-df %>%
+d %>%
   gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
-  # gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
+  # gf_point(H ~ W, data = d %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
   gf_model(W ~ H, color = "darkorange") %>%
   gf_labs(title = TeX(r'(Model 2 $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = 230, \beta_1 = -1.2, \sigma = 2$)'), y = "Height (cm)", x = "Weight (Kg)") %>%
   gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -1109,11 +1109,11 @@ n <- length(H)
 mu <- beta0 + beta1 * H
 W <- replicate(M, rnorm(n, mu, sigma))
 
-df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
   mutate(H = factor(H))
 
-df %>%
+d %>%
   gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
   gf_model(W ~ H, color = "darkorange") %>%
   gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4$)'), y = "Height (cm)", x = "Weight (Kg)") %>%
@@ -1139,13 +1139,13 @@ n <- length(H)
 mu <- beta0 + beta1 * H
 W <- replicate(M, rnorm(n, mu, sigma))
 
-df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
   mutate(H = factor(H))
 
-df %>%
+d %>%
   gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
-  gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
+  gf_point(H ~ W, data = d %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
   gf_model(W ~ H, color = "darkorange") %>%
   gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4 \;$ and its predictions)'), y = "Height (cm)", x = "Weight (Kg)") %>%
   gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -1178,13 +1178,13 @@ n <- length(H)
 mu <- beta0 + beta1 * H
 W <- replicate(M, rnorm(n, mu, sigma))
 
-df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
   mutate(H = factor(H))
 
-df %>%
+d %>%
   gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
-  gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
+  gf_point(H ~ W, data = d %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
   gf_model(W ~ H, color = "darkorange") %>%
   gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4 \;$ and its predictions)'), y = "Height (cm)", x = "Weight (Kg)") %>%
   gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -1209,17 +1209,17 @@ n <- length(H)
 mu <- beta0 + beta1 * H
 W <- replicate(M, rnorm(n, mu, sigma))
 
-df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
   mutate(H = factor(H))
 
-df.obs <- df.obs %>%
-  mutate(H = factor(H, levels = levels(df$H)))
+d.obs <- d.obs %>%
+  mutate(H = factor(H, levels = levels(d$H)))
 
-df %>%
+d %>%
   gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
-  #gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
-  gf_point(H ~ W, data = df.obs, color = "green4", size = 1) %>%
+  #gf_point(H ~ W, data = d %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
+  gf_point(H ~ W, data = d.obs, color = "green4", size = 1) %>%
   gf_model(W ~ H, color = "darkorange") %>%
   gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4 \;$ and observed data used for training)'), y = "Height (cm)", x = "Weight (Kg)") %>%
   gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +

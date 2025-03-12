@@ -657,8 +657,8 @@ posterior <- posterior / sum(posterior) # normalize posterior
 
 ::: fragment
 ```{r}
-df <- tibble(π, prior, likelihood, posterior)
-df %>% knitr::kable()
+d <- tibble(π, prior, likelihood, posterior)
+d %>% knitr::kable()
 ```
 :::
 
@@ -688,11 +688,11 @@ globe_tossing_grid_approx <- function(w, l, a = 1, b = 1, dprior = dbeta, grid_s
   # calculate MAP estimate
   map <- prop_w.grid[which.max(posterior)]
   
-  df <- tibble(prop_w.grid, prior.normalized, likelihood.normalized, posterior)
+  d <- tibble(prop_w.grid, prior.normalized, likelihood.normalized, posterior)
   
   # plot prior, likelihood, and posterior
   if (grid_size <= 20) {
-    df %>%
+    d %>%
       gf_point(likelihood.normalized ~ prop_w.grid, alpha = 1, color = "#357EC7") %>%
       gf_point(prior.normalized ~ prop_w.grid, alpha = 1, color = "#FFA500") %>%
       gf_point(posterior ~ prop_w.grid, alpha = 1, color = "#4E9258") %>%
@@ -705,7 +705,7 @@ globe_tossing_grid_approx <- function(w, l, a = 1, b = 1, dprior = dbeta, grid_s
                axis.text.x = element_text(size = 14),
                axis.text.y = element_text(size = 14))
   } else {
-    df %>%
+    d %>%
       gf_line(likelihood.normalized ~ prop_w.grid, color = "#357EC7") %>%
       gf_line(prior.normalized ~ prop_w.grid, color = "#FFA500") %>%
       gf_line(posterior ~ prop_w.grid, color = "#4E9258") %>%
@@ -1476,13 +1476,13 @@ n <- length(H)
 mu <- beta0 + beta1 * H
 W <- replicate(M, rnorm(n, mu, sigma))
 
-df <- bind_cols(tibble(H), as.data.frame(W)) %>%
+d.sim <- tibble(H, as.data.frame(W)) %>%
   pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
   mutate(H = factor(H))
 
-df %>%
+d.sim %>%
   gf_density_ridges(H ~ W, linetype = 0, fill = "lightblue") %>%
-  gf_point(H ~ W, data = df %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
+  gf_point(H ~ W, data = d.sim %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
   gf_model(W ~ H, color = "gray4") %>%
   gf_labs(title = TeX(r'(Model $y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = 45, \beta_1 = 0.634, \sigma = 4$ and its predictions)'), y = "Height (cm, mean-centered)", x = "Weight (Kg)") %>%
   gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -1769,11 +1769,11 @@ ddnorm   <- function(x, location = 0, scale = 1) dnorm(x, location, scale) / sum
 ddcauchy <- function(x, location = 0, scale = 1) dcauchy(x, location, scale) / sum(dcauchy(x, location, scale))
 
 # plot probability distribution as a tile plot
-plot_model <- function(df, n = NULL) {
-  # df is expected to have X, Y, and p columns
+plot_model <- function(d, n = NULL) {
+  # d is expected to have X, Y, and p columns
   
   # count total number of cells
-  n_cells <- nrow(df) 
+  n_cells <- nrow(d) 
   
   # decide style based on total number of cells
   if (n_cells < 100) {
@@ -1800,14 +1800,14 @@ plot_model <- function(df, n = NULL) {
   }
   
   # count number of distinct X and Y values for axis text sizing
-  n_x <- length(unique(df$X))
-  n_y <- length(unique(df$Y))
+  n_x <- length(unique(d$X))
+  n_y <- length(unique(d$Y))
   
   axis_text_x_size <- if(n_x < 10) { 12 } else if(n_x < 20) { 10 } else if(n_x < 40) { 8 } else { 6 }
   axis_text_y_size <- if(n_y < 10) { 12 } else if(n_y < 20) { 10 } else if(n_y < 40) { 8 } else { 6 }
   
-  max_x <- max(df$X)
-  max_y <- max(df$Y)
+  max_x <- max(d$X)
+  max_y <- max(d$Y)
   
   # determine the fill scale parameters based on n_cells:
   # dor small grids, the range of p is set higher (midpoint and limit are larger)
@@ -1845,7 +1845,7 @@ plot_model <- function(df, n = NULL) {
   # visualize probability distribution as a tile plot
   plt <- gf_tile(
     Y ~ X,
-    data = df,
+    data = d,
     fill = ~ p,
     color = line_color,
     linewidth = line_width) %>%
@@ -1867,7 +1867,7 @@ plot_model <- function(df, n = NULL) {
     plt <- plt %>% gf_point(
       Y ~ X,
       # sample to generate data in accordance with the model
-      data = df %>% slice_sample(n = n, weight_by = p, replace = TRUE), 
+      data = d %>% slice_sample(n = n, weight_by = p, replace = TRUE), 
       size = 4,
       color = "red2",
       alpha = 0.5,
@@ -2586,42 +2586,3 @@ $p(x, y \mid M_4) = p(x, y \mid \mu = (3 + 1 \cdot x), \sigma = 1, M^{\text{Cauc
 
 ##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
 
-## Key take home messages
-
--   Be skeptical, thoughtful, and honest!
-
--   If you can't simulate it, you can't analyze it!
-
--   All models say only what they are told to say!
-
--   Test before you est(imate)!
-
-## The taxonomy of estimands
-
-![](images/Slide22.png)
-
-## The ladder of causation
-
-![](images/Slide23.png)
-
-## Causal inference textbooks
-
-::::::: columns
-:::: {.column width="50%"}
-::: text-align-center
-![](images/primer-cover.jpg){height="500"}
-
-<http://bayes.cs.ucla.edu/PRIMER>
-:::
-::::
-
-:::: {.column width="50%"}
-::: text-align-center
-![](images/book_of_why-cover.jpg){height="500"}
-
-<http://bayes.cs.ucla.edu/WHY>
-:::
-::::
-:::::::
-
-See also: [How to learn causal inference on your own for free](https://towardsdatascience.com/how-to-learn-causal-inference-on-your-own-for-free-98503abc0a06)

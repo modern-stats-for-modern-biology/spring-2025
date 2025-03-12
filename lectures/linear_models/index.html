@@ -831,8 +831,8 @@ x, n \sim \text{Binom}(\pi)
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(π, prior, likelihood, posterior)</span>
-<span id="cb8-2"><a href=""></a>df <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>d <span class="ot">&lt;-</span> <span class="fu">tibble</span>(π, prior, likelihood, posterior)</span>
+<span id="cb8-2"><a href=""></a>d <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output-display">
@@ -2157,11 +2157,11 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <span id="cb42-4"><a href=""></a>ddcauchy <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">location =</span> <span class="dv">0</span>, <span class="at">scale =</span> <span class="dv">1</span>) <span class="fu">dcauchy</span>(x, location, scale) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">dcauchy</span>(x, location, scale))</span>
 <span id="cb42-5"><a href=""></a></span>
 <span id="cb42-6"><a href=""></a><span class="co"># plot probability distribution as a tile plot</span></span>
-<span id="cb42-7"><a href=""></a>plot_model <span class="ot">&lt;-</span> <span class="cf">function</span>(df, <span class="at">n =</span> <span class="cn">NULL</span>) {</span>
-<span id="cb42-8"><a href=""></a>  <span class="co"># df is expected to have X, Y, and p columns</span></span>
+<span id="cb42-7"><a href=""></a>plot_model <span class="ot">&lt;-</span> <span class="cf">function</span>(d, <span class="at">n =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb42-8"><a href=""></a>  <span class="co"># d is expected to have X, Y, and p columns</span></span>
 <span id="cb42-9"><a href=""></a>  </span>
 <span id="cb42-10"><a href=""></a>  <span class="co"># count total number of cells</span></span>
-<span id="cb42-11"><a href=""></a>  n_cells <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df) </span>
+<span id="cb42-11"><a href=""></a>  n_cells <span class="ot">&lt;-</span> <span class="fu">nrow</span>(d) </span>
 <span id="cb42-12"><a href=""></a>  </span>
 <span id="cb42-13"><a href=""></a>  <span class="co"># decide style based on total number of cells</span></span>
 <span id="cb42-14"><a href=""></a>  <span class="cf">if</span> (n_cells <span class="sc">&lt;</span> <span class="dv">100</span>) {</span>
@@ -2188,14 +2188,14 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <span id="cb42-35"><a href=""></a>  }</span>
 <span id="cb42-36"><a href=""></a>  </span>
 <span id="cb42-37"><a href=""></a>  <span class="co"># count number of distinct X and Y values for axis text sizing</span></span>
-<span id="cb42-38"><a href=""></a>  n_x <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(df<span class="sc">$</span>X))</span>
-<span id="cb42-39"><a href=""></a>  n_y <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(df<span class="sc">$</span>Y))</span>
+<span id="cb42-38"><a href=""></a>  n_x <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(d<span class="sc">$</span>X))</span>
+<span id="cb42-39"><a href=""></a>  n_y <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(d<span class="sc">$</span>Y))</span>
 <span id="cb42-40"><a href=""></a>  </span>
 <span id="cb42-41"><a href=""></a>  axis_text_x_size <span class="ot">&lt;-</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">10</span>) { <span class="dv">12</span> } <span class="cf">else</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">20</span>) { <span class="dv">10</span> } <span class="cf">else</span> <span class="cf">if</span>(n_x <span class="sc">&lt;</span> <span class="dv">40</span>) { <span class="dv">8</span> } <span class="cf">else</span> { <span class="dv">6</span> }</span>
 <span id="cb42-42"><a href=""></a>  axis_text_y_size <span class="ot">&lt;-</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">10</span>) { <span class="dv">12</span> } <span class="cf">else</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">20</span>) { <span class="dv">10</span> } <span class="cf">else</span> <span class="cf">if</span>(n_y <span class="sc">&lt;</span> <span class="dv">40</span>) { <span class="dv">8</span> } <span class="cf">else</span> { <span class="dv">6</span> }</span>
 <span id="cb42-43"><a href=""></a>  </span>
-<span id="cb42-44"><a href=""></a>  max_x <span class="ot">&lt;-</span> <span class="fu">max</span>(df<span class="sc">$</span>X)</span>
-<span id="cb42-45"><a href=""></a>  max_y <span class="ot">&lt;-</span> <span class="fu">max</span>(df<span class="sc">$</span>Y)</span>
+<span id="cb42-44"><a href=""></a>  max_x <span class="ot">&lt;-</span> <span class="fu">max</span>(d<span class="sc">$</span>X)</span>
+<span id="cb42-45"><a href=""></a>  max_y <span class="ot">&lt;-</span> <span class="fu">max</span>(d<span class="sc">$</span>Y)</span>
 <span id="cb42-46"><a href=""></a>  </span>
 <span id="cb42-47"><a href=""></a>  <span class="co"># determine the fill scale parameters based on n_cells:</span></span>
 <span id="cb42-48"><a href=""></a>  <span class="co"># dor small grids, the range of p is set higher (midpoint and limit are larger)</span></span>
@@ -2233,7 +2233,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <span id="cb42-80"><a href=""></a>  <span class="co"># visualize probability distribution as a tile plot</span></span>
 <span id="cb42-81"><a href=""></a>  plt <span class="ot">&lt;-</span> <span class="fu">gf_tile</span>(</span>
 <span id="cb42-82"><a href=""></a>    Y <span class="sc">~</span> X,</span>
-<span id="cb42-83"><a href=""></a>    <span class="at">data =</span> df,</span>
+<span id="cb42-83"><a href=""></a>    <span class="at">data =</span> d,</span>
 <span id="cb42-84"><a href=""></a>    <span class="at">fill =</span> <span class="sc">~</span> p,</span>
 <span id="cb42-85"><a href=""></a>    <span class="at">color =</span> line_color,</span>
 <span id="cb42-86"><a href=""></a>    <span class="at">linewidth =</span> line_width) <span class="sc">%&gt;%</span></span>
@@ -2255,7 +2255,7 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 <span id="cb42-102"><a href=""></a>    plt <span class="ot">&lt;-</span> plt <span class="sc">%&gt;%</span> <span class="fu">gf_point</span>(</span>
 <span id="cb42-103"><a href=""></a>      Y <span class="sc">~</span> X,</span>
 <span id="cb42-104"><a href=""></a>      <span class="co"># sample to generate data in accordance with the model</span></span>
-<span id="cb42-105"><a href=""></a>      <span class="at">data =</span> df <span class="sc">%&gt;%</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> n, <span class="at">weight_by =</span> p, <span class="at">replace =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb42-105"><a href=""></a>      <span class="at">data =</span> d <span class="sc">%&gt;%</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> n, <span class="at">weight_by =</span> p, <span class="at">replace =</span> <span class="cn">TRUE</span>), </span>
 <span id="cb42-106"><a href=""></a>      <span class="at">size =</span> <span class="dv">4</span>,</span>
 <span id="cb42-107"><a href=""></a>      <span class="at">color =</span> <span class="st">"red2"</span>,</span>
 <span id="cb42-108"><a href=""></a>      <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
@@ -2925,39 +2925,6 @@ y_i &amp; \stackrel{\text{i.i.d.}}{\sim} \text{Norm}(\mu_i, \sigma)\\
 </section>
 <section id="section-5" class="slide level2" data-background-image="images/thats_all_folks.jpg" data-background-size="50%">
 <h2></h2>
-</section>
-<section id="key-take-home-messages" class="slide level2">
-<h2>Key take home messages</h2>
-<ul>
-<li class="fragment"><p>Be skeptical, thoughtful, and honest!</p></li>
-<li class="fragment"><p>If you can’t simulate it, you can’t analyze it!</p></li>
-<li class="fragment"><p>All models say only what they are told to say!</p></li>
-<li class="fragment"><p>Test before you est(imate)!</p></li>
-</ul>
-</section>
-<section id="the-taxonomy-of-estimands" class="slide level2">
-<h2>The taxonomy of estimands</h2>
-
-<img data-src="images/Slide22.png" class="r-stretch"></section>
-<section id="the-ladder-of-causation" class="slide level2">
-<h2>The ladder of causation</h2>
-
-<img data-src="images/Slide23.png" class="r-stretch"></section>
-<section id="causal-inference-textbooks" class="slide level2">
-<h2>Causal inference textbooks</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="text-align-center">
-<p><img data-src="images/primer-cover.jpg" height="500"></p>
-<p><a href="http://bayes.cs.ucla.edu/PRIMER" class="uri">http://bayes.cs.ucla.edu/PRIMER</a></p>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="text-align-center">
-<p><img data-src="images/book_of_why-cover.jpg" height="500"></p>
-<p><a href="http://bayes.cs.ucla.edu/WHY" class="uri">http://bayes.cs.ucla.edu/WHY</a></p>
-</div>
-</div></div>
-<p>See also: <a href="https://towardsdatascience.com/how-to-learn-causal-inference-on-your-own-for-free-98503abc0a06">How to learn causal inference on your own for free</a></p>
 
 </section></section>
     </div>
