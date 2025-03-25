@@ -1,0 +1,121 @@
+---
+title: 'test'
+format:
+  html:
+    df-print: paged
+---
+
+```{r}
+#| output: false
+library(tidyverse)
+library(emmeans)
+library(marginaleffects)
+library(modelbased)
+library(ggeffects)
+
+options(ggeffects_margin = 'empirical')
+```
+
+```{r}
+## use the mtcars data, set up am as a factor
+mc <- mtcars |> mutate(am = factor(am))
+```
+
+```{r}
+## fit a linear model to mpg with wt x am interaction
+m <- lm(mpg ~ wt * am, data = mc)
+
+summary(m)
+```
+## 1. means/counterfactuals for each level of am at mean wt
+
+```{r}
+emmeans(m, specs = 'am')
+```
+
+```{r}
+predict_response(m, terms = 'am')
+```
+
+```{r}
+avg_predictions(m, variables = 'am') # predictions(m, variables = 'am', by = 'am')
+```
+
+## 2. means/counterfactuals for each level of am at wt = 2.5, 3, 3.5
+
+```{r}
+emmeans(m, specs = c('am', 'wt'), at = list(wt = c(2.5, 3, 3.5)))
+```
+
+```{r}
+predict_response(m, terms = c('am', 'wt [2.5, 3, 3.5]'))
+```
+
+```{r}
+avg_predictions(m, variables = list(am = 0:1, wt = c(2.5, 3, 3.5)))
+```
+
+## 3. means/counterfactuals for wt = 2.5, 3, 3.5, averaged over levels of am
+
+```{r}
+emmeans(m, 'wt', at = list(wt = c(2.5, 3, 3.5)))
+```
+
+```{r}
+predict_response(m, c('wt [2.5, 3, 3.5]'))
+```
+
+```{r}
+## same thing, but the averaging is more explicit, using the `by` argument
+avg_predictions(m, variables = list(wt = c(2.5, 3, 3.5)))
+```
+
+## 4. graphical version of 2
+
+```{r}
+emmip(m, am ~ wt, at = list(wt = c(2.5, 3, 3.5)), CIs = TRUE)
+```
+
+```{r}
+predict_response(m, c('wt', 'am')) %>% plot()
+```
+
+```{r}
+plot_predictions(m, condition = c('wt', 'am'))
+```
+
+
+## 5. compare levels of am at specific values of wt
+
+```{r}
+pairs(emmeans(m, 'am', by = 'wt', at = list(wt = c(2.5, 3, 3.5))))
+```
+
+
+```{r}
+avg_comparisons(m, variables = 'am', by = 'wt')
+```
+
+```{r}
+test_predictions(m, terms = c('am', 'wt'), by = 'wt')
+```
+
+## 6. plot of pairswise comparisons
+
+```{r}
+plot(pairs(emmeans(m, specs = 'am', by = 'wt', at = list(wt = c(2.5, 3, 3.5)))))
+```
+
+```{r}
+plot_comparisons(m, variables = 'am', condition = list(wt = c(2.5, 3, 3.5)))
+```
+
+## 7. slope of wt for each level of am
+
+```{r}
+emtrends(m, specs = 'am', var = 'wt')
+```
+
+```{r}
+slopes(m, variables = 'wt', by = 'am')
+```
