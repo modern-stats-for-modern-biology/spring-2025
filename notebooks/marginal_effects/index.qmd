@@ -1,6 +1,6 @@
 ---
 title: "Marginal effects using R"
-date: 2024-03-12
+date: 2025-03-24
 author: Edoardo \"Dado\" Marcora
 execute:
   warning: false
@@ -13,7 +13,7 @@ bibliography: references.bib
 
 ## Introduction
 
-This notebook shows how to use various packages to 1) import data from an Excel spreadsheet ([`readxl`](https://readxl.tidyverse.org/)), 2) evaluate ([`performance`](https://easystats.github.io/performance/)) and compare ([`modelsummary`](https://modelsummary.com/)) models, and 3) estimate marginal effects ([`ggeffects`](https://strengejacke.github.io/ggeffects/)) using the best fitting model (`m5`) of the mouse stress/sociability/neuronal activation experiment illustrated during the lecture of week 10 (2024-03-12, **Chapter 9: Models with interactions**) by [Erin Rich](https://labs.neuroscience.mssm.edu/project/rich-lab/).
+This notebook shows how to use various packages to 1) import data from an Excel spreadsheet ([`readxl`](https://readxl.tidyverse.org/)), 2) evaluate ([`performance`](https://easystats.github.io/performance/)) and compare ([`modelsummary`](https://modelsummary.com/)) models, and 3) estimate marginal effects ([`ggeffects`](https://strengejacke.github.io/ggeffects/)) using the best fitting model (`m5`) of the mouse stress/sociability/neuronal activation experiment illustrated during the lecture of week 10 (2025-03-24, **Chapter 9: Models with interactions**) by [Evan Schaffer](https://www.schafferlab.com/evan-schaffer).
 
 ## Setup environment
 
@@ -23,11 +23,13 @@ library(coursekata)
 library(readxl)
 library(performance)
 library(modelsummary)
-library(ggeffects)
+library(marginaleffects)
 
-options(ggeffects_margin = "empirical")
+library(emmeans)
 
 set.seed(123)
+
+options(scipen = 0)
 ```
 
 ## Background information
@@ -89,7 +91,7 @@ d <- cbind(id,soc,cel) %>%
       grepl("Veh", Treatment) ~ "Vehicle",
       grepl("Alp", Treatment) ~ "Alprazolam")) %>%
   ungroup() %>% 
-  mutate(logCeLcfos = log(CeLcfos),
+  mutate(logCeLcfos = log(CeLcfos), # for EDA, not modeling!
          Sex = factor(Sex),
          Treatment = factor(Treatment),
          StressCondition = factor(StressCondition)) %>% 
@@ -100,11 +102,12 @@ d
 
 ## Causal model
 
-```{mermaid}
-flowchart T
-    X[StressCondition] --> Y[CeLcfos]
-    Z[Sociability] --> Y
-    X[StressCondition] --> Z
+```{dot}
+digraph DAG {
+  StressCondition -> CeLcfos;
+  StressCondition -> Sociability;
+  Sociability -> CeLcfos;
+}
 ```
 
 See [daggity](https://www.dagitty.net/) causal diagram at <https://dagitty.net/mPkDBY42K>
@@ -120,7 +123,7 @@ gf_point(Sociability ~ StressCondition, color = ~ StressCondition, data = d) %>%
 
 ### CeLcfos \~ NULL
 
-It is often but erroneously believed that linear regression assumes that the outcome variable is normally distributed. This misconception arises from not knowing/remembering the regression likelihood equation(s) of the general linear model (discussed in a [previous lecture](https://modern-stats-for-modern-biology.github.io/spring-2024/lectures/statistical_inference_3/#/linear-regression-models)), e.g.:
+It is often but erroneously believed that linear regression assumes that the outcome variable is normally distributed. This misconception arises from not knowing/remembering the regression likelihood equation(s) of the general linear model, e.g.:
 
 $$
 y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu = \beta_0 + \beta_1 x_i, \sigma)
@@ -200,42 +203,42 @@ gf_qq(~ CeLcfos, data = d) %>% gf_qqline()
 A log transformation is often applied to count data in order to make them more amenable to commonly used null-hypothesis significance tests and general linear regression modeling, all of which assume that the outcome variable is conditionally normally distributed.
 
 ```{r}
-favstats(~ logCeLcfos, data = d)
+favstats(~ log(CeLcfos), data = d)
 ```
 
 ```{r}
-gf_histogram(~ logCeLcfos, data = d)
+gf_histogram(~ log(CeLcfos), data = d)
 ```
 
 ```{r}
-gf_qq(~ logCeLcfos, data = d) %>% gf_qqline()
+gf_qq(~ log(CeLcfos), data = d) %>% gf_qqline()
 ```
 
 However, generalized linear models that, e.g., use the Poisson or negative binomial distribution are better suited for dealing with count data.
 
 The log transformation of counts is also problematic when the data includes observations of zero counts and the whole dataset need to be fudged by adding a value, usually 1, before transformation.
 
-### logCeLcfos \~ StressCondition
+### log(CeLcfos) \~ StressCondition
 
 ```{r}
 gf_point(logCeLcfos ~ StressCondition, color = ~ StressCondition, data = d) %>%
   gf_boxplot(fill = ~ StressCondition, alpha = 0.2)
 ```
 
-### logCeLcfos \~ Sociability
+### log(CeLcfos) \~ Sociability
 
 ```{r}
 gf_point(logCeLcfos ~ Sociability, data = d) %>% gf_model(logCeLcfos ~ Sociability, data = d)
 ```
 
-### logCeLcfos \~ StressCondition + Sociability
+### log(CeLcfos) \~ StressCondition + Sociability
 
 ```{r}
 gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
   gf_model(logCeLcfos ~ Sociability + StressCondition, data = d)
 ```
 
-### logCeLcfos \~ StressCondition \* Sociability
+### log(CeLcfos) \~ StressCondition \* Sociability
 
 ```{r}
 gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
@@ -254,10 +257,14 @@ summary(m)
 
 ```{r}
 #| fig-height: 10
-check_model(m, detrend = FALSE)
+check_model(m)
 ```
 
-### logCeLcfos \~ NULL
+```{r}
+check_autocorrelation(m)
+```
+
+### log(CeLcfos) \~ NULL
 
 ```{r}
 m1 <- lm(log(CeLcfos) ~ NULL, data = d)
@@ -267,10 +274,14 @@ summary(m1)
 
 ```{r}
 #| fig-height: 10
-check_model(m1, detrend = FALSE)
+check_model(m1)
 ```
 
-### logCeLcfos \~ StressCondition
+```{r}
+check_autocorrelation(m1)
+```
+
+### log(CeLcfos) \~ StressCondition
 
 ```{r}
 m2 <- lm(log(CeLcfos) ~ StressCondition, data = d)
@@ -280,10 +291,14 @@ summary(m2)
 
 ```{r}
 #| fig-height: 10
-check_model(m2, detrend = FALSE)
+check_model(m2)
 ```
 
-### logCeLcfos \~ Sociability
+```{r}
+check_autocorrelation(m2)
+```
+
+### log(CeLcfos) \~ Sociability
 
 ```{r}
 m3 <- lm(log(CeLcfos) ~ Sociability, data = d)
@@ -293,10 +308,14 @@ summary(m3)
 
 ```{r}
 #| fig-height: 10
-check_model(m3, detrend = FALSE)
+check_model(m3)
 ```
 
-### logCeLcfos \~ StressCondition + Sociability
+```{r}
+check_autocorrelation(m3)
+```
+
+### log(CeLcfos) \~ StressCondition + Sociability
 
 ```{r}
 m4 <- lm(log(CeLcfos) ~ StressCondition + Sociability, data = d)
@@ -306,10 +325,14 @@ summary(m4)
 
 ```{r}
 #| fig-height: 10
-check_model(m4, detrend = FALSE)
+check_model(m4)
 ```
 
-### logCeLcfos \~ StressCondition \* Sociability
+```{r}
+check_autocorrelation(m4)
+```
+
+### log(CeLcfos) \~ StressCondition \* Sociability
 
 ```{r}
 m5 <- lm(log(CeLcfos) ~ StressCondition * Sociability, data = d)
@@ -319,7 +342,11 @@ summary(m5)
 
 ```{r}
 #| fig-height: 10
-check_model(m5, detrend = FALSE)
+check_model(m5)
+```
+
+```{r}
+check_autocorrelation(m5)
 ```
 
 ## Model evaluation and comparison
@@ -339,13 +366,13 @@ plot(compare_performance(m1, m2, m3, m4, m5, rank = TRUE, verbose = FALSE))
 On the log(*response*) scale:
 
 ```{r}
-predict_response(m5, c("Sociability", "StressCondition"), back_transform = FALSE) %>% plot()
+plot_predictions(m5, condition = c("Sociability", "StressCondition"))
 ```
 
 On the *response* scale:
 
 ```{r}
-predict_response(m5, c("Sociability", "StressCondition")) %>% plot()
+plot_predictions(m5, condition = c("Sociability", "StressCondition"), transform = exp)
 ```
 
 ## Marginal effects
@@ -395,29 +422,48 @@ The [`test_predictions()`](https://strengejacke.github.io/ggeffects/reference/te
 ### Effect of stress on neuronal activation conditional on sociability
 
 ```{r}
-predict_response(m5, "StressCondition")
+predictions(m5, newdata = datagrid(StressCondition = unique), transform = exp) %>% tidy()
+```
+```{r}
+emmeans(m5, ~ StressCondition | Sociability, type = "response")
 ```
 
 ```{r}
-test_predictions(m5, "StressCondition")
+predictions(m5, newdata = datagrid(StressCondition = unique), transform = exp) %>% hypotheses(difference ~ reference) %>% tidy()
 ```
 
 ```{r}
-predict_response(m5, c("StressCondition", "Sociability [meansd]"))
+emmeans(m5, ~ StressCondition | Sociability, type = "response") %>% contrast("trt.vs.ctrl")
+```
+
+```{r}
+predictions(m5, newdata = datagrid(StressCondition = unique, Sociability = fivenum), transform = exp) %>% tidy()
+```
+
+```{r}
+emmeans(m5, ~ StressCondition | Sociability, type = "response")
 ```
 
 ### Effect of sociability on neuronal activation conditional on stress
 
 ```{r}
-predict_response(m5, "Sociability [meansd]")
+predictions(m5, newdata = datagrid(Sociability = fivenum), transform = exp) %>% tidy()
+```
+
+
+```{r}
+soc_mean <- mean(d$Sociability, na.rm = TRUE)
+soc_sd <- sd(d$Sociability, na.rm = TRUE)
+
+emmeans(m5, ~ StressCondition | Sociability, at = list(Sociability = c(soc_mean - soc_sd, soc_mean, soc_mean + soc_sd)), type = "response") %>% pairs()
 ```
 
 ```{r}
-test_predictions(m5, "Sociability [meansd]")
+predictions(m5, newdata = datagrid(Sociability = fivenum), transform = exp) %>% hypotheses(difference ~ sequential) %>% tidy()
 ```
 
 ```{r}
-predict_response(m5, c("Sociability [meansd]", "StressCondition"))
+predictions(m5, newdata = datagrid(Sociability = fivenum, StressCondition = unique), transform = exp) %>% tidy()
 ```
 
 ## References
