@@ -12,8 +12,6 @@ library(emmeans)
 library(marginaleffects)
 library(modelbased)
 library(ggeffects)
-
-options(ggeffects_margin = 'empirical')
 ```
 
 ```{r}
@@ -34,11 +32,15 @@ emmeans(m, specs = 'am')
 ```
 
 ```{r}
+estimate_means(m, by = 'am')
+```
+
+```{r}
 predict_response(m, terms = 'am')
 ```
 
 ```{r}
-avg_predictions(m, variables = 'am') # predictions(m, variables = 'am', by = 'am')
+avg_predictions(m, variables = 'am')
 ```
 
 ## 2. means/counterfactuals for each level of am at wt = 2.5, 3, 3.5
@@ -48,17 +50,25 @@ emmeans(m, specs = c('am', 'wt'), at = list(wt = c(2.5, 3, 3.5)))
 ```
 
 ```{r}
+estimate_means(m, by = c('am', 'wt = [2.5, 3, 3.5]'))
+```
+
+```{r}
 predict_response(m, terms = c('am', 'wt [2.5, 3, 3.5]'))
 ```
 
 ```{r}
-avg_predictions(m, variables = list(am = 0:1, wt = c(2.5, 3, 3.5)))
+avg_predictions(m, variables = list(am = unique, wt = c(2.5, 3, 3.5)))
 ```
 
 ## 3. means/counterfactuals for wt = 2.5, 3, 3.5, averaged over levels of am
 
 ```{r}
 emmeans(m, 'wt', at = list(wt = c(2.5, 3, 3.5)))
+```
+
+```{r}
+estimate_means(m, by = c('wt = [2.5, 3, 3.5]'))
 ```
 
 ```{r}
@@ -77,7 +87,11 @@ emmip(m, am ~ wt, at = list(wt = c(2.5, 3, 3.5)), CIs = TRUE)
 ```
 
 ```{r}
-predict_response(m, c('wt', 'am')) %>% plot()
+estimate_means(m, by = c('wt', 'am')) %>% plot()
+```
+
+```{r}
+predict_response(m, terms = c('wt', 'am')) %>% plot()
 ```
 
 ```{r}
@@ -91,19 +105,32 @@ plot_predictions(m, condition = c('wt', 'am'))
 pairs(emmeans(m, 'am', by = 'wt', at = list(wt = c(2.5, 3, 3.5))))
 ```
 
-
 ```{r}
-avg_comparisons(m, variables = 'am', by = 'wt')
+estimate_contrasts(m, contrast = 'am', by = c('wt = [2.5, 3, 3.5]'))
 ```
 
 ```{r}
-test_predictions(m, terms = c('am', 'wt'), by = 'wt')
+##test_predictions(m, contrast = 'am', by = c('wt = [2.5, 3, 3.5]'))
 ```
+
+```{r}
+comparisons(m, variables = "am", newdata = datagrid(wt = c(2.5, 3, 3.5)))
+```
+
 
 ## 6. plot of pairswise comparisons
 
 ```{r}
 plot(pairs(emmeans(m, specs = 'am', by = 'wt', at = list(wt = c(2.5, 3, 3.5)))))
+```
+
+
+```{r}
+##estimate_contrasts(m, contrast = 'am', by = c('wt = [2.5, 3, 3.5]')) %>% plot()
+```
+
+```{r}
+##test_predictions(m, contrast = 'am', by = c('wt = [2.5, 3, 3.5]')) %>% plot()
 ```
 
 ```{r}
