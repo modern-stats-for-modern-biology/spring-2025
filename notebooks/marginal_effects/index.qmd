@@ -67,7 +67,7 @@ According to this causal graph, in order to estimate the **direct** causal effec
 adjustmentSets(dag, exposure = "StressCondition", outcome = "CeLcfos", effect = "direct")
 ```
 
-If I proposed a different DAG (see below) where `StressCondition` alters `Sociability` not only directly but also indirectly by altering neuronal activity (measured by the `CeLcfos` variable) in the amygdala--a likely scenario--then including `Sociability` as a control variable/covariate in the regression model would be wrong. This is because (`Sociability` being a collider rather than a mediator in this alternative DAG) including `Sociability` as a control variable/covariate in the regression model would introduce a spurious correlation that confounds the estimate of the **direct** causal effect of `StressCondition` on `CeLcfos`.
+If I proposed a different DAG (see below) where `StressCondition` alters `Sociability` not only directly but also indirectly by altering neuronal activity (measured by the `CeLcfos` variable) in the amygdala--not an unlikely scenario--then including `Sociability` as a control variable/covariate in the regression model would be wrong. This is because (`Sociability` being a collider rather than a mediator in this alternative DAG) including `Sociability` as a control variable/covariate in the regression model would introduce a spurious correlation that confounds the estimate of the **direct** causal effect of `StressCondition` on `CeLcfos`.
 
 ```{r}
 dag <- dagitty('dag {
