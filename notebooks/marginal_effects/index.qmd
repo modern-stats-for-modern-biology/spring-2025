@@ -38,11 +38,66 @@ Data available at <https://doi.org/10.7910/DVN/1RAQON>
 
 Study available at <https://doi.org/10.1371/journal.pone.0281388>
 
-## Estimand
+## Background information
 
 The aim of the original study was to explore the effect of stress on the sociability of male and female mice in a standard social approach test. Neuronal activation during social approach was assessed using immunohistochemistry against the immediate early gene product cFos.
 
-Here I am going to estimate the direct causal effect of stress (`StressCondition`, treatment variable) on neuronal activation (`CeLcfos`, outcome variable).
+## Science before statistics: causal model and estimand
+
+In our analysis, the quantity of interest/estimand is the direct causal effect of stress (`StressCondition`, treatment variable) on neuronal activation (`CeLcfos`, outcome variable). I am going to ignore the `Treatment` and `Sex` variables in this example. However, in real-life, one should think about them (and other variables relevant to DGP, even if unobserved) and include them in the causal model, unless of course the assumption is that they are in no way causally related to the exposure and/or the outcome variable (which is clearly NOT the case here).
+
+Based on my general neuroscience domain knowledge and cursory examination of the experimental design, the DAG I propose (for didactic purpose) is the following:
+
+```{r}
+library(dagitty)
+
+dag <- dagitty('dag {
+  CeLcfos [outcome]
+  StressCondition [exposure]
+  Sociability -> CeLcfos
+  StressCondition -> CeLcfos
+  StressCondition -> Sociability
+}')
+
+coordinates(dag) <- list(
+  x = c(StressCondition = 0, Sociability = 0.5, CeLcfos = 1),
+  y = c(StressCondition = 0, Sociability = 1, CeLcfos = 0))
+
+plot(dag)
+```
+
+According to this causal graph, in order to estimate the **direct** causal effect of `StressCondition` on `CeLcfos`, I must include `Sociability` as a control variable/covariate in the regression model. Doing this blocks the **indirect** causal effect of `StressCondition` on `CeLcfos` mediated by `Sociability`.
+
+```{r}
+# find the set of adjustment variables for the direct effect
+adjustmentSets(dag, exposure = "StressCondition", outcome = "CeLcfos", effect = "direct")
+```
+
+If I proposed a different DAG (see below) where `StressCondition` alters `Sociability` not only directly but also indirectly by altering neuronal activity (measured by the `CeLcfos` variable) in the amygdala--a likely scenario--then including `Sociability` as a control variable/covariate in the regression model would be wrong. This is because (`Sociability` being a collider rather than a mediator in this alternative DAG) including `Sociability` as a control variable/covariate in the regression model would introduce a spurious correlation that confounds the estimate of the **direct** causal effect of `StressCondition` on `CeLcfos`.
+
+```{r}
+dag <- dagitty('dag {
+  CeLcfos [outcome]
+  StressCondition [exposure]
+  CeLcfos -> Sociability
+  StressCondition -> CeLcfos
+  StressCondition -> Sociability
+}')
+
+coordinates(dag) <- list(
+  x = c(StressCondition = 0, Sociability = 0.5, CeLcfos = 1),
+  y = c(StressCondition = 0, Sociability = 1, CeLcfos = 0))
+
+plot(dag)
+```
+
+```{r}
+# find the set of adjustment variables for the direct effect
+adjustmentSets(dag, exposure = "StressCondition", outcome = "CeLcfos", effect = "direct")
+```
+
+It should be clear by now that we need to specify the DAG/lay bare our causal assumptions in order to appropriately specify the statistical model we use to estimate the causal estimand!
+
 
 ## Read and prep data
 
@@ -97,62 +152,6 @@ d <- cbind(id,soc,cel) %>%
 
 head(d)
 ```
-
-## Causal model
-
-The quantity of interest/estimand is the direct causal effect of stress (`StressCondition`, treatment variable) on neuronal activation (`CeLcfos`, outcome variable). I am going to ignore the `Treatment` and `Sex` variables in this example. However, in real-life, one should think about them (and other variables, even if unobserved) and include them in the causal model, unless of course the assumption is that they are in no way causally related to the exposure and/or the outcome variable (which is clearly NOT the case here).
-
-Based on the experimental design and my domain knowledge, the DAG I propose is the following:
-
-```{r}
-library(dagitty)
-
-dag <- dagitty('dag {
-  CeLcfos [outcome]
-  StressCondition [exposure]
-  Sociability -> CeLcfos
-  StressCondition -> CeLcfos
-  StressCondition -> Sociability
-}')
-
-coordinates(dag) <- list(
-  x = c(StressCondition = 0, Sociability = 0.5, CeLcfos = 1),
-  y = c(StressCondition = 0, Sociability = 1, CeLcfos = 0))
-
-plot(dag)
-```
-
-According to this causal graph, in order to estimate the **direct** causal effect of `StressCondition` on `CeLcfos`, I must include `Sociability` as a control variable/covariate in the regression model. Doing this blocks the **indirect** causal effect of `StressCondition` on `CeLcfos` mediated by `Sociability`.
-
-```{r}
-# find the set of adjustment variables for the direct effect
-adjustmentSets(dag, exposure = "StressCondition", outcome = "CeLcfos", effect = "direct")
-```
-
-If I proposed a different DAG (see below) where `StressCondition` alters `Sociability` not only directly but also indirectly by altering neuronal activity (measured by the `CeLcfos` variable) in the amygdala--a likely scenario--then including `Sociability` as a control variable/covariate in the regression model would be wrong. This is because (`Sociability` being a collider rather than a mediator in this alternative DAG) including `Sociability` as a control variable/covariate in the regression model would introduce a spurious correlation that confounds the estimate of the **direct** causal effect of `StressCondition` on `CeLcfos`.
-
-```{r}
-dag <- dagitty('dag {
-  CeLcfos [outcome]
-  StressCondition [exposure]
-  CeLcfos -> Sociability
-  StressCondition -> CeLcfos
-  StressCondition -> Sociability
-}')
-
-coordinates(dag) <- list(
-  x = c(StressCondition = 0, Sociability = 0.5, CeLcfos = 1),
-  y = c(StressCondition = 0, Sociability = 1, CeLcfos = 0))
-
-plot(dag)
-```
-
-```{r}
-# find the set of adjustment variables for the direct effect
-adjustmentSets(dag, exposure = "StressCondition", outcome = "CeLcfos", effect = "direct")
-```
-
-It should be clear by now that we need to specify the DAG/lay bare our causal assumptions in order to appropriately specify the statistical model we use to estimate the causal estimand!
 
 ## Exploratory data analysis
 
@@ -423,7 +422,7 @@ estimate_means(m5, by = c('Sociability', 'StressCondition'), transform = exp) %>
 estimate_means(m5, by = c('Sociability', 'StressCondition'), transform = exp)
 ```
 
-## Estimate/Marginal effects and hypothesis tests
+## Causal estimate/Marginal effects and hypothesis tests
 
 Please note that exponentiating the difference of two logged values is equivalent to dividing the original values, hence the difference here is the ratio/fold-change of shock over control.
 

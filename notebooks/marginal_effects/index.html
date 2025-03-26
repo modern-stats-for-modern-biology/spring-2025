@@ -113,9 +113,9 @@ window.Quarto = {
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#setup-environment" id="toc-setup-environment" class="nav-link" data-scroll-target="#setup-environment">Setup environment</a></li>
   <li><a href="#background-information" id="toc-background-information" class="nav-link" data-scroll-target="#background-information">Background information</a></li>
-  <li><a href="#estimand" id="toc-estimand" class="nav-link" data-scroll-target="#estimand">Estimand</a></li>
+  <li><a href="#background-information-1" id="toc-background-information-1" class="nav-link" data-scroll-target="#background-information-1">Background information</a></li>
+  <li><a href="#science-before-statistics-causal-model-and-estimand" id="toc-science-before-statistics-causal-model-and-estimand" class="nav-link" data-scroll-target="#science-before-statistics-causal-model-and-estimand">Science before statistics: causal model and estimand</a></li>
   <li><a href="#read-and-prep-data" id="toc-read-and-prep-data" class="nav-link" data-scroll-target="#read-and-prep-data">Read and prep data</a></li>
-  <li><a href="#causal-model" id="toc-causal-model" class="nav-link" data-scroll-target="#causal-model">Causal model</a></li>
   <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory data analysis</a>
   <ul class="collapse">
   <li><a href="#celcfos-null" id="toc-celcfos-null" class="nav-link" data-scroll-target="#celcfos-null">CeLcfos ~ NULL</a></li>
@@ -135,7 +135,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#model-evaluation-and-comparison" id="toc-model-evaluation-and-comparison" class="nav-link" data-scroll-target="#model-evaluation-and-comparison">Model evaluation and comparison</a></li>
   <li><a href="#model-predictions" id="toc-model-predictions" class="nav-link" data-scroll-target="#model-predictions">Model predictions</a></li>
-  <li><a href="#estimatemarginal-effects-and-hypothesis-tests" id="toc-estimatemarginal-effects-and-hypothesis-tests" class="nav-link" data-scroll-target="#estimatemarginal-effects-and-hypothesis-tests">Estimate/Marginal effects and hypothesis tests</a></li>
+  <li><a href="#causal-estimatemarginal-effects-and-hypothesis-tests" id="toc-causal-estimatemarginal-effects-and-hypothesis-tests" class="nav-link" data-scroll-target="#causal-estimatemarginal-effects-and-hypothesis-tests">Causal estimate/Marginal effects and hypothesis tests</a></li>
   <li><a href="#print-environment" id="toc-print-environment" class="nav-link" data-scroll-target="#print-environment">Print environment</a></li>
   </ul>
 </nav>
@@ -198,59 +198,126 @@ window.Quarto = {
 <p>Data available at <a href="https://doi.org/10.7910/DVN/1RAQON" class="uri">https://doi.org/10.7910/DVN/1RAQON</a></p>
 <p>Study available at <a href="https://doi.org/10.1371/journal.pone.0281388" class="uri">https://doi.org/10.1371/journal.pone.0281388</a></p>
 </section>
-<section id="estimand" class="level2">
-<h2 class="anchored" data-anchor-id="estimand">Estimand</h2>
+<section id="background-information-1" class="level2">
+<h2 class="anchored" data-anchor-id="background-information-1">Background information</h2>
 <p>The aim of the original study was to explore the effect of stress on the sociability of male and female mice in a standard social approach test. Neuronal activation during social approach was assessed using immunohistochemistry against the immediate early gene product cFos.</p>
-<p>Here I am going to estimate the direct causal effect of stress (<code>StressCondition</code>, treatment variable) on neuronal activation (<code>CeLcfos</code>, outcome variable).</p>
+</section>
+<section id="science-before-statistics-causal-model-and-estimand" class="level2">
+<h2 class="anchored" data-anchor-id="science-before-statistics-causal-model-and-estimand">Science before statistics: causal model and estimand</h2>
+<p>In our analysis, the quantity of interest/estimand is the direct causal effect of stress (<code>StressCondition</code>, treatment variable) on neuronal activation (<code>CeLcfos</code>, outcome variable). I am going to ignore the <code>Treatment</code> and <code>Sex</code> variables in this example. However, in real-life, one should think about them (and other variables relevant to DGP, even if unobserved) and include them in the causal model, unless of course the assumption is that they are in no way causally related to the exposure and/or the outcome variable (which is clearly NOT the case here).</p>
+<p>Based on my general neuroscience domain knowledge and cursory examination of the experimental design, the DAG I propose (for didactic purpose) is the following:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">'dag {</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">  CeLcfos [outcome]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition [exposure]</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">  Sociability -&gt; CeLcfos</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; CeLcfos</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; Sociability</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="st">}'</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">coordinates</span>(dag) <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="fl">0.5</span>, <span class="at">CeLcfos =</span> <span class="dv">1</span>),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="dv">1</span>, <span class="at">CeLcfos =</span> <span class="dv">0</span>))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>According to this causal graph, in order to estimate the <strong>direct</strong> causal effect of <code>StressCondition</code> on <code>CeLcfos</code>, I must include <code>Sociability</code> as a control variable/covariate in the regression model. Doing this blocks the <strong>indirect</strong> causal effect of <code>StressCondition</code> on <code>CeLcfos</code> mediated by <code>Sociability</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># find the set of adjustment variables for the direct effect</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">"StressCondition"</span>, <span class="at">outcome =</span> <span class="st">"CeLcfos"</span>, <span class="at">effect =</span> <span class="st">"direct"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{ Sociability }</code></pre>
+</div>
+</div>
+<p>If I proposed a different DAG (see below) where <code>StressCondition</code> alters <code>Sociability</code> not only directly but also indirectly by altering neuronal activity (measured by the <code>CeLcfos</code> variable) in the amygdala–a likely scenario–then including <code>Sociability</code> as a control variable/covariate in the regression model would be wrong. This is because (<code>Sociability</code> being a collider rather than a mediator in this alternative DAG) including <code>Sociability</code> as a control variable/covariate in the regression model would introduce a spurious correlation that confounds the estimate of the <strong>direct</strong> causal effect of <code>StressCondition</code> on <code>CeLcfos</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">'dag {</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="st">  CeLcfos [outcome]</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition [exposure]</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="st">  CeLcfos -&gt; Sociability</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; CeLcfos</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; Sociability</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="st">}'</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">coordinates</span>(dag) <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="fl">0.5</span>, <span class="at">CeLcfos =</span> <span class="dv">1</span>),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="dv">1</span>, <span class="at">CeLcfos =</span> <span class="dv">0</span>))</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># find the set of adjustment variables for the direct effect</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">"StressCondition"</span>, <span class="at">outcome =</span> <span class="st">"CeLcfos"</span>, <span class="at">effect =</span> <span class="st">"direct"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{}</code></pre>
+</div>
+</div>
+<p>It should be clear by now that we need to specify the DAG/lay bare our causal assumptions in order to appropriately specify the statistical model we use to estimate the causal estimand!</p>
 </section>
 <section id="read-and-prep-data" class="level2">
 <h2 class="anchored" data-anchor-id="read-and-prep-data">Read and prep data</h2>
 <p>This study is a good example of <u>how NOT to format supplementary data in an Excel spreadsheet</u>! It shouldn’t take more than one call to the <code>read_xlsx()</code> function to import data from a properly formatted Excel spreadsheet.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>id1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C4:D11'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>id2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C16:D23'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>id3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C26:D33'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>id4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C37:D44'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>id <span class="ot">&lt;-</span> <span class="fu">rbind</span>(id1, id2, id3, id4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>id1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C4:D11'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>id2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C16:D23'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>id3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C26:D33'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>id4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C37:D44'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>id <span class="ot">&lt;-</span> <span class="fu">rbind</span>(id1, id2, id3, id4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cel1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H4:H11'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cel2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H16:H23'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>cel3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H26:H33'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>cel4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H37:H44'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>cel <span class="ot">&lt;-</span> <span class="fu">rbind</span>(cel1, cel2, cel3, cel4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cel1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H4:H11'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>cel2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H16:H23'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>cel3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H26:H33'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>cel4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H37:H44'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>cel <span class="ot">&lt;-</span> <span class="fu">rbind</span>(cel1, cel2, cel3, cel4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>soc1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N4:N11'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>soc2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N16:N23'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>soc3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N26:N33'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>soc4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N37:N44'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>soc <span class="ot">&lt;-</span> <span class="fu">rbind</span>(soc1, soc2, soc3, soc4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>soc1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N4:N11'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>soc2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N16:N23'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>soc3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N26:N33'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>soc4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N37:N44'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>soc <span class="ot">&lt;-</span> <span class="fu">rbind</span>(soc1, soc2, soc3, soc4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">cbind</span>(id,soc,cel) <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sex =</span> <span class="fu">factor</span>(<span class="fu">substr</span>(ID, <span class="dv">1</span>, <span class="dv">1</span>))) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">StressCondition =</span> <span class="fu">case_when</span>(</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'FC-'</span>, Treatment) <span class="sc">~</span> <span class="st">'Control'</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'FC+'</span>, Treatment) <span class="sc">~</span> <span class="st">'Shock'</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Control'</span>, Treatment) <span class="sc">~</span> <span class="st">'Control'</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Stress'</span>, Treatment) <span class="sc">~</span> <span class="st">'Shock'</span>),</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Treatment =</span> <span class="fu">case_when</span>(</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Veh'</span>, Treatment) <span class="sc">~</span> <span class="st">'Vehicle'</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Alp'</span>, Treatment) <span class="sc">~</span> <span class="st">'Alprazolam'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">logCeLcfos =</span> <span class="fu">log</span>(CeLcfos),</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">Sex =</span> <span class="fu">factor</span>(Sex),</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">Treatment =</span> <span class="fu">factor</span>(Treatment),</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">StressCondition =</span> <span class="fu">factor</span>(StressCondition)) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ID, CeLcfos, logCeLcfos, StressCondition, Sociability, <span class="fu">everything</span>())</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">cbind</span>(id,soc,cel) <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sex =</span> <span class="fu">factor</span>(<span class="fu">substr</span>(ID, <span class="dv">1</span>, <span class="dv">1</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">StressCondition =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'FC-'</span>, Treatment) <span class="sc">~</span> <span class="st">'Control'</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'FC+'</span>, Treatment) <span class="sc">~</span> <span class="st">'Shock'</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Control'</span>, Treatment) <span class="sc">~</span> <span class="st">'Control'</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Stress'</span>, Treatment) <span class="sc">~</span> <span class="st">'Shock'</span>),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Treatment =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Veh'</span>, Treatment) <span class="sc">~</span> <span class="st">'Vehicle'</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Alp'</span>, Treatment) <span class="sc">~</span> <span class="st">'Alprazolam'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">logCeLcfos =</span> <span class="fu">log</span>(CeLcfos),</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">Sex =</span> <span class="fu">factor</span>(Sex),</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">Treatment =</span> <span class="fu">factor</span>(Treatment),</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">StressCondition =</span> <span class="fu">factor</span>(StressCondition)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ID, CeLcfos, logCeLcfos, StressCondition, Sociability, <span class="fu">everything</span>())</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -334,74 +401,6 @@ window.Quarto = {
 </div>
 </div>
 </div>
-</section>
-<section id="causal-model" class="level2">
-<h2 class="anchored" data-anchor-id="causal-model">Causal model</h2>
-<p>The quantity of interest/estimand is the direct causal effect of stress (<code>StressCondition</code>, treatment variable) on neuronal activation (<code>CeLcfos</code>, outcome variable). I am going to ignore the <code>Treatment</code> and <code>Sex</code> variables in this example. However, in real-life, one should think about them (and other variables, even if unobserved) and include them in the causal model, unless of course the assumption is that they are in no way causally related to the exposure and/or the outcome variable (which is clearly NOT the case here).</p>
-<p>Based on the experimental design and my domain knowledge, the DAG I propose is the following:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">'dag {</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">  CeLcfos [outcome]</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition [exposure]</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">  Sociability -&gt; CeLcfos</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; CeLcfos</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; Sociability</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="st">}'</span>)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">coordinates</span>(dag) <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="fl">0.5</span>, <span class="at">CeLcfos =</span> <span class="dv">1</span>),</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="dv">1</span>, <span class="at">CeLcfos =</span> <span class="dv">0</span>))</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>According to this causal graph, in order to estimate the <strong>direct</strong> causal effect of <code>StressCondition</code> on <code>CeLcfos</code>, I must include <code>Sociability</code> as a control variable/covariate in the regression model. Doing this blocks the <strong>indirect</strong> causal effect of <code>StressCondition</code> on <code>CeLcfos</code> mediated by <code>Sociability</code>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># find the set of adjustment variables for the direct effect</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">"StressCondition"</span>, <span class="at">outcome =</span> <span class="st">"CeLcfos"</span>, <span class="at">effect =</span> <span class="st">"direct"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>{ Sociability }</code></pre>
-</div>
-</div>
-<p>If I proposed a different DAG (see below) where <code>StressCondition</code> alters <code>Sociability</code> not only directly but also indirectly by altering neuronal activity (measured by the <code>CeLcfos</code> variable) in the amygdala–a likely scenario–then including <code>Sociability</code> as a control variable/covariate in the regression model would be wrong. This is because (<code>Sociability</code> being a collider rather than a mediator in this alternative DAG) including <code>Sociability</code> as a control variable/covariate in the regression model would introduce a spurious correlation that confounds the estimate of the <strong>direct</strong> causal effect of <code>StressCondition</code> on <code>CeLcfos</code>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">'dag {</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="st">  CeLcfos [outcome]</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition [exposure]</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="st">  CeLcfos -&gt; Sociability</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; CeLcfos</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; Sociability</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="st">}'</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">coordinates</span>(dag) <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="fl">0.5</span>, <span class="at">CeLcfos =</span> <span class="dv">1</span>),</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="dv">1</span>, <span class="at">CeLcfos =</span> <span class="dv">0</span>))</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># find the set of adjustment variables for the direct effect</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">"StressCondition"</span>, <span class="at">outcome =</span> <span class="st">"CeLcfos"</span>, <span class="at">effect =</span> <span class="st">"direct"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>{}</code></pre>
-</div>
-</div>
-<p>It should be clear by now that we need to specify the DAG/lay bare our causal assumptions in order to appropriately specify the statistical model we use to estimate the causal estimand!</p>
 </section>
 <section id="exploratory-data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory data analysis</h2>
@@ -1404,8 +1403,8 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 </div>
 </div>
 </section>
-<section id="estimatemarginal-effects-and-hypothesis-tests" class="level2">
-<h2 class="anchored" data-anchor-id="estimatemarginal-effects-and-hypothesis-tests">Estimate/Marginal effects and hypothesis tests</h2>
+<section id="causal-estimatemarginal-effects-and-hypothesis-tests" class="level2">
+<h2 class="anchored" data-anchor-id="causal-estimatemarginal-effects-and-hypothesis-tests">Causal estimate/Marginal effects and hypothesis tests</h2>
 <p>Please note that exponentiating the difference of two logged values is equivalent to dividing the original values, hence the difference here is the ratio/fold-change of shock over control.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_contrasts</span>(m5, <span class="at">contrast =</span> <span class="st">'StressCondition'</span>, <span class="at">transform =</span> exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
