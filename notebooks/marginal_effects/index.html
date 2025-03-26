@@ -384,7 +384,8 @@ window.Quarto = {
 </div>
 </div>
 <p>According to this causal graph, in order to estimate the <strong>direct</strong> causal effect of <code>StressCondition</code> on <code>CeLcfos</code>, I must include <code>Sociability</code> as a control variable/covariate in the regression model, in order to block the <strong>indirect</strong> causal effect of <code>StressCondition</code> on <code>CeLcfos</code> mediated by <code>Sociability</code>.</p>
-<p>If I proposed a different DAG where <code>StressCondition</code> alters <code>Sociability</code> by modulating neuronal activity (measured by the <code>CeLcfos</code> variable) in the amygdala (not an unlikely scenario), then including <code>Sociability</code> as a control variable/covariate in the regression model would be wrong because, <code>Sociability</code> being a collider in this alternative DAG, the statistical model would introduce a spurious correlation confounding the estimate of the <strong>direct</strong> causal effect of <code>StressCondition</code> on <code>CeLcfos</code>. It should be clear by now that we need to specify the DAG/lay bare our causal assumptions in order to appropriately specify the statistical model we use to estimate the causal estimand.</p>
+<p>If I proposed a different DAG where <code>StressCondition</code> alters <code>Sociability</code> not only directly but also indirectly by altering neuronal activity (measured by the <code>CeLcfos</code> variable) in the amygdala (a likely scenario), then including <code>Sociability</code> as a control variable/covariate in the regression model would be wrong because (<code>Sociability</code> being a collider in this alternative DAG) the statistical model would introduce a spurious correlation that confounds the estimate of the <strong>direct</strong> causal effect of <code>StressCondition</code> on <code>CeLcfos</code>.</p>
+<p>It should be clear by now that we need to specify the DAG/lay bare our causal assumptions in order to appropriately specify the statistical model we use to estimate the causal estimand!</p>
 </section>
 <section id="exploratory-data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory data analysis</h2>
@@ -398,7 +399,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The data point with zero sociability and high cfos+ cell count is suspicious but for the sake of this example we will keep it in the dataset. However, in real life, it would require more careful consideration.</p>
+<p>The data point with zero sociability and high cfos+ cell count is suspicious but for the sake of this example I will keep it in the dataset. However, in real life, it would require more careful consideration.</p>
 <section id="celcfos-null" class="level3">
 <h3 class="anchored" data-anchor-id="celcfos-null">CeLcfos ~ NULL</h3>
 <div class="cell">
@@ -717,7 +718,8 @@ F-statistic: 1.04e+04 on 1 and 1998 DF,  p-value: &lt;0.0000000000000002</code><
 </section>
 <section id="specify-and-fit-models" class="level2">
 <h2 class="anchored" data-anchor-id="specify-and-fit-models">Specify and fit models</h2>
-<p>Here I specify and fit different models but the causal model forces us to include the <code>Sociability</code> variable as a covariate/control variable in addition to the treatment variable <code>StressCondition</code>, because the causal assumption is that <code>Sociability</code> acts as a pipe (mediator) in the causal path between <code>StressCondition</code> and <code>CeLcfos</code>. The only specification choice left is to decide whether to model <code>Sociability</code> as a modifier (moderator) of the effect of <code>StressCondition</code> on <code>CeLcfos</code>. Please note that moderation and mediation are two very different concepts that are often confused as one. Moderation occurs when the effect of the exposure on the outcome changes at different levels of a third variable (the moderator). Mediation occurs when the exposure influences the outcome through an intermediary variable (the mediator).</p>
+<p>Here I specify and fit different models mainly for didactic purpose, because the causal model already forces us to include the <code>Sociability</code> variable as a covariate/control variable in addition to the treatment variable <code>StressCondition</code>. This is because our causal assumption is that <code>Sociability</code> acts as a pipe (mediator) in the causal path between <code>StressCondition</code> and <code>CeLcfos</code>. The only specification choice left is to decide whether to model <code>Sociability</code> as a modifier (moderator) of the effect of <code>StressCondition</code> on <code>CeLcfos</code> or not (i.e., whether to use the additive or the interaction model).</p>
+<p>Please note that <strong>moderation</strong> and <strong>mediation</strong> are two very different concepts that are often confused as one. Moderation occurs when the effect of the exposure on the outcome changes at different levels of a third variable (the moderator). Mediation occurs when the exposure influences the outcome through an intermediary variable (the mediator).</p>
 <section id="logcelcfos-null-1" class="level3">
 <h3 class="anchored" data-anchor-id="logcelcfos-null-1">log(CeLcfos) ~ NULL</h3>
 <div class="cell">
@@ -941,7 +943,7 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 </section>
 <section id="model-evaluation-and-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="model-evaluation-and-comparison">Model evaluation and comparison</h2>
-<p>Here we use the <code>modelsummary()</code> and the <code>compare_performance()</code> functions from the <a href="https://modelsummary.com/"><code>modelsummary</code></a> and <a href="https://easystats.github.io/performance/"><code>performance</code></a> packages, respectively, to evaluate and compare models.</p>
+<p>Here I use the <code>modelsummary()</code> and the <code>compare_performance()</code> functions from the <a href="https://modelsummary.com/"><code>modelsummary</code></a> and <a href="https://easystats.github.io/performance/"><code>performance</code></a> packages, respectively, to evaluate and compare models.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>modelsummary<span class="sc">::</span><span class="fu">modelsummary</span>(<span class="fu">list</span>(m1, m2, m3, m4, m5), <span class="at">stars =</span> <span class="cn">TRUE</span>, <span class="at">statistic =</span> <span class="st">'conf.int'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -1191,9 +1193,9 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 </section>
 <section id="model-predictions" class="level2">
 <h2 class="anchored" data-anchor-id="model-predictions">Model predictions</h2>
-<p>Statistical models often contain a lot more insights than what you get from simply looking at the model parameters. In many cases, like models with multiple interactions, non-linear effects, non-standard families, complex random effect structures, the parameters can be hard to interpret.</p>
-<p>Except for very simple models, parameters cannot be easily interpreted as quantities of interest. Instead, we can use packages like <code>marginaleffects</code>, <code>emmeans</code>, or <code>modelbased</code> (which is a wrapper around <code>marginaleffects</code> and <code>emmeans</code> to make them a bit easier to use) to compute and plot predictions, estimate quantities of interest, and perform hypothesis tests with these quantities.</p>
-<p>Please note that model predictions are transformed back by exponentiation to the original scale of the outcome variable <code>CeLcfos</code> (count of active neurons/mm^2) for better interpretability.</p>
+<p>Statistical models contain a lot more insights than what you get from simply looking at the parameter estimates. In many cases, like models with multiple interactions, non-linear effects, non-standard families, complex random effect structures, the parameters can be hard if not impossible to interpret as a quantity of interest/estimand.</p>
+<p>Here I use the <code>estimate_means()</code> and <code>estimate_contrasts()</code> functions from the <a href="https://easystats.github.io/modelbased/"><code>modelbased</code></a> package (a wrapper around the more powerful and flexible hence more difficult to learn <a href="https://marginaleffects.com/"><code>marginaleffects</code></a> and <a href="https://rvlenth.github.io/emmeans/"><code>emmeans</code></a> packages) to compute and plot predictions, estimate quantities of interest, and perform hypothesis tests with these quantities. The <a href="https://marginaleffects.com/"><code>marginaleffects</code></a> website is also a great learning resource about how to interpret statistical models. Another good resource is this <a href="https://www.andrewheiss.com/blog/2022/05/20/marginalia/">blog post</a>.</p>
+<p>Please note that model predictions are transformed back by exponentiation to the original scale of the outcome variable <code>CeLcfos</code> (count of celfos+ cells/mm^2) for better interpretability.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m5, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'Sociability'</span>, <span class="st">'StressCondition'</span>), <span class="at">transform =</span> exp) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -1543,6 +1545,7 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 </div>
 </div>
 </div>
+<p>XXX</p>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>

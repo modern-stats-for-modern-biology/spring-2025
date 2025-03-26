@@ -125,7 +125,9 @@ plot(dag)
 
 According to this causal graph, in order to estimate the **direct** causal effect of `StressCondition` on `CeLcfos`, I must include `Sociability` as a control variable/covariate in the regression model, in order to block the **indirect** causal effect of `StressCondition` on `CeLcfos` mediated by `Sociability`.
 
-If I proposed a different DAG where `StressCondition` alters `Sociability` by modulating neuronal activity (measured by the `CeLcfos` variable) in the amygdala (not an unlikely scenario), then including `Sociability` as a control variable/covariate in the regression model would be wrong because, `Sociability` being a collider in this alternative DAG, the statistical model would introduce a spurious correlation confounding the estimate of the **direct** causal effect of `StressCondition` on `CeLcfos`. It should be clear by now that we need to specify the DAG/lay bare our causal assumptions in order to appropriately specify the statistical model we use to estimate the causal estimand.
+If I proposed a different DAG where `StressCondition` alters `Sociability` not only directly but also indirectly by altering neuronal activity (measured by the `CeLcfos` variable) in the amygdala (a likely scenario), then including `Sociability` as a control variable/covariate in the regression model would be wrong because (`Sociability` being a collider in this alternative DAG) the statistical model would introduce a spurious correlation that confounds the estimate of the **direct** causal effect of `StressCondition` on `CeLcfos`.
+
+It should be clear by now that we need to specify the DAG/lay bare our causal assumptions in order to appropriately specify the statistical model we use to estimate the causal estimand!
 
 ## Exploratory data analysis
 
@@ -133,7 +135,7 @@ If I proposed a different DAG where `StressCondition` alters `Sociability` by mo
 gf_point(CeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>% gf_smooth(method = 'gam', formula = y ~ s(x, bs = 'cs'), se = TRUE)
 ```
 
-The data point with zero sociability and high cfos+ cell count is suspicious but for the sake of this example we will keep it in the dataset. However, in real life, it would require more careful consideration.
+The data point with zero sociability and high cfos+ cell count is suspicious but for the sake of this example I will keep it in the dataset. However, in real life, it would require more careful consideration.
 
 ### CeLcfos \~ NULL
 
@@ -279,7 +281,9 @@ gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
 
 ## Specify and fit models
 
-Here I specify and fit different models but the causal model forces us to include the `Sociability` variable as a covariate/control variable in addition to the treatment variable `StressCondition`, because the causal assumption is that `Sociability` acts as a pipe (mediator) in the causal path between `StressCondition` and `CeLcfos`. The only specification choice left is to decide whether to model `Sociability` as a modifier (moderator) of the effect of `StressCondition` on `CeLcfos`. Please note that moderation and mediation are two very different concepts that are often confused as one. Moderation occurs when the effect of the exposure on the outcome changes at different levels of a third variable (the moderator). Mediation occurs when the exposure influences the outcome through an intermediary variable (the mediator).
+Here I specify and fit different models mainly for didactic purpose, because the causal model already forces us to include the `Sociability` variable as a covariate/control variable in addition to the treatment variable `StressCondition`. This is because our causal assumption is that `Sociability` acts as a pipe (mediator) in the causal path between `StressCondition` and `CeLcfos`. The only specification choice left is to decide whether to model `Sociability` as a modifier (moderator) of the effect of `StressCondition` on `CeLcfos` or not (i.e., whether to use the additive or the interaction model).
+
+Please note that **moderation** and **mediation** are two very different concepts that are often confused as one. Moderation occurs when the effect of the exposure on the outcome changes at different levels of a third variable (the moderator). Mediation occurs when the exposure influences the outcome through an intermediary variable (the mediator).
 
 ### log(CeLcfos) \~ NULL
 
@@ -368,7 +372,7 @@ check_autocorrelation(m5)
 
 ## Model evaluation and comparison
 
-Here we use the `modelsummary()` and the `compare_performance()` functions from the [`modelsummary`](https://modelsummary.com/) and [`performance`](https://easystats.github.io/performance/) packages, respectively, to evaluate and compare models.
+Here I use the `modelsummary()` and the `compare_performance()` functions from the [`modelsummary`](https://modelsummary.com/) and [`performance`](https://easystats.github.io/performance/) packages, respectively, to evaluate and compare models.
 
 ```{r}
 modelsummary::modelsummary(list(m1, m2, m3, m4, m5), stars = TRUE, statistic = 'conf.int')
@@ -380,11 +384,11 @@ plot(compare_performance(m1, m2, m3, m4, m5, rank = TRUE, verbose = FALSE))
 
 ## Model predictions
 
-Statistical models often contain a lot more insights than what you get from simply looking at the model parameters. In many cases, like models with multiple interactions, non-linear effects, non-standard families, complex random effect structures, the parameters can be hard to interpret.
+Statistical models contain a lot more insights than what you get from simply looking at the parameter estimates. In many cases, like models with multiple interactions, non-linear effects, non-standard families, complex random effect structures, the parameters can be hard if not impossible to interpret as a quantity of interest/estimand.
 
-Except for very simple models, parameters cannot be easily interpreted as quantities of interest. Instead, we can use packages like `marginaleffects`, `emmeans`, or `modelbased` (which is a wrapper around `marginaleffects` and `emmeans` to make them a bit easier to use) to compute and plot predictions, estimate quantities of interest, and perform hypothesis tests with these quantities.
+Here I use the `estimate_means()` and `estimate_contrasts()` functions from the [`modelbased`](https://easystats.github.io/modelbased/) package (a wrapper around the more powerful and flexible hence more difficult to learn [`marginaleffects`](https://marginaleffects.com/) and [`emmeans`](https://rvlenth.github.io/emmeans/) packages) to compute and plot predictions, estimate quantities of interest, and perform hypothesis tests with these quantities. The [`marginaleffects`](https://marginaleffects.com/) website is also a great learning resource about how to interpret statistical models. Another good resource is this [blog post](https://www.andrewheiss.com/blog/2022/05/20/marginalia/).
 
-Please note that model predictions are transformed back by exponentiation to the original scale of the outcome variable `CeLcfos` (count of active neurons/mm\^2) for better interpretability.
+Please note that model predictions are transformed back by exponentiation to the original scale of the outcome variable `CeLcfos` (count of celfos+ cells/mm\^2) for better interpretability.
 
 ```{r}
 estimate_means(m5, by = c('Sociability', 'StressCondition'), transform = exp) %>% plot()
@@ -405,6 +409,8 @@ estimate_contrasts(m5, contrast = 'StressCondition', transform = exp)
 ```{r}
 estimate_contrasts(m5, contrast = 'StressCondition', by = 'Sociability', transform = exp)
 ```
+
+XXX
 
 ## References
 
