@@ -122,9 +122,35 @@ coordinates(dag) <- list(
 plot(dag)
 ```
 
-According to this causal graph, in order to estimate the **direct** causal effect of `StressCondition` on `CeLcfos`, I must include `Sociability` as a control variable/covariate in the regression model, in order to block the **indirect** causal effect of `StressCondition` on `CeLcfos` mediated by `Sociability`.
+According to this causal graph, in order to estimate the **direct** causal effect of `StressCondition` on `CeLcfos`, I must include `Sociability` as a control variable/covariate in the regression model. Doing this blocks the **indirect** causal effect of `StressCondition` on `CeLcfos` mediated by `Sociability`.
 
-If I proposed a different DAG where `StressCondition` alters `Sociability` not only directly but also indirectly by altering neuronal activity (measured by the `CeLcfos` variable) in the amygdala (a likely scenario), then including `Sociability` as a control variable/covariate in the regression model would be wrong because (`Sociability` being a collider in this alternative DAG) the statistical model would introduce a spurious correlation that confounds the estimate of the **direct** causal effect of `StressCondition` on `CeLcfos`.
+```{r}
+# find the set of adjustment variables for the direct effect
+adjustmentSets(dag, exposure = "StressCondition", outcome = "CeLcfos", effect = "direct")
+```
+
+If I proposed a different DAG (see below) where `StressCondition` alters `Sociability` not only directly but also indirectly by altering neuronal activity (measured by the `CeLcfos` variable) in the amygdala--a likely scenario--then including `Sociability` as a control variable/covariate in the regression model would be wrong. This is because (`Sociability` being a collider rather than a mediator in this alternative DAG) including `Sociability` as a control variable/covariate in the regression model would introduce a spurious correlation that confounds the estimate of the **direct** causal effect of `StressCondition` on `CeLcfos`.
+
+```{r}
+dag <- dagitty('dag {
+  CeLcfos [outcome]
+  StressCondition [exposure]
+  CeLcfos -> Sociability
+  StressCondition -> CeLcfos
+  StressCondition -> Sociability
+}')
+
+coordinates(dag) <- list(
+  x = c(StressCondition = 0, Sociability = 0.5, CeLcfos = 1),
+  y = c(StressCondition = 0, Sociability = 1, CeLcfos = 0))
+
+plot(dag)
+```
+
+```{r}
+# find the set of adjustment variables for the direct effect
+adjustmentSets(dag, exposure = "StressCondition", outcome = "CeLcfos", effect = "direct")
+```
 
 It should be clear by now that we need to specify the DAG/lay bare our causal assumptions in order to appropriately specify the statistical model we use to estimate the causal estimand!
 
