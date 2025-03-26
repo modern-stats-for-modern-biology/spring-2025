@@ -13,18 +13,18 @@ bibliography: references.bib
 
 ## Introduction
 
-This notebook shows how to use various packages to 1) import data from an Excel spreadsheet ([`readxl`](https://readxl.tidyverse.org/)), 2) evaluate and compare models ([`performance`](https://easystats.github.io/performance/) and `modelsummary`), and 3) estimate marginal effects ([`modelbased`](https://easystats.github.io/modelbased/) using the model with interaction (`m5`) of the mouse stress/sociability/neuronal activation experiment illustrated during the lecture of week 11 (2025-03-24, **Chapter 9: Models with interactions**) by [Evan Schaffer](https://www.schafferlab.com/evan-schaffer).
+This notebook shows how to use various packages to 1) import data from an Excel spreadsheet ([`readxl`](https://readxl.tidyverse.org/)), 2) evaluate and compare models ([`performance`](https://easystats.github.io/performance/)), and 3) estimate quantities of interest/estimands ([`modelbased`](https://easystats.github.io/modelbased/) using a causal model and the statistical model with interaction (`m5`) of the mouse stress/sociability/neuronal activation experiment illustrated during the lecture of week 11 (2025-03-24, **Chapter 9: Models with interactions**) by [Evan Schaffer](https://www.schafferlab.com/evan-schaffer).
 
 ## Setup environment
 
 ```{r}
 #| output: false
 library(tidyverse)
-library(ggformula)
 library(readxl)
+library(ggformula)
 library(performance)
-library(modelsummary)
 library(modelbased)
+library(marginaleffects)
 
 theme_set(theme_bw())
 
@@ -43,7 +43,7 @@ Study available at <https://doi.org/10.1371/journal.pone.0281388>
 
 The aim of the original study was to explore the effect of stress on the sociability of male and female mice in a standard social approach test. Neuronal activation during social approach was assessed using immunohistochemistry against the immediate early gene product cFos.
 
-Here we are going to estimate the causal effect of stress (`StressCondition`, treatment variable) on neuronal activation (`CeLcfos`, outcome variable) conditional on the sociability of male and female mice (`Sociability`, control variable).
+Here I am going to estimate the direct causal effect of stress (`StressCondition`, treatment variable) on neuronal activation (`CeLcfos`, outcome variable).
 
 ## Read and prep data
 
@@ -99,12 +99,11 @@ d <- cbind(id,soc,cel) %>%
 head(d)
 ```
 
-
 ## Causal model
 
-The causal estimand is the effect of stress (`StressCondition`, treatment variable) on neuronal activation (`CeLcfos`, outcome variable). We are going to ignore the `Treatment` and `Sex` variables in this example used to illustrate a simple linear model with two interacting predictors (`StressCondition` and `Sociability`). However, in real-life, you should include them in the causal model, unless of course your assumption is that they are in no way causally related to the exposure and/or the outcome (which is the causal assumption for omitted variables).
+The quantity of interest/estimand is the direct causal effect of stress (`StressCondition`, treatment variable) on neuronal activation (`CeLcfos`, outcome variable). I am going to ignore the `Treatment` and `Sex` variables in this example. However, in real-life, one should think about them (and other variables, even if unobserved) and include them in the causal model, unless of course the assumption is that they are in no way causally related to the exposure and/or the outcome variable (which is clearly NOT the case here).
 
-Based on the experimental design and my domain knowledge, my DAG is:
+Based on the experimental design and my domain knowledge, the DAG I propose is the following:
 
 ```{r}
 library(dagitty)
@@ -119,13 +118,14 @@ dag <- dagitty('dag {
 
 coordinates(dag) <- list(
   x = c(StressCondition = 0, Sociability = 0.5, CeLcfos = 1),
-  y = c(StressCondition = 0, Sociability = 1, CeLcfos = 0)
-)
+  y = c(StressCondition = 0, Sociability = 1, CeLcfos = 0))
 
 plot(dag)
 ```
 
-According to this causal graph, in order to estimate the **direct** causal effect of `StressCondition` on `CeLcfos`, I must include `Sociability` as a covariate in the regression model, in order to block the **indirect** causal effect of `StressCondition` on `CeLcfos` mediated by `Sociability`.
+According to this causal graph, in order to estimate the **direct** causal effect of `StressCondition` on `CeLcfos`, I must include `Sociability` as a control variable/covariate in the regression model, in order to block the **indirect** causal effect of `StressCondition` on `CeLcfos` mediated by `Sociability`.
+
+If I proposed a different DAG where `StressCondition` alters `Sociability` by modulating neuronal activity (measured by the `CeLcfos` variable) in the amygdala (not an unlikely scenario), then including `Sociability` as a control variable/covariate in the regression model would be wrong because, `Sociability` being a collider in this alternative DAG, the statistical model would introduce a spurious correlation confounding the estimate of the **direct** causal effect of `StressCondition` on `CeLcfos`. It should be clear by now that we need to specify the DAG/lay bare our causal assumptions in order to appropriately specify the statistical model we use to estimate the causal estimand.
 
 ## Exploratory data analysis
 
@@ -133,10 +133,16 @@ According to this causal graph, in order to estimate the **direct** causal effec
 gf_point(CeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>% gf_smooth(method = 'gam', formula = y ~ s(x, bs = 'cs'), se = TRUE)
 ```
 
+The data point with zero sociability and high cfos+ cell count is suspicious but for the sake of this example we will keep it in the dataset. However, in real life, it would require more careful consideration.
+
 ### CeLcfos \~ NULL
 
 ```{r}
 gf_point(CeLcfos ~ 1, data = d) %>% coursekata::gf_model(CeLcfos ~ 1, data = d)
+```
+
+```{r}
+gf_density(CeLcfos ~ 1, data = d)
 ```
 
 It is often but erroneously believed that linear regression assumes that the outcome variable is normally distributed. This misconception arises from not knowing/remembering the regression likelihood equation(s) of the general linear model, e.g.:
@@ -159,7 +165,7 @@ All the assumptions of the general linear model are unambiguously stated by thes
 
 Specifically, to return to the misconception mentioned above, the linear regression model assumes that the outcome variable $y$ is normally distributed **conditional on the covariates** $x$ or, equivalently, that the **residuals** **are normally distributed**.
 
-For example:
+For example, here I generated a dataset where the outcome variable $y$ is clearly NOT normally distributed:
 
 ```{r}
 nsamples = 1000
@@ -173,6 +179,8 @@ y_x <- tibble(y = c(y_xA, y_xB), x = factor(c(rep('A', nsamples), rep('B', nsamp
 ```{r}
 gf_dens(~ y, data = y_x)
 ```
+
+However, it is normally distributed conditional on the covariate $x$, which is accordance with the assumption of the general linear mode:
 
 ```{r}
 gf_dens(~ y | x, data = y_x)
@@ -189,6 +197,11 @@ summary(m)
 ```
 
 ```{r}
+#| fig-height: 10
+check_model(m)
+```
+
+```{r}
 check_normality(m)
 ```
 
@@ -198,7 +211,7 @@ gf_jitter(y ~ x, color = ~ x, alpha = 0.1, data = y_x) %>%
   ggExtra::ggMarginal(y, type='density')
 ```
 
-The 'problem' with the `CeLcfos` outcome variable is not that it is not normally distributed, but that it is a count variable (or more precisely in this case a density, the number of 'active neurons'/cfos-expressing cells per mm^2^ of the central lateral amygdala) and thus it cannot be negative.
+The 'problem' with the `CeLcfos` outcome variable is not that it is not normally distributed, but that it is a count variable (or more precisely in this case a density, the number of 'active neurons'/cfos+ cells per mm^2^ of the central lateral amygdala) and thus it cannot be negative.
 
 A normally distributed variable is defined over the entire real line $(-\infty, \infty)$ and, therefore, it is not appropriate for count data, especially if they are concentrated close to the zero boundary.
 
@@ -207,7 +220,7 @@ mosaic::favstats(~ CeLcfos, data = d)
 ```
 
 ```{r}
-gf_histogram(~ CeLcfos, data = d)
+gf_density(~ CeLcfos, data = d)
 ```
 
 ```{r}
@@ -221,7 +234,7 @@ mosaic::favstats(~ logCeLcfos, data = d)
 ```
 
 ```{r}
-gf_histogram(~ logCeLcfos, data = d)
+gf_density(~ logCeLcfos, data = d)
 ```
 
 ```{r}
@@ -264,7 +277,9 @@ gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
   coursekata::gf_model(logCeLcfos ~ Sociability * StressCondition, data = d) %>% gf_refine(theme(legend.position = 'none'))
 ```
 
-## Build and fit models
+## Specify and fit models
+
+Here I specify and fit different models but the causal model forces us to include the `Sociability` variable as a covariate/control variable in addition to the treatment variable `StressCondition`, because the causal assumption is that `Sociability` acts as a pipe (mediator) in the causal path between `StressCondition` and `CeLcfos`. The only specification choice left is to decide whether to model `Sociability` as a modifier (moderator) of the effect of `StressCondition` on `CeLcfos`. Please note that moderation and mediation are two very different concepts that are often confused as one. Moderation occurs when the effect of the exposure on the outcome changes at different levels of a third variable (the moderator). Mediation occurs when the exposure influences the outcome through an intermediary variable (the mediator).
 
 ### log(CeLcfos) \~ NULL
 
@@ -356,7 +371,7 @@ check_autocorrelation(m5)
 Here we use the `modelsummary()` and the `compare_performance()` functions from the [`modelsummary`](https://modelsummary.com/) and [`performance`](https://easystats.github.io/performance/) packages, respectively, to evaluate and compare models.
 
 ```{r}
-modelsummary(list(m1, m2, m3, m4, m5), stars = TRUE, statistic = 'conf.int')
+modelsummary::modelsummary(list(m1, m2, m3, m4, m5), stars = TRUE, statistic = 'conf.int')
 ```
 
 ```{r}
@@ -378,7 +393,6 @@ estimate_means(m5, by = c('Sociability', 'StressCondition'), transform = exp) %>
 ```{r}
 estimate_means(m5, by = c('Sociability', 'StressCondition'), transform = exp)
 ```
-
 
 ## Marginal effects and hypothesis tests
 
