@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Edoardo &quot;Dado&quot; Marcora">
+<meta name="author" content="Edoardo 'Dado' Marcora">
 <meta name="dcterms.date" content="2025-03-24">
 
 <title>Marginal effects using R</title>
@@ -60,7 +60,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -154,10 +153,8 @@ window.Quarto = {
   <li><a href="#logcelcfos-stresscondition-sociability-3" id="toc-logcelcfos-stresscondition-sociability-3" class="nav-link" data-scroll-target="#logcelcfos-stresscondition-sociability-3">log(CeLcfos) ~ StressCondition * Sociability</a></li>
   </ul></li>
   <li><a href="#model-evaluation-and-comparison" id="toc-model-evaluation-and-comparison" class="nav-link" data-scroll-target="#model-evaluation-and-comparison">Model evaluation and comparison</a></li>
-  <li><a href="#model-predictions-marginal-effects-and-hypothesis-tests" id="toc-model-predictions-marginal-effects-and-hypothesis-tests" class="nav-link" data-scroll-target="#model-predictions-marginal-effects-and-hypothesis-tests">Model predictions, marginal effects and hypothesis tests</a>
-  <ul class="collapse">
-  <li><a href="#effect-of-stresscondition-on-celcfos-conditional-on-sociability" id="toc-effect-of-stresscondition-on-celcfos-conditional-on-sociability" class="nav-link" data-scroll-target="#effect-of-stresscondition-on-celcfos-conditional-on-sociability">Effect of StressCondition on CeLcfos conditional on Sociability</a></li>
-  </ul></li>
+  <li><a href="#model-predictions" id="toc-model-predictions" class="nav-link" data-scroll-target="#model-predictions">Model predictions</a></li>
+  <li><a href="#marginal-effects-and-hypothesis-tests" id="toc-marginal-effects-and-hypothesis-tests" class="nav-link" data-scroll-target="#marginal-effects-and-hypothesis-tests">Marginal effects and hypothesis tests</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   <li><a href="#print-environment" id="toc-print-environment" class="nav-link" data-scroll-target="#print-environment">Print environment</a></li>
   </ul>
@@ -177,7 +174,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Edoardo "Dado" Marcora </p>
+             <p>Edoardo 'Dado' Marcora </p>
           </div>
   </div>
     
@@ -198,7 +195,7 @@ window.Quarto = {
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>This notebook shows how to use various packages to 1) import data from an Excel spreadsheet (<a href="https://readxl.tidyverse.org/"><code>readxl</code></a>), 2) evaluate and compare models (<a href="https://easystats.github.io/performance/"><code>performance</code></a><code>and modelsummary</code>), and 3) estimate marginal effects (<a href="https://strengejacke.github.io/ggeffects/"><code>ggeffects</code></a> using the model with interaction (<code>m5</code>) of the mouse stress/sociability/neuronal activation experiment illustrated during the lecture of week 11 (2025-03-24, <strong>Chapter 9: Models with interactions</strong>) by <a href="https://www.schafferlab.com/evan-schaffer">Evan Schaffer</a>.</p>
+<p>This notebook shows how to use various packages to 1) import data from an Excel spreadsheet (<a href="https://readxl.tidyverse.org/"><code>readxl</code></a>), 2) evaluate and compare models (<a href="https://easystats.github.io/performance/"><code>performance</code></a> and <code>modelsummary</code>), and 3) estimate marginal effects (<a href="https://easystats.github.io/modelbased/"><code>modelbased</code></a> using the model with interaction (<code>m5</code>) of the mouse stress/sociability/neuronal activation experiment illustrated during the lecture of week 11 (2025-03-24, <strong>Chapter 9: Models with interactions</strong>) by <a href="https://www.schafferlab.com/evan-schaffer">Evan Schaffer</a>.</p>
 </section>
 <section id="setup-environment" class="level2">
 <h2 class="anchored" data-anchor-id="setup-environment">Setup environment</h2>
@@ -208,14 +205,13 @@ window.Quarto = {
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelbased)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">666</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelbased)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">modelbased_backend =</span> <span class="st">'emmeans'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">666</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="background-information" class="level2">
@@ -233,26 +229,26 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="read-and-prep-data">Read and prep data</h2>
 <p>This study is a good example of <u>how NOT to format supplementary data in an Excel spreadsheet</u>! It shouldn’t take more than one call to the <code>read_xlsx()</code> function to import data from a properly formatted Excel spreadsheet.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>id1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!C4:D11"</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Treatment"</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>id2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!C16:D23"</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Treatment"</span>))</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>id3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!C26:D33"</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Treatment"</span>))</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>id4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!C37:D44"</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Treatment"</span>))</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>id1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C4:D11'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>id2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C16:D23'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>id3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C26:D33'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>id4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!C37:D44'</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">'ID'</span>, <span class="st">'Treatment'</span>))</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>id <span class="ot">&lt;-</span> <span class="fu">rbind</span>(id1, id2, id3, id4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cel1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!H4:H11"</span>, <span class="at">col_names =</span> <span class="st">"CeLcfos"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cel2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!H16:H23"</span>, <span class="at">col_names =</span> <span class="st">"CeLcfos"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>cel3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!H26:H33"</span>, <span class="at">col_names =</span> <span class="st">"CeLcfos"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>cel4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!H37:H44"</span>, <span class="at">col_names =</span> <span class="st">"CeLcfos"</span>)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cel1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H4:H11'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cel2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H16:H23'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>cel3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H26:H33'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>cel4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!H37:H44'</span>, <span class="at">col_names =</span> <span class="st">'CeLcfos'</span>)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>cel <span class="ot">&lt;-</span> <span class="fu">rbind</span>(cel1, cel2, cel3, cel4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>soc1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!N4:N11"</span>, <span class="at">col_names =</span> <span class="st">"Sociability"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>soc2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!N16:N23"</span>, <span class="at">col_names =</span> <span class="st">"Sociability"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>soc3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!N26:N33"</span>, <span class="at">col_names =</span> <span class="st">"Sociability"</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>soc4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"Figure 3.xlsx"</span>, <span class="at">range =</span> <span class="st">"New_Beh+cfos!N37:N44"</span>, <span class="at">col_names =</span> <span class="st">"Sociability"</span>)</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>soc1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N4:N11'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>soc2 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N16:N23'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>soc3 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N26:N33'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>soc4 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">'Figure 3.xlsx'</span>, <span class="at">range =</span> <span class="st">'New_Beh+cfos!N37:N44'</span>, <span class="at">col_names =</span> <span class="st">'Sociability'</span>)</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>soc <span class="ot">&lt;-</span> <span class="fu">rbind</span>(soc1, soc2, soc3, soc4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -262,13 +258,13 @@ window.Quarto = {
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">StressCondition =</span> <span class="fu">case_when</span>(</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"FC-"</span>, Treatment) <span class="sc">~</span> <span class="st">"Control"</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"FC+"</span>, Treatment) <span class="sc">~</span> <span class="st">"Shock"</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Control"</span>, Treatment) <span class="sc">~</span> <span class="st">"Control"</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Stress"</span>, Treatment) <span class="sc">~</span> <span class="st">"Shock"</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'FC-'</span>, Treatment) <span class="sc">~</span> <span class="st">'Control'</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'FC+'</span>, Treatment) <span class="sc">~</span> <span class="st">'Shock'</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Control'</span>, Treatment) <span class="sc">~</span> <span class="st">'Control'</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Stress'</span>, Treatment) <span class="sc">~</span> <span class="st">'Shock'</span>),</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Treatment =</span> <span class="fu">case_when</span>(</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Veh"</span>, Treatment) <span class="sc">~</span> <span class="st">"Vehicle"</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Alp"</span>, Treatment) <span class="sc">~</span> <span class="st">"Alprazolam"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Veh'</span>, Treatment) <span class="sc">~</span> <span class="st">'Vehicle'</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">'Alp'</span>, Treatment) <span class="sc">~</span> <span class="st">'Alprazolam'</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">logCeLcfos =</span> <span class="fu">log</span>(CeLcfos),</span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">Sex =</span> <span class="fu">factor</span>(Sex),</span>
@@ -366,20 +362,22 @@ window.Quarto = {
 <p>The causal estimand is the effect of stress (<code>StressCondition</code>, treatment variable) on neuronal activation (<code>CeLcfos</code>, outcome variable). We are going to ignore the <code>Treatment</code> and <code>Sex</code> variables in this example used to illustrate a simple linear model with two interacting predictors (<code>StressCondition</code> and <code>Sociability</code>). However, in real-life, you should include them in the causal model, unless of course your assumption is that they are in no way causally related to the exposure and/or the outcome (which is the causal assumption for omitted variables).</p>
 <p>Based on the experimental design and my domain knowledge, my DAG is:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">'dag {</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="st">  CeLcfos [outcome]</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition [exposure]</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">  Sociability -&gt; CeLcfos</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; CeLcfos</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; Sociability</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">}'</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">coordinates</span>(dag) <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="fl">0.5</span>, <span class="at">CeLcfos =</span> <span class="dv">1</span>),</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="dv">1</span>, <span class="at">CeLcfos =</span> <span class="dv">0</span>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">'dag {</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">  CeLcfos [outcome]</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition [exposure]</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">  Sociability -&gt; CeLcfos</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; CeLcfos</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">  StressCondition -&gt; Sociability</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="st">}'</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">coordinates</span>(dag) <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="fl">0.5</span>, <span class="at">CeLcfos =</span> <span class="dv">1</span>),</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="at">StressCondition =</span> <span class="dv">0</span>, <span class="at">Sociability =</span> <span class="dv">1</span>, <span class="at">CeLcfos =</span> <span class="dv">0</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -392,8 +390,28 @@ window.Quarto = {
 </section>
 <section id="exploratory-data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory data analysis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(CeLcfos <span class="sc">~</span> Sociability, <span class="at">color =</span> <span class="sc">~</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_smooth</span>(<span class="at">method =</span> <span class="st">'gam'</span>, <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">bs =</span> <span class="st">'cs'</span>), <span class="at">se =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <section id="celcfos-null" class="level3">
 <h3 class="anchored" data-anchor-id="celcfos-null">CeLcfos ~ NULL</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(CeLcfos <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> coursekata<span class="sc">::</span><span class="fu">gf_model</span>(CeLcfos <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <p>It is often but erroneously believed that linear regression assumes that the outcome variable is normally distributed. This misconception arises from not knowing/remembering the regression likelihood equation(s) of the general linear model, e.g.:</p>
 <p><span class="math display">\[
 y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu = \beta_0 + \beta_1 x_i, \sigma)
@@ -409,35 +427,15 @@ y_i = \beta_0 + \beta_1 x_i + \epsilon_i
 <p>Specifically, to return to the misconception mentioned above, the linear regression model assumes that the outcome variable <span class="math inline">\(y\)</span> is normally distributed <strong>conditional on the covariates</strong> <span class="math inline">\(x\)</span> or, equivalently, that the <strong>residuals</strong> <strong>are normally distributed</strong>.</p>
 <p>For example:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nsamples <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>y_xA <span class="ot">=</span> <span class="fu">rnorm</span>(nsamples, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="dv">4</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>y_xB <span class="ot">=</span> <span class="fu">rnorm</span>(nsamples, <span class="at">mean =</span> <span class="dv">20</span>, <span class="at">sd =</span> <span class="dv">4</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>y_x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">y =</span> <span class="fu">c</span>(y_xA, y_xB), <span class="at">x =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"A"</span>, nsamples), <span class="fu">rep</span>(<span class="st">"B"</span>, nsamples))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nsamples <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>y_xA <span class="ot">=</span> <span class="fu">rnorm</span>(nsamples, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="dv">4</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>y_xB <span class="ot">=</span> <span class="fu">rnorm</span>(nsamples, <span class="at">mean =</span> <span class="dv">20</span>, <span class="at">sd =</span> <span class="dv">4</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>y_x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">y =</span> <span class="fu">c</span>(y_xA, y_xB), <span class="at">x =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">'A'</span>, nsamples), <span class="fu">rep</span>(<span class="st">'B'</span>, nsamples))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_dens</span>(<span class="sc">~</span> y, <span class="at">data =</span> y_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_dens</span>(<span class="sc">~</span> y <span class="sc">|</span> x, <span class="at">data =</span> y_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_dens</span>(<span class="sc">~</span> y, <span class="at">color =</span> <span class="sc">~</span> x, <span class="at">data =</span> y_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_dens</span>(<span class="sc">~</span> y, <span class="at">data =</span> y_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -447,9 +445,29 @@ y_i = \beta_0 + \beta_1 x_i + \epsilon_i
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> y_x)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_dens</span>(<span class="sc">~</span> y <span class="sc">|</span> x, <span class="at">data =</span> y_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_dens</span>(<span class="sc">~</span> y, <span class="at">color =</span> <span class="sc">~</span> x, <span class="at">data =</span> y_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> y_x)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -472,27 +490,27 @@ F-statistic: 1.04e+04 on 1 and 1998 DF,  p-value: &lt;0.0000000000000002</code><
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_normality</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_normality</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>OK: residuals appear as normally distributed (p = 0.318).</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_jitter</span>(y <span class="sc">~</span> x, <span class="at">color =</span> <span class="sc">~</span> x, <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">data =</span> y_x) <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  coursekata<span class="sc">::</span><span class="fu">gf_model</span>(m) <span class="sc">%&gt;%</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  ggExtra<span class="sc">::</span><span class="fu">ggMarginal</span>(y, <span class="at">type=</span><span class="st">"density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_jitter</span>(y <span class="sc">~</span> x, <span class="at">color =</span> <span class="sc">~</span> x, <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">data =</span> y_x) <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  coursekata<span class="sc">::</span><span class="fu">gf_model</span>(m) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  ggExtra<span class="sc">::</span><span class="fu">ggMarginal</span>(y, <span class="at">type=</span><span class="st">'density'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The “problem” with the <code>CeLcfos</code> outcome variable is not that it is not normally distributed, but that it is a count variable (or more precisely in this case a density, the number of “active neurons”/cfos-expressing cells per mm<sup>2</sup> of the central lateral amygdala) and thus it cannot be negative.</p>
+<p>The ‘problem’ with the <code>CeLcfos</code> outcome variable is not that it is not normally distributed, but that it is a count variable (or more precisely in this case a density, the number of ‘active neurons’/cfos-expressing cells per mm<sup>2</sup> of the central lateral amygdala) and thus it cannot be negative.</p>
 <p>A normally distributed variable is defined over the entire real line <span class="math inline">\((-\infty, \infty)\)</span> and, therefore, it is not appropriate for count data, especially if they are concentrated close to the zero boundary.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>mosaic<span class="sc">::</span><span class="fu">favstats</span>(<span class="sc">~</span> CeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>mosaic<span class="sc">::</span><span class="fu">favstats</span>(<span class="sc">~</span> CeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -529,28 +547,28 @@ F-statistic: 1.04e+04 on 1 and 1998 DF,  p-value: &lt;0.0000000000000002</code><
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> CeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> CeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_qq</span>(<span class="sc">~</span> CeLcfos, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_qqline</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_qq</span>(<span class="sc">~</span> CeLcfos, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_qqline</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>A log transformation is often applied to count data in order to make them more amenable to commonly used null-hypothesis significance tests and general linear regression modeling, all of which assume that the outcome variable is conditionally normally distributed.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mosaic<span class="sc">::</span><span class="fu">favstats</span>(<span class="sc">~</span> logCeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>mosaic<span class="sc">::</span><span class="fu">favstats</span>(<span class="sc">~</span> logCeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -587,21 +605,21 @@ F-statistic: 1.04e+04 on 1 and 1998 DF,  p-value: &lt;0.0000000000000002</code><
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> logCeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> logCeLcfos, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_qq</span>(<span class="sc">~</span> logCeLcfos, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_qqline</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_qq</span>(<span class="sc">~</span> logCeLcfos, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_qqline</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -612,33 +630,7 @@ F-statistic: 1.04e+04 on 1 and 1998 DF,  p-value: &lt;0.0000000000000002</code><
 <section id="logcelcfos-null" class="level3">
 <h3 class="anchored" data-anchor-id="logcelcfos-null">log(CeLcfos) ~ NULL</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> coursekata<span class="sc">::</span><span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="logcelcfos-stresscondition" class="level3">
-<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition">log(CeLcfos) ~ StressCondition</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> StressCondition, <span class="at">color =</span> <span class="sc">~</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> coursekata<span class="sc">::</span><span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> StressCondition, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="logcelcfos-sociability" class="level3">
-<h3 class="anchored" data-anchor-id="logcelcfos-sociability">log(CeLcfos) ~ Sociability</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> coursekata<span class="sc">::</span><span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> coursekata<span class="sc">::</span><span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -648,11 +640,10 @@ F-statistic: 1.04e+04 on 1 and 1998 DF,  p-value: &lt;0.0000000000000002</code><
 </div>
 </div>
 </section>
-<section id="logcelcfos-stresscondition-sociability" class="level3">
-<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-sociability">log(CeLcfos) ~ StressCondition + Sociability</h3>
+<section id="logcelcfos-stresscondition" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition">log(CeLcfos) ~ StressCondition</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">color =</span> <span class="sc">~</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  coursekata<span class="sc">::</span><span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> Sociability <span class="sc">+</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_refine</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> StressCondition, <span class="at">color =</span> <span class="sc">~</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> coursekata<span class="sc">::</span><span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> StressCondition, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -662,15 +653,42 @@ F-statistic: 1.04e+04 on 1 and 1998 DF,  p-value: &lt;0.0000000000000002</code><
 </div>
 </div>
 </section>
-<section id="logcelcfos-stresscondition-sociability-1" class="level3">
-<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-sociability-1">log(CeLcfos) ~ StressCondition * Sociability</h3>
+<section id="logcelcfos-sociability" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-sociability">log(CeLcfos) ~ Sociability</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">color =</span> <span class="sc">~</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  coursekata<span class="sc">::</span><span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> Sociability <span class="sc">*</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_refine</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> coursekata<span class="sc">::</span><span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="logcelcfos-stresscondition-sociability" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-sociability">log(CeLcfos) ~ StressCondition + Sociability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">color =</span> <span class="sc">~</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  coursekata<span class="sc">::</span><span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> Sociability <span class="sc">+</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_refine</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">'none'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="logcelcfos-stresscondition-sociability-1" class="level3">
+<h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-sociability-1">log(CeLcfos) ~ StressCondition * Sociability</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(logCeLcfos <span class="sc">~</span> Sociability, <span class="at">color =</span> <span class="sc">~</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  coursekata<span class="sc">::</span><span class="fu">gf_model</span>(logCeLcfos <span class="sc">~</span> Sociability <span class="sc">*</span> StressCondition, <span class="at">data =</span> d) <span class="sc">%&gt;%</span> <span class="fu">gf_refine</span>(<span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">'none'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -682,9 +700,9 @@ F-statistic: 1.04e+04 on 1 and 1998 DF,  p-value: &lt;0.0000000000000002</code><
 <section id="logcelcfos-null-1" class="level3">
 <h3 class="anchored" data-anchor-id="logcelcfos-null-1">log(CeLcfos) ~ NULL</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> <span class="cn">NULL</span>, <span class="at">data =</span> d)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> <span class="cn">NULL</span>, <span class="at">data =</span> d)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -704,17 +722,17 @@ Residual standard error: 0.946 on 31 degrees of freedom</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_autocorrelation</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_autocorrelation</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>OK: Residuals appear to be independent and not autocorrelated (p = 0.592).</code></pre>
 </div>
@@ -723,9 +741,9 @@ Residual standard error: 0.946 on 31 degrees of freedom</code></pre>
 <section id="logcelcfos-stresscondition-1" class="level3">
 <h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-1">log(CeLcfos) ~ StressCondition</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> StressCondition, <span class="at">data =</span> d)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> StressCondition, <span class="at">data =</span> d)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -748,17 +766,17 @@ F-statistic: 0.0243 on 1 and 30 DF,  p-value: 0.877</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_autocorrelation</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_autocorrelation</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>OK: Residuals appear to be independent and not autocorrelated (p = 0.426).</code></pre>
 </div>
@@ -767,9 +785,9 @@ F-statistic: 0.0243 on 1 and 30 DF,  p-value: 0.877</code></pre>
 <section id="logcelcfos-sociability-1" class="level3">
 <h3 class="anchored" data-anchor-id="logcelcfos-sociability-1">log(CeLcfos) ~ Sociability</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> Sociability, <span class="at">data =</span> d)</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> Sociability, <span class="at">data =</span> d)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -792,17 +810,17 @@ F-statistic: 8.64 on 1 and 30 DF,  p-value: 0.00626</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_autocorrelation</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_autocorrelation</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>OK: Residuals appear to be independent and not autocorrelated (p = 0.584).</code></pre>
 </div>
@@ -811,9 +829,9 @@ F-statistic: 8.64 on 1 and 30 DF,  p-value: 0.00626</code></pre>
 <section id="logcelcfos-stresscondition-sociability-2" class="level3">
 <h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-sociability-2">log(CeLcfos) ~ StressCondition + Sociability</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> StressCondition <span class="sc">+</span> Sociability, <span class="at">data =</span> d)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> StressCondition <span class="sc">+</span> Sociability, <span class="at">data =</span> d)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -837,17 +855,17 @@ F-statistic: 4.18 on 2 and 29 DF,  p-value: 0.0254</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_autocorrelation</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_autocorrelation</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>OK: Residuals appear to be independent and not autocorrelated (p = 0.434).</code></pre>
 </div>
@@ -856,9 +874,9 @@ F-statistic: 4.18 on 2 and 29 DF,  p-value: 0.0254</code></pre>
 <section id="logcelcfos-stresscondition-sociability-3" class="level3">
 <h3 class="anchored" data-anchor-id="logcelcfos-stresscondition-sociability-3">log(CeLcfos) ~ StressCondition * Sociability</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>m5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> StressCondition <span class="sc">*</span> Sociability, <span class="at">data =</span> d)</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>m5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(CeLcfos) <span class="sc">~</span> StressCondition <span class="sc">*</span> Sociability, <span class="at">data =</span> d)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -883,17 +901,17 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_autocorrelation</span>(m5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_autocorrelation</span>(m5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>OK: Residuals appear to be independent and not autocorrelated (p = 0.340).</code></pre>
 </div>
@@ -904,7 +922,7 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 <h2 class="anchored" data-anchor-id="model-evaluation-and-comparison">Model evaluation and comparison</h2>
 <p>Here we use the <code>modelsummary()</code> and the <code>compare_performance()</code> functions from the <a href="https://modelsummary.com/"><code>modelsummary</code></a> and <a href="https://easystats.github.io/performance/"><code>performance</code></a> packages, respectively, to evaluate and compare models.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(m1, m2, m3, m4, m5), <span class="at">stars =</span> <span class="cn">TRUE</span>, <span class="at">statistic =</span> <span class="st">"conf.int"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(m1, m2, m3, m4, m5), <span class="at">stars =</span> <span class="cn">TRUE</span>, <span class="at">statistic =</span> <span class="st">'conf.int'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <!-- preamble start -->
 
@@ -1140,84 +1158,7 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">compare_performance</span>(m1, m2, m3, m4, m5, <span class="at">rank =</span> <span class="cn">TRUE</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="model-predictions-marginal-effects-and-hypothesis-tests" class="level2">
-<h2 class="anchored" data-anchor-id="model-predictions-marginal-effects-and-hypothesis-tests">Model predictions, marginal effects and hypothesis tests</h2>
-<p>Statistical models often contain a lot more insights than what you get from simply looking at the model parameters. In many cases, like models with multiple interactions, non-linear effects, non-standard families, complex random effect structures, the parameters can be hard to interpret.</p>
-<p>Except for very simple models, parameters cannot be easily interpreted as quantities of interest. Instead, we can use packages like <code>ggeffects</code>, <code>marginaleffects</code>, <code>emmeans</code>, or <code>modelbased</code> to compute and plot predictions, estimate quantities of interest, and perform tests.</p>
-<p>The <code>predict_response()</code> and <code>test_predictions()</code> functions from the <a href="https://strengejacke.github.io/ggeffects/"><code>ggeffects</code></a> package are used here to compute model predictions (above) and marginal effects (below) from a fitted regression model. <code>ggeffects</code> is based on the more powerful but also more complex <a href="https://marginaleffects.com/"><code>marginaleffects</code></a> package. Another package often used to compute marginal effects from a fitted regression model is <a href="https://cran.r-project.org/package=emmeans"><code>emmeans</code></a>.</p>
-<p>A good introduction to “marginal effects” is available <a href="https://www.andrewheiss.com/blog/2022/05/20/marginalia">here</a>. Please refer to the documentation of the “marginal effects” package of your choice to understand exactly what the author(s) defines as marginal effects, since there is very little consensus on terminology, unfortunately.</p>
-<p>The <a href="https://strengejacke.github.io/ggeffects/reference/predict_response.html"><code>predict_response()</code></a> function takes two inputs:</p>
-<ol type="1">
-<li><code>model</code>, the output of a regression model fitting function such as <code>lm</code>, <code>glm</code>, <a href="https://mc-stan.org/rstanarm/"><code>rstanarm</code></a><code>::stan_glm()</code>, <a href="https://paul-buerkner.github.io/brms/"><code>brms</code></a><code>:brm()</code>, etc.</li>
-<li><code>terms</code>, a character vector of names of one or more predictor variables (a.k.a. “<em>focal terms</em>”)</li>
-</ol>
-<p>The output is a data frame of predictions of the response variable, which is nicely printed by default.</p>
-<p>The output data frame can be passed to the <code>plot()</code> function to easily plot the predictions, or to the <code>test_predictions()</code> function to easily estimate and test hypotheses about marginal effects (i.e., differences between two adjacent predictions, a.k.a. contrasts/comparisons).</p>
-<p>By default, these predictions are on the <em>response</em> scale, which is the most intuitive scale to interpret them.</p>
-<p>The <code>predict_response()</code> function requires at least one, but not more than four focal terms. Predicted values of the response variable, along the values or levels of the first focal term are calculated, possibly grouped by the other focal terms, while all other predictor variables (a.k.a. “<em>non-focal terms</em>”) are marginalized over.</p>
-<p>The <code>margin</code> argument indicates how to marginalize over the non-focal terms:</p>
-<ul>
-<li><code>"mean_reference"</code> [the default, which can be changed using the <code>options()</code> function, e.g., <code>options(ggeffects_margin = "empirical")</code>]
-<ul>
-<li>non-focal terms are set to their mean (numeric variables), reference level (factors), or “most common value” (character vectors)</li>
-<li>the predictions in the output data frame are <strong>adjusted predictions</strong> of the response variable specified in the model</li>
-<li>Question answered: “<em>What is the predicted value of the response variable at meaningful values or levels of the focal terms for a ”typical” observation in the data?</em>”</li>
-</ul></li>
-<li><code>"mean_mode"</code>
-<ul>
-<li>non-focal terms are set to their mean (numeric variables) or “most common value” (factors and character vectors)</li>
-<li>the predictions in the output data frame are <strong>adjusted predictions</strong> of the response variable specified in the model</li>
-<li>Question answered: “<em>What is the predicted value of the response variable at meaningful values or levels of the focal terms for a ”typical” observation in the data?</em>”</li>
-</ul></li>
-<li><code>"marginalmeans"</code>
-<ul>
-<li>non-focal predictors are set to their mean (numeric variables) or marginalized over their levels or “values” (factors and character vectors)</li>
-<li>the predictions in the output data frame are <strong>marginal means</strong> of the response variable specified in the model</li>
-<li>Question answered: “<em>What is the predicted value of the response variable at meaningful values or levels of the focal terms for an ”average” observation in the data?</em>”</li>
-</ul></li>
-<li><code>"empirical"</code> (or <code>"counterfactual"</code>)
-<ul>
-<li>non-focal predictors are marginalized over the observations in the sample; the response is predicted for each observation and the predicted values are then averaged across all observations, grouped by the focal terms <span class="citation" data-cites="dickerman2020">(<a href="#ref-dickerman2020" role="doc-biblioref">Dickerman and Hernán 2020</a>)</span></li>
-<li>the predictions in the output data frame are <strong>averaged counterfactual predictions</strong> of the response variable specified in the model</li>
-<li>Question answered: “<em>What is the predicted value of the response variable at meaningful values or levels of the focal terms for the ”average” observation in the population [not only in the data]?</em>”</li>
-</ul></li>
-</ul>
-<p>“Marginal effects” (in the terminology used by the <code>ggeffects</code> package) are differences between two adjacent predictions, not the adjusted predictions, marginal means, or averaged counterfactual predictions described above.</p>
-<p>The <a href="https://strengejacke.github.io/ggeffects/reference/test_predictions.html"><code>test_predictions()</code></a> function takes the same two inputs (<code>model</code> and <code>terms</code>) of the <code>predict_response()</code> function (or its output data frame as a single input) and test the differences between two adjacent predictions for statistical significance. These differences are usually called <em>contrasts</em> or (pairwise) <em>comparisons</em> and are also known as “marginal effects”. If the first focal term is numeric, contrasts/comparisons of the <em>slopes</em> of this numeric predictor are computed, possibly grouped by the other focal terms.</p>
-<section id="effect-of-stresscondition-on-celcfos-conditional-on-sociability" class="level3">
-<h3 class="anchored" data-anchor-id="effect-of-stresscondition-on-celcfos-conditional-on-sociability">Effect of StressCondition on CeLcfos conditional on Sociability</h3>
-<p>Please note that model predictions are transformed back to the original scale of the outcome variable <code>CeLcfos</code> (count of active neurons/mm^2) for better interpretability.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_predictions</span>(m5, <span class="at">variables =</span> <span class="fu">c</span>(<span class="st">"StressCondition"</span>, <span class="st">"Sociability"</span>), <span class="at">transform =</span> exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
- StressCondition Sociability Estimate Pr(&gt;|z|)     S 2.5 % 97.5 %
-         Control         0.0    109.4   &lt;0.001  30.1  24.4  490.1
-         Control        55.3     95.3   &lt;0.001 302.5  61.4  147.9
-         Control        69.4     92.0   &lt;0.001 329.1  60.6  139.7
-         Control        77.1     90.2   &lt;0.001 228.5  54.7  148.9
-         Control        93.4     86.6   &lt;0.001  93.3  39.5  189.9
-         Shock           0.0    937.4   &lt;0.001  82.1 258.9 3393.7
-         Shock          55.3    131.7   &lt;0.001 335.0  84.2  206.0
-         Shock          69.4     79.8   &lt;0.001 336.5  53.5  119.1
-         Shock          77.1     60.8   &lt;0.001 244.2  39.1   94.6
-         Shock          93.4     34.0   &lt;0.001  89.4  18.0   64.2
-
-Type:  response </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_predictions</span>(m5, <span class="at">condition =</span> <span class="fu">c</span>(<span class="st">"StressCondition"</span>, <span class="st">"Sociability"</span>), <span class="at">transform =</span> exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">compare_performance</span>(m1, m2, m3, m4, m5, <span class="at">rank =</span> <span class="cn">TRUE</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1226,8 +1167,14 @@ Type:  response </code></pre>
 </div>
 </div>
 </div>
+</section>
+<section id="model-predictions" class="level2">
+<h2 class="anchored" data-anchor-id="model-predictions">Model predictions</h2>
+<p>Statistical models often contain a lot more insights than what you get from simply looking at the model parameters. In many cases, like models with multiple interactions, non-linear effects, non-standard families, complex random effect structures, the parameters can be hard to interpret.</p>
+<p>Except for very simple models, parameters cannot be easily interpreted as quantities of interest. Instead, we can use packages like <code>ggeffects</code>, <code>marginaleffects</code>, <code>emmeans</code>, or <code>modelbased</code> to compute and plot predictions, estimate quantities of interest, and perform tests.</p>
+<p>Please note that model predictions are transformed back to the original scale of the outcome variable <code>CeLcfos</code> (count of active neurons/mm^2) for better interpretability.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_predictions</span>(m5, <span class="at">condition =</span> <span class="fu">c</span>(<span class="st">"Sociability"</span>, <span class="st">"StressCondition"</span>), <span class="at">transform =</span> exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m5, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'Sociability'</span>, <span class="st">'StressCondition'</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1236,20 +1183,404 @@ Type:  response </code></pre>
 </div>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m5, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'StressCondition'</span>, <span class="st">'Sociability'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">StressCondition</th>
+<th style="text-align: right;">Sociability</th>
+<th style="text-align: right;">Mean</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">109.40</td>
+<td style="text-align: right;">83.71</td>
+<td style="text-align: right;">22.82</td>
+<td style="text-align: right;">524.45</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">937.42</td>
+<td style="text-align: right;">615.33</td>
+<td style="text-align: right;">244.33</td>
+<td style="text-align: right;">3596.51</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">10.38</td>
+<td style="text-align: right;">106.59</td>
+<td style="text-align: right;">69.27</td>
+<td style="text-align: right;">28.16</td>
+<td style="text-align: right;">403.50</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">10.38</td>
+<td style="text-align: right;">648.54</td>
+<td style="text-align: right;">366.09</td>
+<td style="text-align: right;">204.06</td>
+<td style="text-align: right;">2061.17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">20.76</td>
+<td style="text-align: right;">103.87</td>
+<td style="text-align: right;">55.75</td>
+<td style="text-align: right;">34.59</td>
+<td style="text-align: right;">311.87</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">20.76</td>
+<td style="text-align: right;">448.69</td>
+<td style="text-align: right;">213.03</td>
+<td style="text-align: right;">169.66</td>
+<td style="text-align: right;">1186.64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">31.14</td>
+<td style="text-align: right;">101.21</td>
+<td style="text-align: right;">43.28</td>
+<td style="text-align: right;">42.15</td>
+<td style="text-align: right;">243.03</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">31.14</td>
+<td style="text-align: right;">310.41</td>
+<td style="text-align: right;">120.70</td>
+<td style="text-align: right;">139.97</td>
+<td style="text-align: right;">688.41</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">41.52</td>
+<td style="text-align: right;">98.61</td>
+<td style="text-align: right;">32.21</td>
+<td style="text-align: right;">50.51</td>
+<td style="text-align: right;">192.53</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">41.52</td>
+<td style="text-align: right;">214.75</td>
+<td style="text-align: right;">66.53</td>
+<td style="text-align: right;">113.85</td>
+<td style="text-align: right;">405.07</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">51.91</td>
+<td style="text-align: right;">96.09</td>
+<td style="text-align: right;">23.43</td>
+<td style="text-align: right;">58.32</td>
+<td style="text-align: right;">158.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">51.91</td>
+<td style="text-align: right;">148.58</td>
+<td style="text-align: right;">36.32</td>
+<td style="text-align: right;">90.05</td>
+<td style="text-align: right;">245.13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">62.29</td>
+<td style="text-align: right;">93.63</td>
+<td style="text-align: right;">19.01</td>
+<td style="text-align: right;">61.78</td>
+<td style="text-align: right;">141.90</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">62.29</td>
+<td style="text-align: right;">102.79</td>
+<td style="text-align: right;">21.20</td>
+<td style="text-align: right;">67.37</td>
+<td style="text-align: right;">156.82</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">72.67</td>
+<td style="text-align: right;">91.23</td>
+<td style="text-align: right;">20.79</td>
+<td style="text-align: right;">57.20</td>
+<td style="text-align: right;">145.52</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">72.67</td>
+<td style="text-align: right;">71.11</td>
+<td style="text-align: right;">14.97</td>
+<td style="text-align: right;">46.21</td>
+<td style="text-align: right;">109.45</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">83.05</td>
+<td style="text-align: right;">88.90</td>
+<td style="text-align: right;">26.92</td>
+<td style="text-align: right;">47.81</td>
+<td style="text-align: right;">165.30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">83.05</td>
+<td style="text-align: right;">49.20</td>
+<td style="text-align: right;">12.55</td>
+<td style="text-align: right;">29.17</td>
+<td style="text-align: right;">82.97</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">93.43</td>
+<td style="text-align: right;">86.62</td>
+<td style="text-align: right;">34.69</td>
+<td style="text-align: right;">38.13</td>
+<td style="text-align: right;">196.76</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">93.43</td>
+<td style="text-align: right;">34.04</td>
+<td style="text-align: right;">11.02</td>
+<td style="text-align: right;">17.53</td>
+<td style="text-align: right;">66.08</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
+<section id="marginal-effects-and-hypothesis-tests" class="level2">
+<h2 class="anchored" data-anchor-id="marginal-effects-and-hypothesis-tests">Marginal effects and hypothesis tests</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_contrasts</span>(m5, <span class="at">contrast =</span> <span class="st">'StressCondition'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 16%">
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 9%">
+<col style="width: 4%">
+<col style="width: 12%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Level1</th>
+<th style="text-align: left;">Level2</th>
+<th style="text-align: right;">Difference</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: right;">t</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">-0.1529</td>
+<td style="text-align: right;">-54.87</td>
+<td style="text-align: right;">54.56</td>
+<td style="text-align: right;">26.71</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">-0.0057</td>
+<td style="text-align: right;">0.9955</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_contrasts</span>(m5, <span class="at">contrast =</span> <span class="st">'StressCondition'</span>, <span class="at">by =</span> <span class="st">'Sociability'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 11%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 3%">
+<col style="width: 10%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Level1</th>
+<th style="text-align: left;">Level2</th>
+<th style="text-align: right;">Sociability</th>
+<th style="text-align: right;">Difference</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: right;">t</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-828.02</td>
+<td style="text-align: right;">-2100.07</td>
+<td style="text-align: right;">444.03</td>
+<td style="text-align: right;">621.00</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">-1.3334</td>
+<td style="text-align: right;">0.1932</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Control</td>
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">10.38</td>
+<td style="text-align: right;">-541.95</td>
+<td style="text-align: right;">-1305.17</td>
+<td style="text-align: right;">221.27</td>
+<td style="text-align: right;">372.59</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">-1.4545</td>
+<td style="text-align: right;">0.1569</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">20.76</td>
+<td style="text-align: right;">-344.82</td>
+<td style="text-align: right;">-795.89</td>
+<td style="text-align: right;">106.25</td>
+<td style="text-align: right;">220.21</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">-1.5659</td>
+<td style="text-align: right;">0.1286</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Control</td>
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">31.14</td>
+<td style="text-align: right;">-209.20</td>
+<td style="text-align: right;">-471.86</td>
+<td style="text-align: right;">53.45</td>
+<td style="text-align: right;">128.22</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">-1.6316</td>
+<td style="text-align: right;">0.1140</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">41.52</td>
+<td style="text-align: right;">-116.14</td>
+<td style="text-align: right;">-267.55</td>
+<td style="text-align: right;">35.27</td>
+<td style="text-align: right;">73.92</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">-1.5712</td>
+<td style="text-align: right;">0.1274</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Control</td>
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">51.91</td>
+<td style="text-align: right;">-52.49</td>
+<td style="text-align: right;">-141.01</td>
+<td style="text-align: right;">36.04</td>
+<td style="text-align: right;">43.22</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">-1.2144</td>
+<td style="text-align: right;">0.2347</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">62.29</td>
+<td style="text-align: right;">-9.16</td>
+<td style="text-align: right;">-67.48</td>
+<td style="text-align: right;">49.16</td>
+<td style="text-align: right;">28.47</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">-0.3217</td>
+<td style="text-align: right;">0.7500</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Control</td>
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">72.67</td>
+<td style="text-align: right;">20.12</td>
+<td style="text-align: right;">-32.37</td>
+<td style="text-align: right;">72.60</td>
+<td style="text-align: right;">25.62</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0.7852</td>
+<td style="text-align: right;">0.4389</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">83.05</td>
+<td style="text-align: right;">39.70</td>
+<td style="text-align: right;">-21.14</td>
+<td style="text-align: right;">100.54</td>
+<td style="text-align: right;">29.70</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">1.3366</td>
+<td style="text-align: right;">0.1921</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Control</td>
+<td style="text-align: left;">Shock</td>
+<td style="text-align: right;">93.43</td>
+<td style="text-align: right;">52.58</td>
+<td style="text-align: right;">-21.99</td>
+<td style="text-align: right;">127.15</td>
+<td style="text-align: right;">36.40</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">1.4445</td>
+<td style="text-align: right;">0.1597</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-dickerman2020" class="csl-entry" role="listitem">
-Dickerman, Barbra A., and Miguel A. Hernán. 2020. <span>“Counterfactual Prediction Is Not Only for Causal Inference.”</span> <em>European Journal of Epidemiology</em> 35 (7): 615–17. <a href="https://doi.org/10.1007/s10654-020-00659-8">https://doi.org/10.1007/s10654-020-00659-8</a>.
-</div>
+<div id="refs" role="list">
+
 </div>
 </section>
 <section id="print-environment" class="level2">
 <h2 class="anchored" data-anchor-id="print-environment">Print environment</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>─ Session info ───────────────────────────────────────────────────────────────
  setting  value
@@ -1261,125 +1592,124 @@ Dickerman, Barbra A., and Miguel A. Hernán. 2020. <span>“Counterfactual Predi
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       America/New_York
- date     2025-03-25
+ date     2025-03-26
  pandoc   3.2 @ /Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
  quarto   1.6.42 @ /usr/local/bin/quarto
 
 ─ Packages ───────────────────────────────────────────────────────────────────
- package         * version   date (UTC) lib source
- backports         1.5.0     2024-05-23 [1] CRAN (R 4.4.0)
- bayestestR        0.15.2    2025-02-07 [1] CRAN (R 4.4.1)
- boot              1.3-31    2024-08-28 [2] CRAN (R 4.4.3)
- cellranger        1.1.0     2016-07-27 [1] CRAN (R 4.4.0)
- checkmate         2.3.2     2024-07-29 [1] CRAN (R 4.4.0)
- cli               3.6.4     2025-02-13 [1] CRAN (R 4.4.1)
- coda              0.19-4.1  2024-01-31 [1] CRAN (R 4.4.0)
- codetools         0.2-20    2024-03-31 [2] CRAN (R 4.4.3)
- colorspace        2.1-1     2024-07-26 [1] CRAN (R 4.4.0)
- coursekata        0.18.1    2024-12-12 [1] CRAN (R 4.4.1)
- curl              6.2.2     2025-03-24 [1] CRAN (R 4.4.1)
- dagitty         * 0.3-4     2025-02-22 [1] Github (jtextor/dagitty@7a65777)
- data.table        1.17.0    2025-02-22 [1] CRAN (R 4.4.1)
- datawizard        1.0.2     2025-03-24 [1] CRAN (R 4.4.1)
- digest            0.6.37    2024-08-19 [1] CRAN (R 4.4.1)
- dplyr           * 1.1.4     2023-11-17 [1] CRAN (R 4.4.0)
- dslabs            0.8.0     2024-03-01 [1] CRAN (R 4.4.0)
- effectsize        1.0.0     2024-12-10 [1] CRAN (R 4.4.1)
- emmeans         * 1.11.0    2025-03-20 [1] CRAN (R 4.4.1)
- estimability      1.5.1     2024-05-12 [1] CRAN (R 4.4.0)
- evaluate          1.0.3     2025-01-10 [1] CRAN (R 4.4.1)
- fansi             1.0.6     2023-12-08 [1] CRAN (R 4.4.0)
- farver            2.1.2     2024-05-13 [1] CRAN (R 4.4.0)
- fastmap           1.2.0     2024-05-15 [1] CRAN (R 4.4.0)
- forcats         * 1.0.0     2023-01-29 [1] CRAN (R 4.4.0)
- future            1.34.0    2024-07-29 [1] CRAN (R 4.4.0)
- future.apply      1.11.3    2024-10-27 [1] CRAN (R 4.4.1)
- generics          0.1.3     2022-07-05 [1] CRAN (R 4.4.0)
- ggExtra           0.10.1    2023-08-21 [1] CRAN (R 4.4.0)
- ggformula       * 0.12.0    2023-11-09 [1] CRAN (R 4.4.0)
- ggplot2         * 3.5.1     2024-04-23 [1] CRAN (R 4.4.0)
- ggrepel           0.9.6     2024-09-07 [1] CRAN (R 4.4.1)
- ggridges        * 0.5.6     2024-01-23 [1] CRAN (R 4.4.0)
- globals           0.16.3    2024-03-08 [1] CRAN (R 4.4.0)
- glue              1.8.0     2024-09-30 [1] CRAN (R 4.4.1)
- gtable            0.3.6     2024-10-25 [1] CRAN (R 4.4.1)
- haven             2.5.4     2023-11-30 [1] CRAN (R 4.4.0)
- hms               1.1.3     2023-03-21 [1] CRAN (R 4.4.0)
- htmltools         0.5.8.1   2024-04-04 [1] CRAN (R 4.4.0)
- htmlwidgets       1.6.4     2023-12-06 [1] CRAN (R 4.4.0)
- httpuv            1.6.15    2024-03-26 [1] CRAN (R 4.4.0)
- insight           1.1.0     2025-03-01 [1] CRAN (R 4.4.1)
- jsonlite          1.9.1     2025-03-03 [1] CRAN (R 4.4.1)
- knitr             1.50      2025-03-16 [1] CRAN (R 4.4.1)
- labeling          0.4.3     2023-08-29 [1] CRAN (R 4.4.0)
- labelled          2.14.0    2025-01-08 [1] CRAN (R 4.4.1)
- later             1.4.1     2024-11-27 [1] CRAN (R 4.4.1)
- lattice         * 0.22-6    2024-03-20 [2] CRAN (R 4.4.3)
- lifecycle         1.0.4     2023-11-07 [1] CRAN (R 4.4.0)
- listenv           0.9.1     2024-01-29 [1] CRAN (R 4.4.0)
- litedown          0.6       2025-02-27 [1] CRAN (R 4.4.1)
- lmtest            0.9-40    2022-03-21 [1] CRAN (R 4.4.0)
- lsr               0.5.2     2021-12-01 [1] CRAN (R 4.4.0)
- lubridate       * 1.9.4     2024-12-08 [1] CRAN (R 4.4.1)
- magrittr          2.0.3     2022-03-30 [1] CRAN (R 4.4.0)
- marginaleffects * 0.25.0.10 2025-03-22 [1] Github (vincentarelbundock/marginaleffects@66a699f)
- MASS              7.3-64    2025-01-04 [2] CRAN (R 4.4.3)
- Matrix          * 1.7-2     2025-01-23 [2] CRAN (R 4.4.3)
- Metrics           0.1.4     2018-07-09 [1] CRAN (R 4.4.0)
- mgcv              1.9-1     2023-12-21 [2] CRAN (R 4.4.3)
- mime              0.13      2025-03-17 [1] CRAN (R 4.4.1)
- miniUI            0.1.1.1   2018-05-18 [1] CRAN (R 4.4.0)
- modelbased      * 0.10.0    2025-03-10 [1] CRAN (R 4.4.1)
- modelsummary    * 2.3.0     2025-02-02 [1] CRAN (R 4.4.1)
- mosaic            1.9.1     2024-02-23 [1] CRAN (R 4.4.0)
- mosaicCore        0.9.4.0   2023-11-05 [1] CRAN (R 4.4.0)
- mosaicData      * 0.20.4    2023-11-05 [1] CRAN (R 4.4.0)
- multcomp          1.4-28    2025-01-29 [1] CRAN (R 4.4.1)
- munsell           0.5.1     2024-04-01 [1] CRAN (R 4.4.0)
- mvtnorm           1.3-3     2025-01-10 [1] CRAN (R 4.4.1)
- nlme              3.1-167   2025-01-27 [2] CRAN (R 4.4.3)
- palmerpenguins    0.1.1     2022-08-15 [1] CRAN (R 4.4.0)
- parallelly        1.43.0    2025-03-24 [1] CRAN (R 4.4.1)
- parameters        0.24.2    2025-03-04 [1] CRAN (R 4.4.1)
- patchwork         1.3.0     2024-09-16 [1] CRAN (R 4.4.1)
- performance     * 0.13.0    2025-01-15 [1] CRAN (R 4.4.1)
- pillar            1.10.1    2025-01-07 [1] CRAN (R 4.4.1)
- pkgconfig         2.0.3     2019-09-22 [1] CRAN (R 4.4.0)
- promises          1.3.2     2024-11-28 [1] CRAN (R 4.4.1)
- purrr           * 1.0.4     2025-02-05 [1] CRAN (R 4.4.1)
- R6                2.6.1     2025-02-15 [1] CRAN (R 4.4.1)
- Rcpp              1.0.14    2025-01-12 [1] CRAN (R 4.4.1)
- readr           * 2.1.5     2024-01-10 [1] CRAN (R 4.4.0)
- readxl          * 1.4.5     2025-03-07 [1] CRAN (R 4.4.1)
- rematch           2.0.0     2023-08-30 [1] CRAN (R 4.4.0)
- rlang             1.1.5     2025-01-17 [1] CRAN (R 4.4.1)
- rmarkdown         2.29      2024-11-04 [1] CRAN (R 4.4.1)
- rstudioapi        0.17.1    2024-10-22 [1] CRAN (R 4.4.1)
- sandwich          3.1-1     2024-09-15 [1] CRAN (R 4.4.1)
- scales          * 1.3.0     2023-11-28 [1] CRAN (R 4.4.0)
- see               0.11.0    2025-03-11 [1] CRAN (R 4.4.1)
- sessioninfo       1.2.3     2025-02-05 [1] CRAN (R 4.4.1)
- shiny             1.10.0    2024-12-14 [1] CRAN (R 4.4.1)
- stringi           1.8.4     2024-05-06 [1] CRAN (R 4.4.0)
- stringr         * 1.5.1     2023-11-14 [1] CRAN (R 4.4.0)
- supernova         3.0.0     2024-02-07 [1] CRAN (R 4.4.0)
- survival          3.8-3     2024-12-17 [2] CRAN (R 4.4.3)
- tables            0.9.31    2024-08-29 [1] CRAN (R 4.4.1)
- TH.data           1.1-3     2025-01-17 [1] CRAN (R 4.4.1)
- tibble          * 3.2.1     2023-03-20 [1] CRAN (R 4.4.0)
- tidyr           * 1.3.1     2024-01-24 [1] CRAN (R 4.4.0)
- tidyselect        1.2.1     2024-03-11 [1] CRAN (R 4.4.0)
- tidyverse       * 2.0.0     2023-02-22 [1] CRAN (R 4.4.0)
- timechange        0.3.0     2024-01-18 [1] CRAN (R 4.4.0)
- tinytable         0.8.0     2025-03-23 [1] CRAN (R 4.4.1)
- tzdb              0.5.0     2025-03-15 [1] CRAN (R 4.4.1)
- V8                6.0.2     2025-03-14 [1] CRAN (R 4.4.1)
- vctrs             0.6.5     2023-12-01 [1] CRAN (R 4.4.0)
- withr             3.0.2     2024-10-28 [1] CRAN (R 4.4.1)
- xfun              0.51      2025-02-19 [1] CRAN (R 4.4.1)
- xtable            1.8-4     2019-04-21 [1] CRAN (R 4.4.0)
- yaml              2.3.10    2024-07-26 [1] CRAN (R 4.4.0)
- zoo               1.8-13    2025-02-22 [1] CRAN (R 4.4.1)
+ package        * version  date (UTC) lib source
+ backports        1.5.0    2024-05-23 [1] CRAN (R 4.4.0)
+ bayestestR       0.15.2   2025-02-07 [1] CRAN (R 4.4.1)
+ boot             1.3-31   2024-08-28 [2] CRAN (R 4.4.3)
+ cellranger       1.1.0    2016-07-27 [1] CRAN (R 4.4.0)
+ checkmate        2.3.2    2024-07-29 [1] CRAN (R 4.4.0)
+ cli              3.6.4    2025-02-13 [1] CRAN (R 4.4.1)
+ coda             0.19-4.1 2024-01-31 [1] CRAN (R 4.4.0)
+ codetools        0.2-20   2024-03-31 [2] CRAN (R 4.4.3)
+ colorspace       2.1-1    2024-07-26 [1] CRAN (R 4.4.0)
+ coursekata       0.18.1   2024-12-12 [1] CRAN (R 4.4.1)
+ curl             6.2.2    2025-03-24 [1] CRAN (R 4.4.1)
+ dagitty        * 0.3-4    2025-03-10 [1] Github (jtextor/dagitty@7a65777)
+ data.table       1.17.0   2025-02-22 [1] CRAN (R 4.4.1)
+ datawizard       1.0.2    2025-03-24 [1] CRAN (R 4.4.1)
+ digest           0.6.37   2024-08-19 [1] CRAN (R 4.4.1)
+ dplyr          * 1.1.4    2023-11-17 [1] CRAN (R 4.4.0)
+ dslabs           0.8.0    2024-03-01 [1] CRAN (R 4.4.0)
+ effectsize       1.0.0    2024-12-10 [1] CRAN (R 4.4.1)
+ emmeans          1.11.0   2025-03-20 [1] CRAN (R 4.4.1)
+ estimability     1.5.1    2024-05-12 [1] CRAN (R 4.4.0)
+ evaluate         1.0.3    2025-01-10 [1] CRAN (R 4.4.1)
+ fansi            1.0.6    2023-12-08 [1] CRAN (R 4.4.0)
+ farver           2.1.2    2024-05-13 [1] CRAN (R 4.4.0)
+ fastmap          1.2.0    2024-05-15 [1] CRAN (R 4.4.0)
+ forcats        * 1.0.0    2023-01-29 [1] CRAN (R 4.4.0)
+ future           1.34.0   2024-07-29 [1] CRAN (R 4.4.0)
+ future.apply     1.11.3   2024-10-27 [1] CRAN (R 4.4.1)
+ generics         0.1.3    2022-07-05 [1] CRAN (R 4.4.0)
+ ggExtra          0.10.1   2023-08-21 [1] CRAN (R 4.4.0)
+ ggformula      * 0.12.0   2023-11-09 [1] CRAN (R 4.4.0)
+ ggplot2        * 3.5.1    2024-04-23 [1] CRAN (R 4.4.0)
+ ggrepel          0.9.6    2024-09-07 [1] CRAN (R 4.4.1)
+ ggridges       * 0.5.6    2024-01-23 [1] CRAN (R 4.4.0)
+ globals          0.16.3   2024-03-08 [1] CRAN (R 4.4.0)
+ glue             1.8.0    2024-09-30 [1] CRAN (R 4.4.1)
+ gtable           0.3.6    2024-10-25 [1] CRAN (R 4.4.1)
+ haven            2.5.4    2023-11-30 [1] CRAN (R 4.4.0)
+ hms              1.1.3    2023-03-21 [1] CRAN (R 4.4.0)
+ htmltools        0.5.8.1  2024-04-04 [1] CRAN (R 4.4.0)
+ htmlwidgets      1.6.4    2023-12-06 [1] CRAN (R 4.4.0)
+ httpuv           1.6.15   2024-03-26 [1] CRAN (R 4.4.0)
+ insight          1.1.0    2025-03-01 [1] CRAN (R 4.4.1)
+ jsonlite         1.9.1    2025-03-03 [1] CRAN (R 4.4.1)
+ knitr            1.50     2025-03-16 [1] CRAN (R 4.4.1)
+ labeling         0.4.3    2023-08-29 [1] CRAN (R 4.4.0)
+ labelled         2.14.0   2025-01-08 [1] CRAN (R 4.4.1)
+ later            1.4.1    2024-11-27 [1] CRAN (R 4.4.1)
+ lattice        * 0.22-6   2024-03-20 [2] CRAN (R 4.4.3)
+ lifecycle        1.0.4    2023-11-07 [1] CRAN (R 4.4.0)
+ listenv          0.9.1    2024-01-29 [1] CRAN (R 4.4.0)
+ litedown         0.6      2025-02-27 [1] CRAN (R 4.4.1)
+ lmtest           0.9-40   2022-03-21 [1] CRAN (R 4.4.0)
+ lsr              0.5.2    2021-12-01 [1] CRAN (R 4.4.0)
+ lubridate      * 1.9.4    2024-12-08 [1] CRAN (R 4.4.1)
+ magrittr         2.0.3    2022-03-30 [1] CRAN (R 4.4.0)
+ MASS             7.3-65   2025-02-28 [2] CRAN (R 4.4.1)
+ Matrix         * 1.7-3    2025-03-11 [2] CRAN (R 4.4.1)
+ Metrics          0.1.4    2018-07-09 [1] CRAN (R 4.4.0)
+ mgcv             1.9-1    2023-12-21 [2] CRAN (R 4.4.3)
+ mime             0.13     2025-03-17 [1] CRAN (R 4.4.1)
+ miniUI           0.1.1.1  2018-05-18 [1] CRAN (R 4.4.0)
+ modelbased     * 0.10.0   2025-03-10 [1] CRAN (R 4.4.1)
+ modelsummary   * 2.3.0    2025-02-02 [1] CRAN (R 4.4.1)
+ mosaic           1.9.1    2024-02-23 [1] CRAN (R 4.4.0)
+ mosaicCore       0.9.4.0  2023-11-05 [1] CRAN (R 4.4.0)
+ mosaicData     * 0.20.4   2023-11-05 [1] CRAN (R 4.4.0)
+ multcomp         1.4-28   2025-01-29 [1] CRAN (R 4.4.1)
+ munsell          0.5.1    2024-04-01 [1] CRAN (R 4.4.0)
+ mvtnorm          1.3-3    2025-01-10 [1] CRAN (R 4.4.1)
+ nlme             3.1-167  2025-01-27 [2] CRAN (R 4.4.3)
+ palmerpenguins   0.1.1    2022-08-15 [1] CRAN (R 4.4.0)
+ parallelly       1.43.0   2025-03-24 [1] CRAN (R 4.4.1)
+ parameters       0.24.2   2025-03-04 [1] CRAN (R 4.4.1)
+ patchwork        1.3.0    2024-09-16 [1] CRAN (R 4.4.1)
+ performance    * 0.13.0   2025-01-15 [1] CRAN (R 4.4.1)
+ pillar           1.10.1   2025-01-07 [1] CRAN (R 4.4.1)
+ pkgconfig        2.0.3    2019-09-22 [1] CRAN (R 4.4.0)
+ promises         1.3.2    2024-11-28 [1] CRAN (R 4.4.1)
+ purrr          * 1.0.4    2025-02-05 [1] CRAN (R 4.4.1)
+ R6               2.6.1    2025-02-15 [1] CRAN (R 4.4.1)
+ Rcpp             1.0.14   2025-01-12 [1] CRAN (R 4.4.1)
+ readr          * 2.1.5    2024-01-10 [1] CRAN (R 4.4.0)
+ readxl         * 1.4.5    2025-03-07 [1] CRAN (R 4.4.1)
+ rematch          2.0.0    2023-08-30 [1] CRAN (R 4.4.0)
+ rlang            1.1.5    2025-01-17 [1] CRAN (R 4.4.1)
+ rmarkdown        2.29     2024-11-04 [1] CRAN (R 4.4.1)
+ rstudioapi       0.17.1   2024-10-22 [1] CRAN (R 4.4.1)
+ sandwich         3.1-1    2024-09-15 [1] CRAN (R 4.4.1)
+ scales         * 1.3.0    2023-11-28 [1] CRAN (R 4.4.0)
+ see              0.11.0   2025-03-11 [1] CRAN (R 4.4.1)
+ sessioninfo      1.2.3    2025-02-05 [1] CRAN (R 4.4.1)
+ shiny            1.10.0   2024-12-14 [1] CRAN (R 4.4.1)
+ stringi          1.8.4    2024-05-06 [1] CRAN (R 4.4.0)
+ stringr        * 1.5.1    2023-11-14 [1] CRAN (R 4.4.0)
+ supernova        3.0.0    2024-02-07 [1] CRAN (R 4.4.0)
+ survival         3.8-3    2024-12-17 [2] CRAN (R 4.4.3)
+ tables           0.9.31   2024-08-29 [1] CRAN (R 4.4.1)
+ TH.data          1.1-3    2025-01-17 [1] CRAN (R 4.4.1)
+ tibble         * 3.2.1    2023-03-20 [1] CRAN (R 4.4.0)
+ tidyr          * 1.3.1    2024-01-24 [1] CRAN (R 4.4.0)
+ tidyselect       1.2.1    2024-03-11 [1] CRAN (R 4.4.0)
+ tidyverse      * 2.0.0    2023-02-22 [1] CRAN (R 4.4.0)
+ timechange       0.3.0    2024-01-18 [1] CRAN (R 4.4.0)
+ tinytable        0.8.0    2025-03-23 [1] CRAN (R 4.4.1)
+ tzdb             0.5.0    2025-03-15 [1] CRAN (R 4.4.1)
+ V8               6.0.2    2025-03-14 [1] CRAN (R 4.4.1)
+ vctrs            0.6.5    2023-12-01 [1] CRAN (R 4.4.0)
+ withr            3.0.2    2024-10-28 [1] CRAN (R 4.4.1)
+ xfun             0.51     2025-02-19 [1] CRAN (R 4.4.1)
+ xtable           1.8-4    2019-04-21 [1] CRAN (R 4.4.0)
+ yaml             2.3.10   2024-07-26 [1] CRAN (R 4.4.0)
+ zoo              1.8-13   2025-02-22 [1] CRAN (R 4.4.1)
 
  [1] /Users/marcoe02/.Rlib
  [2] /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library

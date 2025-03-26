@@ -1,7 +1,7 @@
 ---
-title: "Marginal effects using R"
+title: 'Marginal effects using R'
 date: 2025-03-24
-author: Edoardo \"Dado\" Marcora
+author: Edoardo \'Dado\' Marcora
 execute:
   warning: false
 format:
@@ -13,7 +13,7 @@ bibliography: references.bib
 
 ## Introduction
 
-This notebook shows how to use various packages to 1) import data from an Excel spreadsheet ([`readxl`](https://readxl.tidyverse.org/)), 2) evaluate and compare models ([`performance`](https://easystats.github.io/performance/)`and modelsummary`), and 3) estimate marginal effects ([`ggeffects`](https://strengejacke.github.io/ggeffects/) using the model with interaction (`m5`) of the mouse stress/sociability/neuronal activation experiment illustrated during the lecture of week 11 (2025-03-24, **Chapter 9: Models with interactions**) by [Evan Schaffer](https://www.schafferlab.com/evan-schaffer).
+This notebook shows how to use various packages to 1) import data from an Excel spreadsheet ([`readxl`](https://readxl.tidyverse.org/)), 2) evaluate and compare models ([`performance`](https://easystats.github.io/performance/) and `modelsummary`), and 3) estimate marginal effects ([`modelbased`](https://easystats.github.io/modelbased/) using the model with interaction (`m5`) of the mouse stress/sociability/neuronal activation experiment illustrated during the lecture of week 11 (2025-03-24, **Chapter 9: Models with interactions**) by [Evan Schaffer](https://www.schafferlab.com/evan-schaffer).
 
 ## Setup environment
 
@@ -24,10 +24,9 @@ library(ggformula)
 library(readxl)
 library(performance)
 library(modelsummary)
-library(dagitty)
-library(marginaleffects)
-library(emmeans)
 library(modelbased)
+
+options(modelbased_backend = 'emmeans')
 
 theme_set(theme_bw())
 
@@ -53,28 +52,28 @@ Here we are going to estimate the causal effect of stress (`StressCondition`, tr
 This study is a good example of [how NOT to format supplementary data in an Excel spreadsheet]{.underline}! It shouldn't take more than one call to the `read_xlsx()` function to import data from a properly formatted Excel spreadsheet.
 
 ```{r}
-id1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C4:D11", col_names = c("ID", "Treatment"))
-id2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C16:D23", col_names = c("ID", "Treatment"))
-id3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C26:D33", col_names = c("ID", "Treatment"))
-id4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C37:D44", col_names = c("ID", "Treatment"))
+id1 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!C4:D11', col_names = c('ID', 'Treatment'))
+id2 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!C16:D23', col_names = c('ID', 'Treatment'))
+id3 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!C26:D33', col_names = c('ID', 'Treatment'))
+id4 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!C37:D44', col_names = c('ID', 'Treatment'))
 
 id <- rbind(id1, id2, id3, id4)
 ```
 
 ```{r}
-cel1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H4:H11", col_names = "CeLcfos")
-cel2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H16:H23", col_names = "CeLcfos")
-cel3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H26:H33", col_names = "CeLcfos")
-cel4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H37:H44", col_names = "CeLcfos")
+cel1 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!H4:H11', col_names = 'CeLcfos')
+cel2 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!H16:H23', col_names = 'CeLcfos')
+cel3 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!H26:H33', col_names = 'CeLcfos')
+cel4 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!H37:H44', col_names = 'CeLcfos')
 
 cel <- rbind(cel1, cel2, cel3, cel4)
 ```
 
 ```{r}
-soc1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N4:N11", col_names = "Sociability")
-soc2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N16:N23", col_names = "Sociability")
-soc3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N26:N33", col_names = "Sociability")
-soc4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N37:N44", col_names = "Sociability")
+soc1 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!N4:N11', col_names = 'Sociability')
+soc2 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!N16:N23', col_names = 'Sociability')
+soc3 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!N26:N33', col_names = 'Sociability')
+soc4 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!N37:N44', col_names = 'Sociability')
 
 soc <- rbind(soc1, soc2, soc3, soc4)
 ```
@@ -85,13 +84,13 @@ d <- cbind(id,soc,cel) %>%
   rowwise() %>% 
   mutate(
     StressCondition = case_when(
-      grepl("FC-", Treatment) ~ "Control",
-      grepl("FC+", Treatment) ~ "Shock",
-      grepl("Control", Treatment) ~ "Control",
-      grepl("Stress", Treatment) ~ "Shock"),
+      grepl('FC-', Treatment) ~ 'Control',
+      grepl('FC+', Treatment) ~ 'Shock',
+      grepl('Control', Treatment) ~ 'Control',
+      grepl('Stress', Treatment) ~ 'Shock'),
     Treatment = case_when(
-      grepl("Veh", Treatment) ~ "Vehicle",
-      grepl("Alp", Treatment) ~ "Alprazolam")) %>%
+      grepl('Veh', Treatment) ~ 'Vehicle',
+      grepl('Alp', Treatment) ~ 'Alprazolam')) %>%
   ungroup() %>% 
   mutate(logCeLcfos = log(CeLcfos),
          Sex = factor(Sex),
@@ -102,6 +101,7 @@ d <- cbind(id,soc,cel) %>%
 head(d)
 ```
 
+
 ## Causal model
 
 The causal estimand is the effect of stress (`StressCondition`, treatment variable) on neuronal activation (`CeLcfos`, outcome variable). We are going to ignore the `Treatment` and `Sex` variables in this example used to illustrate a simple linear model with two interacting predictors (`StressCondition` and `Sociability`). However, in real-life, you should include them in the causal model, unless of course your assumption is that they are in no way causally related to the exposure and/or the outcome (which is the causal assumption for omitted variables).
@@ -109,6 +109,8 @@ The causal estimand is the effect of stress (`StressCondition`, treatment variab
 Based on the experimental design and my domain knowledge, my DAG is:
 
 ```{r}
+library(dagitty)
+
 dag <- dagitty('dag {
   CeLcfos [outcome]
   StressCondition [exposure]
@@ -129,7 +131,15 @@ According to this causal graph, in order to estimate the **direct** causal effec
 
 ## Exploratory data analysis
 
+```{r}
+gf_point(CeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>% gf_smooth(method = 'gam', formula = y ~ s(x, bs = 'cs'), se = TRUE)
+```
+
 ### CeLcfos \~ NULL
+
+```{r}
+gf_point(CeLcfos ~ 1, data = d) %>% coursekata::gf_model(CeLcfos ~ 1, data = d)
+```
 
 It is often but erroneously believed that linear regression assumes that the outcome variable is normally distributed. This misconception arises from not knowing/remembering the regression likelihood equation(s) of the general linear model, e.g.:
 
@@ -159,7 +169,7 @@ nsamples = 1000
 y_xA = rnorm(nsamples, mean = 2, sd = 4)
 y_xB = rnorm(nsamples, mean = 20, sd = 4)
 
-y_x <- tibble(y = c(y_xA, y_xB), x = factor(c(rep("A", nsamples), rep("B", nsamples))))
+y_x <- tibble(y = c(y_xA, y_xB), x = factor(c(rep('A', nsamples), rep('B', nsamples))))
 ```
 
 ```{r}
@@ -187,10 +197,10 @@ check_normality(m)
 ```{r}
 gf_jitter(y ~ x, color = ~ x, alpha = 0.1, data = y_x) %>%
   coursekata::gf_model(m) %>%
-  ggExtra::ggMarginal(y, type="density")
+  ggExtra::ggMarginal(y, type='density')
 ```
 
-The "problem" with the `CeLcfos` outcome variable is not that it is not normally distributed, but that it is a count variable (or more precisely in this case a density, the number of "active neurons"/cfos-expressing cells per mm^2^ of the central lateral amygdala) and thus it cannot be negative.
+The 'problem' with the `CeLcfos` outcome variable is not that it is not normally distributed, but that it is a count variable (or more precisely in this case a density, the number of 'active neurons'/cfos-expressing cells per mm^2^ of the central lateral amygdala) and thus it cannot be negative.
 
 A normally distributed variable is defined over the entire real line $(-\infty, \infty)$ and, therefore, it is not appropriate for count data, especially if they are concentrated close to the zero boundary.
 
@@ -246,14 +256,14 @@ gf_point(logCeLcfos ~ Sociability, data = d) %>% coursekata::gf_model(logCeLcfos
 
 ```{r}
 gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
-  coursekata::gf_model(logCeLcfos ~ Sociability + StressCondition, data = d) %>% gf_refine(theme(legend.position = "none"))
+  coursekata::gf_model(logCeLcfos ~ Sociability + StressCondition, data = d) %>% gf_refine(theme(legend.position = 'none'))
 ```
 
 ### log(CeLcfos) \~ StressCondition \* Sociability
 
 ```{r}
 gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
-  coursekata::gf_model(logCeLcfos ~ Sociability * StressCondition, data = d) %>% gf_refine(theme(legend.position = "none"))
+  coursekata::gf_model(logCeLcfos ~ Sociability * StressCondition, data = d) %>% gf_refine(theme(legend.position = 'none'))
 ```
 
 ## Build and fit models
@@ -348,76 +358,38 @@ check_autocorrelation(m5)
 Here we use the `modelsummary()` and the `compare_performance()` functions from the [`modelsummary`](https://modelsummary.com/) and [`performance`](https://easystats.github.io/performance/) packages, respectively, to evaluate and compare models.
 
 ```{r}
-modelsummary(list(m1, m2, m3, m4, m5), stars = TRUE, statistic = "conf.int")
+modelsummary(list(m1, m2, m3, m4, m5), stars = TRUE, statistic = 'conf.int')
 ```
 
 ```{r}
 plot(compare_performance(m1, m2, m3, m4, m5, rank = TRUE, verbose = FALSE))
 ```
 
-## Model predictions, marginal effects and hypothesis tests
+## Model predictions
 
 Statistical models often contain a lot more insights than what you get from simply looking at the model parameters. In many cases, like models with multiple interactions, non-linear effects, non-standard families, complex random effect structures, the parameters can be hard to interpret.
 
-
 Except for very simple models, parameters cannot be easily interpreted as quantities of interest. Instead, we can use packages like `ggeffects`, `marginaleffects`, `emmeans`, or `modelbased` to compute and plot predictions, estimate quantities of interest, and perform tests.
-
-The `predict_response()` and `test_predictions()` functions from the [`ggeffects`](https://strengejacke.github.io/ggeffects/) package are used here to compute model predictions (above) and marginal effects (below) from a fitted regression model. `ggeffects` is based on the more powerful but also more complex [`marginaleffects`](https://marginaleffects.com/) package. Another package often used to compute marginal effects from a fitted regression model is [`emmeans`](https://cran.r-project.org/package=emmeans).
-
-A good introduction to "marginal effects" is available [here](https://www.andrewheiss.com/blog/2022/05/20/marginalia). Please refer to the documentation of the "marginal effects" package of your choice to understand exactly what the author(s) defines as marginal effects, since there is very little consensus on terminology, unfortunately.
-
-The [`predict_response()`](https://strengejacke.github.io/ggeffects/reference/predict_response.html) function takes two inputs:
-
-1.  `model`, the output of a regression model fitting function such as `lm`, `glm`, [`rstanarm`](https://mc-stan.org/rstanarm/)`::stan_glm()`, [`brms`](https://paul-buerkner.github.io/brms/)`:brm()`, etc.
-2.  `terms`, a character vector of names of one or more predictor variables (a.k.a. "*focal terms*")
-
-The output is a data frame of predictions of the response variable, which is nicely printed by default.
-
-The output data frame can be passed to the `plot()` function to easily plot the predictions, or to the `test_predictions()` function to easily estimate and test hypotheses about marginal effects (i.e., differences between two adjacent predictions, a.k.a. contrasts/comparisons).
-
-By default, these predictions are on the *response* scale, which is the most intuitive scale to interpret them.
-
-The `predict_response()` function requires at least one, but not more than four focal terms. Predicted values of the response variable, along the values or levels of the first focal term are calculated, possibly grouped by the other focal terms, while all other predictor variables (a.k.a. "*non-focal terms*") are marginalized over.
-
-The `margin` argument indicates how to marginalize over the non-focal terms:
-
--   `"mean_reference"` \[the default, which can be changed using the `options()` function, e.g., `options(ggeffects_margin = "empirical")`\]
-    -   non-focal terms are set to their mean (numeric variables), reference level (factors), or "most common value" (character vectors)
-    -   the predictions in the output data frame are **adjusted predictions** of the response variable specified in the model
-    -   Question answered: "*What is the predicted value of the response variable at meaningful values or levels of the focal terms for a "typical" observation in the data?*"
--   `"mean_mode"`
-    -   non-focal terms are set to their mean (numeric variables) or "most common value" (factors and character vectors)
-    -   the predictions in the output data frame are **adjusted predictions** of the response variable specified in the model
-    -   Question answered: "*What is the predicted value of the response variable at meaningful values or levels of the focal terms for a "typical" observation in the data?*"
--   `"marginalmeans"`
-    -   non-focal predictors are set to their mean (numeric variables) or marginalized over their levels or "values" (factors and character vectors)
-    -   the predictions in the output data frame are **marginal means** of the response variable specified in the model
-    -   Question answered: "*What is the predicted value of the response variable at meaningful values or levels of the focal terms for an "average" observation in the data?*"
--   `"empirical"` (or `"counterfactual"`)
-    -   non-focal predictors are marginalized over the observations in the sample; the response is predicted for each observation and the predicted values are then averaged across all observations, grouped by the focal terms [@dickerman2020]
-    -   the predictions in the output data frame are **averaged counterfactual predictions** of the response variable specified in the model
-    -   Question answered: "*What is the predicted value of the response variable at meaningful values or levels of the focal terms for the "average" observation in the population \[not only in the data\]?*"
-
-"Marginal effects" (in the terminology used by the `ggeffects` package) are differences between two adjacent predictions, not the adjusted predictions, marginal means, or averaged counterfactual predictions described above.
-
-The [`test_predictions()`](https://strengejacke.github.io/ggeffects/reference/test_predictions.html) function takes the same two inputs (`model` and `terms`) of the `predict_response()` function (or its output data frame as a single input) and test the differences between two adjacent predictions for statistical significance. These differences are usually called *contrasts* or (pairwise) *comparisons* and are also known as "marginal effects". If the first focal term is numeric, contrasts/comparisons of the *slopes* of this numeric predictor are computed, possibly grouped by the other focal terms.
-
-### Effect of StressCondition on CeLcfos conditional on Sociability
 
 Please note that model predictions are transformed back to the original scale of the outcome variable `CeLcfos` (count of active neurons/mm\^2) for better interpretability.
 
 ```{r}
-avg_predictions(m5, variables = c("StressCondition", "Sociability"), transform = exp)
+estimate_means(m5, by = c('Sociability', 'StressCondition')) %>% plot()
 ```
 
 ```{r}
-plot_predictions(m5, condition = c("StressCondition", "Sociability"), transform = exp)
+estimate_means(m5, by = c('StressCondition', 'Sociability'))
+```
+
+## Marginal effects and hypothesis tests
+
+```{r}
+estimate_contrasts(m5, contrast = 'StressCondition')
 ```
 
 ```{r}
-plot_predictions(m5, condition = c("Sociability", "StressCondition"), transform = exp)
+estimate_contrasts(m5, contrast = 'StressCondition', by = 'Sociability')
 ```
-
 
 
 ## References
@@ -430,10 +402,3 @@ plot_predictions(m5, condition = c("Sociability", "StressCondition"), transform 
 ```{r}
 sessioninfo::session_info()
 ```
-
-
-
-
-
-
-

@@ -11,7 +11,6 @@ library(tidyverse)
 library(emmeans)
 library(marginaleffects)
 library(modelbased)
-library(ggeffects)
 ```
 
 ```{r}
@@ -25,6 +24,7 @@ m <- lm(mpg ~ wt * am, data = mc)
 
 summary(m)
 ```
+
 ## 1. means/counterfactuals for each level of am at mean wt
 
 ```{r}
@@ -33,10 +33,6 @@ emmeans(m, specs = 'am')
 
 ```{r}
 estimate_means(m, by = 'am')
-```
-
-```{r}
-predict_response(m, terms = 'am')
 ```
 
 ```{r}
@@ -54,10 +50,6 @@ estimate_means(m, by = c('am', 'wt = [2.5, 3, 3.5]'))
 ```
 
 ```{r}
-predict_response(m, terms = c('am', 'wt [2.5, 3, 3.5]'))
-```
-
-```{r}
 avg_predictions(m, variables = list(am = unique, wt = c(2.5, 3, 3.5)))
 ```
 
@@ -72,11 +64,6 @@ estimate_means(m, by = c('wt = [2.5, 3, 3.5]'))
 ```
 
 ```{r}
-predict_response(m, c('wt [2.5, 3, 3.5]'))
-```
-
-```{r}
-## same thing, but the averaging is more explicit, using the `by` argument
 avg_predictions(m, variables = list(wt = c(2.5, 3, 3.5)))
 ```
 
@@ -91,13 +78,8 @@ estimate_means(m, by = c('wt', 'am')) %>% plot()
 ```
 
 ```{r}
-predict_response(m, terms = c('wt', 'am')) %>% plot()
-```
-
-```{r}
 plot_predictions(m, condition = c('wt', 'am'))
 ```
-
 
 ## 5. compare levels of am at specific values of wt
 
@@ -110,13 +92,8 @@ estimate_contrasts(m, contrast = 'am', by = c('wt = [2.5, 3, 3.5]'))
 ```
 
 ```{r}
-##test_predictions(m, contrast = 'am', by = c('wt = [2.5, 3, 3.5]'))
-```
-
-```{r}
 comparisons(m, variables = "am", newdata = datagrid(wt = c(2.5, 3, 3.5)))
 ```
-
 
 ## 6. plot of pairswise comparisons
 
@@ -124,13 +101,8 @@ comparisons(m, variables = "am", newdata = datagrid(wt = c(2.5, 3, 3.5)))
 plot(pairs(emmeans(m, specs = 'am', by = 'wt', at = list(wt = c(2.5, 3, 3.5)))))
 ```
 
-
 ```{r}
-##estimate_contrasts(m, contrast = 'am', by = c('wt = [2.5, 3, 3.5]')) %>% plot()
-```
-
-```{r}
-##test_predictions(m, contrast = 'am', by = c('wt = [2.5, 3, 3.5]')) %>% plot()
+estimate_contrasts(m, contrast = 'am', by = c('wt = [2.5, 3, 3.5]'))
 ```
 
 ```{r}
@@ -141,6 +113,10 @@ plot_comparisons(m, variables = 'am', condition = list(wt = c(2.5, 3, 3.5)))
 
 ```{r}
 emtrends(m, specs = 'am', var = 'wt')
+```
+
+```{r}
+estimate_slopes(m, trend = 'wt', by = 'am')
 ```
 
 ```{r}
