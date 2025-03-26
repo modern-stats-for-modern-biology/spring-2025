@@ -113,7 +113,7 @@ window.Quarto = {
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#setup-environment" id="toc-setup-environment" class="nav-link" data-scroll-target="#setup-environment">Setup environment</a></li>
   <li><a href="#background-information" id="toc-background-information" class="nav-link" data-scroll-target="#background-information">Background information</a></li>
-  <li><a href="#estimands" id="toc-estimands" class="nav-link" data-scroll-target="#estimands">Estimands</a></li>
+  <li><a href="#estimand" id="toc-estimand" class="nav-link" data-scroll-target="#estimand">Estimand</a></li>
   <li><a href="#read-and-prep-data" id="toc-read-and-prep-data" class="nav-link" data-scroll-target="#read-and-prep-data">Read and prep data</a></li>
   <li><a href="#causal-model" id="toc-causal-model" class="nav-link" data-scroll-target="#causal-model">Causal model</a></li>
   <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory data analysis</a>
@@ -135,7 +135,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#model-evaluation-and-comparison" id="toc-model-evaluation-and-comparison" class="nav-link" data-scroll-target="#model-evaluation-and-comparison">Model evaluation and comparison</a></li>
   <li><a href="#model-predictions" id="toc-model-predictions" class="nav-link" data-scroll-target="#model-predictions">Model predictions</a></li>
-  <li><a href="#marginal-effects-and-hypothesis-tests" id="toc-marginal-effects-and-hypothesis-tests" class="nav-link" data-scroll-target="#marginal-effects-and-hypothesis-tests">Marginal effects and hypothesis tests</a></li>
+  <li><a href="#estimatemarginal-effects-and-hypothesis-tests" id="toc-estimatemarginal-effects-and-hypothesis-tests" class="nav-link" data-scroll-target="#estimatemarginal-effects-and-hypothesis-tests">Estimate/Marginal effects and hypothesis tests</a></li>
   <li><a href="#print-environment" id="toc-print-environment" class="nav-link" data-scroll-target="#print-environment">Print environment</a></li>
   </ul>
 </nav>
@@ -198,8 +198,8 @@ window.Quarto = {
 <p>Data available at <a href="https://doi.org/10.7910/DVN/1RAQON" class="uri">https://doi.org/10.7910/DVN/1RAQON</a></p>
 <p>Study available at <a href="https://doi.org/10.1371/journal.pone.0281388" class="uri">https://doi.org/10.1371/journal.pone.0281388</a></p>
 </section>
-<section id="estimands" class="level2">
-<h2 class="anchored" data-anchor-id="estimands">Estimands</h2>
+<section id="estimand" class="level2">
+<h2 class="anchored" data-anchor-id="estimand">Estimand</h2>
 <p>The aim of the original study was to explore the effect of stress on the sociability of male and female mice in a standard social approach test. Neuronal activation during social approach was assessed using immunohistochemistry against the immediate early gene product cFos.</p>
 <p>Here I am going to estimate the direct causal effect of stress (<code>StressCondition</code>, treatment variable) on neuronal activation (<code>CeLcfos</code>, outcome variable).</p>
 </section>
@@ -1368,8 +1368,8 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 </div>
 </div>
 </section>
-<section id="marginal-effects-and-hypothesis-tests" class="level2">
-<h2 class="anchored" data-anchor-id="marginal-effects-and-hypothesis-tests">Marginal effects and hypothesis tests</h2>
+<section id="estimatemarginal-effects-and-hypothesis-tests" class="level2">
+<h2 class="anchored" data-anchor-id="estimatemarginal-effects-and-hypothesis-tests">Estimate/Marginal effects and hypothesis tests</h2>
 <p>Please note that exponentiating the difference of two logged values is equivalent to dividing the original values, hence the difference here is the ratio/fold-change of shock over control.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_contrasts</span>(m5, <span class="at">contrast =</span> <span class="st">'StressCondition'</span>, <span class="at">transform =</span> exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
