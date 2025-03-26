@@ -26,8 +26,6 @@ library(performance)
 library(modelsummary)
 library(modelbased)
 
-options(modelbased_backend = 'emmeans')
-
 theme_set(theme_bw())
 
 set.seed(666)
@@ -371,26 +369,28 @@ Statistical models often contain a lot more insights than what you get from simp
 
 Except for very simple models, parameters cannot be easily interpreted as quantities of interest. Instead, we can use packages like `ggeffects`, `marginaleffects`, `emmeans`, or `modelbased` to compute and plot predictions, estimate quantities of interest, and perform tests.
 
-Please note that model predictions are transformed back to the original scale of the outcome variable `CeLcfos` (count of active neurons/mm\^2) for better interpretability.
+Please note that model predictions are transformed back by exponentiation to the original scale of the outcome variable `CeLcfos` (count of active neurons/mm\^2) for better interpretability.
 
 ```{r}
-estimate_means(m5, by = c('Sociability', 'StressCondition')) %>% plot()
+estimate_means(m5, by = c('Sociability', 'StressCondition'), transform = exp) %>% plot()
 ```
 
 ```{r}
-estimate_means(m5, by = c('StressCondition', 'Sociability'))
+estimate_means(m5, by = c('Sociability', 'StressCondition'), transform = exp)
 ```
+
 
 ## Marginal effects and hypothesis tests
 
+Please note that exponentiating the difference of two logged values is equivalent to dividing the original values, hence the difference here is the ratio/fold-change of shock over control.
+
 ```{r}
-estimate_contrasts(m5, contrast = 'StressCondition')
+estimate_contrasts(m5, contrast = 'StressCondition', transform = exp)
 ```
 
 ```{r}
-estimate_contrasts(m5, contrast = 'StressCondition', by = 'Sociability')
+estimate_contrasts(m5, contrast = 'StressCondition', by = 'Sociability', transform = exp)
 ```
-
 
 ## References
 

@@ -207,11 +207,9 @@ window.Quarto = {
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelbased)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">modelbased_backend =</span> <span class="st">'emmeans'</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">666</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">666</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="background-information" class="level2">
@@ -1172,9 +1170,9 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 <h2 class="anchored" data-anchor-id="model-predictions">Model predictions</h2>
 <p>Statistical models often contain a lot more insights than what you get from simply looking at the model parameters. In many cases, like models with multiple interactions, non-linear effects, non-standard families, complex random effect structures, the parameters can be hard to interpret.</p>
 <p>Except for very simple models, parameters cannot be easily interpreted as quantities of interest. Instead, we can use packages like <code>ggeffects</code>, <code>marginaleffects</code>, <code>emmeans</code>, or <code>modelbased</code> to compute and plot predictions, estimate quantities of interest, and perform tests.</p>
-<p>Please note that model predictions are transformed back to the original scale of the outcome variable <code>CeLcfos</code> (count of active neurons/mm^2) for better interpretability.</p>
+<p>Please note that model predictions are transformed back by exponentiation to the original scale of the outcome variable <code>CeLcfos</code> (count of active neurons/mm^2) for better interpretability.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m5, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'Sociability'</span>, <span class="st">'StressCondition'</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m5, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'Sociability'</span>, <span class="st">'StressCondition'</span>), <span class="at">transform =</span> exp) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1184,180 +1182,180 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m5, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'StressCondition'</span>, <span class="st">'Sociability'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m5, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'Sociability'</span>, <span class="st">'StressCondition'</span>), <span class="at">transform =</span> exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th style="text-align: left;">StressCondition</th>
 <th style="text-align: right;">Sociability</th>
+<th style="text-align: left;">StressCondition</th>
 <th style="text-align: right;">Mean</th>
-<th style="text-align: right;">SE</th>
 <th style="text-align: right;">CI_low</th>
 <th style="text-align: right;">CI_high</th>
+<th style="text-align: right;">df</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: right;">0.00</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">109.40</td>
-<td style="text-align: right;">83.71</td>
 <td style="text-align: right;">22.82</td>
 <td style="text-align: right;">524.45</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">0.00</td>
+<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">937.42</td>
-<td style="text-align: right;">615.33</td>
 <td style="text-align: right;">244.33</td>
 <td style="text-align: right;">3596.51</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: right;">10.38</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">106.59</td>
-<td style="text-align: right;">69.27</td>
 <td style="text-align: right;">28.16</td>
 <td style="text-align: right;">403.50</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">10.38</td>
+<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">648.54</td>
-<td style="text-align: right;">366.09</td>
 <td style="text-align: right;">204.06</td>
 <td style="text-align: right;">2061.17</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: right;">20.76</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">103.87</td>
-<td style="text-align: right;">55.75</td>
 <td style="text-align: right;">34.59</td>
 <td style="text-align: right;">311.87</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">20.76</td>
+<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">448.69</td>
-<td style="text-align: right;">213.03</td>
 <td style="text-align: right;">169.66</td>
 <td style="text-align: right;">1186.64</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: right;">31.14</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">101.21</td>
-<td style="text-align: right;">43.28</td>
 <td style="text-align: right;">42.15</td>
 <td style="text-align: right;">243.03</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">31.14</td>
+<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">310.41</td>
-<td style="text-align: right;">120.70</td>
 <td style="text-align: right;">139.97</td>
 <td style="text-align: right;">688.41</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: right;">41.52</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">98.61</td>
-<td style="text-align: right;">32.21</td>
 <td style="text-align: right;">50.51</td>
 <td style="text-align: right;">192.53</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">41.52</td>
+<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">214.75</td>
-<td style="text-align: right;">66.53</td>
 <td style="text-align: right;">113.85</td>
 <td style="text-align: right;">405.07</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: right;">51.91</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">96.09</td>
-<td style="text-align: right;">23.43</td>
 <td style="text-align: right;">58.32</td>
 <td style="text-align: right;">158.33</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">51.91</td>
+<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">148.58</td>
-<td style="text-align: right;">36.32</td>
 <td style="text-align: right;">90.05</td>
 <td style="text-align: right;">245.13</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: right;">62.29</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">93.63</td>
-<td style="text-align: right;">19.01</td>
 <td style="text-align: right;">61.78</td>
 <td style="text-align: right;">141.90</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">62.29</td>
+<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">102.79</td>
-<td style="text-align: right;">21.20</td>
 <td style="text-align: right;">67.37</td>
 <td style="text-align: right;">156.82</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: right;">72.67</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">91.23</td>
-<td style="text-align: right;">20.79</td>
 <td style="text-align: right;">57.20</td>
 <td style="text-align: right;">145.52</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">72.67</td>
+<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">71.11</td>
-<td style="text-align: right;">14.97</td>
 <td style="text-align: right;">46.21</td>
 <td style="text-align: right;">109.45</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: right;">83.05</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">88.90</td>
-<td style="text-align: right;">26.92</td>
 <td style="text-align: right;">47.81</td>
 <td style="text-align: right;">165.30</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">83.05</td>
+<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">49.20</td>
-<td style="text-align: right;">12.55</td>
 <td style="text-align: right;">29.17</td>
 <td style="text-align: right;">82.97</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: right;">93.43</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">86.62</td>
-<td style="text-align: right;">34.69</td>
 <td style="text-align: right;">38.13</td>
 <td style="text-align: right;">196.76</td>
+<td style="text-align: right;">28</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">93.43</td>
+<td style="text-align: left;">Shock</td>
 <td style="text-align: right;">34.04</td>
-<td style="text-align: right;">11.02</td>
 <td style="text-align: right;">17.53</td>
 <td style="text-align: right;">66.08</td>
+<td style="text-align: right;">28</td>
 </tr>
 </tbody>
 </table>
@@ -1367,22 +1365,12 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 </section>
 <section id="marginal-effects-and-hypothesis-tests" class="level2">
 <h2 class="anchored" data-anchor-id="marginal-effects-and-hypothesis-tests">Marginal effects and hypothesis tests</h2>
+<p>Please note that exponentiating the difference of two logged values is equivalent to dividing the original values, hence the difference here is the ratio/fold-change of shock over control.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_contrasts</span>(m5, <span class="at">contrast =</span> <span class="st">'StressCondition'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_contrasts</span>(m5, <span class="at">contrast =</span> <span class="st">'StressCondition'</span>, <span class="at">transform =</span> exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 12%">
-<col style="width: 10%">
-<col style="width: 16%">
-<col style="width: 10%">
-<col style="width: 12%">
-<col style="width: 9%">
-<col style="width: 4%">
-<col style="width: 12%">
-<col style="width: 10%">
-</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Level1</th>
@@ -1390,22 +1378,18 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 <th style="text-align: right;">Difference</th>
 <th style="text-align: right;">CI_low</th>
 <th style="text-align: right;">CI_high</th>
-<th style="text-align: right;">SE</th>
 <th style="text-align: right;">df</th>
-<th style="text-align: right;">t</th>
 <th style="text-align: right;">p</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: left;">Shock</td>
-<td style="text-align: right;">-0.1529</td>
-<td style="text-align: right;">-54.87</td>
-<td style="text-align: right;">54.56</td>
-<td style="text-align: right;">26.71</td>
+<td style="text-align: left;">Control</td>
+<td style="text-align: right;">1.002</td>
+<td style="text-align: right;">0.5564</td>
+<td style="text-align: right;">1.803</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">-0.0057</td>
 <td style="text-align: right;">0.9955</td>
 </tr>
 </tbody>
@@ -1414,22 +1398,10 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_contrasts</span>(m5, <span class="at">contrast =</span> <span class="st">'StressCondition'</span>, <span class="at">by =</span> <span class="st">'Sociability'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_contrasts</span>(m5, <span class="at">contrast =</span> <span class="st">'StressCondition'</span>, <span class="at">by =</span> <span class="st">'Sociability'</span>, <span class="at">transform =</span> exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 10%">
-<col style="width: 8%">
-<col style="width: 15%">
-<col style="width: 13%">
-<col style="width: 11%">
-<col style="width: 10%">
-<col style="width: 8%">
-<col style="width: 3%">
-<col style="width: 10%">
-<col style="width: 8%">
-</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Level1</th>
@@ -1438,132 +1410,110 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 <th style="text-align: right;">Difference</th>
 <th style="text-align: right;">CI_low</th>
 <th style="text-align: right;">CI_high</th>
-<th style="text-align: right;">SE</th>
 <th style="text-align: right;">df</th>
-<th style="text-align: right;">t</th>
 <th style="text-align: right;">p</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: left;">Shock</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">0.00</td>
-<td style="text-align: right;">-828.02</td>
-<td style="text-align: right;">-2100.07</td>
-<td style="text-align: right;">444.03</td>
-<td style="text-align: right;">621.00</td>
+<td style="text-align: right;">8.5691</td>
+<td style="text-align: right;">1.0866</td>
+<td style="text-align: right;">67.577</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">-1.3334</td>
-<td style="text-align: right;">0.1932</td>
+<td style="text-align: right;">0.0420</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Control</td>
 <td style="text-align: left;">Shock</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">10.38</td>
-<td style="text-align: right;">-541.95</td>
-<td style="text-align: right;">-1305.17</td>
-<td style="text-align: right;">221.27</td>
-<td style="text-align: right;">372.59</td>
+<td style="text-align: right;">6.0842</td>
+<td style="text-align: right;">1.0434</td>
+<td style="text-align: right;">35.479</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">-1.4545</td>
-<td style="text-align: right;">0.1569</td>
+<td style="text-align: right;">0.0451</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: left;">Shock</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">20.76</td>
-<td style="text-align: right;">-344.82</td>
-<td style="text-align: right;">-795.89</td>
-<td style="text-align: right;">106.25</td>
-<td style="text-align: right;">220.21</td>
+<td style="text-align: right;">4.3199</td>
+<td style="text-align: right;">0.9953</td>
+<td style="text-align: right;">18.749</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">-1.5659</td>
-<td style="text-align: right;">0.1286</td>
+<td style="text-align: right;">0.0507</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Control</td>
 <td style="text-align: left;">Shock</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">31.14</td>
-<td style="text-align: right;">-209.20</td>
-<td style="text-align: right;">-471.86</td>
-<td style="text-align: right;">53.45</td>
-<td style="text-align: right;">128.22</td>
+<td style="text-align: right;">3.0671</td>
+<td style="text-align: right;">0.9387</td>
+<td style="text-align: right;">10.021</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">-1.6316</td>
-<td style="text-align: right;">0.1140</td>
+<td style="text-align: right;">0.0626</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: left;">Shock</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">41.52</td>
-<td style="text-align: right;">-116.14</td>
-<td style="text-align: right;">-267.55</td>
-<td style="text-align: right;">35.27</td>
-<td style="text-align: right;">73.92</td>
+<td style="text-align: right;">2.1777</td>
+<td style="text-align: right;">0.8660</td>
+<td style="text-align: right;">5.476</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">-1.5712</td>
-<td style="text-align: right;">0.1274</td>
+<td style="text-align: right;">0.0948</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Control</td>
 <td style="text-align: left;">Shock</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">51.91</td>
-<td style="text-align: right;">-52.49</td>
-<td style="text-align: right;">-141.01</td>
-<td style="text-align: right;">36.04</td>
-<td style="text-align: right;">43.22</td>
+<td style="text-align: right;">1.5462</td>
+<td style="text-align: right;">0.7623</td>
+<td style="text-align: right;">3.136</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">-1.2144</td>
-<td style="text-align: right;">0.2347</td>
+<td style="text-align: right;">0.2172</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: left;">Shock</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">62.29</td>
-<td style="text-align: right;">-9.16</td>
-<td style="text-align: right;">-67.48</td>
-<td style="text-align: right;">49.16</td>
-<td style="text-align: right;">28.47</td>
+<td style="text-align: right;">1.0978</td>
+<td style="text-align: right;">0.6069</td>
+<td style="text-align: right;">1.986</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">-0.3217</td>
-<td style="text-align: right;">0.7500</td>
+<td style="text-align: right;">0.7494</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Control</td>
 <td style="text-align: left;">Shock</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">72.67</td>
-<td style="text-align: right;">20.12</td>
-<td style="text-align: right;">-32.37</td>
-<td style="text-align: right;">72.60</td>
-<td style="text-align: right;">25.62</td>
+<td style="text-align: right;">0.7795</td>
+<td style="text-align: right;">0.4129</td>
+<td style="text-align: right;">1.472</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">0.7852</td>
-<td style="text-align: right;">0.4389</td>
+<td style="text-align: right;">0.4288</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Control</td>
 <td style="text-align: left;">Shock</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">83.05</td>
-<td style="text-align: right;">39.70</td>
-<td style="text-align: right;">-21.14</td>
-<td style="text-align: right;">100.54</td>
-<td style="text-align: right;">29.70</td>
+<td style="text-align: right;">0.5534</td>
+<td style="text-align: right;">0.2459</td>
+<td style="text-align: right;">1.245</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">1.3366</td>
-<td style="text-align: right;">0.1921</td>
+<td style="text-align: right;">0.1463</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Control</td>
 <td style="text-align: left;">Shock</td>
+<td style="text-align: left;">Control</td>
 <td style="text-align: right;">93.43</td>
-<td style="text-align: right;">52.58</td>
-<td style="text-align: right;">-21.99</td>
-<td style="text-align: right;">127.15</td>
-<td style="text-align: right;">36.40</td>
+<td style="text-align: right;">0.3929</td>
+<td style="text-align: right;">0.1368</td>
+<td style="text-align: right;">1.129</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">1.4445</td>
-<td style="text-align: right;">0.1597</td>
+<td style="text-align: right;">0.0805</td>
 </tr>
 </tbody>
 </table>
@@ -1597,119 +1547,122 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
  quarto   1.6.42 @ /usr/local/bin/quarto
 
 ─ Packages ───────────────────────────────────────────────────────────────────
- package        * version  date (UTC) lib source
- backports        1.5.0    2024-05-23 [1] CRAN (R 4.4.0)
- bayestestR       0.15.2   2025-02-07 [1] CRAN (R 4.4.1)
- boot             1.3-31   2024-08-28 [2] CRAN (R 4.4.3)
- cellranger       1.1.0    2016-07-27 [1] CRAN (R 4.4.0)
- checkmate        2.3.2    2024-07-29 [1] CRAN (R 4.4.0)
- cli              3.6.4    2025-02-13 [1] CRAN (R 4.4.1)
- coda             0.19-4.1 2024-01-31 [1] CRAN (R 4.4.0)
- codetools        0.2-20   2024-03-31 [2] CRAN (R 4.4.3)
- colorspace       2.1-1    2024-07-26 [1] CRAN (R 4.4.0)
- coursekata       0.18.1   2024-12-12 [1] CRAN (R 4.4.1)
- curl             6.2.2    2025-03-24 [1] CRAN (R 4.4.1)
- dagitty        * 0.3-4    2025-03-10 [1] Github (jtextor/dagitty@7a65777)
- data.table       1.17.0   2025-02-22 [1] CRAN (R 4.4.1)
- datawizard       1.0.2    2025-03-24 [1] CRAN (R 4.4.1)
- digest           0.6.37   2024-08-19 [1] CRAN (R 4.4.1)
- dplyr          * 1.1.4    2023-11-17 [1] CRAN (R 4.4.0)
- dslabs           0.8.0    2024-03-01 [1] CRAN (R 4.4.0)
- effectsize       1.0.0    2024-12-10 [1] CRAN (R 4.4.1)
- emmeans          1.11.0   2025-03-20 [1] CRAN (R 4.4.1)
- estimability     1.5.1    2024-05-12 [1] CRAN (R 4.4.0)
- evaluate         1.0.3    2025-01-10 [1] CRAN (R 4.4.1)
- fansi            1.0.6    2023-12-08 [1] CRAN (R 4.4.0)
- farver           2.1.2    2024-05-13 [1] CRAN (R 4.4.0)
- fastmap          1.2.0    2024-05-15 [1] CRAN (R 4.4.0)
- forcats        * 1.0.0    2023-01-29 [1] CRAN (R 4.4.0)
- future           1.34.0   2024-07-29 [1] CRAN (R 4.4.0)
- future.apply     1.11.3   2024-10-27 [1] CRAN (R 4.4.1)
- generics         0.1.3    2022-07-05 [1] CRAN (R 4.4.0)
- ggExtra          0.10.1   2023-08-21 [1] CRAN (R 4.4.0)
- ggformula      * 0.12.0   2023-11-09 [1] CRAN (R 4.4.0)
- ggplot2        * 3.5.1    2024-04-23 [1] CRAN (R 4.4.0)
- ggrepel          0.9.6    2024-09-07 [1] CRAN (R 4.4.1)
- ggridges       * 0.5.6    2024-01-23 [1] CRAN (R 4.4.0)
- globals          0.16.3   2024-03-08 [1] CRAN (R 4.4.0)
- glue             1.8.0    2024-09-30 [1] CRAN (R 4.4.1)
- gtable           0.3.6    2024-10-25 [1] CRAN (R 4.4.1)
- haven            2.5.4    2023-11-30 [1] CRAN (R 4.4.0)
- hms              1.1.3    2023-03-21 [1] CRAN (R 4.4.0)
- htmltools        0.5.8.1  2024-04-04 [1] CRAN (R 4.4.0)
- htmlwidgets      1.6.4    2023-12-06 [1] CRAN (R 4.4.0)
- httpuv           1.6.15   2024-03-26 [1] CRAN (R 4.4.0)
- insight          1.1.0    2025-03-01 [1] CRAN (R 4.4.1)
- jsonlite         1.9.1    2025-03-03 [1] CRAN (R 4.4.1)
- knitr            1.50     2025-03-16 [1] CRAN (R 4.4.1)
- labeling         0.4.3    2023-08-29 [1] CRAN (R 4.4.0)
- labelled         2.14.0   2025-01-08 [1] CRAN (R 4.4.1)
- later            1.4.1    2024-11-27 [1] CRAN (R 4.4.1)
- lattice        * 0.22-6   2024-03-20 [2] CRAN (R 4.4.3)
- lifecycle        1.0.4    2023-11-07 [1] CRAN (R 4.4.0)
- listenv          0.9.1    2024-01-29 [1] CRAN (R 4.4.0)
- litedown         0.6      2025-02-27 [1] CRAN (R 4.4.1)
- lmtest           0.9-40   2022-03-21 [1] CRAN (R 4.4.0)
- lsr              0.5.2    2021-12-01 [1] CRAN (R 4.4.0)
- lubridate      * 1.9.4    2024-12-08 [1] CRAN (R 4.4.1)
- magrittr         2.0.3    2022-03-30 [1] CRAN (R 4.4.0)
- MASS             7.3-65   2025-02-28 [2] CRAN (R 4.4.1)
- Matrix         * 1.7-3    2025-03-11 [2] CRAN (R 4.4.1)
- Metrics          0.1.4    2018-07-09 [1] CRAN (R 4.4.0)
- mgcv             1.9-1    2023-12-21 [2] CRAN (R 4.4.3)
- mime             0.13     2025-03-17 [1] CRAN (R 4.4.1)
- miniUI           0.1.1.1  2018-05-18 [1] CRAN (R 4.4.0)
- modelbased     * 0.10.0   2025-03-10 [1] CRAN (R 4.4.1)
- modelsummary   * 2.3.0    2025-02-02 [1] CRAN (R 4.4.1)
- mosaic           1.9.1    2024-02-23 [1] CRAN (R 4.4.0)
- mosaicCore       0.9.4.0  2023-11-05 [1] CRAN (R 4.4.0)
- mosaicData     * 0.20.4   2023-11-05 [1] CRAN (R 4.4.0)
- multcomp         1.4-28   2025-01-29 [1] CRAN (R 4.4.1)
- munsell          0.5.1    2024-04-01 [1] CRAN (R 4.4.0)
- mvtnorm          1.3-3    2025-01-10 [1] CRAN (R 4.4.1)
- nlme             3.1-167  2025-01-27 [2] CRAN (R 4.4.3)
- palmerpenguins   0.1.1    2022-08-15 [1] CRAN (R 4.4.0)
- parallelly       1.43.0   2025-03-24 [1] CRAN (R 4.4.1)
- parameters       0.24.2   2025-03-04 [1] CRAN (R 4.4.1)
- patchwork        1.3.0    2024-09-16 [1] CRAN (R 4.4.1)
- performance    * 0.13.0   2025-01-15 [1] CRAN (R 4.4.1)
- pillar           1.10.1   2025-01-07 [1] CRAN (R 4.4.1)
- pkgconfig        2.0.3    2019-09-22 [1] CRAN (R 4.4.0)
- promises         1.3.2    2024-11-28 [1] CRAN (R 4.4.1)
- purrr          * 1.0.4    2025-02-05 [1] CRAN (R 4.4.1)
- R6               2.6.1    2025-02-15 [1] CRAN (R 4.4.1)
- Rcpp             1.0.14   2025-01-12 [1] CRAN (R 4.4.1)
- readr          * 2.1.5    2024-01-10 [1] CRAN (R 4.4.0)
- readxl         * 1.4.5    2025-03-07 [1] CRAN (R 4.4.1)
- rematch          2.0.0    2023-08-30 [1] CRAN (R 4.4.0)
- rlang            1.1.5    2025-01-17 [1] CRAN (R 4.4.1)
- rmarkdown        2.29     2024-11-04 [1] CRAN (R 4.4.1)
- rstudioapi       0.17.1   2024-10-22 [1] CRAN (R 4.4.1)
- sandwich         3.1-1    2024-09-15 [1] CRAN (R 4.4.1)
- scales         * 1.3.0    2023-11-28 [1] CRAN (R 4.4.0)
- see              0.11.0   2025-03-11 [1] CRAN (R 4.4.1)
- sessioninfo      1.2.3    2025-02-05 [1] CRAN (R 4.4.1)
- shiny            1.10.0   2024-12-14 [1] CRAN (R 4.4.1)
- stringi          1.8.4    2024-05-06 [1] CRAN (R 4.4.0)
- stringr        * 1.5.1    2023-11-14 [1] CRAN (R 4.4.0)
- supernova        3.0.0    2024-02-07 [1] CRAN (R 4.4.0)
- survival         3.8-3    2024-12-17 [2] CRAN (R 4.4.3)
- tables           0.9.31   2024-08-29 [1] CRAN (R 4.4.1)
- TH.data          1.1-3    2025-01-17 [1] CRAN (R 4.4.1)
- tibble         * 3.2.1    2023-03-20 [1] CRAN (R 4.4.0)
- tidyr          * 1.3.1    2024-01-24 [1] CRAN (R 4.4.0)
- tidyselect       1.2.1    2024-03-11 [1] CRAN (R 4.4.0)
- tidyverse      * 2.0.0    2023-02-22 [1] CRAN (R 4.4.0)
- timechange       0.3.0    2024-01-18 [1] CRAN (R 4.4.0)
- tinytable        0.8.0    2025-03-23 [1] CRAN (R 4.4.1)
- tzdb             0.5.0    2025-03-15 [1] CRAN (R 4.4.1)
- V8               6.0.2    2025-03-14 [1] CRAN (R 4.4.1)
- vctrs            0.6.5    2023-12-01 [1] CRAN (R 4.4.0)
- withr            3.0.2    2024-10-28 [1] CRAN (R 4.4.1)
- xfun             0.51     2025-02-19 [1] CRAN (R 4.4.1)
- xtable           1.8-4    2019-04-21 [1] CRAN (R 4.4.0)
- yaml             2.3.10   2024-07-26 [1] CRAN (R 4.4.0)
- zoo              1.8-13   2025-02-22 [1] CRAN (R 4.4.1)
+ package         * version  date (UTC) lib source
+ backports         1.5.0    2024-05-23 [1] CRAN (R 4.4.0)
+ bayestestR        0.15.2.5 2025-03-21 [1] https://easystats.r-universe.dev (R 4.4.3)
+ boot              1.3-31   2024-08-28 [2] CRAN (R 4.4.3)
+ cellranger        1.1.0    2016-07-27 [1] CRAN (R 4.4.0)
+ checkmate         2.3.2    2024-07-29 [1] CRAN (R 4.4.0)
+ cli               3.6.4    2025-02-13 [1] CRAN (R 4.4.1)
+ coda              0.19-4.1 2024-01-31 [1] CRAN (R 4.4.0)
+ codetools         0.2-20   2024-03-31 [2] CRAN (R 4.4.3)
+ collapse          2.1.0    2025-03-10 [1] CRAN (R 4.4.1)
+ colorspace        2.1-1    2024-07-26 [1] CRAN (R 4.4.0)
+ coursekata        0.18.1   2024-12-12 [1] CRAN (R 4.4.1)
+ curl              6.2.2    2025-03-24 [1] CRAN (R 4.4.1)
+ dagitty         * 0.3-4    2025-03-10 [1] Github (jtextor/dagitty@7a65777)
+ data.table        1.17.0   2025-02-22 [1] CRAN (R 4.4.1)
+ datawizard        1.0.2    2025-03-24 [1] CRAN (R 4.4.1)
+ digest            0.6.37   2024-08-19 [1] CRAN (R 4.4.1)
+ dplyr           * 1.1.4    2023-11-17 [1] CRAN (R 4.4.0)
+ dslabs            0.8.0    2024-03-01 [1] CRAN (R 4.4.0)
+ effectsize        1.0.0    2024-12-10 [1] CRAN (R 4.4.1)
+ emmeans           1.11.0   2025-03-20 [1] CRAN (R 4.4.1)
+ estimability      1.5.1    2024-05-12 [1] CRAN (R 4.4.0)
+ evaluate          1.0.3    2025-01-10 [1] CRAN (R 4.4.1)
+ fansi             1.0.6    2023-12-08 [1] CRAN (R 4.4.0)
+ farver            2.1.2    2024-05-13 [1] CRAN (R 4.4.0)
+ fastmap           1.2.0    2024-05-15 [1] CRAN (R 4.4.0)
+ forcats         * 1.0.0    2023-01-29 [1] CRAN (R 4.4.0)
+ Formula           1.2-5    2023-02-24 [1] CRAN (R 4.4.0)
+ future            1.34.0   2024-07-29 [1] CRAN (R 4.4.0)
+ future.apply      1.11.3   2024-10-27 [1] CRAN (R 4.4.1)
+ generics          0.1.3    2022-07-05 [1] CRAN (R 4.4.0)
+ ggExtra           0.10.1   2023-08-21 [1] CRAN (R 4.4.0)
+ ggformula       * 0.12.0   2023-11-09 [1] CRAN (R 4.4.0)
+ ggplot2         * 3.5.1    2024-04-23 [1] CRAN (R 4.4.0)
+ ggrepel           0.9.6    2024-09-07 [1] CRAN (R 4.4.1)
+ ggridges        * 0.5.6    2024-01-23 [1] CRAN (R 4.4.0)
+ globals           0.16.3   2024-03-08 [1] CRAN (R 4.4.0)
+ glue              1.8.0    2024-09-30 [1] CRAN (R 4.4.1)
+ gtable            0.3.6    2024-10-25 [1] CRAN (R 4.4.1)
+ haven             2.5.4    2023-11-30 [1] CRAN (R 4.4.0)
+ hms               1.1.3    2023-03-21 [1] CRAN (R 4.4.0)
+ htmltools         0.5.8.1  2024-04-04 [1] CRAN (R 4.4.0)
+ htmlwidgets       1.6.4    2023-12-06 [1] CRAN (R 4.4.0)
+ httpuv            1.6.15   2024-03-26 [1] CRAN (R 4.4.0)
+ insight           1.1.0.15 2025-03-24 [1] https://easystats.r-universe.dev (R 4.4.3)
+ jsonlite          1.9.1    2025-03-03 [1] CRAN (R 4.4.1)
+ knitr             1.50     2025-03-16 [1] CRAN (R 4.4.1)
+ labeling          0.4.3    2023-08-29 [1] CRAN (R 4.4.0)
+ labelled          2.14.0   2025-01-08 [1] CRAN (R 4.4.1)
+ later             1.4.1    2024-11-27 [1] CRAN (R 4.4.1)
+ lattice         * 0.22-6   2024-03-20 [2] CRAN (R 4.4.3)
+ lifecycle         1.0.4    2023-11-07 [1] CRAN (R 4.4.0)
+ listenv           0.9.1    2024-01-29 [1] CRAN (R 4.4.0)
+ litedown          0.6      2025-02-27 [1] CRAN (R 4.4.1)
+ lmtest            0.9-40   2022-03-21 [1] CRAN (R 4.4.0)
+ lsr               0.5.2    2021-12-01 [1] CRAN (R 4.4.0)
+ lubridate       * 1.9.4    2024-12-08 [1] CRAN (R 4.4.1)
+ magrittr          2.0.3    2022-03-30 [1] CRAN (R 4.4.0)
+ marginaleffects   0.25.0   2025-02-01 [1] CRAN (R 4.4.1)
+ MASS              7.3-65   2025-02-28 [2] CRAN (R 4.4.1)
+ Matrix          * 1.7-3    2025-03-11 [2] CRAN (R 4.4.1)
+ Metrics           0.1.4    2018-07-09 [1] CRAN (R 4.4.0)
+ mgcv              1.9-1    2023-12-21 [2] CRAN (R 4.4.3)
+ mime              0.13     2025-03-17 [1] CRAN (R 4.4.1)
+ miniUI            0.1.1.1  2018-05-18 [1] CRAN (R 4.4.0)
+ modelbased      * 0.10.0.7 2025-03-23 [1] https://easystats.r-universe.dev (R 4.4.3)
+ modelsummary    * 2.3.0    2025-02-02 [1] CRAN (R 4.4.1)
+ mosaic            1.9.1    2024-02-23 [1] CRAN (R 4.4.0)
+ mosaicCore        0.9.4.0  2023-11-05 [1] CRAN (R 4.4.0)
+ mosaicData      * 0.20.4   2023-11-05 [1] CRAN (R 4.4.0)
+ multcomp          1.4-28   2025-01-29 [1] CRAN (R 4.4.1)
+ munsell           0.5.1    2024-04-01 [1] CRAN (R 4.4.0)
+ mvtnorm           1.3-3    2025-01-10 [1] CRAN (R 4.4.1)
+ nlme              3.1-167  2025-01-27 [2] CRAN (R 4.4.3)
+ palmerpenguins    0.1.1    2022-08-15 [1] CRAN (R 4.4.0)
+ parallelly        1.43.0   2025-03-24 [1] CRAN (R 4.4.1)
+ parameters        0.24.2.4 2025-03-21 [1] https://easystats.r-universe.dev (R 4.4.3)
+ patchwork         1.3.0    2024-09-16 [1] CRAN (R 4.4.1)
+ performance     * 0.13.0.3 2025-03-25 [1] https://easystats.r-universe.dev (R 4.4.3)
+ pillar            1.10.1   2025-01-07 [1] CRAN (R 4.4.1)
+ pkgconfig         2.0.3    2019-09-22 [1] CRAN (R 4.4.0)
+ promises          1.3.2    2024-11-28 [1] CRAN (R 4.4.1)
+ purrr           * 1.0.4    2025-02-05 [1] CRAN (R 4.4.1)
+ R6                2.6.1    2025-02-15 [1] CRAN (R 4.4.1)
+ Rcpp              1.0.14   2025-01-12 [1] CRAN (R 4.4.1)
+ readr           * 2.1.5    2024-01-10 [1] CRAN (R 4.4.0)
+ readxl          * 1.4.5    2025-03-07 [1] CRAN (R 4.4.1)
+ rematch           2.0.0    2023-08-30 [1] CRAN (R 4.4.0)
+ rlang             1.1.5    2025-01-17 [1] CRAN (R 4.4.1)
+ rmarkdown         2.29     2024-11-04 [1] CRAN (R 4.4.1)
+ rstudioapi        0.17.1   2024-10-22 [1] CRAN (R 4.4.1)
+ sandwich          3.1-1    2024-09-15 [1] CRAN (R 4.4.1)
+ scales          * 1.3.0    2023-11-28 [1] CRAN (R 4.4.0)
+ see               0.11.0   2025-03-11 [1] CRAN (R 4.4.1)
+ sessioninfo       1.2.3    2025-02-05 [1] CRAN (R 4.4.1)
+ shiny             1.10.0   2024-12-14 [1] CRAN (R 4.4.1)
+ stringi           1.8.4    2024-05-06 [1] CRAN (R 4.4.0)
+ stringr         * 1.5.1    2023-11-14 [1] CRAN (R 4.4.0)
+ supernova         3.0.0    2024-02-07 [1] CRAN (R 4.4.0)
+ survival          3.8-3    2024-12-17 [2] CRAN (R 4.4.3)
+ tables            0.9.31   2024-08-29 [1] CRAN (R 4.4.1)
+ TH.data           1.1-3    2025-01-17 [1] CRAN (R 4.4.1)
+ tibble          * 3.2.1    2023-03-20 [1] CRAN (R 4.4.0)
+ tidyr           * 1.3.1    2024-01-24 [1] CRAN (R 4.4.0)
+ tidyselect        1.2.1    2024-03-11 [1] CRAN (R 4.4.0)
+ tidyverse       * 2.0.0    2023-02-22 [1] CRAN (R 4.4.0)
+ timechange        0.3.0    2024-01-18 [1] CRAN (R 4.4.0)
+ tinytable         0.8.0    2025-03-23 [1] CRAN (R 4.4.1)
+ tzdb              0.5.0    2025-03-15 [1] CRAN (R 4.4.1)
+ V8                6.0.2    2025-03-14 [1] CRAN (R 4.4.1)
+ vctrs             0.6.5    2023-12-01 [1] CRAN (R 4.4.0)
+ withr             3.0.2    2024-10-28 [1] CRAN (R 4.4.1)
+ xfun              0.51     2025-02-19 [1] CRAN (R 4.4.1)
+ xtable            1.8-4    2019-04-21 [1] CRAN (R 4.4.0)
+ yaml              2.3.10   2024-07-26 [1] CRAN (R 4.4.0)
+ zoo               1.8-13   2025-02-22 [1] CRAN (R 4.4.1)
 
  [1] /Users/marcoe02/.Rlib
  [2] /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library
