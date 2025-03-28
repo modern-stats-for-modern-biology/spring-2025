@@ -27,7 +27,6 @@ Data available at <https://doi.org/10.7910/DVN/1RAQON>
 library(tidyverse)
 library(readxl)
 library(ggformula)
-library(performance)
 library(modelbased)
 library(marginaleffects)
 library(emmeans)
@@ -221,11 +220,11 @@ summary(m)
 
 ```{r}
 #| fig-height: 10
-check_model(m)
+performance::check_model(m)
 ```
 
 ```{r}
-check_normality(m)
+performance::check_normality(m)
 ```
 
 ```{r}
@@ -321,11 +320,11 @@ supernova::supernova(m1)
 
 ```{r}
 #| fig-height: 10
-check_model(m1)
+performance::check_model(m1)
 ```
 
 ```{r}
-check_autocorrelation(m1)
+performance::check_autocorrelation(m1)
 ```
 
 ### log(CeLcfos) \~ StressCondition
@@ -342,11 +341,11 @@ supernova::supernova(m2)
 
 ```{r}
 #| fig-height: 10
-check_model(m2)
+performance::check_model(m2)
 ```
 
 ```{r}
-check_autocorrelation(m2)
+performance::check_autocorrelation(m2)
 ```
 
 ### log(CeLcfos) \~ Sociability
@@ -363,11 +362,11 @@ supernova::supernova(m3)
 
 ```{r}
 #| fig-height: 10
-check_model(m3)
+performance::check_model(m3)
 ```
 
 ```{r}
-check_autocorrelation(m3)
+performance::check_autocorrelation(m3)
 ```
 
 ### log(CeLcfos) \~ StressCondition + Sociability
@@ -384,11 +383,11 @@ supernova::supernova(m4)
 
 ```{r}
 #| fig-height: 10
-check_model(m4)
+performance::check_model(m4)
 ```
 
 ```{r}
-check_autocorrelation(m4)
+performance::check_autocorrelation(m4)
 ```
 
 ### log(CeLcfos) \~ StressCondition \* Sociability
@@ -405,11 +404,11 @@ supernova::supernova(m5)
 
 ```{r}
 #| fig-height: 10
-check_model(m5)
+performance::check_model(m5)
 ```
 
 ```{r}
-check_autocorrelation(m5)
+performance::check_autocorrelation(m5)
 ```
 
 ## Model evaluation and comparison
@@ -421,7 +420,7 @@ modelsummary::modelsummary(list(m1, m2, m3, m4, m5), stars = TRUE, statistic = "
 ```
 
 ```{r}
-plot(compare_performance(m1, m2, m3, m4, m5, rank = TRUE, verbose = FALSE))
+plot(performance::compare_performance(m1, m2, m3, m4, m5, rank = TRUE, verbose = FALSE))
 ```
 
 ## Model predictions
