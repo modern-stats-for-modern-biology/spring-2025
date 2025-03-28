@@ -123,7 +123,7 @@ window.Quarto = {
   <li><a href="#logcelcfos-stresscondition-sociability" id="toc-logcelcfos-stresscondition-sociability" class="nav-link" data-scroll-target="#logcelcfos-stresscondition-sociability">log(CeLcfos) ~ StressCondition + Sociability</a></li>
   <li><a href="#logcelcfos-stresscondition-sociability-1" id="toc-logcelcfos-stresscondition-sociability-1" class="nav-link" data-scroll-target="#logcelcfos-stresscondition-sociability-1">log(CeLcfos) ~ StressCondition * Sociability</a></li>
   </ul></li>
-  <li><a href="#specify-and-fit-statistical-model-based-on-causal-model" id="toc-specify-and-fit-statistical-model-based-on-causal-model" class="nav-link" data-scroll-target="#specify-and-fit-statistical-model-based-on-causal-model">Specify and fit statistical model based on causal model</a>
+  <li><a href="#specify-fit-and-evaluate-statistical-model-based-on-causal-model" id="toc-specify-fit-and-evaluate-statistical-model-based-on-causal-model" class="nav-link" data-scroll-target="#specify-fit-and-evaluate-statistical-model-based-on-causal-model">Specify, fit and evaluate statistical model based on causal model</a>
   <ul class="collapse">
   <li><a href="#logcelcfos-null-1" id="toc-logcelcfos-null-1" class="nav-link" data-scroll-target="#logcelcfos-null-1">log(CeLcfos) ~ NULL</a></li>
   <li><a href="#logcelcfos-stresscondition-1" id="toc-logcelcfos-stresscondition-1" class="nav-link" data-scroll-target="#logcelcfos-stresscondition-1">log(CeLcfos) ~ StressCondition</a></li>
@@ -724,8 +724,8 @@ F-statistic: 1.04e+04 on 1 and 1998 DF,  p-value: &lt;0.0000000000000002</code><
 </div>
 </section>
 </section>
-<section id="specify-and-fit-statistical-model-based-on-causal-model" class="level2">
-<h2 class="anchored" data-anchor-id="specify-and-fit-statistical-model-based-on-causal-model">Specify and fit statistical model based on causal model</h2>
+<section id="specify-fit-and-evaluate-statistical-model-based-on-causal-model" class="level2">
+<h2 class="anchored" data-anchor-id="specify-fit-and-evaluate-statistical-model-based-on-causal-model">Specify, fit and evaluate statistical model based on causal model</h2>
 <p>Here I specify and fit different models mainly for didactic purpose, because the causal model already forces us to include the <code>Sociability</code> variable as a covariate/control variable in addition to the treatment variable <code>StressCondition</code>. This is because our causal assumption is that <code>Sociability</code> acts as a pipe (mediator) in the causal path between <code>StressCondition</code> and <code>CeLcfos</code>. The only specification choice left is to decide whether to model <code>Sociability</code> as a modifier (moderator) of the effect of <code>StressCondition</code> on <code>CeLcfos</code> or not (i.e., whether to use the additive or the interaction model).</p>
 <p>Please note that <strong>moderation</strong> and <strong>mediation</strong> are two very different concepts that are often confused as one. Moderation occurs when the effect of the exposure on the outcome changes at different levels of a third variable (the moderator). Mediation occurs when the exposure influences the outcome through an intermediary variable (the mediator).</p>
 <section id="logcelcfos-null-1" class="level3">
@@ -947,11 +947,6 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
 <pre><code>OK: Residuals appear to be independent and not autocorrelated (p = 0.318).</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="model-evaluation-and-comparison" class="level2">
-<h2 class="anchored" data-anchor-id="model-evaluation-and-comparison">Model evaluation and comparison</h2>
-<p>In addition to <code>supernova()</code>, here I use <code>modelsummary()</code> and <code>compare_performance()</code> functions from the <a href="https://modelsummary.com/"><code>modelsummary</code></a> and <a href="https://easystats.github.io/performance/"><code>performance</code></a> packages to evaluate and compare models.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>supernova<span class="sc">::</span><span class="fu">supernova</span>(m5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -978,6 +973,11 @@ F-statistic: 4.79 on 3 and 28 DF,  p-value: 0.00813</code></pre>
       </code></pre>
 </div>
 </div>
+</section>
+</section>
+<section id="model-evaluation-and-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="model-evaluation-and-comparison">Model evaluation and comparison</h2>
+<p>Here I use <code>modelsummary()</code> and <code>compare_performance()</code> functions from the <a href="https://modelsummary.com/"><code>modelsummary</code></a> and <a href="https://easystats.github.io/performance/"><code>performance</code></a> packages to evaluate and compare the models fitted above.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>modelsummary<span class="sc">::</span><span class="fu">modelsummary</span>(<span class="fu">list</span>(m1, m2, m3, m4, m5), <span class="at">stars =</span> <span class="cn">TRUE</span>, <span class="at">statistic =</span> <span class="st">"conf.int"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">

@@ -300,7 +300,7 @@ gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
   coursekata::gf_model(logCeLcfos ~ Sociability * StressCondition, data = d) %>% gf_refine(theme(legend.position = "none"))
 ```
 
-## Specify and fit statistical model based on causal model
+## Specify, fit and evaluate statistical model based on causal model
 
 Here I specify and fit different models mainly for didactic purpose, because the causal model already forces us to include the `Sociability` variable as a covariate/control variable in addition to the treatment variable `StressCondition`. This is because our causal assumption is that `Sociability` acts as a pipe (mediator) in the causal path between `StressCondition` and `CeLcfos`. The only specification choice left is to decide whether to model `Sociability` as a modifier (moderator) of the effect of `StressCondition` on `CeLcfos` or not (i.e., whether to use the additive or the interaction model).
 
@@ -391,13 +391,13 @@ check_model(m5)
 check_autocorrelation(m5)
 ```
 
-## Model evaluation and comparison
-
-In addition to `supernova()`, here I use `modelsummary()` and `compare_performance()` functions from the [`modelsummary`](https://modelsummary.com/) and [`performance`](https://easystats.github.io/performance/) packages to evaluate and compare models.
-
 ```{r}
 supernova::supernova(m5)
 ```
+
+## Model evaluation and comparison
+
+Here I use `modelsummary()` and `compare_performance()` functions from the [`modelsummary`](https://modelsummary.com/) and [`performance`](https://easystats.github.io/performance/) packages to evaluate and compare the models fitted above.
 
 ```{r}
 modelsummary::modelsummary(list(m1, m2, m3, m4, m5), stars = TRUE, statistic = "conf.int")
