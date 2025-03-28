@@ -427,14 +427,16 @@ At mean level of `Sociability`, the estimated fold-change of `CeLcfos` between t
 
 ```{r}
 estimate_contrasts(m5,
-                   contrast = 'StressCondition', transform = exp)
+                   contrast = 'StressCondition',
+                   transform = exp)
 ```
 
 At this level of `Sociability`, the direct causal effect of `StressCondition` on `CeLcfos` is not statistically significant, but since we modeled `Sociability` as a moderator of this effect, the estimated fold-change of `CeLcfos` between the `Shock` and `Control` groups may be different at different levels of `Sociability`:
 
 ```{r}
 estimate_contrasts(m5,
-                   contrast = 'StressCondition', by = 'Sociability',
+                   contrast = 'StressCondition',
+                   by = 'Sociability',
                    transform = exp)
 ```
 
@@ -442,7 +444,9 @@ The p-values above are uncorrected for multiple testing. The Bonferroni correcti
 
 ```{r}
 estimate_contrasts(m5,
-                   contrast = 'StressCondition', by = 'Sociability', transform = exp,
+                   contrast = 'StressCondition',
+                   by = 'Sociability',
+                   transform = exp,
                    p_adjust = "bonferroni")
 ```
 
