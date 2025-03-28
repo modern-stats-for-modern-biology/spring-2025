@@ -1,7 +1,7 @@
 ---
-title: 'From model to meaning using R'
+title: "From model to meaning using R"
 date: 2025-03-24
-author: Edoardo \'Dado\' Marcora
+author: Edoardo \"Dado\" Marcora
 execute:
   warning: false
 format:
@@ -32,7 +32,7 @@ library(modelbased)
 library(marginaleffects)
 library(emmeans)
 
-theme_set(theme_bw())
+theme_set(theme_bw() + theme(legend.position = "top"))
 
 set.seed(666)
 ```
@@ -46,13 +46,13 @@ Based on my general neuroscience domain knowledge and cursory examination of the
 ```{r}
 library(dagitty)
 
-dag <- dagitty('dag {
+dag <- dagitty("dag {
   CeLcfos [outcome]
   StressCondition [exposure]
   Sociability -> CeLcfos
   StressCondition -> CeLcfos
   StressCondition -> Sociability
-}')
+}")
 
 coordinates(dag) <- list(
   x = c(StressCondition = 0, Sociability = 0.5, CeLcfos = 1),
@@ -73,13 +73,13 @@ adjustmentSets(dag, exposure = "StressCondition", outcome = "CeLcfos", effect = 
 If I proposed a different DAG (see below) where `StressCondition` alters `Sociability` not only directly but also indirectly by altering neuronal activity (measured by the `CeLcfos` variable) in the amygdala--not an unlikely scenario--then including `Sociability` as a control variable/covariate in the regression model would be wrong. This is because (`Sociability` being a collider rather than a mediator in this alternative DAG) including `Sociability` as a control variable/covariate in the regression model would introduce a spurious correlation that confounds the estimate of the **direct** causal effect of `StressCondition` on `CeLcfos`.
 
 ```{r}
-dag <- dagitty('dag {
+dag <- dagitty("dag {
   CeLcfos [outcome]
   StressCondition [exposure]
   CeLcfos -> Sociability
   StressCondition -> CeLcfos
   StressCondition -> Sociability
-}')
+}")
 
 coordinates(dag) <- list(
   x = c(StressCondition = 0, Sociability = 0.5, CeLcfos = 1),
@@ -98,31 +98,31 @@ It should be clear by now that we need to specify the DAG/lay bare our causal as
 
 ## Read and prep data
 
-This study is a good example of [how NOT to format supplementary data in an Excel spreadsheet]{.underline}! It shouldn't take more than one call to the `read_xlsx()` function to import data from a properly formatted Excel spreadsheet.
+This study is a good example of [how NOT to format supplementary data in an Excel spreadsheet]{.underline}! It shouldn"t take more than one call to the `read_xlsx()` function to import data from a properly formatted Excel spreadsheet.
 
 ```{r}
-id1 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!C4:D11', col_names = c('ID', 'Treatment'))
-id2 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!C16:D23', col_names = c('ID', 'Treatment'))
-id3 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!C26:D33', col_names = c('ID', 'Treatment'))
-id4 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!C37:D44', col_names = c('ID', 'Treatment'))
+id1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C4:D11", col_names = c("ID", "Treatment"))
+id2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C16:D23", col_names = c("ID", "Treatment"))
+id3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C26:D33", col_names = c("ID", "Treatment"))
+id4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C37:D44", col_names = c("ID", "Treatment"))
 
 id <- rbind(id1, id2, id3, id4)
 ```
 
 ```{r}
-cel1 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!H4:H11', col_names = 'CeLcfos')
-cel2 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!H16:H23', col_names = 'CeLcfos')
-cel3 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!H26:H33', col_names = 'CeLcfos')
-cel4 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!H37:H44', col_names = 'CeLcfos')
+cel1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H4:H11", col_names = "CeLcfos")
+cel2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H16:H23", col_names = "CeLcfos")
+cel3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H26:H33", col_names = "CeLcfos")
+cel4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H37:H44", col_names = "CeLcfos")
 
 cel <- rbind(cel1, cel2, cel3, cel4)
 ```
 
 ```{r}
-soc1 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!N4:N11', col_names = 'Sociability')
-soc2 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!N16:N23', col_names = 'Sociability')
-soc3 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!N26:N33', col_names = 'Sociability')
-soc4 <- read_xlsx('Figure 3.xlsx', range = 'New_Beh+cfos!N37:N44', col_names = 'Sociability')
+soc1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N4:N11", col_names = "Sociability")
+soc2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N16:N23", col_names = "Sociability")
+soc3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N26:N33", col_names = "Sociability")
+soc4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N37:N44", col_names = "Sociability")
 
 soc <- rbind(soc1, soc2, soc3, soc4)
 ```
@@ -133,13 +133,13 @@ d <- cbind(id,soc,cel) %>%
   rowwise() %>% 
   mutate(
     StressCondition = case_when(
-      grepl('FC-', Treatment) ~ 'Control',
-      grepl('FC+', Treatment) ~ 'Shock',
-      grepl('Control', Treatment) ~ 'Control',
-      grepl('Stress', Treatment) ~ 'Shock'),
+      grepl("FC-", Treatment) ~ "Control",
+      grepl("FC+", Treatment) ~ "Shock",
+      grepl("Control", Treatment) ~ "Control",
+      grepl("Stress", Treatment) ~ "Shock"),
     Treatment = case_when(
-      grepl('Veh', Treatment) ~ 'Vehicle',
-      grepl('Alp', Treatment) ~ 'Alprazolam')) %>%
+      grepl("Veh", Treatment) ~ "Vehicle",
+      grepl("Alp", Treatment) ~ "Alprazolam")) %>%
   ungroup() %>% 
   mutate(logCeLcfos = log(CeLcfos),
          Sex = factor(Sex),
@@ -153,7 +153,7 @@ head(d)
 ## Exploratory data analysis
 
 ```{r}
-gf_point(CeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>% gf_smooth(method = 'gam', formula = y ~ s(x, bs = 'cs'), se = TRUE)
+gf_point(CeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>% gf_smooth(method = "gam", formula = y ~ s(x, bs = "cs"), se = TRUE)
 ```
 
 The data point with zero sociability and high cfos+ cell count is suspicious but for the sake of this example I will keep it in the dataset. However, in real life, it would require more careful consideration.
@@ -196,7 +196,7 @@ nsamples = 1000
 y_xA = rnorm(nsamples, mean = 2, sd = 4)
 y_xB = rnorm(nsamples, mean = 20, sd = 4)
 
-y_x <- tibble(y = c(y_xA, y_xB), x = factor(c(rep('A', nsamples), rep('B', nsamples))))
+y_x <- tibble(y = c(y_xA, y_xB), x = factor(c(rep("A", nsamples), rep("B", nsamples))))
 ```
 
 ```{r}
@@ -231,10 +231,10 @@ check_normality(m)
 ```{r}
 gf_jitter(y ~ x, color = ~ x, alpha = 0.1, data = y_x) %>%
   coursekata::gf_model(m) %>%
-  ggExtra::ggMarginal(y, type='density')
+  ggExtra::ggMarginal(y, type="density")
 ```
 
-The 'problem' with the `CeLcfos` outcome variable is not that it is not normally distributed, but that it is a count variable (or more precisely in this case a density, the number of 'active neurons'/cfos+ cells per mm^2^ of the central lateral amygdala) and thus it cannot be negative.
+The "problem" with the `CeLcfos` outcome variable is not that it is not normally distributed, but that it is a count variable (or more precisely in this case a density, the number of "active neurons"/cfos+ cells per mm^2^ of the central lateral amygdala) and thus it cannot be negative.
 
 A normally distributed variable is defined over the entire real line $(-\infty, \infty)$ and, therefore, it is not appropriate for count data, especially if they are concentrated close to the zero boundary.
 
@@ -290,14 +290,14 @@ gf_point(logCeLcfos ~ Sociability, data = d) %>% coursekata::gf_model(logCeLcfos
 
 ```{r}
 gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
-  coursekata::gf_model(logCeLcfos ~ Sociability + StressCondition, data = d) %>% gf_refine(theme(legend.position = 'none'))
+  coursekata::gf_model(logCeLcfos ~ Sociability + StressCondition, data = d) %>% gf_refine(theme(legend.position = "none"))
 ```
 
 ### log(CeLcfos) \~ StressCondition \* Sociability
 
 ```{r}
 gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
-  coursekata::gf_model(logCeLcfos ~ Sociability * StressCondition, data = d) %>% gf_refine(theme(legend.position = 'none'))
+  coursekata::gf_model(logCeLcfos ~ Sociability * StressCondition, data = d) %>% gf_refine(theme(legend.position = "none"))
 ```
 
 ## Specify and fit statistical model based on causal model
@@ -396,7 +396,7 @@ check_autocorrelation(m5)
 Here I use the `modelsummary()` and the `compare_performance()` functions from the [`modelsummary`](https://modelsummary.com/) and [`performance`](https://easystats.github.io/performance/) packages, respectively, to evaluate and compare models.
 
 ```{r}
-modelsummary::modelsummary(list(m1, m2, m3, m4, m5), stars = TRUE, statistic = 'conf.int')
+modelsummary::modelsummary(list(m1, m2, m3, m4, m5), stars = TRUE, statistic = "conf.int")
 ```
 
 ```{r}
@@ -412,11 +412,11 @@ Here I use the `estimate_means()` and `estimate_contrasts()` functions from the 
 Please note that model predictions are transformed back by exponentiation to the original scale of the outcome variable `CeLcfos` (count of celfos+ cells/mm\^2) for better interpretability.
 
 ```{r}
-estimate_means(m5, by = c('Sociability', 'StressCondition'), transform = exp) %>% plot()
+estimate_means(m5, by = c("Sociability", "StressCondition"), transform = exp) %>% plot()
 ```
 
 ```{r}
-estimate_means(m5, by = c('Sociability', 'StressCondition'), transform = exp)
+estimate_means(m5, by = c("Sociability", "StressCondition"), transform = exp)
 ```
 
 ## Causal estimates with hypothesis tests
@@ -427,7 +427,7 @@ At mean level of `Sociability`, the estimated fold-change of `CeLcfos` between t
 
 ```{r}
 estimate_contrasts(m5,
-                   contrast = 'StressCondition',
+                   contrast = "StressCondition",
                    transform = exp)
 ```
 
@@ -435,8 +435,8 @@ At this level of `Sociability`, the direct causal effect of `StressCondition` on
 
 ```{r}
 estimate_contrasts(m5,
-                   contrast = 'StressCondition',
-                   by = 'Sociability',
+                   contrast = "StressCondition",
+                   by = "Sociability",
                    transform = exp)
 ```
 
@@ -444,8 +444,8 @@ The p-values above are uncorrected for multiple testing. The Bonferroni correcti
 
 ```{r}
 estimate_contrasts(m5,
-                   contrast = 'StressCondition',
-                   by = 'Sociability',
+                   contrast = "StressCondition",
+                   by = "Sociability",
                    transform = exp,
                    p_adjust = "bonferroni")
 ```
