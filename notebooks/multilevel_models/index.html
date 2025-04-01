@@ -217,7 +217,7 @@ window.Quarto = {
 </section>
 <section id="complete-pooling" class="level2">
 <h2 class="anchored" data-anchor-id="complete-pooling">Complete pooling</h2>
-<p>One line (in dark gray) to fit all data points irrespective of subject, i.e., no subject information is used by this model.</p>
+<p>One regression line (in dark gray) is fit to all data points, ignoring subject-specific differences. This model does not account for individual variability and assumes that all subjects share the same intercept and slope.</p>
 <section id="maximum-likelihood-frequentist-estimates" class="level3">
 <h3 class="anchored" data-anchor-id="maximum-likelihood-frequentist-estimates">Maximum-likelihood (frequentist) estimates</h3>
 <div class="cell">
@@ -346,7 +346,7 @@ window.Quarto = {
 </section>
 <section id="no-pooling" class="level2">
 <h2 class="anchored" data-anchor-id="no-pooling">No pooling</h2>
-<p>One line for each subject (in blue). No information is shared across subjects, same as fitting a model independently for each subject, i.e., stratification.</p>
+<p>One regression line (in blue) is fit for each subject independently, with no information shared across subjects. This model is equivalent to fitting separate regressions for each subject, ignoring any common structure in the data. In other words, it performs stratification, treating each subject as its own independent group.</p>
 <section id="maximum-likelihood-frequentist-estimates-1" class="level3">
 <h3 class="anchored" data-anchor-id="maximum-likelihood-frequentist-estimates-1">Maximum-likelihood (frequentist) estimates</h3>
 <div class="cell">
@@ -485,7 +485,7 @@ window.Quarto = {
 </section>
 <section id="partial-pooling-mixed-model-random-intercept-and-slope" class="level2">
 <h2 class="anchored" data-anchor-id="partial-pooling-mixed-model-random-intercept-and-slope">Partial pooling (mixed model, random intercept and slope)</h2>
-<p>One line for each subject (in red). Information is shared across subjects such that each individual line is “shrinked” toward the “average” line (specified by the fixed intercept and slope and which is the same as the line fitted by the complete pooling model).</p>
+<p>Each subject has its own regression line (in red), but partial pooling shares information across subjects. This results in shrinkage, where each subject’s line is regularized toward the global mean line. The global mean line corresponds to the fixed effects (intercept and slope) and is identical to the line from the complete pooling model. The extent of shrinkage depends on the variance of the subject-specific intercepts and slopes.</p>
 <section id="maximum-likelihood-frequentist-estimates-2" class="level3">
 <h3 class="anchored" data-anchor-id="maximum-likelihood-frequentist-estimates-2">Maximum-likelihood (frequentist) estimates</h3>
 <div class="cell">

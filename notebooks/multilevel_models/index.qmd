@@ -58,7 +58,7 @@ dat <- as.list(sleepstudy) # for use with ulam()
 
 ## Complete pooling
 
-One line (in dark gray) to fit all data points irrespective of subject, i.e., no subject information is used by this model.
+One regression line (in dark gray) is fit to all data points, ignoring subject-specific differences. This model does not account for individual variability and assumes that all subjects share the same intercept and slope.
 
 ### Maximum-likelihood (frequentist) estimates
 
@@ -143,7 +143,7 @@ mcmc_areas(complete.pooling.fit)
 
 ## No pooling
 
-One line for each subject (in blue). No information is shared across subjects, same as fitting a model independently for each subject, i.e., stratification.
+One regression line (in blue) is fit for each subject independently, with no information shared across subjects. This model is equivalent to fitting separate regressions for each subject, ignoring any common structure in the data. In other words, it performs stratification, treating each subject as its own independent group.
 
 ### Maximum-likelihood (frequentist) estimates
 
@@ -234,7 +234,7 @@ mcmc_areas(no.pooling.fit)
 
 ## Partial pooling (mixed model, random intercept and slope)
 
-One line for each subject (in red). Information is shared across subjects such that each individual line is “shrinked” toward the “average” line (specified by the fixed intercept and slope and which is the same as the line fitted by the complete pooling model).
+Each subject has its own regression line (in red), but partial pooling shares information across subjects. This results in shrinkage, where each subject’s line is regularized toward the global mean line. The global mean line corresponds to the fixed effects (intercept and slope) and is identical to the line from the complete pooling model. The extent of shrinkage depends on the variance of the subject-specific intercepts and slopes.
 
 ### Maximum-likelihood (frequentist) estimates
 
