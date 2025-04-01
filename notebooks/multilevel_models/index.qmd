@@ -1,0 +1,456 @@
+---
+title: "Multilevel models"
+format:
+  html:
+    toc: true
+    df-print: paged
+execute: 
+  warning: false
+---
+
+## Introduction
+
+This notebook illustrates an additional example of how to use fixed and mixed effects/multilevel models (incl. the actual statistical models underlying each model formula), which were illustrated during the lecture of week 12 (2025-03-31, **Chapter 10: More models with interactions**) by [Angela Radulescu](https://www.angelaradulescu.com/).
+
+## Additional resources
+
+-   [Visual explanation of hierarchical modeling](http://mfviz.com/hierarchical-models/)
+
+-   [Pooling, No Pooling, and Partial Pooling](https://nicholasrjenkins.science/tutorials/bayesian-inference-with-stan/mm_stan/)
+
+-   [Mixed Models with R: Getting started with random effects](https://m-clark.github.io/mixed-models-with-R/)
+
+-   [Introduction to linear mixed models](https://ourcodingclub.github.io/tutorials/mixed-models/)
+
+-   [Introduction to Bayesian hierarchical modelling using R](https://andrewcparnell.github.io/bhm_course/)
+
+-   [Fitting linear mixed-effects models using lme4](https://doi.org/10.18637/jss.v067.i01)
+
+## Setup environment
+
+```{r}
+library(tidyverse)
+library(lme4)
+library(broom.mixed)
+library(rethinking) # https://github.com/rmcelreath/rethinking
+library(rstanarm)   # https://mc-stan.org/rstanarm/ (see also: https://paulbuerkner.com/brms/)
+library(bayesplot)
+
+theme_set(theme_bw())
+
+options(scipen = 1, digits = 4)
+
+set.seed(1969)
+```
+
+## Background information
+
+The data represents the average reaction time per day for subjects in a sleep deprivation study. On day 0 the subjects had their normal amount of sleep. Starting that night they were restricted to 3 hours of sleep per night. The observations represent the average reaction time on a series of tests given each day to each subject. Basically a repeated measures design.
+
+```{r}
+sleepstudy
+```
+
+```{r}
+dat <- as.list(sleepstudy) # for use with ulam()
+```
+
+## Complete pooling
+
+One line (in dark gray) to fit all data points irrespective of subject, i.e., no subject information is used by this model.
+
+### Maximum-likelihood (frequentist) estimates
+
+```{r}
+complete.pooling.fit = lm(Reaction ~ 1 + Days, data = sleepstudy)
+
+tidy(complete.pooling.fit, conf.int = TRUE)
+```
+
+```{r}
+ggplot(data = sleepstudy, aes(x = Days, y = Reaction)) +
+  geom_point(size = 2, alpha = 0.2) +
+  geom_smooth(method = "lm", se = FALSE, color = "darkgray")
+```
+
+```{r}
+sleepstudy$complete.pooling.fit = fitted(complete.pooling.fit)
+
+# plot the model results
+ggplot(data = sleepstudy, aes(x = Days, y = Reaction)) +
+  geom_line(aes(y = complete.pooling.fit), color = "darkgray") +
+  geom_point(size = 2, alpha = 0.2) +
+  facet_wrap(~ Subject)
+```
+
+### Statistical model and Bayesian estimates
+
+$$
+\begin{aligned}
+  \text{Reaction}_i &\sim \text{Normal}(\mu_i, \sigma) \\
+  \mu_i &= \alpha + \beta \times \text{Days}_i \\
+  \alpha &\sim \text{Normal}(250, 100) \\
+  \beta &\sim \text{Normal}(0, 100) \\
+  \sigma &\sim \text{Exponential}(0.1)
+\end{aligned}
+$$
+
+-   $\alpha$ is the **global intercept** (average reaction time when $\text{Days}=0$)
+-   $\beta$ is the **global slope** (effect of $\text{Days}$ on reaction time)
+-   $\sigma$ is the residual standard deviation
+-   $\alpha$ and $\beta$ are shared across all subjects, meaning there is **no individual variation** in intercepts or slopes
+
+```{r}
+complete.pooling.fit <- ulam(
+  alist(
+    Reaction ~ dnorm(mu, sigma),
+    mu <- a + b * Days,
+    a ~ dnorm(250, 100),
+    b ~ dnorm(0, 100),
+    sigma ~ dexp(0.1)
+  ), data = dat, chains = 4, cores = 4)
+```
+
+```{r}
+precis(complete.pooling.fit, depth = 2)
+```
+
+Instead of using the `ulam()` function from the `rethinking` package, you can the `stan_glm()` function from the `rstanarm` package to fit the Bayesian model using the `lm` syntax.
+
+```{r}
+complete.pooling.fit <- stan_glm(Reaction ~ 1 + Days, data = sleepstudy)
+```
+
+```{r}
+tidy(complete.pooling.fit)
+```
+
+```{r}
+mcmc_areas(complete.pooling.fit)
+```
+
+## No pooling
+
+One line for each subject (in blue). No information is shared across subjects, same as fitting a model independently for each subject, i.e., stratification.
+
+### Maximum-likelihood (frequentist) estimates
+
+```{r}
+no.pooling.fit = lm(Reaction ~ 1 + Days + Subject + Days:Subject, data = sleepstudy)
+
+tidy(no.pooling.fit, conf.int = TRUE)
+```
+
+```{r}
+sleepstudy$no.pooling.fit = fitted(no.pooling.fit)
+
+# plot the model results
+ggplot(data = sleepstudy, aes(x = Days, y = Reaction)) +
+  geom_line(aes(y = complete.pooling.fit), color = "darkgray") +
+  geom_line(aes(y = no.pooling.fit), color = "blue") +
+  geom_point(size = 2, alpha = 0.2) +
+  facet_wrap(~ Subject)
+```
+
+For example, let’s look at the estimates for the first two subjects (308 and 309), fitted independently using stratification:
+
+```{r}
+tidy(lm(Reaction ~ 1 + Days, data = subset(sleepstudy, Subject == 308)), conf.int = TRUE)
+```
+
+```{r}
+tidy(lm(Reaction ~ 1 + Days, data = subset(sleepstudy, Subject == 309)), conf.int = TRUE)
+```
+
+### Statistical model and Bayesian estimates
+
+$$
+\begin{aligned}
+  \text{Reaction}_{ij} &\sim \text{Normal}(\mu_{ij}, \sigma) \\
+  \mu_{ij} &= a_j + b_j \times \text{Days}_{ij} \\
+  a_j &\sim \text{Normal}(250, 100) \\
+  b_j &\sim \text{Normal}(0, 100) \\
+  \sigma &\sim \text{Exponential}(0.1)
+\end{aligned}
+$$
+
+-   $a_j$ is the **subject-specific intercept** for $\text{Subject}_j$
+-   $b_j$ is the **subject-specific slope** for $\text{Subject}_j$
+-   $\sigma$ is the residual standard deviation
+-   Each subject has **completely independent** intercepts and slopes, meaning there is **no sharing of information** between subjects
+
+```{r}
+no.pooling.fit <- ulam(
+  alist(
+    Reaction ~ dnorm(mu, sigma),
+    mu <- a_subject[Subject] + b_subject[Subject] * Days,
+    a_subject[Subject] ~ dnorm(250, 100),  
+    b_subject[Subject] ~ dnorm(0, 100),
+    sigma ~ dexp(0.1)
+  ), data = dat, chains = 4, cores = 4)
+```
+
+```{r}
+precis(no.pooling.fit, depth = 2)
+```
+
+Instead of using the `ulam()` function from the `rethinking` package, you can the `stan_glm()` function from the `rstanarm` package to fit the Bayesian model using the `lm` syntax.
+
+```{r}
+no.pooling.fit <- rstanarm::stan_glm(Reaction ~ 1 + Days + Subject + Days:Subject, data = sleepstudy)
+```
+
+```{r}
+tidy(no.pooling.fit)
+```
+
+```{r}
+mcmc_areas(no.pooling.fit)
+```
+
+## Partial pooling (mixed model, random intercept and slope)
+
+One line for each subject (in red). Information is shared across subjects such that each individual line is “shrinked” toward the “average” line (specified by the fixed intercept and slope and which is the same as the line fitted by the complete pooling model).
+
+### Maximum-likelihood (frequentist) estimates
+
+```{r}
+partial.pooling.fit = lmer(Reaction ~ 1 + Days + (1 + Days | Subject), data = sleepstudy)
+
+tidy(partial.pooling.fit, conf.int = TRUE)
+```
+
+```{r}
+coef(partial.pooling.fit)$Subject
+```
+
+```{r}
+sleepstudy$partial.pooling.fit = fitted(partial.pooling.fit)
+
+# plot the model results
+ggplot(data = sleepstudy, aes(x = Days, y = Reaction)) +
+  geom_line(aes(y = complete.pooling.fit), color = "darkgray") +
+  geom_line(aes(y = no.pooling.fit), color = "blue") +
+  geom_line(aes(y = partial.pooling.fit), color = "red") +
+  geom_point(size = 2, alpha = 0.2) +
+  facet_wrap(~ Subject)
+```
+
+### Statistical model and Bayesian estimates
+
+$$
+\begin{aligned}
+  \text{Reaction}_{ij} &\sim \text{Normal}(\mu_{ij}, \sigma) \\
+  \mu_{ij} &= \alpha + \beta \times \text{Days}_{ij} + \alpha_j + \beta_j \times \text{Days}_{ij} \\
+  \alpha &\sim \text{Normal}(250, 100) \\
+  \beta &\sim \text{Normal}(0, 100) \\
+  \alpha_j &\sim \text{Normal}(0, \sigma_{\alpha}) \quad \text{for each subject } j  \\
+  \beta_j &\sim \text{Normal}(0, \sigma_{\beta}) \quad \text{for each subject } j  \\
+  \sigma_{\alpha} &\sim \text{Exponential}(0.1) \\
+  \sigma_{\beta} &\sim \text{Exponential}(0.1) \\
+  \sigma &\sim \text{Exponential}(0.1)
+\end{aligned}
+$$
+
+-   $\alpha$ is the **global mean intercept** across subjects
+-   $\beta$ is the **global mean slope** across subjects
+-   $\alpha_j$ is the **subject-specific deviation in intercept** from $\alpha$
+-   $\beta_j$ is the **subject-specific deviation in slope** from $\beta$
+-   $\sigma_{\alpha}$ and $\sigma_{\beta}$ control how much individual subjects vary from the global mean
+-   $\sigma$ is the residual standard deviation
+-   Subjects **partially share** information, meaning individual parameters are regularized toward the global estimates
+
+```{r}
+partial.pooling.fit <- ulam(
+  alist(
+    Reaction ~ dnorm(mu, sigma),
+    mu <- alpha + beta * Days + alpha_subject[Subject] + beta_subject[Subject] * Days,
+    alpha ~ dnorm(250, 100),
+    beta ~ dnorm(0, 100),
+    alpha_subject[Subject] ~ dnorm(0, sigma_alpha),
+    beta_subject[Subject] ~ dnorm(0, sigma_beta),
+    sigma_alpha ~ dexp(0.1),
+    sigma_beta ~ dexp(0.1),
+    sigma ~ dexp(0.1)
+  ), data = dat, chains = 4, cores = 4)
+```
+
+```{r}
+precis(partial.pooling.fit, depth = 2)
+```
+
+Instead of using the `ulam()` function from the `rethinking` package, you can the `stan_glmer()` function from the `rstanarm` package to fit the Bayesian model using the `lmer` syntax.
+
+```{r}
+partial.pooling.fit <- stan_glmer(Reaction ~ 1 + Days + (1 + Days | Subject), data = sleepstudy)
+```
+
+```{r}
+tidy(partial.pooling.fit)
+```
+
+```{r}
+mcmc_areas(partial.pooling.fit, pars = vars(-starts_with("Sigma")))
+```
+
+## Partial pooling (mixed model, random intercept and fixed slope)
+
+### Maximum-likelihood (frequentist) estimates
+
+```{r}
+partial.pooling.fit.fixed_slope = lmer(Reaction ~ 1 + Days + (1 | Subject), data = sleepstudy)
+
+tidy(partial.pooling.fit.fixed_slope, conf.int = TRUE)
+```
+
+```{r}
+coef(partial.pooling.fit.fixed_slope)$Subject
+```
+
+```{r}
+sleepstudy$partial.pooling.fit.fixed_slope = fitted(partial.pooling.fit.fixed_slope)
+
+# plot the model results
+ggplot(data = sleepstudy, aes(x = Days, y = Reaction)) +
+  geom_line(aes(y = complete.pooling.fit), color = "darkgray") +
+  geom_line(aes(y = no.pooling.fit), color = "blue") +
+  geom_line(aes(y = partial.pooling.fit.fixed_slope), color = "red") +
+  geom_point(size = 2, alpha = 0.2) +
+  facet_wrap(~ Subject)
+```
+
+### Statistical model and Bayesian estimates
+
+$$
+\begin{aligned}
+  \text{Reaction}_{ij} &\sim \text{Normal}(\mu_{ij}, \sigma) \\
+  \mu_{ij} &= \alpha + \beta \times \text{Days}_{ij} + \alpha_j \\
+  \alpha &\sim \text{Normal}(250, 100) \\
+  \beta &\sim \text{Normal}(0, 100) \\
+  \alpha_j &\sim \text{Normal}(0, \sigma_{\alpha}) \quad \text{for each subject } j  \\
+  \sigma_{\alpha} &\sim \text{Exponential}(0.1) \\
+  \sigma &\sim \text{Exponential}(0.1)
+\end{aligned}
+$$
+
+-   $\alpha$ is the **global mean intercept** across subjects
+-   $\beta$ is the **global slope** (fixed effect of $\text{Days}$)
+-   $\alpha_j$ is the **subject-specific deviation in intercept** from $\alpha$
+-   $\sigma_{\alpha}$ controls how much intercepts vary across subjects
+-   $\sigma$ is the residual standard deviation
+-   Subjects **share the same slope** but have **varying intercepts**
+
+```{r}
+partial.pooling.fit.fixed_slope <- ulam(
+  alist(
+    Reaction ~ dnorm(mu, sigma),
+    mu <- alpha + beta * Days + alpha_subject[Subject],
+    alpha ~ dnorm(250, 100),
+    beta ~ dnorm(0, 100),
+    alpha_subject[Subject] ~ dnorm(0, sigma_alpha),
+    sigma_alpha ~ dexp(0.1),
+    sigma ~ dexp(0.1)
+  ), data = dat, chains = 4, cores = 4)
+```
+
+```{r}
+precis(partial.pooling.fit.fixed_slope, depth = 2)
+```
+
+Instead of using the `ulam()` function from the `rethinking` package, you can the `stan_glmer()` function from the `rstanarm` package to fit the Bayesian model using the `lmer` syntax.
+
+```{r}
+partial.pooling.fit.fixed_slope <- stan_glmer(Reaction ~ 1 + Days + (1 | Subject), data = sleepstudy)
+```
+
+```{r}
+tidy(partial.pooling.fit.fixed_slope)
+```
+
+```{r}
+mcmc_areas(partial.pooling.fit.fixed_slope, pars = vars(-starts_with("Sigma")))
+```
+
+## Partial pooling (mixed model, fixed intercept and random slope)
+
+### Maximum-likelihood (frequentist) estimates
+
+```{r}
+partial.pooling.fit.fixed_intercept = lmer(Reaction ~ 1 + Days + (0 + Days | Subject), data = sleepstudy)
+
+tidy(partial.pooling.fit.fixed_intercept, conf.int = TRUE)
+```
+
+```{r}
+coef(partial.pooling.fit.fixed_intercept)$Subject
+```
+
+```{r}
+sleepstudy$partial.pooling.fit.fixed_intercept = fitted(partial.pooling.fit.fixed_intercept)
+
+# plot the model results
+ggplot(data = sleepstudy, aes(x = Days, y = Reaction)) +
+  geom_line(aes(y = complete.pooling.fit), color = "darkgray") +
+  geom_line(aes(y = no.pooling.fit), color = "blue") +
+  geom_line(aes(y = partial.pooling.fit.fixed_intercept), color = "red") +
+  geom_point(size = 2, alpha = 0.2) +
+  facet_wrap(~ Subject)
+```
+
+### Statistical model and Bayesian estimates
+
+$$
+\begin{aligned}
+  \text{Reaction}_{ij} &\sim \text{Normal}(\mu_{ij}, \sigma) \\
+  \mu_{ij} &= \alpha + \beta \times \text{Days}_{ij} + \beta_j \times \text{Days}_{ij} \\
+  \alpha &\sim \text{Normal}(250, 100) \\
+  \beta &\sim \text{Normal}(0, 100) \\
+  \beta_j &\sim \text{Normal}(0, \sigma_{\beta}) \\
+  \sigma_{\beta} &\sim \text{Exponential}(0.1) \\
+  \sigma &\sim \text{Exponential}(0.1)
+\end{aligned}
+$$
+
+-   $\alpha$ is the **global mean intercept** across subjects
+-   $\beta$ is the **global mean slope** across subjects
+-   $\beta_j$ is the **subject-specific deviation in slope** from $\beta$
+-   $\sigma_{\beta}$ controls how much slopes vary across subjects
+-   $\sigma$ is the residual standard deviation
+-   Subjects **share the same intercept** but have **varying slopes**
+
+```{r}
+partial.pooling.fit.fixed_intercept <- ulam(
+  alist(
+    Reaction ~ dnorm(mu, sigma),
+    mu <- alpha + beta * Days + beta_subject[Subject] * Days,
+    alpha ~ dnorm(250, 100),
+    beta ~ dnorm(0, 100),
+    beta_subject[Subject] ~ dnorm(0, sigma_beta),
+    sigma_beta ~ dexp(0.1),
+    sigma ~ dexp(0.1)
+  ), data = dat, chains = 4, cores = 4)
+```
+
+```{r}
+precis(partial.pooling.fit.fixed_intercept, depth = 2)
+```
+
+Instead of using the `ulam()` function from the `rethinking` package, you can the `stan_glmer()` function from the `rstanarm` package to fit the Bayesian model using the `lmer` syntax.
+
+```{r}
+partial.pooling.fit.fixed_intercept <- stan_glmer(Reaction ~ 1 + Days + (0 + Days | Subject), data = sleepstudy, )
+```
+
+```{r}
+tidy(partial.pooling.fit.fixed_intercept)
+```
+
+```{r}
+mcmc_areas(partial.pooling.fit.fixed_intercept, pars = vars(-starts_with("Sigma")))
+```
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```
