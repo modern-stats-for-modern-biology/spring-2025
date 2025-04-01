@@ -1,0 +1,209 @@
+---
+title: "Logistic regression/machine learning in R"
+date: 2024-03-29
+author: Edoardo \"Dado\" Marcora
+execute:
+  warning: false
+format:
+  html:
+    toc: true
+    df-print: kable
+---
+
+## Introduction
+
+XXX
+
+## Setup environment
+
+```{r}
+#| output: false
+library(tidyverse)
+library(coursekata)
+library(performance)
+library(parameters)
+library(modelsummary)
+library(ggeffects)
+library(skimr)
+
+theme_set(theme_bw())
+
+set.seed(123)
+
+options(scipen = 0, ggeffects_margin = "empirical")
+```
+
+## Background information
+
+We will use the [Titanic dataset](https://www.kaggle.com/c/titanic/data) from [Kaggle](https://www.kaggle.com/) to predict survival on the Titanic and get familiar with logistic regression and machine learning.
+
+### **Data dictionary**
+
++--------------+-------------------------------------------+---------------------------------------+
+| **Variable** | **Definition**                            | **Key**                               |
++==============+===========================================+=======================================+
+| `Survived`   | Survival                                  | `0` = No, `1` = Yes                   |
++--------------+-------------------------------------------+---------------------------------------+
+| `Pclass`     | Ticket class                              | `1` = 1^st^, `2` = 2^nd^, `3` = 3^rd^ |
++--------------+-------------------------------------------+---------------------------------------+
+| `Name`       | Name                                      |                                       |
++--------------+-------------------------------------------+---------------------------------------+
+| `Sex`        | Sex                                       |                                       |
++--------------+-------------------------------------------+---------------------------------------+
+| `Age`        | Age in years                              |                                       |
++--------------+-------------------------------------------+---------------------------------------+
+| `SibSp`      | \# of siblings/spouses aboard the Titanic |                                       |
++--------------+-------------------------------------------+---------------------------------------+
+| `Parch`      | \# of parents/children aboard the Titanic |                                       |
++--------------+-------------------------------------------+---------------------------------------+
+| `Ticket`     | Ticket number                             |                                       |
++--------------+-------------------------------------------+---------------------------------------+
+| `Fare`       | Passenger fare                            |                                       |
++--------------+-------------------------------------------+---------------------------------------+
+| `Cabin`      | Cabin number                              |                                       |
++--------------+-------------------------------------------+---------------------------------------+
+| `Embarked`   | Port of embarkation                       | `C` = Cherbourg\                      |
+|              |                                           | `Q` = Queenstown\                     |
+|              |                                           | `S` = Southampton                     |
++--------------+-------------------------------------------+---------------------------------------+
+
+### **Variable notes**
+
+**Pclass**: A proxy for socio-economic status (SES)\
+1^st^ = Upper\
+2^nd^ = Middle\
+3^rd^ = Lower\
+\
+**Age**: Age is fractional if less than 1. If the age is estimated, is it in the form of xx.5\
+\
+**SibSp**: The dataset defines family relations in this way...\
+Sibling = brother, sister, stepbrother, stepsister\
+Spouse = husband, wife (mistresses and fiancés were ignored)\
+\
+**Parch**: The dataset defines family relations in this way...\
+Parent = mother, father\
+Child = daughter, son, stepdaughter, stepson\
+Some children travelled only with a nanny, therefore parch=0 for them
+
+## Read and prep data
+
+```{r}
+d1 <- read_csv("train.csv", show_col_types = FALSE)
+
+head(d1)
+```
+
+```{r}
+skim(d1)
+```
+
+```{r}
+d1 <- d1 %>%
+  select(-c(PassengerId, Name, Ticket, Cabin)) %>%
+  drop_na(Embarked) %>%
+  mutate(
+    Survived = factor(Survived),
+    Age = if_else(is.na(Age), median(Age, na.rm = TRUE), Age),
+    Sex = factor(Sex),
+    Pclass = factor(
+      Pclass,
+      levels = c(1, 2, 3),
+      labels = c("1st", "2nd", "3rd"),
+      ordered = TRUE),
+    Embarked = factor(
+      Embarked,
+      levels = c("C", "Q", "S"),
+      labels = c("Cherbourg", "Queenstown", "Southampton"),
+      ordered = FALSE))
+```
+
+```{r}
+skim(d1)
+```
+
+## Exploratory data analysis
+
+```{r}
+gf_props(~ Survived, fill =  ~ Sex, position = "fill", data = d1)
+```
+
+```{r}
+gf_props(~ Survived, fill =  ~ Pclass, position = "fill", data = d1)
+```
+
+```{r}
+gf_props(~ Survived, fill =  ~ Embarked, position = "fill", data = d1)
+```
+
+```{r}
+gf_density(~ Age, fill = ~ Survived, data = d1)
+```
+
+```{r}
+favstats(Age ~ Survived, data = d1)
+```
+
+```{r}
+gf_density(~ log(Fare + 1), fill = ~ Survived, data = d1)
+```
+
+```{r}
+favstats(Fare ~ Survived, data = d1)
+```
+
+## Fit simple linear regression model to the data
+
+```{r}
+m1 <- glm(Survived ~ Age + Sex + Pclass, family = "binomial", data = d1)
+```
+
+```{r}
+#| fig-height: 8
+check_model(m1)
+```
+
+## Evaluate model and compute effect sizes
+
+```{r}
+modelsummary(m1, stars = TRUE)
+```
+
+```{r}
+model_parameters(m1, exponentiate = TRUE)
+```
+
+```{r}
+pred.sex <- predict_response(m1, "Sex")
+
+pred.sex
+```
+
+```{r}
+test_predictions(pred.sex)
+```
+
+```{r}
+pred.pclass <- predict_response(m1, "Pclass")
+
+pred.pclass
+```
+
+```{r}
+test_predictions(pred.pclass)
+```
+
+```{r}
+pred.age <- predict_response(m1, "Age")
+
+pred.age
+```
+
+```{r}
+test_predictions(pred.age)
+```
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```

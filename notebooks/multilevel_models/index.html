@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Edoardo &quot;Dado&quot; Marcora">
+<meta name="dcterms.date" content="2025-03-29">
+
+<title>Mixed models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="index_files/libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="index_files/libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#additional-resources" id="toc-additional-resources" class="nav-link" data-scroll-target="#additional-resources">Additional resources</a></li>
+  <li><a href="#setup-environment" id="toc-setup-environment" class="nav-link" data-scroll-target="#setup-environment">Setup environment</a></li>
+  <li><a href="#background-information" id="toc-background-information" class="nav-link" data-scroll-target="#background-information">Background information</a></li>
+  <li><a href="#complete-pooling" id="toc-complete-pooling" class="nav-link" data-scroll-target="#complete-pooling">Complete pooling</a>
+  <ul class="collapse">
+  <li><a href="#maximum-likelihood-frequentist-estimates" id="toc-maximum-likelihood-frequentist-estimates" class="nav-link" data-scroll-target="#maximum-likelihood-frequentist-estimates">Maximum-likelihood (frequentist) estimates</a></li>
+  <li><a href="#statistical-model-and-bayesian-estimates" id="toc-statistical-model-and-bayesian-estimates" class="nav-link" data-scroll-target="#statistical-model-and-bayesian-estimates">Statistical model and Bayesian estimates</a></li>
+  </ul></li>
+  <li><a href="#no-pooling" id="toc-no-pooling" class="nav-link" data-scroll-target="#no-pooling">No pooling</a>
+  <ul class="collapse">
+  <li><a href="#maximum-likelihood-frequentist-estimates-1" id="toc-maximum-likelihood-frequentist-estimates-1" class="nav-link" data-scroll-target="#maximum-likelihood-frequentist-estimates-1">Maximum-likelihood (frequentist) estimates</a></li>
+  <li><a href="#statistical-model-and-bayesian-estimates-1" id="toc-statistical-model-and-bayesian-estimates-1" class="nav-link" data-scroll-target="#statistical-model-and-bayesian-estimates-1">Statistical model and Bayesian estimates</a></li>
+  </ul></li>
+  <li><a href="#partial-pooling-mixed-model-random-intercept-and-slope" id="toc-partial-pooling-mixed-model-random-intercept-and-slope" class="nav-link" data-scroll-target="#partial-pooling-mixed-model-random-intercept-and-slope">Partial pooling (mixed model, random intercept and slope)</a>
+  <ul class="collapse">
+  <li><a href="#maximum-likelihood-frequentist-estimates-2" id="toc-maximum-likelihood-frequentist-estimates-2" class="nav-link" data-scroll-target="#maximum-likelihood-frequentist-estimates-2">Maximum-likelihood (frequentist) estimates</a></li>
+  <li><a href="#statistical-model-and-bayesian-estimates-2" id="toc-statistical-model-and-bayesian-estimates-2" class="nav-link" data-scroll-target="#statistical-model-and-bayesian-estimates-2">Statistical model and Bayesian estimates</a></li>
+  </ul></li>
+  <li><a href="#partial-pooling-mixed-model-random-intercept-and-fixed-slope" id="toc-partial-pooling-mixed-model-random-intercept-and-fixed-slope" class="nav-link" data-scroll-target="#partial-pooling-mixed-model-random-intercept-and-fixed-slope">Partial pooling (mixed model, random intercept and fixed slope)</a>
+  <ul class="collapse">
+  <li><a href="#maximum-likelihood-frequentist-estimates-3" id="toc-maximum-likelihood-frequentist-estimates-3" class="nav-link" data-scroll-target="#maximum-likelihood-frequentist-estimates-3">Maximum-likelihood (frequentist) estimates</a></li>
+  <li><a href="#statistical-model-and-bayesian-estimates-3" id="toc-statistical-model-and-bayesian-estimates-3" class="nav-link" data-scroll-target="#statistical-model-and-bayesian-estimates-3">Statistical model and Bayesian estimates</a></li>
+  </ul></li>
+  <li><a href="#partial-pooling-mixed-model-fixed-intercept-and-random-slope" id="toc-partial-pooling-mixed-model-fixed-intercept-and-random-slope" class="nav-link" data-scroll-target="#partial-pooling-mixed-model-fixed-intercept-and-random-slope">Partial pooling (mixed model, fixed intercept and random slope)</a>
+  <ul class="collapse">
+  <li><a href="#maximum-likelihood-frequentist-estimates-4" id="toc-maximum-likelihood-frequentist-estimates-4" class="nav-link" data-scroll-target="#maximum-likelihood-frequentist-estimates-4">Maximum-likelihood (frequentist) estimates</a></li>
+  <li><a href="#statistical-model-and-bayesian-estimates-4" id="toc-statistical-model-and-bayesian-estimates-4" class="nav-link" data-scroll-target="#statistical-model-and-bayesian-estimates-4">Statistical model and Bayesian estimates</a></li>
+  </ul></li>
+  <li><a href="#print-environment" id="toc-print-environment" class="nav-link" data-scroll-target="#print-environment">Print environment</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Mixed models</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Edoardo "Dado" Marcora </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 29, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This notebook shows an additional example of the use of both fixed and mixed effects/multilevel models (using both frequentist and Bayesian estimation and illustrating the statistical models underlying each of the model formulas), which were illustrated during the lecture of week 12 (2025-03-31, <strong>Chapter 10: More models with interactions</strong>) by <a href="https://www.angelaradulescu.com/">Angela Radulescu</a>.</p>
+</section>
+<section id="additional-resources" class="level2">
+<h2 class="anchored" data-anchor-id="additional-resources">Additional resources</h2>
+<ul>
+<li><a href="http://mfviz.com/hierarchical-models/">Visual explanation of hierarchical modeling</a></li>
+<li><a href="https://nicholasrjenkins.science/tutorials/bayesian-inference-with-stan/mm_stan/">Pooling, No Pooling, and Partial Pooling</a></li>
+<li><a href="https://m-clark.github.io/mixed-models-with-R/">Mixed Models with R: Getting started with random effects</a></li>
+<li><a href="https://ourcodingclub.github.io/tutorials/mixed-models/">Introduction to linear mixed models</a></li>
+<li><a href="https://andrewcparnell.github.io/bhm_course/">Introduction to Bayesian hierarchical modelling using R</a></li>
+<li><a href="https://doi.org/10.18637/jss.v067.i01">Fitting linear mixed-effects models using lme4</a></li>
+</ul>
+</section>
+<section id="setup-environment" class="level2">
+<h2 class="anchored" data-anchor-id="setup-environment">Setup environment</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom.mixed)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rethinking) <span class="co"># https://github.com/rmcelreath/rethinking</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)   <span class="co"># https://mc-stan.org/rstanarm/ (see also: https://paulbuerkner.com/brms/)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">1</span>, <span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1969</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="background-information" class="level2">
+<h2 class="anchored" data-anchor-id="background-information">Background information</h2>
+<p>The data represents the average reaction time per day for subjects in a sleep deprivation study. On day 0 the subjects had their normal amount of sleep. Starting that night they were restricted to 3 hours of sleep per night. The observations represent the average reaction time on a series of tests given each day to each subject. Basically a repeated measures design.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sleepstudy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Reaction"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Days"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Subject"],"name":[3],"type":["fct"],"align":["left"]}],"data":[{"1":"249.6","2":"0","3":"308"},{"1":"258.7","2":"1","3":"308"},{"1":"250.8","2":"2","3":"308"},{"1":"321.4","2":"3","3":"308"},{"1":"356.9","2":"4","3":"308"},{"1":"414.7","2":"5","3":"308"},{"1":"382.2","2":"6","3":"308"},{"1":"290.1","2":"7","3":"308"},{"1":"430.6","2":"8","3":"308"},{"1":"466.4","2":"9","3":"308"},{"1":"222.7","2":"0","3":"309"},{"1":"205.3","2":"1","3":"309"},{"1":"203.0","2":"2","3":"309"},{"1":"204.7","2":"3","3":"309"},{"1":"207.7","2":"4","3":"309"},{"1":"216.0","2":"5","3":"309"},{"1":"213.6","2":"6","3":"309"},{"1":"217.7","2":"7","3":"309"},{"1":"224.3","2":"8","3":"309"},{"1":"237.3","2":"9","3":"309"},{"1":"199.1","2":"0","3":"310"},{"1":"194.3","2":"1","3":"310"},{"1":"234.3","2":"2","3":"310"},{"1":"232.8","2":"3","3":"310"},{"1":"229.3","2":"4","3":"310"},{"1":"220.5","2":"5","3":"310"},{"1":"235.4","2":"6","3":"310"},{"1":"255.8","2":"7","3":"310"},{"1":"261.0","2":"8","3":"310"},{"1":"247.5","2":"9","3":"310"},{"1":"321.5","2":"0","3":"330"},{"1":"300.4","2":"1","3":"330"},{"1":"283.9","2":"2","3":"330"},{"1":"285.1","2":"3","3":"330"},{"1":"285.8","2":"4","3":"330"},{"1":"297.6","2":"5","3":"330"},{"1":"280.2","2":"6","3":"330"},{"1":"318.3","2":"7","3":"330"},{"1":"305.3","2":"8","3":"330"},{"1":"354.0","2":"9","3":"330"},{"1":"287.6","2":"0","3":"331"},{"1":"285.0","2":"1","3":"331"},{"1":"301.8","2":"2","3":"331"},{"1":"320.1","2":"3","3":"331"},{"1":"316.3","2":"4","3":"331"},{"1":"293.3","2":"5","3":"331"},{"1":"290.1","2":"6","3":"331"},{"1":"334.8","2":"7","3":"331"},{"1":"293.7","2":"8","3":"331"},{"1":"371.6","2":"9","3":"331"},{"1":"234.9","2":"0","3":"332"},{"1":"242.8","2":"1","3":"332"},{"1":"273.0","2":"2","3":"332"},{"1":"309.8","2":"3","3":"332"},{"1":"317.5","2":"4","3":"332"},{"1":"310.0","2":"5","3":"332"},{"1":"454.2","2":"6","3":"332"},{"1":"346.8","2":"7","3":"332"},{"1":"330.3","2":"8","3":"332"},{"1":"253.9","2":"9","3":"332"},{"1":"283.8","2":"0","3":"333"},{"1":"289.6","2":"1","3":"333"},{"1":"276.8","2":"2","3":"333"},{"1":"299.8","2":"3","3":"333"},{"1":"297.2","2":"4","3":"333"},{"1":"338.2","2":"5","3":"333"},{"1":"332.0","2":"6","3":"333"},{"1":"348.8","2":"7","3":"333"},{"1":"333.4","2":"8","3":"333"},{"1":"362.0","2":"9","3":"333"},{"1":"265.5","2":"0","3":"334"},{"1":"276.2","2":"1","3":"334"},{"1":"243.4","2":"2","3":"334"},{"1":"254.7","2":"3","3":"334"},{"1":"279.0","2":"4","3":"334"},{"1":"284.2","2":"5","3":"334"},{"1":"305.5","2":"6","3":"334"},{"1":"331.5","2":"7","3":"334"},{"1":"335.7","2":"8","3":"334"},{"1":"377.3","2":"9","3":"334"},{"1":"241.6","2":"0","3":"335"},{"1":"273.9","2":"1","3":"335"},{"1":"254.5","2":"2","3":"335"},{"1":"270.8","2":"3","3":"335"},{"1":"251.5","2":"4","3":"335"},{"1":"254.6","2":"5","3":"335"},{"1":"245.5","2":"6","3":"335"},{"1":"235.3","2":"7","3":"335"},{"1":"235.8","2":"8","3":"335"},{"1":"237.2","2":"9","3":"335"},{"1":"312.4","2":"0","3":"337"},{"1":"313.8","2":"1","3":"337"},{"1":"291.6","2":"2","3":"337"},{"1":"346.1","2":"3","3":"337"},{"1":"365.7","2":"4","3":"337"},{"1":"391.8","2":"5","3":"337"},{"1":"404.3","2":"6","3":"337"},{"1":"416.7","2":"7","3":"337"},{"1":"455.9","2":"8","3":"337"},{"1":"458.9","2":"9","3":"337"},{"1":"236.1","2":"0","3":"349"},{"1":"230.3","2":"1","3":"349"},{"1":"238.9","2":"2","3":"349"},{"1":"254.9","2":"3","3":"349"},{"1":"250.7","2":"4","3":"349"},{"1":"269.8","2":"5","3":"349"},{"1":"281.6","2":"6","3":"349"},{"1":"308.1","2":"7","3":"349"},{"1":"336.3","2":"8","3":"349"},{"1":"351.6","2":"9","3":"349"},{"1":"256.3","2":"0","3":"350"},{"1":"243.5","2":"1","3":"350"},{"1":"256.2","2":"2","3":"350"},{"1":"255.5","2":"3","3":"350"},{"1":"268.9","2":"4","3":"350"},{"1":"329.7","2":"5","3":"350"},{"1":"379.4","2":"6","3":"350"},{"1":"362.9","2":"7","3":"350"},{"1":"394.5","2":"8","3":"350"},{"1":"389.1","2":"9","3":"350"},{"1":"250.5","2":"0","3":"351"},{"1":"300.1","2":"1","3":"351"},{"1":"269.9","2":"2","3":"351"},{"1":"280.6","2":"3","3":"351"},{"1":"271.8","2":"4","3":"351"},{"1":"304.6","2":"5","3":"351"},{"1":"287.7","2":"6","3":"351"},{"1":"266.6","2":"7","3":"351"},{"1":"321.5","2":"8","3":"351"},{"1":"347.6","2":"9","3":"351"},{"1":"221.7","2":"0","3":"352"},{"1":"298.2","2":"1","3":"352"},{"1":"326.9","2":"2","3":"352"},{"1":"346.9","2":"3","3":"352"},{"1":"348.7","2":"4","3":"352"},{"1":"352.8","2":"5","3":"352"},{"1":"354.4","2":"6","3":"352"},{"1":"360.4","2":"7","3":"352"},{"1":"375.6","2":"8","3":"352"},{"1":"388.5","2":"9","3":"352"},{"1":"271.9","2":"0","3":"369"},{"1":"268.4","2":"1","3":"369"},{"1":"257.2","2":"2","3":"369"},{"1":"277.7","2":"3","3":"369"},{"1":"314.8","2":"4","3":"369"},{"1":"317.2","2":"5","3":"369"},{"1":"298.1","2":"6","3":"369"},{"1":"348.1","2":"7","3":"369"},{"1":"340.3","2":"8","3":"369"},{"1":"366.5","2":"9","3":"369"},{"1":"225.3","2":"0","3":"370"},{"1":"234.5","2":"1","3":"370"},{"1":"238.9","2":"2","3":"370"},{"1":"240.5","2":"3","3":"370"},{"1":"267.5","2":"4","3":"370"},{"1":"344.2","2":"5","3":"370"},{"1":"281.1","2":"6","3":"370"},{"1":"347.6","2":"7","3":"370"},{"1":"365.2","2":"8","3":"370"},{"1":"372.2","2":"9","3":"370"},{"1":"269.9","2":"0","3":"371"},{"1":"272.4","2":"1","3":"371"},{"1":"277.9","2":"2","3":"371"},{"1":"281.8","2":"3","3":"371"},{"1":"279.2","2":"4","3":"371"},{"1":"284.5","2":"5","3":"371"},{"1":"259.3","2":"6","3":"371"},{"1":"304.6","2":"7","3":"371"},{"1":"350.8","2":"8","3":"371"},{"1":"369.5","2":"9","3":"371"},{"1":"269.4","2":"0","3":"372"},{"1":"273.5","2":"1","3":"372"},{"1":"297.6","2":"2","3":"372"},{"1":"310.6","2":"3","3":"372"},{"1":"287.2","2":"4","3":"372"},{"1":"329.6","2":"5","3":"372"},{"1":"334.5","2":"6","3":"372"},{"1":"343.2","2":"7","3":"372"},{"1":"369.1","2":"8","3":"372"},{"1":"364.1","2":"9","3":"372"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">as.list</span>(sleepstudy) <span class="co"># for use with ulam()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="complete-pooling" class="level2">
+<h2 class="anchored" data-anchor-id="complete-pooling">Complete pooling</h2>
+<p>One line (in dark gray) to fit all data points irrespective of subject, i.e., no subject information is used by this model.</p>
+<section id="maximum-likelihood-frequentist-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="maximum-likelihood-frequentist-estimates">Maximum-likelihood (frequentist) estimates</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>complete.pooling.fit <span class="ot">=</span> <span class="fu">lm</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days, <span class="at">data =</span> sleepstudy)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(complete.pooling.fit, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"(Intercept)","2":"251.41","3":"6.610","4":"38.033","5":"2.157e-87","6":"238.361","7":"264.45"},{"1":"Days","2":"10.47","3":"1.238","4":"8.454","5":"9.894e-15","6":"8.024","7":"12.91"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> sleepstudy, <span class="fu">aes</span>(<span class="at">x =</span> Days, <span class="at">y =</span> Reaction)) <span class="sc">+</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"darkgray"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sleepstudy<span class="sc">$</span>complete.pooling.fit <span class="ot">=</span> <span class="fu">fitted</span>(complete.pooling.fit)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the model results</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> sleepstudy, <span class="fu">aes</span>(<span class="at">x =</span> Days, <span class="at">y =</span> Reaction)) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> complete.pooling.fit), <span class="at">color =</span> <span class="st">"darkgray"</span>) <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Subject)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="statistical-model-and-bayesian-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-model-and-bayesian-estimates">Statistical model and Bayesian estimates</h3>
+<p><span class="math display">\[
+\begin{aligned}
+  \text{Reaction}_i &amp;\sim \text{Normal}(\mu_i, \sigma) \\
+  \mu_i &amp;= \alpha + \beta \times \text{Days}_i \\
+  \alpha &amp;\sim \text{Normal}(250, 100) \\
+  \beta &amp;\sim \text{Normal}(0, 100) \\
+  \sigma &amp;\sim \text{Exponential}(0.1)
+\end{aligned}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\alpha\)</span> is the global intercept (average reaction time when <span class="math inline">\(\text{Days}=0\)</span>)</li>
+<li><span class="math inline">\(\beta\)</span> is the global slope (effect of <span class="math inline">\(\text{Days}\)</span> on reaction time)</li>
+<li><span class="math inline">\(\sigma\)</span> is the residual standard deviation</li>
+<li><span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are shared across all subjects, meaning there is <strong>no individual variation</strong> in intercepts or slopes</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>complete.pooling.fit <span class="ot">&lt;-</span> <span class="fu">ulam</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">alist</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    Reaction <span class="sc">~</span> <span class="fu">dnorm</span>(mu, sigma),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> a <span class="sc">+</span> b <span class="sc">*</span> Days,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    a <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">250</span>, <span class="dv">100</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    b <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    sigma <span class="sc">~</span> <span class="fu">dexp</span>(<span class="fl">0.1</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  ), <span class="at">data =</span> dat, <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">precis</span>(complete.pooling.fit, <span class="at">depth =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mean"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["5.5%"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["94.5%"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["rhat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["ess_bulk"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"251.46","2":"6.754","3":"240.913","4":"262.08","5":"1.004","6":"876.7","_rn_":"a"},{"1":"10.46","2":"1.268","3":"8.404","4":"12.48","5":"1.006","6":"860.7","_rn_":"b"},{"1":"47.30","2":"2.555","3":"43.302","4":"51.58","5":"1.005","6":"910.5","_rn_":"sigma"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Instead of using the <code>ulam()</code> function from the <code>rethinking</code> package, you can the <code>stan_glm()</code> function from the <code>rstanarm</code> package to fit the Bayesian model using the <code>lm</code> syntax.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>complete.pooling.fit <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days, <span class="at">data =</span> sleepstudy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(complete.pooling.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"(Intercept)","2":"251.3","3":"6.426"},{"1":"Days","2":"10.5","3":"1.264"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(complete.pooling.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="no-pooling" class="level2">
+<h2 class="anchored" data-anchor-id="no-pooling">No pooling</h2>
+<p>One line for each subject (in blue). No information is shared across subjects, same as fitting a model independently for each subject, i.e., stratification.</p>
+<section id="maximum-likelihood-frequentist-estimates-1" class="level3">
+<h3 class="anchored" data-anchor-id="maximum-likelihood-frequentist-estimates-1">Maximum-likelihood (frequentist) estimates</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>no.pooling.fit <span class="ot">=</span> <span class="fu">lm</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">+</span> Subject <span class="sc">+</span> Days<span class="sc">:</span>Subject, <span class="at">data =</span> sleepstudy)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(no.pooling.fit, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"(Intercept)","2":"244.193","3":"15.042","4":"16.2344","5":"2.419e-34","6":"214.4616","7":"273.9237"},{"1":"Days","2":"21.765","3":"2.818","4":"7.7246","5":"1.742e-12","6":"16.1956","7":"27.3338"},{"1":"Subject309","2":"-39.138","3":"21.272","4":"-1.8399","5":"6.785e-02","6":"-81.1837","7":"2.9083"},{"1":"Subject310","2":"-40.708","3":"21.272","4":"-1.9137","5":"5.764e-02","6":"-82.7545","7":"1.3376"},{"1":"Subject330","2":"45.492","3":"21.272","4":"2.1386","5":"3.416e-02","6":"3.4464","7":"87.5384"},{"1":"Subject331","2":"41.546","3":"21.272","4":"1.9531","5":"5.275e-02","6":"-0.4997","7":"83.5923"},{"1":"Subject332","2":"20.059","3":"21.272","4":"0.9430","5":"3.473e-01","6":"-21.9871","7":"62.1050"},{"1":"Subject333","2":"30.826","3":"21.272","4":"1.4491","5":"1.495e-01","6":"-11.2196","7":"72.8725"},{"1":"Subject334","2":"-4.030","3":"21.272","4":"-0.1894","5":"8.500e-01","6":"-46.0758","7":"38.0163"},{"1":"Subject335","2":"18.842","3":"21.272","4":"0.8858","5":"3.772e-01","6":"-23.2040","7":"60.8880"},{"1":"Subject337","2":"45.911","3":"21.272","4":"2.1583","5":"3.256e-02","6":"3.8654","7":"87.9575"},{"1":"Subject349","2":"-29.081","3":"21.272","4":"-1.3671","5":"1.737e-01","6":"-71.1269","7":"12.9651"},{"1":"Subject350","2":"-18.358","3":"21.272","4":"-0.8630","5":"3.896e-01","6":"-60.4041","7":"23.6880"},{"1":"Subject351","2":"16.954","3":"21.272","4":"0.7970","5":"4.268e-01","6":"-25.0917","7":"59.0004"},{"1":"Subject352","2":"32.179","3":"21.272","4":"1.5127","5":"1.325e-01","6":"-9.8666","7":"74.2254"},{"1":"Subject369","2":"10.775","3":"21.272","4":"0.5066","5":"6.132e-01","6":"-31.2705","7":"52.8215"},{"1":"Subject370","2":"-33.744","3":"21.272","4":"-1.5863","5":"1.149e-01","6":"-75.7896","7":"8.3024"},{"1":"Subject371","2":"9.443","3":"21.272","4":"0.4439","5":"6.578e-01","6":"-32.6026","7":"51.4894"},{"1":"Subject372","2":"22.852","3":"21.272","4":"1.0743","5":"2.845e-01","6":"-19.1939","7":"64.8981"},{"1":"Days:Subject309","2":"-19.503","3":"3.985","4":"-4.8945","5":"2.609e-06","6":"-27.3789","7":"-11.6270"},{"1":"Days:Subject310","2":"-15.650","3":"3.985","4":"-3.9275","5":"1.327e-04","6":"-23.5257","7":"-7.7739"},{"1":"Days:Subject330","2":"-18.757","3":"3.985","4":"-4.7072","5":"5.841e-06","6":"-26.6326","7":"-10.8807"},{"1":"Days:Subject331","2":"-16.499","3":"3.985","4":"-4.1406","5":"5.875e-05","6":"-24.3746","7":"-8.6227"},{"1":"Days:Subject332","2":"-12.198","3":"3.985","4":"-3.0612","5":"2.630e-03","6":"-20.0739","7":"-4.3220"},{"1":"Days:Subject333","2":"-12.623","3":"3.985","4":"-3.1678","5":"1.876e-03","6":"-20.4986","7":"-4.7467"},{"1":"Days:Subject334","2":"-9.512","3":"3.985","4":"-2.3871","5":"1.828e-02","6":"-17.3875","7":"-1.6356"},{"1":"Days:Subject335","2":"-24.646","3":"3.985","4":"-6.1852","5":"6.072e-09","6":"-32.5217","7":"-16.7698"},{"1":"Days:Subject337","2":"-2.739","3":"3.985","4":"-0.6873","5":"4.930e-01","6":"-10.6147","7":"5.1372"},{"1":"Days:Subject349","2":"-8.271","3":"3.985","4":"-2.0757","5":"3.970e-02","6":"-16.1467","7":"-0.3948"},{"1":"Days:Subject350","2":"-2.261","3":"3.985","4":"-0.5673","5":"5.714e-01","6":"-10.1366","7":"5.6153"},{"1":"Days:Subject351","2":"-15.331","3":"3.985","4":"-3.8476","5":"1.787e-04","6":"-23.2071","7":"-7.4553"},{"1":"Days:Subject352","2":"-8.198","3":"3.985","4":"-2.0574","5":"4.145e-02","6":"-16.0741","7":"-0.3222"},{"1":"Days:Subject369","2":"-10.417","3":"3.985","4":"-2.6142","5":"9.895e-03","6":"-18.2925","7":"-2.5407"},{"1":"Days:Subject370","2":"-3.709","3":"3.985","4":"-0.9307","5":"3.536e-01","6":"-11.5845","7":"4.1674"},{"1":"Days:Subject371","2":"-12.576","3":"3.985","4":"-3.1562","5":"1.947e-03","6":"-20.4522","7":"-4.7003"},{"1":"Days:Subject372","2":"-10.467","3":"3.985","4":"-2.6267","5":"9.554e-03","6":"-18.3426","7":"-2.5907"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sleepstudy<span class="sc">$</span>no.pooling.fit <span class="ot">=</span> <span class="fu">fitted</span>(no.pooling.fit)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the model results</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> sleepstudy, <span class="fu">aes</span>(<span class="at">x =</span> Days, <span class="at">y =</span> Reaction)) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> complete.pooling.fit), <span class="at">color =</span> <span class="st">"darkgray"</span>) <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> no.pooling.fit), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Subject)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For example, let’s look at the estimates for the first two subjects (308 and 309), fitted independently using stratification:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(<span class="fu">lm</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days, <span class="at">data =</span> <span class="fu">subset</span>(sleepstudy, Subject <span class="sc">==</span> <span class="dv">308</span>)), <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"(Intercept)","2":"244.19","3":"28.08","4":"8.695","5":"0.00002385","6":"179.434","7":"309.0"},{"1":"Days","2":"21.76","3":"5.26","4":"4.137","5":"0.00326466","6":"9.634","7":"33.9"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(<span class="fu">lm</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days, <span class="at">data =</span> <span class="fu">subset</span>(sleepstudy, Subject <span class="sc">==</span> <span class="dv">309</span>)), <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"(Intercept)","2":"205.055","3":"5.2162","4":"39.311","5":"1.927e-10","6":"193.026448","7":"217.083"},{"1":"Days","2":"2.262","3":"0.9771","4":"2.315","5":"4.931e-02","6":"0.008641","7":"4.515"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="statistical-model-and-bayesian-estimates-1" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-model-and-bayesian-estimates-1">Statistical model and Bayesian estimates</h3>
+<p><span class="math display">\[
+\begin{aligned}
+  \text{Reaction}_{ij} &amp;\sim \text{Normal}(\mu_{ij}, \sigma) \\
+  \mu_{ij} &amp;= a_j + b_j \times \text{Days}_{ij} \\
+  a_j &amp;\sim \text{Normal}(250, 100) \\
+  b_j &amp;\sim \text{Normal}(0, 100) \\
+  \sigma &amp;\sim \text{Exponential}(0.1)
+\end{aligned}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(a_j\)</span> is the <strong>subject-specific intercept</strong> for <span class="math inline">\(\text{Subject}_j\)</span></li>
+<li><span class="math inline">\(b_j\)</span> is the <strong>subject-specific slope</strong> for <span class="math inline">\(\text{Subject}_j\)</span></li>
+<li><span class="math inline">\(\sigma\)</span> is the residual standard deviation</li>
+<li>Each subject has <strong>completely independent</strong> intercepts and slopes, meaning there is <strong>no sharing of information</strong> between subjects</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>no.pooling.fit <span class="ot">&lt;-</span> <span class="fu">ulam</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">alist</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    Reaction <span class="sc">~</span> <span class="fu">dnorm</span>(mu, sigma),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> a_subject[Subject] <span class="sc">+</span> b_subject[Subject] <span class="sc">*</span> Days,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    a_subject[Subject] <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">250</span>, <span class="dv">100</span>),  </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    b_subject[Subject] <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    sigma <span class="sc">~</span> <span class="fu">dexp</span>(<span class="fl">0.1</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  ), <span class="at">data =</span> dat, <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">precis</span>(no.pooling.fit, <span class="at">depth =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mean"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["5.5%"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["94.5%"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["rhat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["ess_bulk"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"244.673","2":"14.924","3":"220.870","4":"268.240","5":"1.0019","6":"2545","_rn_":"a_subject[1]"},{"1":"205.802","2":"15.702","3":"181.038","4":"230.103","5":"1.0004","6":"3126","_rn_":"a_subject[2]"},{"1":"204.966","2":"15.370","3":"180.472","4":"230.308","5":"0.9996","6":"2722","_rn_":"a_subject[3]"},{"1":"288.850","2":"14.892","3":"265.158","4":"312.540","5":"0.9984","6":"3110","_rn_":"a_subject[4]"},{"1":"284.522","2":"14.597","3":"261.046","4":"307.804","5":"1.0007","6":"3131","_rn_":"a_subject[5]"},{"1":"264.249","2":"14.504","3":"241.579","4":"287.475","5":"1.0014","6":"3051","_rn_":"a_subject[6]"},{"1":"274.450","2":"15.292","3":"250.308","4":"298.429","5":"1.0103","6":"2348","_rn_":"a_subject[7]"},{"1":"240.319","2":"14.607","3":"217.639","4":"264.739","5":"1.0009","6":"2303","_rn_":"a_subject[8]"},{"1":"262.313","2":"14.832","3":"238.001","4":"285.402","5":"1.0001","6":"2122","_rn_":"a_subject[9]"},{"1":"289.628","2":"14.910","3":"265.837","4":"313.798","5":"1.0000","6":"2867","_rn_":"a_subject[10]"},{"1":"215.602","2":"14.920","3":"191.843","4":"239.051","5":"1.0047","6":"3383","_rn_":"a_subject[11]"},{"1":"226.030","2":"15.252","3":"202.353","4":"250.300","5":"0.9999","6":"2606","_rn_":"a_subject[12]"},{"1":"261.004","2":"14.695","3":"237.695","4":"284.651","5":"1.0013","6":"2449","_rn_":"a_subject[13]"},{"1":"275.632","2":"14.747","3":"251.509","4":"299.116","5":"1.0004","6":"2551","_rn_":"a_subject[14]"},{"1":"255.043","2":"14.816","3":"231.131","4":"277.938","5":"0.9992","6":"2891","_rn_":"a_subject[15]"},{"1":"211.201","2":"15.404","3":"186.475","4":"236.028","5":"1.0073","6":"3055","_rn_":"a_subject[16]"},{"1":"253.690","2":"14.423","3":"231.249","4":"277.358","5":"1.0033","6":"2583","_rn_":"a_subject[17]"},{"1":"267.154","2":"15.398","3":"241.983","4":"291.874","5":"1.0014","6":"3018","_rn_":"a_subject[18]"},{"1":"21.673","2":"2.747","3":"17.171","4":"25.882","5":"1.0017","6":"2476","_rn_":"b_subject[1]"},{"1":"2.137","2":"2.878","3":"-2.370","4":"6.704","5":"1.0010","6":"2691","_rn_":"b_subject[2]"},{"1":"5.880","2":"2.951","3":"1.181","4":"10.783","5":"0.9998","6":"2744","_rn_":"b_subject[3]"},{"1":"3.077","2":"2.810","3":"-1.455","4":"7.543","5":"0.9999","6":"3727","_rn_":"b_subject[4]"},{"1":"5.434","2":"2.794","3":"0.876","4":"9.824","5":"1.0012","6":"3062","_rn_":"b_subject[5]"},{"1":"9.555","2":"2.745","3":"5.326","4":"14.028","5":"0.9995","6":"3407","_rn_":"b_subject[6]"},{"1":"9.219","2":"2.879","3":"4.857","4":"13.753","5":"1.0078","6":"2598","_rn_":"b_subject[7]"},{"1":"12.266","2":"2.755","3":"7.880","4":"16.591","5":"1.0008","6":"2547","_rn_":"b_subject[8]"},{"1":"-2.722","2":"2.715","3":"-7.077","4":"1.477","5":"0.9992","6":"2085","_rn_":"b_subject[9]"},{"1":"19.079","2":"2.799","3":"14.549","4":"23.599","5":"1.0020","6":"2825","_rn_":"b_subject[10]"},{"1":"13.428","2":"2.779","3":"8.993","4":"17.828","5":"1.0030","6":"3303","_rn_":"b_subject[11]"},{"1":"19.465","2":"2.873","3":"14.909","4":"24.200","5":"0.9995","6":"2375","_rn_":"b_subject[12]"},{"1":"6.482","2":"2.796","3":"1.972","4":"10.814","5":"1.0006","6":"2619","_rn_":"b_subject[13]"},{"1":"13.684","2":"2.753","3":"9.126","4":"18.033","5":"1.0025","6":"2158","_rn_":"b_subject[14]"},{"1":"11.372","2":"2.740","3":"7.198","4":"15.707","5":"1.0007","6":"3171","_rn_":"b_subject[15]"},{"1":"17.872","2":"2.882","3":"13.145","4":"22.232","5":"1.0058","6":"3465","_rn_":"b_subject[16]"},{"1":"9.174","2":"2.724","3":"4.719","4":"13.533","5":"1.0031","6":"2293","_rn_":"b_subject[17]"},{"1":"11.261","2":"2.855","3":"6.653","4":"15.942","5":"1.0020","6":"3196","_rn_":"b_subject[18]"},{"1":"25.530","2":"1.462","3":"23.333","4":"28.037","5":"1.0012","6":"2511","_rn_":"sigma"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Instead of using the <code>ulam()</code> function from the <code>rethinking</code> package, you can the <code>stan_glm()</code> function from the <code>rstanarm</code> package to fit the Bayesian model using the <code>lm</code> syntax.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>no.pooling.fit <span class="ot">&lt;-</span> rstanarm<span class="sc">::</span><span class="fu">stan_glm</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">+</span> Subject <span class="sc">+</span> Days<span class="sc">:</span>Subject, <span class="at">data =</span> sleepstudy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(no.pooling.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"(Intercept)","2":"244.130","3":"14.303"},{"1":"Days","2":"21.833","3":"2.729"},{"1":"Subject309","2":"-38.545","3":"20.741"},{"1":"Subject310","2":"-40.290","3":"21.766"},{"1":"Subject330","2":"45.614","3":"21.027"},{"1":"Subject331","2":"41.449","3":"20.334"},{"1":"Subject332","2":"20.509","3":"20.709"},{"1":"Subject333","2":"30.815","3":"20.856"},{"1":"Subject334","2":"-3.562","3":"21.226"},{"1":"Subject335","2":"19.803","3":"21.180"},{"1":"Subject337","2":"47.013","3":"20.584"},{"1":"Subject349","2":"-28.230","3":"20.461"},{"1":"Subject350","2":"-18.073","3":"20.729"},{"1":"Subject351","2":"17.537","3":"20.694"},{"1":"Subject352","2":"31.898","3":"21.393"},{"1":"Subject369","2":"10.774","3":"21.535"},{"1":"Subject370","2":"-33.241","3":"21.012"},{"1":"Subject371","2":"10.140","3":"21.190"},{"1":"Subject372","2":"23.120","3":"21.314"},{"1":"Days:Subject309","2":"-19.587","3":"3.966"},{"1":"Days:Subject310","2":"-15.835","3":"4.015"},{"1":"Days:Subject330","2":"-18.906","3":"3.843"},{"1":"Days:Subject331","2":"-16.566","3":"4.053"},{"1":"Days:Subject332","2":"-12.287","3":"3.929"},{"1":"Days:Subject333","2":"-12.652","3":"3.917"},{"1":"Days:Subject334","2":"-9.607","3":"3.878"},{"1":"Days:Subject335","2":"-24.813","3":"3.985"},{"1":"Days:Subject337","2":"-2.909","3":"3.817"},{"1":"Days:Subject349","2":"-8.399","3":"3.908"},{"1":"Days:Subject350","2":"-2.334","3":"3.956"},{"1":"Days:Subject351","2":"-15.401","3":"3.960"},{"1":"Days:Subject352","2":"-8.234","3":"3.856"},{"1":"Days:Subject369","2":"-10.419","3":"4.113"},{"1":"Days:Subject370","2":"-3.853","3":"3.911"},{"1":"Days:Subject371","2":"-12.724","3":"4.026"},{"1":"Days:Subject372","2":"-10.512","3":"3.986"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(no.pooling.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="partial-pooling-mixed-model-random-intercept-and-slope" class="level2">
+<h2 class="anchored" data-anchor-id="partial-pooling-mixed-model-random-intercept-and-slope">Partial pooling (mixed model, random intercept and slope)</h2>
+<p>One line for each subject (in red). Information is shared across subjects such that each individual line is “shrinked” toward the “average” line (specified by the fixed intercept and slope and which is the same as the line fitted by the complete pooling model).</p>
+<section id="maximum-likelihood-frequentist-estimates-2" class="level3">
+<h3 class="anchored" data-anchor-id="maximum-likelihood-frequentist-estimates-2">Maximum-likelihood (frequentist) estimates</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>partial.pooling.fit <span class="ot">=</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">|</span> Subject), <span class="at">data =</span> sleepstudy)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(partial.pooling.fit, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["effect"],"name":[1],"type":["chr"],"align":["left"]},{"label":["group"],"name":[2],"type":["chr"],"align":["left"]},{"label":["term"],"name":[3],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"fixed","2":"NA","3":"(Intercept)","4":"251.40510","5":"6.825","6":"36.838","7":"238.029","8":"264.8"},{"1":"fixed","2":"NA","3":"Days","4":"10.46729","5":"1.546","6":"6.771","7":"7.438","8":"13.5"},{"1":"ran_pars","2":"Subject","3":"sd__(Intercept)","4":"24.74066","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"ran_pars","2":"Subject","3":"cor__(Intercept).Days","4":"0.06555","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"ran_pars","2":"Subject","3":"sd__Days","4":"5.92214","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"ran_pars","2":"Residual","3":"sd__Observation","4":"25.59180","5":"NA","6":"NA","7":"NA","8":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(partial.pooling.fit)<span class="sc">$</span>Subject</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["(Intercept)"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Days"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"253.7","2":"19.6663","_rn_":"308"},{"1":"211.0","2":"1.8476","_rn_":"309"},{"1":"212.4","2":"5.0184","_rn_":"310"},{"1":"275.1","2":"5.6529","_rn_":"330"},{"1":"273.7","2":"7.3974","_rn_":"331"},{"1":"260.4","2":"10.1951","_rn_":"332"},{"1":"268.2","2":"10.2436","_rn_":"333"},{"1":"244.2","2":"11.5419","_rn_":"334"},{"1":"251.1","2":"-0.2849","_rn_":"335"},{"1":"286.3","2":"19.0956","_rn_":"337"},{"1":"226.2","2":"11.6407","_rn_":"349"},{"1":"238.3","2":"17.0815","_rn_":"350"},{"1":"256.0","2":"7.4520","_rn_":"351"},{"1":"272.3","2":"14.0033","_rn_":"352"},{"1":"254.7","2":"11.3395","_rn_":"369"},{"1":"225.8","2":"15.2898","_rn_":"370"},{"1":"252.2","2":"9.4791","_rn_":"371"},{"1":"263.7","2":"11.7513","_rn_":"372"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>sleepstudy<span class="sc">$</span>partial.pooling.fit <span class="ot">=</span> <span class="fu">fitted</span>(partial.pooling.fit)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the model results</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> sleepstudy, <span class="fu">aes</span>(<span class="at">x =</span> Days, <span class="at">y =</span> Reaction)) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> complete.pooling.fit), <span class="at">color =</span> <span class="st">"darkgray"</span>) <span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> no.pooling.fit), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> partial.pooling.fit), <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Subject)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="statistical-model-and-bayesian-estimates-2" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-model-and-bayesian-estimates-2">Statistical model and Bayesian estimates</h3>
+<p><span class="math display">\[
+\begin{aligned}
+  \text{Reaction}_{ij} &amp;\sim \text{Normal}(\mu_{ij}, \sigma) \\
+  \mu_{ij} &amp;= \alpha + \beta \times \text{Days}_{ij} + \alpha_j + \beta_j \times \text{Days}_{ij} \\
+  \alpha &amp;\sim \text{Normal}(250, 100) \\
+  \beta &amp;\sim \text{Normal}(0, 100) \\
+  \alpha_j &amp;\sim \text{Normal}(0, \sigma_{\alpha}) \quad \text{for each subject } j  \\
+  \beta_j &amp;\sim \text{Normal}(0, \sigma_{\beta}) \quad \text{for each subject } j  \\
+  \sigma_{\alpha} &amp;\sim \text{Exponential}(0.1) \\
+  \sigma_{\beta} &amp;\sim \text{Exponential}(0.1) \\
+  \sigma &amp;\sim \text{Exponential}(0.1)
+\end{aligned}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\alpha\)</span> is the <strong>global mean intercept</strong> across subjects</li>
+<li><span class="math inline">\(\beta\)</span> is the <strong>global mean slope</strong> across subjects</li>
+<li><span class="math inline">\(\alpha_j\)</span> is the <strong>subject-specific deviation in intercept</strong> from <span class="math inline">\(\alpha\)</span></li>
+<li><span class="math inline">\(\beta_j\)</span> is the <strong>subject-specific deviation in slope</strong> from <span class="math inline">\(\beta\)</span></li>
+<li><span class="math inline">\(\sigma_{\alpha}\)</span> and <span class="math inline">\(\sigma_{\beta}\)</span> control how much intercepts and slopes vary across subjects</li>
+<li><span class="math inline">\(\sigma\)</span> is the residual standard deviation</li>
+<li>Subjects <strong>partially share</strong> information, meaning subject-specific deviations are regularized toward the global means</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>partial.pooling.fit <span class="ot">&lt;-</span> <span class="fu">ulam</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">alist</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    Reaction <span class="sc">~</span> <span class="fu">dnorm</span>(mu, sigma),</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> alpha <span class="sc">+</span> beta <span class="sc">*</span> Days <span class="sc">+</span> alpha_subject[Subject] <span class="sc">+</span> beta_subject[Subject] <span class="sc">*</span> Days,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    alpha <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">250</span>, <span class="dv">100</span>),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    beta <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    alpha_subject[Subject] <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, sigma_alpha),</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    beta_subject[Subject] <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, sigma_beta),</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    sigma_alpha <span class="sc">~</span> <span class="fu">dexp</span>(<span class="fl">0.1</span>),</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    sigma_beta <span class="sc">~</span> <span class="fu">dexp</span>(<span class="fl">0.1</span>),</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    sigma <span class="sc">~</span> <span class="fu">dexp</span>(<span class="fl">0.1</span>)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  ), <span class="at">data =</span> dat, <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">precis</span>(partial.pooling.fit, <span class="at">depth =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mean"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["5.5%"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["94.5%"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["rhat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["ess_bulk"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"251.7943","2":"6.952","3":"240.5026","4":"263.2060","5":"1.0013","6":"758.2","_rn_":"alpha"},{"1":"10.4459","2":"1.682","3":"7.8017","4":"13.1680","5":"1.0073","6":"492.3","_rn_":"beta"},{"1":"1.3078","2":"13.344","3":"-19.5843","4":"22.4567","5":"1.0003","6":"1882.3","_rn_":"alpha_subject[1]"},{"1":"-39.0986","2":"14.409","3":"-62.4193","4":"-17.3951","5":"1.0009","6":"1331.8","_rn_":"alpha_subject[2]"},{"1":"-37.9448","2":"13.633","3":"-60.5221","4":"-16.5522","5":"1.0038","6":"1148.4","_rn_":"alpha_subject[3]"},{"1":"23.5273","2":"13.519","3":"1.8180","4":"45.1132","5":"0.9998","6":"1568.5","_rn_":"alpha_subject[4]"},{"1":"21.5478","2":"13.312","3":"1.2760","4":"43.8355","5":"1.0008","6":"1459.2","_rn_":"alpha_subject[5]"},{"1":"8.4434","2":"12.936","3":"-11.7186","4":"29.4162","5":"1.0017","6":"1475.0","_rn_":"alpha_subject[6]"},{"1":"16.0663","2":"13.122","3":"-3.9393","4":"37.7196","5":"1.0012","6":"1475.9","_rn_":"alpha_subject[7]"},{"1":"-7.7125","2":"12.965","3":"-28.3766","4":"13.1620","5":"1.0033","6":"1925.1","_rn_":"alpha_subject[8]"},{"1":"0.5740","2":"13.833","3":"-21.9279","4":"22.1136","5":"1.0012","6":"1619.2","_rn_":"alpha_subject[9]"},{"1":"32.7434","2":"14.069","3":"10.3250","4":"55.9491","5":"1.0016","6":"1691.0","_rn_":"alpha_subject[10]"},{"1":"-24.9427","2":"13.769","3":"-47.0303","4":"-2.9618","5":"1.0005","6":"1733.0","_rn_":"alpha_subject[11]"},{"1":"-13.7760","2":"12.926","3":"-34.3407","4":"6.7134","5":"1.0017","6":"1407.4","_rn_":"alpha_subject[12]"},{"1":"4.9712","2":"13.190","3":"-15.6250","4":"26.1759","5":"1.0005","6":"1755.7","_rn_":"alpha_subject[13]"},{"1":"19.7400","2":"13.270","3":"-0.8768","4":"40.8049","5":"1.0019","6":"1620.6","_rn_":"alpha_subject[14]"},{"1":"2.8423","2":"12.997","3":"-17.6420","4":"23.3187","5":"1.0043","6":"1236.8","_rn_":"alpha_subject[15]"},{"1":"-25.5990","2":"13.395","3":"-47.1622","4":"-3.7609","5":"1.0000","6":"1665.2","_rn_":"alpha_subject[16]"},{"1":"0.6159","2":"12.953","3":"-20.0801","4":"20.8853","5":"1.0008","6":"1579.4","_rn_":"alpha_subject[17]"},{"1":"11.5536","2":"12.838","3":"-8.8163","4":"32.4367","5":"1.0009","6":"1578.8","_rn_":"alpha_subject[18]"},{"1":"9.3355","2":"2.720","3":"4.9876","4":"13.8457","5":"1.0002","6":"988.5","_rn_":"beta_subject[1]"},{"1":"-8.8567","2":"2.862","3":"-13.4884","4":"-4.2787","5":"1.0022","6":"874.4","_rn_":"beta_subject[2]"},{"1":"-5.6483","2":"2.750","3":"-10.1252","4":"-1.3440","5":"1.0043","6":"815.2","_rn_":"beta_subject[3]"},{"1":"-4.8465","2":"2.743","3":"-9.1101","4":"-0.5101","5":"1.0017","6":"936.1","_rn_":"beta_subject[4]"},{"1":"-3.0712","2":"2.820","3":"-7.3517","4":"1.4812","5":"1.0032","6":"888.9","_rn_":"beta_subject[5]"},{"1":"-0.2601","2":"2.629","3":"-4.2403","4":"3.7876","5":"1.0016","6":"887.4","_rn_":"beta_subject[6]"},{"1":"-0.1847","2":"2.704","3":"-4.6526","4":"4.1608","5":"1.0015","6":"943.1","_rn_":"beta_subject[7]"},{"1":"1.1084","2":"2.684","3":"-3.1424","4":"5.3996","5":"1.0023","6":"1165.6","_rn_":"beta_subject[8]"},{"1":"-10.8670","2":"2.841","3":"-15.3150","4":"-6.4569","5":"1.0020","6":"979.1","_rn_":"beta_subject[9]"},{"1":"8.8970","2":"2.833","3":"4.3782","4":"13.4554","5":"1.0023","6":"1041.4","_rn_":"beta_subject[10]"},{"1":"1.1722","2":"2.784","3":"-3.3326","4":"5.4484","5":"1.0021","6":"1056.4","_rn_":"beta_subject[11]"},{"1":"6.6870","2":"2.770","3":"2.4478","4":"11.2267","5":"1.0034","6":"867.0","_rn_":"beta_subject[12]"},{"1":"-3.1169","2":"2.699","3":"-7.4441","4":"1.1273","5":"1.0035","6":"1173.4","_rn_":"beta_subject[13]"},{"1":"3.6196","2":"2.701","3":"-0.6720","4":"7.8596","5":"1.0009","6":"1055.5","_rn_":"beta_subject[14]"},{"1":"0.9695","2":"2.642","3":"-3.2205","4":"5.2150","5":"1.0035","6":"1062.2","_rn_":"beta_subject[15]"},{"1":"4.8114","2":"2.746","3":"0.5453","4":"9.2751","5":"1.0011","6":"949.6","_rn_":"beta_subject[16]"},{"1":"-0.9803","2":"2.878","3":"-5.5317","4":"3.4647","5":"1.0025","6":"943.8","_rn_":"beta_subject[17]"},{"1":"1.3853","2":"2.691","3":"-2.7615","4":"5.7470","5":"1.0036","6":"1024.0","_rn_":"beta_subject[18]"},{"1":"24.1017","2":"5.291","3":"16.6809","4":"33.4935","5":"1.0035","6":"1230.3","_rn_":"sigma_alpha"},{"1":"6.3211","2":"1.300","3":"4.5012","4":"8.5278","5":"0.9999","6":"1573.5","_rn_":"sigma_beta"},{"1":"25.6883","2":"1.502","3":"23.4149","4":"28.0737","5":"0.9990","6":"2389.5","_rn_":"sigma"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Instead of using the <code>ulam()</code> function from the <code>rethinking</code> package, you can the <code>stan_glmer()</code> function from the <code>rstanarm</code> package to fit the Bayesian model using the <code>lmer</code> syntax.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>partial.pooling.fit <span class="ot">&lt;-</span> <span class="fu">stan_glmer</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">|</span> Subject), <span class="at">data =</span> sleepstudy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(partial.pooling.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["group"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"(Intercept)","2":"251.2726","3":"6.585","4":"NA"},{"1":"Days","2":"10.4738","3":"1.735","4":"NA"},{"1":"sd_(Intercept).Subject","2":"24.3794","3":"NA","4":"Subject"},{"1":"sd_Days.Subject","2":"7.0097","3":"NA","4":"Subject"},{"1":"cor_(Intercept).Days.Subject","2":"0.0697","3":"NA","4":"Subject"},{"1":"sd_Observation.Residual","2":"25.9319","3":"NA","4":"Residual"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(partial.pooling.fit, <span class="at">pars =</span> <span class="fu">vars</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"Sigma"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="partial-pooling-mixed-model-random-intercept-and-fixed-slope" class="level2">
+<h2 class="anchored" data-anchor-id="partial-pooling-mixed-model-random-intercept-and-fixed-slope">Partial pooling (mixed model, random intercept and fixed slope)</h2>
+<section id="maximum-likelihood-frequentist-estimates-3" class="level3">
+<h3 class="anchored" data-anchor-id="maximum-likelihood-frequentist-estimates-3">Maximum-likelihood (frequentist) estimates</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>partial.pooling.fit.fixed_slope <span class="ot">=</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> Subject), <span class="at">data =</span> sleepstudy)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(partial.pooling.fit.fixed_slope, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["effect"],"name":[1],"type":["chr"],"align":["left"]},{"label":["group"],"name":[2],"type":["chr"],"align":["left"]},{"label":["term"],"name":[3],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"fixed","2":"NA","3":"(Intercept)","4":"251.41","5":"9.7467","6":"25.79","7":"232.302","8":"270.51"},{"1":"fixed","2":"NA","3":"Days","4":"10.47","5":"0.8042","6":"13.02","7":"8.891","8":"12.04"},{"1":"ran_pars","2":"Subject","3":"sd__(Intercept)","4":"37.12","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"ran_pars","2":"Residual","3":"sd__Observation","4":"30.99","5":"NA","6":"NA","7":"NA","8":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(partial.pooling.fit.fixed_slope)<span class="sc">$</span>Subject</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["(Intercept)"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Days"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"292.2","2":"10.47","_rn_":"308"},{"1":"173.6","2":"10.47","_rn_":"309"},{"1":"188.3","2":"10.47","_rn_":"310"},{"1":"255.8","2":"10.47","_rn_":"330"},{"1":"261.6","2":"10.47","_rn_":"331"},{"1":"259.6","2":"10.47","_rn_":"332"},{"1":"267.9","2":"10.47","_rn_":"333"},{"1":"248.4","2":"10.47","_rn_":"334"},{"1":"206.1","2":"10.47","_rn_":"335"},{"1":"323.6","2":"10.47","_rn_":"337"},{"1":"230.2","2":"10.47","_rn_":"349"},{"1":"265.5","2":"10.47","_rn_":"350"},{"1":"243.5","2":"10.47","_rn_":"351"},{"1":"287.8","2":"10.47","_rn_":"352"},{"1":"258.4","2":"10.47","_rn_":"369"},{"1":"245.0","2":"10.47","_rn_":"370"},{"1":"248.1","2":"10.47","_rn_":"371"},{"1":"269.5","2":"10.47","_rn_":"372"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>sleepstudy<span class="sc">$</span>partial.pooling.fit.fixed_slope <span class="ot">=</span> <span class="fu">fitted</span>(partial.pooling.fit.fixed_slope)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the model results</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> sleepstudy, <span class="fu">aes</span>(<span class="at">x =</span> Days, <span class="at">y =</span> Reaction)) <span class="sc">+</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> complete.pooling.fit), <span class="at">color =</span> <span class="st">"darkgray"</span>) <span class="sc">+</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> no.pooling.fit), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> partial.pooling.fit.fixed_slope), <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Subject)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="statistical-model-and-bayesian-estimates-3" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-model-and-bayesian-estimates-3">Statistical model and Bayesian estimates</h3>
+<p><span class="math display">\[
+\begin{aligned}
+  \text{Reaction}_{ij} &amp;\sim \text{Normal}(\mu_{ij}, \sigma) \\
+  \mu_{ij} &amp;= \alpha + \beta \times \text{Days}_{ij} + \alpha_j \\
+  \alpha &amp;\sim \text{Normal}(250, 100) \\
+  \beta &amp;\sim \text{Normal}(0, 100) \\
+  \alpha_j &amp;\sim \text{Normal}(0, \sigma_{\alpha}) \quad \text{for each subject } j  \\
+  \sigma_{\alpha} &amp;\sim \text{Exponential}(0.1) \\
+  \sigma &amp;\sim \text{Exponential}(0.1)
+\end{aligned}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\alpha\)</span> is the <strong>global mean intercept</strong> across subjects</li>
+<li><span class="math inline">\(\beta\)</span> is the <strong>global slope</strong> (fixed effect of <span class="math inline">\(\text{Days}\)</span>)</li>
+<li><span class="math inline">\(\alpha_j\)</span> is the <strong>subject-specific deviation in intercept</strong> from <span class="math inline">\(\alpha\)</span></li>
+<li><span class="math inline">\(\sigma_{\alpha}\)</span> controls how much intercepts vary across subjects</li>
+<li><span class="math inline">\(\sigma\)</span> is the residual standard deviation</li>
+<li>Subjects <strong>share the same slope</strong> but have <strong>varying intercepts</strong></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>partial.pooling.fit.fixed_slope <span class="ot">&lt;-</span> <span class="fu">ulam</span>(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">alist</span>(</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    Reaction <span class="sc">~</span> <span class="fu">dnorm</span>(mu, sigma),</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> alpha <span class="sc">+</span> beta <span class="sc">*</span> Days <span class="sc">+</span> alpha_subject[Subject],</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    alpha <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">250</span>, <span class="dv">100</span>),</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    beta <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    alpha_subject[Subject] <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, sigma_alpha),</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    sigma_alpha <span class="sc">~</span> <span class="fu">dexp</span>(<span class="fl">0.1</span>),</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    sigma <span class="sc">~</span> <span class="fu">dexp</span>(<span class="fl">0.1</span>)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  ), <span class="at">data =</span> dat, <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">precis</span>(partial.pooling.fit.fixed_slope, <span class="at">depth =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mean"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["5.5%"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["94.5%"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["rhat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["ess_bulk"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"251.778","2":"8.9354","3":"237.5505","4":"265.852","5":"1.0062","6":"375.6","_rn_":"alpha"},{"1":"10.477","2":"0.8136","3":"9.2130","4":"11.724","5":"0.9994","6":"1585.6","_rn_":"beta"},{"1":"39.829","2":"12.2440","3":"21.2528","4":"59.945","5":"1.0014","6":"669.3","_rn_":"alpha_subject[1]"},{"1":"-77.151","2":"12.3469","3":"-96.3964","4":"-57.775","5":"1.0029","6":"586.2","_rn_":"alpha_subject[2]"},{"1":"-62.833","2":"12.1355","3":"-82.7267","4":"-44.463","5":"1.0026","6":"700.9","_rn_":"alpha_subject[3]"},{"1":"3.629","2":"12.0714","3":"-15.3353","4":"22.973","5":"1.0017","6":"661.1","_rn_":"alpha_subject[4]"},{"1":"9.491","2":"11.8084","3":"-9.8285","4":"27.666","5":"1.0051","6":"624.3","_rn_":"alpha_subject[5]"},{"1":"7.494","2":"12.1345","3":"-12.1673","4":"26.169","5":"1.0041","6":"651.1","_rn_":"alpha_subject[6]"},{"1":"15.816","2":"12.3343","3":"-4.1420","4":"35.516","5":"1.0009","6":"622.0","_rn_":"alpha_subject[7]"},{"1":"-3.369","2":"12.2645","3":"-22.9594","4":"15.754","5":"1.0026","6":"679.2","_rn_":"alpha_subject[8]"},{"1":"-45.196","2":"12.1758","3":"-64.5364","4":"-25.402","5":"1.0038","6":"634.0","_rn_":"alpha_subject[9]"},{"1":"70.678","2":"12.1130","3":"51.4360","4":"89.173","5":"1.0027","6":"621.3","_rn_":"alpha_subject[10]"},{"1":"-21.548","2":"12.0042","3":"-41.0457","4":"-2.489","5":"1.0013","6":"619.9","_rn_":"alpha_subject[11]"},{"1":"13.318","2":"12.1944","3":"-6.4111","4":"32.342","5":"1.0050","6":"591.3","_rn_":"alpha_subject[12]"},{"1":"-8.115","2":"11.9355","3":"-27.8046","4":"10.853","5":"1.0067","6":"613.0","_rn_":"alpha_subject[13]"},{"1":"35.571","2":"11.8637","3":"16.8828","4":"54.529","5":"1.0015","6":"636.4","_rn_":"alpha_subject[14]"},{"1":"6.306","2":"11.9863","3":"-13.2590","4":"25.820","5":"1.0023","6":"667.8","_rn_":"alpha_subject[15]"},{"1":"-6.710","2":"12.1779","3":"-25.7466","4":"12.967","5":"1.0015","6":"600.3","_rn_":"alpha_subject[16]"},{"1":"-3.797","2":"11.8437","3":"-22.3726","4":"15.062","5":"1.0010","6":"631.6","_rn_":"alpha_subject[17]"},{"1":"17.705","2":"12.0462","3":"-0.9747","4":"37.274","5":"1.0022","6":"660.2","_rn_":"alpha_subject[18]"},{"1":"35.108","2":"5.9245","3":"26.8841","4":"45.353","5":"1.0042","6":"1406.9","_rn_":"sigma_alpha"},{"1":"30.964","2":"1.7226","3":"28.3093","4":"33.726","5":"0.9997","6":"1997.1","_rn_":"sigma"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Instead of using the <code>ulam()</code> function from the <code>rethinking</code> package, you can the <code>stan_glmer()</code> function from the <code>rstanarm</code> package to fit the Bayesian model using the <code>lmer</code> syntax.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>partial.pooling.fit.fixed_slope <span class="ot">&lt;-</span> <span class="fu">stan_glmer</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> Subject), <span class="at">data =</span> sleepstudy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(partial.pooling.fit.fixed_slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["group"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"(Intercept)","2":"251.86","3":"9.960","4":"NA"},{"1":"Days","2":"10.47","3":"0.793","4":"NA"},{"1":"sd_(Intercept).Subject","2":"38.67","3":"NA","4":"Subject"},{"1":"sd_Observation.Residual","2":"31.22","3":"NA","4":"Residual"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(partial.pooling.fit.fixed_slope, <span class="at">pars =</span> <span class="fu">vars</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"Sigma"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="partial-pooling-mixed-model-fixed-intercept-and-random-slope" class="level2">
+<h2 class="anchored" data-anchor-id="partial-pooling-mixed-model-fixed-intercept-and-random-slope">Partial pooling (mixed model, fixed intercept and random slope)</h2>
+<section id="maximum-likelihood-frequentist-estimates-4" class="level3">
+<h3 class="anchored" data-anchor-id="maximum-likelihood-frequentist-estimates-4">Maximum-likelihood (frequentist) estimates</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>partial.pooling.fit.fixed_intercept <span class="ot">=</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">+</span> (<span class="dv">0</span> <span class="sc">+</span> Days <span class="sc">|</span> Subject), <span class="at">data =</span> sleepstudy)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(partial.pooling.fit.fixed_intercept, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["effect"],"name":[1],"type":["chr"],"align":["left"]},{"label":["group"],"name":[2],"type":["chr"],"align":["left"]},{"label":["term"],"name":[3],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"fixed","2":"NA","3":"(Intercept)","4":"251.41","5":"4.02","6":"62.539","7":"243.526","8":"259.28"},{"1":"fixed","2":"NA","3":"Days","4":"10.47","5":"1.87","6":"5.599","7":"6.803","8":"14.13"},{"1":"ran_pars","2":"Subject","3":"sd__Days","4":"7.26","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"ran_pars","2":"Residual","3":"sd__Observation","4":"29.02","5":"NA","6":"NA","7":"NA","8":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(partial.pooling.fit.fixed_intercept)<span class="sc">$</span>Subject</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["(Intercept)"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Days"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"251.4","2":"20.0867","_rn_":"308"},{"1":"251.4","2":"-4.2327","_rn_":"309"},{"1":"251.4","2":"-0.8189","_rn_":"310"},{"1":"251.4","2":"9.1274","_rn_":"330"},{"1":"251.4","2":"10.6755","_rn_":"331"},{"1":"251.4","2":"11.5353","_rn_":"332"},{"1":"251.4","2":"12.7430","_rn_":"333"},{"1":"251.4","2":"10.4775","_rn_":"334"},{"1":"251.4","2":"-0.4337","_rn_":"335"},{"1":"251.4","2":"24.3577","_rn_":"337"},{"1":"251.4","2":"7.9069","_rn_":"349"},{"1":"251.4","2":"15.2012","_rn_":"350"},{"1":"251.4","2":"8.1042","_rn_":"351"},{"1":"251.4","2":"17.1350","_rn_":"352"},{"1":"251.4","2":"11.8341","_rn_":"369"},{"1":"251.4","2":"11.5299","_rn_":"370"},{"1":"251.4","2":"9.5899","_rn_":"371"},{"1":"251.4","2":"13.5923","_rn_":"372"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>sleepstudy<span class="sc">$</span>partial.pooling.fit.fixed_intercept <span class="ot">=</span> <span class="fu">fitted</span>(partial.pooling.fit.fixed_intercept)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the model results</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> sleepstudy, <span class="fu">aes</span>(<span class="at">x =</span> Days, <span class="at">y =</span> Reaction)) <span class="sc">+</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> complete.pooling.fit), <span class="at">color =</span> <span class="st">"darkgray"</span>) <span class="sc">+</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> no.pooling.fit), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> partial.pooling.fit.fixed_intercept), <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Subject)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="statistical-model-and-bayesian-estimates-4" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-model-and-bayesian-estimates-4">Statistical model and Bayesian estimates</h3>
+<p><span class="math display">\[
+\begin{aligned}
+  \text{Reaction}_{ij} &amp;\sim \text{Normal}(\mu_{ij}, \sigma) \\
+  \mu_{ij} &amp;= \alpha + \beta \times \text{Days}_{ij} + \beta_j \times \text{Days}_{ij} \\
+  \alpha &amp;\sim \text{Normal}(250, 100) \\
+  \beta &amp;\sim \text{Normal}(0, 100) \\
+  \beta_j &amp;\sim \text{Normal}(0, \sigma_{\beta}) \\
+  \sigma_{\beta} &amp;\sim \text{Exponential}(0.1) \\
+  \sigma &amp;\sim \text{Exponential}(0.1)
+\end{aligned}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\alpha\)</span> is the <strong>global mean intercept</strong> across subjects</li>
+<li><span class="math inline">\(\beta\)</span> is the <strong>global mean slope</strong> across subjects</li>
+<li><span class="math inline">\(\beta_j\)</span> is the <strong>subject-specific deviation in slope</strong> from <span class="math inline">\(\beta\)</span></li>
+<li><span class="math inline">\(\sigma_{\beta}\)</span> controls how much slopes vary across subjects</li>
+<li><span class="math inline">\(\sigma\)</span> is the residual standard deviation</li>
+<li>Subjects <strong>share the same intercept</strong> but have <strong>varying slopes</strong></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>partial.pooling.fit.fixed_intercept <span class="ot">&lt;-</span> <span class="fu">ulam</span>(</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">alist</span>(</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    Reaction <span class="sc">~</span> <span class="fu">dnorm</span>(mu, sigma),</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> alpha <span class="sc">+</span> beta <span class="sc">*</span> Days <span class="sc">+</span> beta_subject[Subject] <span class="sc">*</span> Days,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    alpha <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">250</span>, <span class="dv">100</span>),</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    beta <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    beta_subject[Subject] <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, sigma_beta),</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    sigma_beta <span class="sc">~</span> <span class="fu">dexp</span>(<span class="fl">0.1</span>),</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    sigma <span class="sc">~</span> <span class="fu">dexp</span>(<span class="fl">0.1</span>)</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  ), <span class="at">data =</span> dat, <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">precis</span>(partial.pooling.fit.fixed_intercept, <span class="at">depth =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["mean"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["sd"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["5.5%"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["94.5%"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["rhat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["ess_bulk"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"251.20698","2":"4.002","3":"244.7656","4":"257.512","5":"1.000","6":"1491.8","_rn_":"alpha"},{"1":"10.49917","2":"2.116","3":"7.2170","4":"13.824","5":"1.021","6":"132.9","_rn_":"beta"},{"1":"9.65202","2":"2.527","3":"5.7691","4":"13.544","5":"1.014","6":"178.0","_rn_":"beta_subject[1]"},{"1":"-14.71219","2":"2.592","3":"-18.8474","4":"-10.686","5":"1.017","6":"180.7","_rn_":"beta_subject[2]"},{"1":"-11.27591","2":"2.535","3":"-15.3871","4":"-7.247","5":"1.016","6":"184.9","_rn_":"beta_subject[3]"},{"1":"-1.42054","2":"2.598","3":"-5.4203","4":"2.641","5":"1.015","6":"181.1","_rn_":"beta_subject[4]"},{"1":"0.23620","2":"2.541","3":"-3.6304","4":"4.260","5":"1.015","6":"182.5","_rn_":"beta_subject[5]"},{"1":"1.08259","2":"2.602","3":"-2.9232","4":"5.115","5":"1.015","6":"193.5","_rn_":"beta_subject[6]"},{"1":"2.32632","2":"2.559","3":"-1.7895","4":"6.394","5":"1.016","6":"179.6","_rn_":"beta_subject[7]"},{"1":"0.04246","2":"2.552","3":"-4.0924","4":"4.032","5":"1.020","6":"191.3","_rn_":"beta_subject[8]"},{"1":"-10.90988","2":"2.631","3":"-14.9729","4":"-6.634","5":"1.015","6":"194.5","_rn_":"beta_subject[9]"},{"1":"13.91896","2":"2.543","3":"9.9224","4":"17.895","5":"1.016","6":"182.2","_rn_":"beta_subject[10]"},{"1":"-2.57625","2":"2.530","3":"-6.5082","4":"1.408","5":"1.016","6":"195.5","_rn_":"beta_subject[11]"},{"1":"4.78661","2":"2.533","3":"0.8226","4":"8.796","5":"1.014","6":"185.6","_rn_":"beta_subject[12]"},{"1":"-2.34696","2":"2.571","3":"-6.4528","4":"1.702","5":"1.012","6":"199.3","_rn_":"beta_subject[13]"},{"1":"6.64512","2":"2.533","3":"2.7919","4":"10.697","5":"1.016","6":"191.9","_rn_":"beta_subject[14]"},{"1":"1.36503","2":"2.487","3":"-2.6698","4":"5.371","5":"1.014","6":"208.2","_rn_":"beta_subject[15]"},{"1":"1.04722","2":"2.648","3":"-3.2869","4":"5.249","5":"1.016","6":"200.3","_rn_":"beta_subject[16]"},{"1":"-0.88595","2":"2.514","3":"-4.7466","4":"3.033","5":"1.017","6":"182.2","_rn_":"beta_subject[17]"},{"1":"3.16367","2":"2.560","3":"-0.7896","4":"7.067","5":"1.014","6":"198.5","_rn_":"beta_subject[18]"},{"1":"7.65657","2":"1.457","3":"5.7413","4":"10.175","5":"1.003","6":"1199.3","_rn_":"sigma_beta"},{"1":"29.00522","2":"1.631","3":"26.4653","4":"31.724","5":"1.002","6":"1346.0","_rn_":"sigma"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Instead of using the <code>ulam()</code> function from the <code>rethinking</code> package, you can the <code>stan_glmer()</code> function from the <code>rstanarm</code> package to fit the Bayesian model using the <code>lmer</code> syntax.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>partial.pooling.fit.fixed_intercept <span class="ot">&lt;-</span> <span class="fu">stan_glmer</span>(Reaction <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> Days <span class="sc">+</span> (<span class="dv">0</span> <span class="sc">+</span> Days <span class="sc">|</span> Subject), <span class="at">data =</span> sleepstudy, )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(partial.pooling.fit.fixed_intercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["group"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"(Intercept)","2":"251.469","3":"4.177","4":"NA"},{"1":"Days","2":"10.427","3":"1.936","4":"NA"},{"1":"sd_Days.Subject","2":"7.832","3":"NA","4":"Subject"},{"1":"sd_Observation.Residual","2":"29.162","3":"NA","4":"Residual"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas</span>(partial.pooling.fit.fixed_intercept, <span class="at">pars =</span> <span class="fu">vars</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"Sigma"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="print-environment" class="level2">
+<h2 class="anchored" data-anchor-id="print-environment">Print environment</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.4.3 (2025-02-28)
+ os       macOS Sequoia 15.3.2
+ system   aarch64, darwin20
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       America/New_York
+ date     2025-03-31
+ pandoc   3.2 @ /Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
+ quarto   1.6.42 @ /usr/local/bin/quarto
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package        * version     date (UTC) lib source
+ abind            1.4-8       2024-09-12 [1] CRAN (R 4.4.1)
+ backports        1.5.0       2024-05-23 [1] CRAN (R 4.4.0)
+ base64enc        0.1-3       2015-07-28 [1] CRAN (R 4.4.0)
+ bayesplot      * 1.11.1      2024-02-15 [1] CRAN (R 4.4.0)
+ boot             1.3-31      2024-08-28 [2] CRAN (R 4.4.3)
+ broom            1.0.7       2024-09-26 [1] CRAN (R 4.4.1)
+ broom.mixed    * 0.2.9.6     2024-10-15 [1] CRAN (R 4.4.1)
+ checkmate        2.3.2       2024-07-29 [1] CRAN (R 4.4.0)
+ cli              3.6.4       2025-02-13 [1] CRAN (R 4.4.1)
+ cmdstanr       * 0.8.1       2024-06-06 [1] https://stan-dev.r-universe.dev (R 4.4.0)
+ coda             0.19-4.1    2024-01-31 [1] CRAN (R 4.4.0)
+ codetools        0.2-20      2024-03-31 [2] CRAN (R 4.4.3)
+ colorspace       2.1-1       2024-07-26 [1] CRAN (R 4.4.0)
+ colourpicker     1.3.0       2023-08-21 [1] CRAN (R 4.4.0)
+ crosstalk        1.2.1       2023-11-23 [1] CRAN (R 4.4.0)
+ curl             6.2.2       2025-03-24 [1] CRAN (R 4.4.1)
+ data.table       1.17.0      2025-02-22 [1] CRAN (R 4.4.1)
+ digest         * 0.6.37      2024-08-19 [1] CRAN (R 4.4.1)
+ distributional   0.5.0       2024-09-17 [1] CRAN (R 4.4.1)
+ dplyr          * 1.1.4       2023-11-17 [1] CRAN (R 4.4.0)
+ DT               0.33        2024-04-04 [1] CRAN (R 4.4.0)
+ dygraphs         1.1.1.6     2018-07-11 [1] CRAN (R 4.4.0)
+ evaluate         1.0.3       2025-01-10 [1] CRAN (R 4.4.1)
+ farver           2.1.2       2024-05-13 [1] CRAN (R 4.4.0)
+ fastmap          1.2.0       2024-05-15 [1] CRAN (R 4.4.0)
+ forcats        * 1.0.0       2023-01-29 [1] CRAN (R 4.4.0)
+ furrr            0.3.1       2022-08-15 [1] CRAN (R 4.4.0)
+ future           1.34.0      2024-07-29 [1] CRAN (R 4.4.0)
+ generics         0.1.3       2022-07-05 [1] CRAN (R 4.4.0)
+ ggplot2        * 3.5.1       2024-04-23 [1] CRAN (R 4.4.0)
+ ggridges         0.5.6       2024-01-23 [1] CRAN (R 4.4.0)
+ globals          0.16.3      2024-03-08 [1] CRAN (R 4.4.0)
+ glue             1.8.0       2024-09-30 [1] CRAN (R 4.4.1)
+ gridExtra        2.3         2017-09-09 [1] CRAN (R 4.4.0)
+ gtable           0.3.6       2024-10-25 [1] CRAN (R 4.4.1)
+ gtools           3.9.5       2023-11-20 [1] CRAN (R 4.4.0)
+ hms              1.1.3       2023-03-21 [1] CRAN (R 4.4.0)
+ htmltools        0.5.8.1     2024-04-04 [1] CRAN (R 4.4.0)
+ htmlwidgets      1.6.4       2023-12-06 [1] CRAN (R 4.4.0)
+ httpuv           1.6.15      2024-03-26 [1] CRAN (R 4.4.0)
+ igraph           2.1.4       2025-01-23 [1] CRAN (R 4.4.1)
+ inline           0.3.21      2025-01-09 [1] CRAN (R 4.4.1)
+ jsonlite         2.0.0       2025-03-27 [1] CRAN (R 4.4.1)
+ knitr            1.50        2025-03-16 [1] CRAN (R 4.4.1)
+ labeling         0.4.3       2023-08-29 [1] CRAN (R 4.4.0)
+ later            1.4.1       2024-11-27 [1] CRAN (R 4.4.1)
+ lattice          0.22-6      2024-03-20 [2] CRAN (R 4.4.3)
+ lifecycle        1.0.4       2023-11-07 [1] CRAN (R 4.4.0)
+ listenv          0.9.1       2024-01-29 [1] CRAN (R 4.4.0)
+ lme4           * 1.1-37      2025-03-26 [1] CRAN (R 4.4.1)
+ loo              2.8.0       2024-07-03 [1] CRAN (R 4.4.0)
+ lubridate      * 1.9.4       2024-12-08 [1] CRAN (R 4.4.1)
+ magrittr         2.0.3       2022-03-30 [1] CRAN (R 4.4.0)
+ markdown         2.0         2025-03-23 [1] CRAN (R 4.4.1)
+ MASS             7.3-64      2025-01-04 [2] CRAN (R 4.4.3)
+ Matrix         * 1.7-2       2025-01-23 [2] CRAN (R 4.4.3)
+ matrixStats      1.5.0       2025-01-07 [1] CRAN (R 4.4.1)
+ mgcv             1.9-1       2023-12-21 [2] CRAN (R 4.4.3)
+ mime             0.13        2025-03-17 [1] CRAN (R 4.4.1)
+ miniUI           0.1.1.1     2018-05-18 [1] CRAN (R 4.4.0)
+ minqa            1.2.8       2024-08-17 [1] CRAN (R 4.4.0)
+ munsell          0.5.1       2024-04-01 [1] CRAN (R 4.4.0)
+ mvtnorm          1.3-3       2025-01-10 [1] CRAN (R 4.4.1)
+ nlme             3.1-167     2025-01-27 [2] CRAN (R 4.4.3)
+ nloptr           2.2.1       2025-03-17 [1] CRAN (R 4.4.1)
+ parallelly       1.43.0      2025-03-24 [1] CRAN (R 4.4.1)
+ pillar           1.10.1      2025-01-07 [1] CRAN (R 4.4.1)
+ pkgbuild         1.4.7       2025-03-24 [1] CRAN (R 4.4.1)
+ pkgconfig        2.0.3       2019-09-22 [1] CRAN (R 4.4.0)
+ plyr             1.8.9       2023-10-02 [1] CRAN (R 4.4.0)
+ posterior      * 1.6.1       2025-02-27 [1] CRAN (R 4.4.1)
+ processx         3.8.6       2025-02-21 [1] CRAN (R 4.4.1)
+ promises         1.3.2       2024-11-28 [1] CRAN (R 4.4.1)
+ ps               1.9.0       2025-02-18 [1] CRAN (R 4.4.1)
+ purrr          * 1.0.4       2025-02-05 [1] CRAN (R 4.4.1)
+ QuickJSR         1.6.0       2025-02-26 [1] CRAN (R 4.4.1)
+ R6               2.6.1       2025-02-15 [1] CRAN (R 4.4.1)
+ rbibutils        2.3         2024-10-04 [1] CRAN (R 4.4.1)
+ Rcpp           * 1.0.14      2025-01-12 [1] CRAN (R 4.4.1)
+ RcppParallel     5.1.10      2025-01-24 [1] CRAN (R 4.4.1)
+ Rdpack           2.6.3       2025-03-16 [1] CRAN (R 4.4.1)
+ readr          * 2.1.5       2024-01-10 [1] CRAN (R 4.4.0)
+ reformulas       0.4.0       2024-11-03 [1] CRAN (R 4.4.1)
+ reshape2         1.4.4       2020-04-09 [1] CRAN (R 4.4.0)
+ rethinking     * 2.42        2025-03-19 [1] Github (rmcelreath/rethinking@ac1b3b2)
+ rlang            1.1.5       2025-01-17 [1] CRAN (R 4.4.1)
+ rmarkdown        2.29        2024-11-04 [1] CRAN (R 4.4.1)
+ rstan            2.35.0.9000 2024-06-06 [1] https://stan-dev.r-universe.dev (R 4.4.0)
+ rstanarm       * 2.32.1      2024-01-18 [1] CRAN (R 4.4.0)
+ rstantools       2.4.0       2024-01-31 [1] CRAN (R 4.4.0)
+ rstudioapi       0.17.1      2024-10-22 [1] CRAN (R 4.4.1)
+ scales           1.3.0       2023-11-28 [1] CRAN (R 4.4.0)
+ sessioninfo      1.2.3       2025-02-05 [1] CRAN (R 4.4.1)
+ shape            1.4.6.1     2024-02-23 [1] CRAN (R 4.4.0)
+ shiny            1.10.0      2024-12-14 [1] CRAN (R 4.4.1)
+ shinyjs          2.1.0       2021-12-23 [1] CRAN (R 4.4.0)
+ shinystan        2.6.0       2022-03-03 [1] CRAN (R 4.4.0)
+ shinythemes      1.2.0       2021-01-25 [1] CRAN (R 4.4.0)
+ StanHeaders      2.35.0.9000 2024-06-06 [1] https://stan-dev.r-universe.dev (R 4.4.0)
+ stringi          1.8.7       2025-03-27 [1] CRAN (R 4.4.1)
+ stringr        * 1.5.1       2023-11-14 [1] CRAN (R 4.4.0)
+ survival         3.8-3       2024-12-17 [2] CRAN (R 4.4.3)
+ tensorA          0.36.2.1    2023-12-13 [1] CRAN (R 4.4.0)
+ threejs          0.3.3       2020-01-21 [1] CRAN (R 4.4.0)
+ tibble         * 3.2.1       2023-03-20 [1] CRAN (R 4.4.0)
+ tidyr          * 1.3.1       2024-01-24 [1] CRAN (R 4.4.0)
+ tidyselect       1.2.1       2024-03-11 [1] CRAN (R 4.4.0)
+ tidyverse      * 2.0.0       2023-02-22 [1] CRAN (R 4.4.0)
+ timechange       0.3.0       2024-01-18 [1] CRAN (R 4.4.0)
+ tzdb             0.5.0       2025-03-15 [1] CRAN (R 4.4.1)
+ V8               6.0.3       2025-03-26 [1] CRAN (R 4.4.1)
+ vctrs            0.6.5       2023-12-01 [1] CRAN (R 4.4.0)
+ withr            3.0.2       2024-10-28 [1] CRAN (R 4.4.1)
+ xfun             0.51        2025-02-19 [1] CRAN (R 4.4.1)
+ xtable           1.8-4       2019-04-21 [1] CRAN (R 4.4.0)
+ xts              0.14.1      2024-10-15 [1] CRAN (R 4.4.1)
+ yaml             2.3.10      2024-07-26 [1] CRAN (R 4.4.0)
+ zoo              1.8-13      2025-02-22 [1] CRAN (R 4.4.1)
+
+ [1] /Users/marcoe02/.Rlib
+ [2] /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

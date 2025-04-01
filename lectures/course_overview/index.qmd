@@ -1,0 +1,525 @@
+---
+title: "Course overview"
+date: 2025-01-13
+author: Edoardo \"Dado\" Marcora
+format:
+  revealjs:
+    smaller: true
+    incremental: true
+    theme: [default, styles.scss]
+---
+
+## Team
+
+**Co-directors**
+
+::: nonincremental
+-   [Angela Radulescu](https://www.angelaradulescu.com/)
+
+-   [Edoardo "Dado" Marcora](https://profiles.mountsinai.org/edoardo-m-marcora)
+
+-   [Evan Schaffer](https://www.schafferlab.com/evan-schaffer)
+:::
+
+**Teaching assistants**
+
+::: nonincremental
+-   Ariela Buxbaum Grice
+
+-   Jing Li
+
+-   Jolie Hoang
+:::
+
+## BSR 1715 - Modern statistics for modern biology
+
+::: fragment
+Data science and statistical modeling using R and Jupyter notebooks
+:::
+
+::: fragment
+[![](images/data_science.png){width="660"}](https://towardsdatascience.com/introduction-to-statistics-e9d72d818745)
+:::
+
+## Student survey
+
+In the **Assignments** section of the course on [Blackboard](https://learn.mssm.edu/)
+
+## Example of a scientific claim
+
+[**LPS treatment blunts UCP1 expression in subcutaneous adipocytes**]{.orange}
+
+![](images/41467_2020_15483_Fig1_HTML.png)
+
+Values are expressed as mean ± SEM. \*\**p* = 0.004. Statistical test used: two-sided *t*-test.
+
+ 
+
+**Figure 1** from [ASK1 inhibits browning of white adipose tissue in obesity](https://doi.org/10.1038/s41467-020-15483-7)
+
+Lucchini *et al.* (2020) **Nat Commun** 11(1):1642
+
+## The conclusion of a modern scientific argument
+
+::: text-align-center
+![Raphael: The School of Athens (Plato and Aristotle)](images/Sanzio_01_Plato_Aristotle.jpg){fig-alt="https://commons.wikimedia.org/w/index.php?curid=75881" width="421"}
+:::
+
+## The conclusion of a modern scientific argument
+
+::: text-align-center
+![](images/Slide1.png)
+:::
+
+## The conclusion of a modern scientific argument
+
+![](images/Slide2.png)
+
+## The "null ritual"
+
+::::: columns
+::: {.column width="42%"}
+![](images/ordination.png)
+:::
+
+::: {.column width="58%"}
+![](images/null_ritual_flowchart.png)
+:::
+
+[Gigerenzer (2018)](https://journals.sagepub.com/doi/full/10.1177/2515245918771329)
+:::::
+
+::: notes
+In the typical introductory statistics course, students are introduced to a great number of concepts: variance, z-score, normal distribution, p-values, ANOVA, t-test, and many others. At the end of the course, however, many students have difficulty appropriately transferring what they have learned to new situations.
+
+Students and researchers alike end up practicing statistics as a set of rituals, a series of actions repeatedly performed in a prescribed order without judgment. Triggered by a certain set of conditions, our students happily “run the analyses” and report the results, all without a deep understanding of why they did what they did, or what the results mean.
+
+Modern statistics has moved beyond the assumptions and mathematical approximations of the last century; it has become a computational science, gradually replacing tools such as the normal distribution with techniques such as simulation, randomization, and resampling. We also have seen a shift from an emphasis on Null Hypothesis Significance Testing (NHST) to the construction and evaluation of statistical models.
+:::
+
+## The "null ritual"
+
+::::: columns
+::: {.column width="55%"}
+![](images/san_gennaro.jpg)
+
+The "[Miracle of San Gennaro](https://en.wikipedia.org/wiki/Januarius)"
+:::
+
+::: {.column .fragment width="45%"}
+![](images/p-value.png)
+:::
+:::::
+
+## So, what is a p-value?
+
+::: fragment
+Informally, a p-value is the probability, under a specified statistical model (e.g., the null hypothesis of no effect), that a statistical summary of the data would be equal to or more extreme than its observed value.
+:::
+
+::::: columns
+::: {.column .fragment width="50%"}
+$$
+P(D^* \mid H_0) \ne P(H_0 \mid D)
+$$
+:::
+
+::: {.column .fragment width="50%"}
+![](images/jaws.png)
+:::
+:::::
+
+## What's so magical about the 5% p-value threshold?
+
+::::: columns
+::: {.column .fragment width="35%"}
+![](images/Sir-Ronald-Aylmer-Fisher.webp)
+
+Sir Ronald Aylmer Fisher (1890-1962), mathematical statistician and geneticist
+:::
+
+::: {.column .fragment width="65%"}
+>"*Personally, the writer prefers to set a low standard of significance at the 5 per cent point, and ignore entirely all results which fails to reach this level. [&hellip;]\
+A scientific fact should be regarded as experimentally established only if a properly designed experiment rarely fails to give this level of significance.*"  —  [Fisher RA 1926](https://doi.org/10.23637/rothamsted.8v61q)
+:::
+:::::
+
+## What's so magical about the 5% p-value threshold?
+
+::::: columns
+::: {.column .fragment width="50%"}
+![](images/tetrapod.png)
+:::
+
+::: {.column .fragment width="50%"}
+![](images/elpistostege_human.png)
+:::
+:::::
+
+## The explanation is neither philosophical nor scientific, but sociological
+
+::::: columns
+::: {.column width="50%"}
+![](images/p-value_2.jpg)
+:::
+
+::: {.column .fragment width="50%"}
+>"*Everyone uses P-values. It is the same reason we can use money. When everyone believes in something’s value, we can use it for real things; money for food, and P-values for knowledge claims, publication, funding, and promotion. It does not matter if the P-value does not mean what people think it means; it becomes valuable because of what it buys.*"  —  [Goodman (2019)](https://www.tandfonline.com/doi/full/10.1080/00031305.2018.1558111)
+:::
+:::::
+
+## The "null ritual" is bad for science
+
+Statisticians and others have been sounding the alarm about these matters for decades!
+
+![](images/null_ritual_retirement.webp)
+
+::: nonincremental
+-   Scientists rise up against statistical significance [Amrhein (2019)](https://www.nature.com/articles/d41586-019-00857-9)
+-   American Statistical Association (ASA) statement on p-values [Wasserstein (2016)](https://doi.org/10.1080/00031305.2016.1154108)
+-   Moving to a world beyond "p \< 0.05" [Wasserstein (2019)](https://doi.org/10.1080/00031305.2019.1583913)
+-   Scientific method: Statistical errors [Nuzzo (2014)](https://doi.org/10.1038/506150a)
+:::
+
+::: notes
+Many statisticians argue that we should stop teaching NHST and/or mathematical approximations altogether (https://journals.sagepub.com/doi/full/10.1177/2515245918771329)
+
+The critique is not just leveled at the teaching of statistics, but also to statistics as practiced by researchers. Nature published a comment with 800 signatories calling for an end to these statistical practices by scientists (https://www.nature.com/articles/d41586-019-00857-9)
+
+https://www.scientificamerican.com/article/just-a-theory-7-misused-science-words/
+:::
+
+::: notes
+P-values have taken quite a beating lately. These widely used and commonly misapplied statistics have been blamed for giving a veneer of legitimacy to dodgy study results, encouraging bad research practices and promoting false-positive study results. https://fivethirtyeight.com/features/science-isnt-broken
+:::
+
+## The "null ritual" is bad for science
+
+![](images/Slide3.png)
+
+## We do it because it's what we teach, we teach it because it's what we do
+
+ 
+
+::: fragment
+**Q: Why do so many people still use p-value \< 0.05?**
+:::
+
+::: fragment
+A: Because that's what they were taught in college or grad school
+:::
+
+ 
+
+::: fragment
+**Q: Why do so many colleges and grad schools teach p-value \< 0.05?**
+:::
+
+::: fragment
+A: Because that's still what the scientific community and journal editors use
+:::
+
+::: {.fragment .text-align-center}
+![](images/vicious_circle.jpg){width="400"}
+:::
+
+## Shift focus away from the "null ritual" toward \[Bayesian\] estimation with uncertainty
+
+ 
+
+::: width=50%
+![](images/classical_and_modern_approaches.png){width="600"}
+:::
+
+[Kruschke (2015)](https://link.springer.com/article/10.3758/s13423-016-1221-4)
+
+::: notes
+Moving beyond dichotomous decision making to estimation with uncertainty
+
+Moving beyond estimation \[of a population parameter\] with uncertainty to predictive inference and scientific reproducibility
+
+Observables are fundamental, the goal of statistical modeling should be to predict future observations, given the current data and other relevant information
+
+https://doi.org/10.1080/00031305.2018.1518270
+:::
+
+## Shift focus away from the "null ritual" toward \[Bayesian\] estimation with uncertainty
+
+Scientists should acknowledge and communicate the uncertainty of their conclusions!
+
+::: fragment
+However, a recent study found that in one leading journal (Science) the frequency of hedging words such as “might" and "probably" has fallen by about 40% over the past 2 decades.
+
+[Brainard (2023)](https://www.science.org/content/article/some-scientific-papers-words-expressing-uncertainty-have-decreased)
+:::
+
+ 
+
+::: fragment
+Take-home message:
+
+**Avoid the use and be wary of "dichotomous/bright-line thinking", embrace uncertainty and be thoughtful, open, and modest!**
+:::
+
+## Focus on understanding and transfer
+
+::: fragment
+In a traditional course, students master bits of knowledge (e.g., t-test, chi-square, ANOVA, regression, and so on) but often fail to develop a coherent understanding of how the bits are connected together. This results in fragmented knowledge that doesn't transfer.
+:::
+
+::: {.fragment .text-align-center}
+![](https://i.postimg.cc/JMtcgfqP/image.png){width="694"}
+:::
+
+::: fragment
+The aim of this course is deep understanding and transferable knowledge.
+:::
+
+::: notes
+Coherent and interconnected knowledge that can be transferred to new contexts.
+
+Students must practice making connections between core concepts, representations, and the world (i.e., contexts and practices involved in applying those concepts).
+:::
+
+## Focus on statistical modeling
+
+The course is organized around the concept of statistical modeling and the practice of data analysis: exploring variation, modeling variation, and evaluating models.
+
+::::: columns
+::: {.column .fragment width="40%"}
+![](images/data_pipeline.webp){width="180"}
+
+[Leek and Peng (2015)](https://doi.org/10.1038/520612a)
+:::
+
+::: {.column .fragment width="60%"}
+More than 200 biologists analysed the same data — and reached widely divergent conclusions!
+
+[Gould (2023)](https://doi.org/10.32942/X2GG62)
+:::
+:::::
+
+## Focus on statistical modeling
+
+<https://lindeloev.github.io/tests-as-linear/>
+
+![](images/linear_tests_cheat_sheet.png)
+
+-   This beautiful simplicity ($y = a \cdot x + b$) means that there is less to learn and remember!
+
+-   The assumptions underlying each test can be deduced from the linear model and checked with diagnostic plots
+
+-   Statistical models are at the core of frequentist, Bayesian, and other inference methods
+
+## Focus on statistical modeling
+
+::: nonincremental
+-   Linear models are also at the core of deep neural networks and large language models like ChatGPT
+:::
+
+![](images/Slide4.png)
+
+## Focus on computational approach
+
+-   Modern statistics has moved beyond the rigid assumptions and mathematical approximations that were necessary for performing data analysis without a computer
+
+-   It has become a computational science, replacing tools such as the CLT and statistical tables with techniques such as simulation, shuffling, and resampling
+
+::::: columns
+::: {.column .fragment width="40%"}
+![](images/statistical_table.jpg)
+:::
+
+::: {.column .fragment width="60%"}
+![](images/ujse_a_1844106_f0001_c.jpg)
+:::
+:::::
+
+## Gentle introduction to R
+
+-   Learn to program and analyze data using R, a widely used, free, open-source, and platform-independent programming language for data science and statistics
+
+-   R exercises are interleaved throughout the online book, to continually practice applying the methods and functions being taught
+
+-   The [supernova](https://cran.r-project.org/package=supernova), [mosaic](https://cran.r-project.org/package=mosaic), [ggformula](https://cran.r-project.org/package=ggformula), [dplyr](https://cran.r-project.org/package=dplyr), and [Metrics](https://cran.r-project.org/package=Metrics) packages are used to provide a simpler and more consistent syntax for statistical modeling and data visualization
+
+::::: {.columns .fragment .text-align-center}
+::: {.column width="50%"}
+![](images/r4ds_book.jpg){height="240"}
+
+<https://r4ds.hadley.nz/>
+:::
+
+::: {.column width="50%"}
+![](images/IMS2_front_cover.png){height="240"}
+
+<https://openintro-ims.netlify.app/>
+:::
+:::::
+
+## Seamless integration of Jupyter notebooks
+
+Fully-hosted integration of Jupyter notebooks for practicing reproducible data analysis workflows in class and at home:
+
+::::: columns
+::: {.column width="40%"}
+![](images/jupyter_notebook.png){width="400"}
+:::
+
+::: {.column width="60%"}
+1.  Intro to data and research question
+
+2.  Explore variation
+
+3.  Model variation
+
+4.  Evaluate models
+
+5.  Conclusion
+:::
+:::::
+
+## Focus on learning by doing
+
+{{< video https://youtu.be/6xfHxOXhtpc width="800" height="450", start="18" >}}
+
+## Getting your technology ready
+
+In order to use the online book from [CourseKata](https://coursekata.org/), three things are critical:
+
+1.  You must use a computer or tablet
+
+2.  You should use Chrome as your browser
+
+3.  You must allow third-party cookies
+
+## Getting support
+
+CourseKata support is accessed by clicking on the blue icon with a “CK” that appears on the bottom right corner of each page (see picture).
+
+![](https://i.postimg.cc/k7yHkQts/CKHelp.png){alt="Image of CourseKata Support button" width="1280"}
+
+Click on the CK icon to browse or search the knowledge base: find descriptions of R functions used in the book, explore a glossary of statistical terms, or read articles on how to solve common technical issues.
+
+If you need technical support you can submit a ticket to CourseKata support.
+
+## R sandbox and cheatsheet
+
+-   The **R sandbox** is a place where you can practice writing R code and seeing the results
+
+-   The **R cheatsheet** contains the R functions used in the course
+
+-   You can find the R sandbox and cheatsheet links in the **Resources** folder of the **CourseKata** section of the course on [Blackboard](https://learn.mssm.edu/)
+
+## Tracking your progress
+
+When you’ve completed all exercises on a page, a **Completed** badge appears at the top of the page (see picture).
+
+![](https://i.postimg.cc/qqs1yZ8b/uwRfLtB.png){alt="Image of Complete badge at the top of the page"}
+
+For a more comprehensive view of your progress through the book, go to the **My Progress + Jupyter** page, the first link in the **CourseKata** section of the course on [Blackboard](https://learn.mssm.edu/). This page will show you which pages you have completed, and which ones you still need to work on. **You can follow the same link to get to your Jupyter notebooks**.
+
+## Tips for learning more
+
+The text and exercises in this online book are designed to help you **think deeply** about the concepts introduced. We’ve found that the most successful students are those who **read the book slowly and carefully**, complete all exercises, and answer all practice and review questions to the best of their ability.
+
+Because the book is designed to be read slowly, try not to put off your reading assignment until the last minute. If you wait until it’s too late, you won’t have time to go through the pages carefully. You will end up skimming, and if you skim, you won’t learn nearly as much.
+
+## Try again...
+
+Don’t just work through the pages once. If you really want to learn, go through them again, especially if you find the material difficult to understand.
+
+When you work through a page again, don’t just look through your previously scored responses. Clear them out, and generate the answers again. Lots of research shows that you will learn more by **answering again** — much more!
+
+## ...and again
+
+Your initial responses to the embedded assessment questions reappear if you leave a page and return to it later. For this reason, pages you have completed that include such questions will have a \<Try Again\> button at the top (see picture).
+
+![](https://i.postimg.cc/L4LCchrt/kaUkiV3.png){alt="Image of RConsole explaining Script.R and RConsole windows"}
+
+The best way to review a page is to click the \<Try Again\> button. You can do this as many times as you wish. You might find this particularly helpful on the review questions at the end of each chapter.
+
+NOTE: **Only your initial answers are saved. Using the \<Try Again\> button won’t change the answers your instructor will see from you**.
+
+## Outline of the book
+
+[CourseKata](https://coursekata.org/preview/default/program): **Accelerated Statistics with R (XCD)**
+
+I.  Exploring and modeling variation
+    1.  Exploring data with R
+    2.  From exploring to modeling variation
+    3.  Modeling relationships in data
+II. Comparing models to make inferences
+    4.  The logic of inference
+    5.  Model comparison with F
+    6.  Parameter estimation and confidence intervals
+III. Multivariate models
+     7.  Introduction to multivariate models
+     8.  Multivariate model comparisons
+     9.  Models with interactions
+     10. More models with interactions
+
+## Outline of the course
+
+-   Week 1: Intro to the course and Jupyter notebooks
+-   Week 2: Exploring data with R (Chapter 1)
+-   Week 3: From exploring to modeling variation (Chapter 2)
+-   Week 4: Modeling relationships in data (Chapter 3)
+-   Week 5: Probability theory + **midterm group project presentations**
+-   Week 6: The logic of inference (Chapter 4)
+-   Week 7: Model comparison with F (Chapter 5)
+-   Week 8: Parameter estimation and confidence intervals (Chapter 6)
+-   Week 9: Introduction to multivariate models (Chapter 7)
+-   Week 10: Multivariate model comparisons (Chapter 8)
+-   Week 11: Models with interactions (Chapter 9)
+-   Week 12: More models with interactions (Chapter 10)
+-   Week 13: Logistic regression (machine learning/classification/GLM)
+-   Week 14: **Final group project presentations**
+
+## Grading policy
+
+::: fragment
+63 in-class hours, 4 credits, letter-graded:
+
+-   60% - Homework and classwork assignments (50% completeness + 10% correctness)
+
+-   20% - Group project and presentation
+
+-   20% - Regular attendance and [participation]{.underline} (you are allowed no more than 2 unexcused absences)
+:::
+
+## Homework and classwork assignments
+
+::: fragment
+Each week, before the start of the first class of the week (Monday at noon, with a few exceptions), you will be expected to:
+
+-   Complete the reading and exercises of the corresponding chapter in the online book.
+
+-   Take screenshot of **My Progress + Jupyter** page, attach to and submit assignment in Blackboard.
+:::
+
+::: fragment
+Each week, before the start of the second class of the week (Tuesday at noon, with a few exceptions), you will be expected to:
+
+-   Complete and submit on CKHub the Jupyter notebook assigned as homework for that week.
+
+-   Complete and submit on CKHub the Jupyter notebook(s) you worked on in class the week before.
+:::
+
+::: fragment
+The primary grading criterion will be completion of the assignments and submission of code that works. Correctness is a secondary grading criterion.
+:::
+
+## Group project and presentation
+
+-   You will work in groups of \~3 (randomly selected within the class).
+
+-   The group is encouraged to use data from their own research work or publicly available from published biomedical studies.
+
+-   Your job as a group will be to plan and carry out an analysis of the data based on a specified research question(s) and then describe your analytical process including descriptive and inferential statistics as well as appropriate visualizations.
+
+-   You will present your analysis to the class as well as produce a Jupyter notebook consisting of a description of the data, research question, analytical approach, findings and conclusions, in the same format as the Jupyter notebooks you worked on throughout the class.
+
+-   You should work with other students in your group in preparing and presenting the project and the Jupyter notebook should indicate the role each person played in the project.
+
+##  {background-image="images/thats_all_folks.jpg" background-size="50%"}

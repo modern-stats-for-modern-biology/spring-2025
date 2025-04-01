@@ -1,0 +1,51 @@
+---
+title: "Datasaurus dozen"
+format:
+  html:
+    df-print: kable
+warning: false
+---
+
+```{r}
+#| output: false
+# Uncomment the next line to install the ggformula and datasauRus packages if needed
+# install.packages(c("ggformula", "datasauRus"))
+
+# Load the required packages
+library(tidyverse)
+library(broom)
+library(ggformula)
+library(datasauRus)
+
+theme_set(theme_minimal())
+```
+
+```{r}
+# Load the datasaurus dozen dataset
+data("datasaurus_dozen")
+```
+
+```{r}
+datasaurus_dozen %>%
+  gf_lm(y ~ x | dataset, color = "black", se = FALSE) %>%
+  gf_labs(
+    title = "Datasaurus dozen: Regression lines only",
+    x = "X",
+    y = "Y"
+  )
+```
+
+```{r}
+datasaurus_dozen %>%
+  gf_point(y ~ x | dataset, color = ~ dataset) %>%
+  gf_lm(y ~ x | dataset, color = "black", se = FALSE) %>%
+  gf_labs(
+    title = "Datasaurus dozen: Regression lines + data points",
+    x = "X",
+    y = "Y"
+  )
+```
+
+```{r}
+datasaurus_dozen %>% filter(dataset == "dino") %>% lm(y ~ x, data = .) %>% tidy()
+```

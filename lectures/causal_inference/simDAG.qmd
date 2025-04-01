@@ -1,0 +1,86 @@
+---
+title: "simDAG"
+format:
+  html:
+    df-print: paged
+---
+
+## Setup environment
+
+```{r}
+#| output: false
+library(tidyverse)
+library(performance)
+library(ggeffects)
+library(simDAG)
+library(rstanarm)
+library(bayesplot)
+
+set.seed(666)
+```
+
+## Create and plot DAG
+
+```{r}
+dag <- empty_dag() +
+  node("age", type="rnorm", mean=50, sd=4) +
+  node("sex", type="rbernoulli", p=0.5) +
+  node("bmi", type="gaussian", formula= ~ 12 + age*1.1 + sex*0.4, error=2) +
+  node("death", type="binomial", formula= ~ -15 + age*0.1 + bmi*0.3)
+```
+
+```{r}
+plot(dag)
+```
+
+## Simulate data from DAG
+
+```{r}
+sim_dat <- sim_from_dag(dag, n_sim=10000)
+```
+
+```{r}
+sim_dat
+```
+
+## BMI regression
+
+```{r}
+#| output: false
+mod_bmi <- stan_glm(bmi ~ age + sex, data = sim_dat, family = "gaussian")
+```
+
+```{r}
+#| cache: true
+#| fig-height: 9
+check_model(mod_bmi)
+```
+
+```{r}
+mcmc_dens(mod_bmi)
+```
+
+
+## Death regression
+
+```{r}
+#| output: false
+mod_death <- stan_glm(death ~ age + bmi, data=sim_dat, family="binomial")
+```
+
+```{r}
+#| cache: true
+#| fig-height: 9
+check_model(mod_death)
+```
+
+
+```{r}
+mcmc_dens(mod_death)
+```
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```

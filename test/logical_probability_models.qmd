@@ -1,0 +1,875 @@
+---
+title: "Logical probability models"
+format:
+  html:
+    toc: true
+    df-print: paged
+execution:
+  warning: false
+editor: visual
+---
+
+## Introduction
+
+One of the oft-stated goals of education is the development of “critical thinking” skills. Although it is rare to see a careful definition of critical thinking, widely accepted elements include framing and recognizing coherent arguments, the application of logic patterns such as **deduction**, the skeptical evaluation of evidence, consideration of alternative explanations, and a disinclination to accept unsubstantiated claims.
+
+“**Statistical thinking**” is a variety of critical thinking involving data and **inductive** reasoning directed to draw reasonable and useful conclusions that can guide decision-making and action.
+
+Surprisingly, many university statistics courses are not primarily about statistical reasoning. They do cover some technical methods used in statistical reasoning, but they have replaced notions of “useful,” “decision-making,” and “action” with doctrines such as “null hypothesis significance testing” and “correlation is not causation.” For example, a core method for drawing responsible conclusions about causal relationships by adjusting for “covariates” is hardly ever even mentioned in conventional statistics courses.
+
+These *Lessons in Statistical Thinking* present the statistical ideas and methods behind decision-making to guide action. To set the stage, consider these themes of statistical thinking that highlight its specialized role in the broader subject of critical thinking.
+
+1.  **Variation** is the principal concern of statistical thinking. We are all familiar with variation in everyday life, for example variation among people: height varies from one person to another as does eye color, political orientation, taste in music, athletic ability, susceptibility to COVID, resting heart rate and blood pressure, and so on. Without variation, there would be no need for statistical thinking.
+
+2.  **Data** are records of actions, observations, and measurements. Data is the means by which we capture variation so that we can make appropriate statements about uncertainty, trends, and relationships. The appropriate organization of data is an important topic for all statistical thinkers. There are conventions for data organization which are essential for effective communication, collaboration, and applying powerful computational tools.
+
+    At the heart of the conventions used in data organization is the concept of a **variable**. A single variable records the variation in one kind of observable, for instance, eye color. A **data frame** consists of one or more variables, all stemming from observation of the same set of individuals.
+
+3.  The **description** or **summarizing** of data consists of detecting, naming, visualizing, and quantifying the patterns contained within data. The statistical thinker knows the common types of patterns that experience has shown are most helpful in summarizing data. These *Lessons* emphasize the kinds of patterns used to represent **relationships** between and among variables.
+
+4.  Critical thinking involves the distinction between several types of knowledge: facts, opinions, theories, uncertainties, and so on. Statistical thinking is particularly relevant to evaluating **hypotheses**. **A hypothesis is merely a statement about the world that might or might not be true.** For example, a medical diagnosis is a hypothesis about what ails a patient. A central task in statistical thinking is the use of data to establish an appropriate level of belief or plausibility in a given hypothesis versus its alternatives. In *Lessons*, we frame this as a *competition between hypotheses*.
+
+    Just as a doctor uses a diagnosis to choose an appropriate treatment for a patient, so our level of belief in relevant hypotheses shape the decisions and actions that we take.
+
+The many concepts, techniques, and habits of statistical thinking presented in these *Lessons* are united toward establishing appropriate levels of belief in hypotheses, beliefs informed by the patterns in variation that we extract from data.
+
+## Overview
+
+In this notebook, we build models for data shown in Fig. 1B of XXX using the logical probability framework.
+
+## Setup environment
+
+```{r}
+#| output: false
+# Load necessary libraries
+library(tidyverse)
+library(magrittr)
+library(ggformula)
+
+theme_set(theme_minimal())
+```
+
+## Urn model
+
+### Specify variables
+
+```{r}
+B_var <- 0:1 # each ball can be blue (1) or white (0)
+D_var <- 1:4
+```
+
+```{r}
+# Generate the sample space
+ss <- expand_grid(
+  B1 = B_var,
+  B2 = B_var,
+  B3 = B_var,
+  B4 = B_var,
+  D  = D_var)
+
+ss
+```
+
+```{r}
+# Add the premises to the sample space
+ss <- ss %>%
+  rowwise() %>%
+  mutate(
+    K = (B1 + B2 + B3 + B4) == 3  # premise: Exactly 3 blue balls
+  ) %>%
+  ungroup()
+
+ss
+```
+
+```{r}
+# Compute the probability of each world
+ss <- ss %>%
+  mutate(p = K / sum(K))  # normalize probabilities for worlds satisfying the premise
+
+ss
+```
+
+```{r}
+ss %>% filter((D == 1 & B1 == 1) | (D == 2 & B2 == 1) | (D == 3 & B3 == 1) | (D == 4 & B4 == 1)) %>% summarize(P = sum(p)) %>% pull(P)
+```
+
+```{r}
+ss %>% filter((D == 1 & B1 == 0) | (D == 2 & B2 == 1) | (D == 3 & B3 == 1) | (D == 4 & B4 == 1)) %>% summarize(P = sum(p)) %>% pull(P)
+```
+
+```{r}
+ss %>% filter((D == 1 & B1 == 0) | (D == 2 & B2 == 0) | (D == 3 & B3 == 1) | (D == 4 & B4 == 1)) %>% summarize(P = sum(p)) %>% pull(P)
+```
+
+```{r}
+ss %>% filter((D == 1 & B1 == 0) | (D == 2 & B2 == 0) | (D == 3 & B3 == 0) | (D == 4 & B4 == 1)) %>% summarize(P = sum(p)) %>% pull(P)
+```
+
+```{r}
+ss %>% filter((D == 1 & B1 == 0) | (D == 2 & B2 == 0) | (D == 3 & B3 == 0) | (D == 4 & B4 == 0)) %>% summarize(P = sum(p)) %>% pull(P)
+```
+
+## Urn model
+
+### Specify argument
+
+```{r}
+# sample space
+
+NB <- 4  # number of balls in bag
+ND <- 3  # number of draws from bag
+
+ball_vars <- list()
+for (i in seq_len(NB)) {
+  ball_vars[[ paste0("B", i) ]] <- 0:1
+}
+
+draw_vars <- list()
+for (i in seq_len(ND)) {
+  draw_vars[[ paste0("D", i) ]] <- 1:NB
+}
+
+ss <-
+  expand_grid(!!!ball_vars, !!!draw_vars) %>% 
+  rowwise() %>%
+  mutate(
+    across(
+      .cols = starts_with("D"),
+      .fns = ~ c_across(starts_with("B"))[.x]
+    )
+  ) %>%
+  mutate(
+    B = sum(across(starts_with("B")))
+  ) %>%
+  ungroup() %>% 
+  select(B, starts_with("D"))
+
+ss
+```
+
+```{r}
+# create truth table
+ss %>%
+  rowwise() %>%
+  mutate(
+    E = (B == 1),
+    H = (D1 == 1) & (D2 == 0) & (D3 == 1)
+  ) %>%
+  ungroup() %>% 
+  summarize(`P(D | B)` = mean(H[E]))
+```
+
+```{r}
+dbinom_sequence <- function(x, sequence, size = 4, log = FALSE) {
+  ND <- length(sequence)  # number of draws
+  
+  # Create ball configuration variables: B1, B2, ..., B_size.
+  ball_vars <- list()
+  for (i in seq_len(size)) {
+    ball_vars[[ paste0("B", i) ]] <- 0:1
+  }
+  
+  # Create draw variables: D1, D2, ..., D_ND, where each draw picks a ball index (1:size)
+  draw_vars <- list()
+  for (i in seq_len(ND)) {
+    draw_vars[[ paste0("D", i) ]] <- 1:size
+  }
+  
+  # Build the full sample space of ball configurations and draw indices.
+  # There are 2^(size) possible ball configurations and size^(ND) draw sequences.
+  ss <- expand_grid(!!!ball_vars, !!!draw_vars) %>% 
+    rowwise() %>%
+    # For each draw variable, replace the drawn index with the corresponding ball value.
+    mutate(
+      across(
+        .cols = starts_with("D"),
+        .fns = ~ c_across(starts_with("B"))[.x]
+      )
+    ) %>%
+    # Compute the total number of blue balls in this configuration.
+    mutate(B_total = sum(c_across(starts_with("B")))) %>%
+    ungroup() %>% 
+    # Retain only the total blue ball count and the draw outcomes.
+    select(B_total, starts_with("D"))
+  
+  # For each row, define:
+  #   E: the event that the bag has exactly x blue balls.
+  #   H: the event that the sequence of draws equals the provided sequence.
+  ss <- ss %>%
+    rowwise() %>%
+    mutate(
+      E = (B_total == x),
+      H = all(c_across(starts_with("D")) == sequence)
+    ) %>%
+    ungroup()
+  
+  # Calculate the conditional probability P(H | E)
+  cond_prob <- ss %>% 
+    summarize(prob = mean(H[E])) %>% 
+    pull(prob)
+  
+  if (log) {
+    return(log(cond_prob))
+  } else {
+    return(cond_prob)
+  }
+}
+```
+
+```{r}
+dbinom_sequence(1, sequence = c(1, 0, 1), size = 4, log = FALSE)
+```
+
+
+## Linear model
+
+### Specify variables
+
+```{r}
+b0_var <- 9:11
+b1_var <- -6:-8
+s_var  <- 0:2
+X_var  <- 0:1
+Y_var  <- 0:15
+
+b0_fix <- 10
+b1_fix <- -7
+s_fix  <- 1
+X_fix  <- 1
+Y_fix  <- 3
+```
+
+### No association between X and Y
+
+#### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+#### Model specification
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = TRUE
+  ) %>%
+  ungroup()
+```
+
+#### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+
+m
+```
+
+#### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
+  group_by(X, Y) %>%
+  summarize(p = sum(p)) %>% 
+  ungroup()
+
+m
+```
+
+#### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M0",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "p(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+### Deterministic linear association: Fixed intercept and slope, no error
+
+#### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_fix,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+#### Model specification
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = (Y == b0 + b1 * X)
+  ) %>%
+  ungroup()
+
+m
+```
+
+#### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+#### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
+  group_by(X, Y) %>%
+  summarize(p = sum(p)) %>% 
+  ungroup()
+
+m
+```
+
+#### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M1",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "p(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+### Stochastic linear association: fixed slope, intercept, and error spread
+
+#### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_fix,
+  s  = s_fix,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+#### Model specification
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= s
+  ) %>%
+  ungroup()
+
+m
+```
+
+#### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+#### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
+  group_by(X, Y) %>%
+  summarize(p = sum(p)) %>% 
+  ungroup()
+
+m
+```
+
+#### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M2",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "p(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+### Stochastic linear association: fixed slope, intercept, and additive small random error
+
+#### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_fix,
+  s1 = 0:1,
+  s2 = 0:1,
+  s3 = 0:1,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+#### Model specification
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= (s1 + s2 + s3)
+  ) %>%
+  ungroup()
+
+m
+```
+
+#### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+#### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
+  group_by(X, Y) %>%
+  summarize(p = sum(p)) %>% 
+  ungroup()
+
+m
+```
+
+#### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M2",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "p(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+
+### Stochastic linear association: fixed intercept and slope, variable error spread
+
+#### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_fix,
+  s  = s_var,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+#### Model specification
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= s
+  ) %>%
+  ungroup()
+
+m
+```
+
+#### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+#### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
+  group_by(X, Y) %>%
+  summarize(p = sum(p)) %>% 
+  ungroup()
+
+m
+```
+
+#### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M3",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "p(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+### Stochastic linear association: variable intercept, fixed slope and error spread
+
+#### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_var,
+  b1 = b1_fix,
+  s  = s_fix,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+#### Model specification
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= s
+  ) %>%
+  ungroup()
+
+m
+```
+
+#### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+#### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
+  group_by(X, Y) %>%
+  summarize(p = sum(p)) %>% 
+  ungroup()
+
+m
+```
+
+#### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M4",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "p(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+### Stochastic linear association: fixed intercept and variable slope, no error
+
+#### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_var,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+#### Model specification
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = (Y == b0 + b1 * X)
+  ) %>%
+  ungroup()
+
+m
+```
+
+#### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+#### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
+  group_by(X, Y) %>%
+  summarize(p = sum(p)) %>% 
+  ungroup()
+
+m
+```
+
+#### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M5",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "p(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+### Stochastic linear association: fixed intercept and variable slope, fixed error spread
+
+#### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_fix,
+  b1 = b1_var,
+  s  = s_fix,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+#### Model specification
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= s
+  ) %>%
+  ungroup()
+
+m
+```
+
+#### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+#### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
+  group_by(X, Y) %>%
+  summarize(p = sum(p)) %>% 
+  ungroup()
+
+m
+```
+
+#### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M6",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "p(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+### Stochastic linear association: variable intercept, slope, and error spread
+
+#### Sample space
+
+```{r}
+# Define the sample space with constant spread
+ss <- expand_grid(
+  b0 = b0_var,
+  b1 = b1_var,
+  s  = s_var,
+  X  = X_var,
+  Y  = Y_var
+)
+
+ss
+```
+
+#### Model specification
+
+```{r}
+m <- ss %>%
+  # model assumptions/knowledge base/background info/evidence/premises
+  rowwise() %>%
+  mutate(
+    K = abs(Y - (b0 + b1 * X)) <= s
+  ) %>%
+  ungroup()
+
+m
+```
+
+#### Joint probability distribution
+
+```{r}
+m %<>%
+  # calculate p of each possible world given the model assumptions
+  mutate(p = K / sum(K))
+```
+
+#### Marginal (data) probability distribution
+
+```{r}
+m %<>%
+  # marginalize over X and Y to obtain the data distribution p(x, y | K)
+  group_by(X, Y) %>%
+  summarize(p = sum(p)) %>% 
+  ungroup()
+
+m
+```
+
+#### Plot data probability distribution (DGP model)
+
+```{r}
+gf_tile(
+  p ~ X + Y,
+  data = m,
+  color = "black",
+  fill = ~ p) %>%
+  gf_labs(
+    title = "M7",
+    x     = "X (Condition: 0 = Saline, 1 = LPS)",
+    y     = "Y (UCP1 Expression Level)",
+    fill  = "p(x, y | K)"
+  ) %>%
+  gf_refine(
+    scale_fill_gradient(low = "white", high = "blue"),
+    scale_x_continuous(breaks = c(0, 1)))
+```
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```

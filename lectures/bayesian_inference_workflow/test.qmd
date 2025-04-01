@@ -1,0 +1,369 @@
+---
+title: "Balls from bag"
+format:
+  html:
+    df-print: paged
+execution:
+  warning: false
+---
+
+```{r}
+#| output: false
+library(tidyverse)
+```
+
+## Proportional syllogism
+
+```{r}
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE))
+```
+
+```{r}
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2,
+    H  = B1 | B2
+  ) %>%
+  filter(E)
+```
+
+```{r}
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    E  = (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1),
+    H  = B1 | B2
+  ) %>%
+  filter(E)
+```
+
+```{r}
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    E  = (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1),
+    H  = B1 | B2
+  ) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+```{r}
+bag = c("B1", "W1", "W2", "W3")
+
+ss <- expand_grid(D1 = bag)
+
+ss
+```
+
+```{r}
+ss %>%
+  mutate(
+    E  = TRUE,
+    H  = (D1 == "W1") | (D1 == "W2") | (D1 == "W3")
+  ) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## The question
+
+-   **Knowledge base**:
+
+    -   Imagine an urn that contains 1 Blue ball and 3 White balls (`BWWW`).
+
+    -   We draw 3 balls with replacement. This means after each draw, we put the ball back in. \[i.i.d.\]
+
+-   **Query**:
+
+    -   What is the probability of drawing the sequence Blue, then White, then Blue (`BWB`)?
+
+## Create sample space
+
+```{r}
+expand_grid(
+  D1_B1 = c(TRUE, FALSE), D1_B2 = c(TRUE, FALSE), D1_B3 = c(TRUE, FALSE), D1_B4 = c(TRUE, FALSE),
+  D2_B1 = c(TRUE, FALSE), D2_B2 = c(TRUE, FALSE), D2_B3 = c(TRUE, FALSE), D2_B4 = c(TRUE, FALSE),
+  D3_B1 = c(TRUE, FALSE), D3_B2 = c(TRUE, FALSE), D3_B3 = c(TRUE, FALSE), D3_B4 = c(TRUE, FALSE))
+```
+
+```{r}
+expand_grid(
+  D1_B1 = c(TRUE, FALSE), D1_B2 = c(TRUE, FALSE), D1_B3 = c(TRUE, FALSE), D1_B4 = c(TRUE, FALSE),
+  D2_B1 = c(TRUE, FALSE), D2_B2 = c(TRUE, FALSE), D2_B3 = c(TRUE, FALSE), D2_B4 = c(TRUE, FALSE),
+  D3_B1 = c(TRUE, FALSE), D3_B2 = c(TRUE, FALSE), D3_B3 = c(TRUE, FALSE), D3_B4 = c(TRUE, FALSE)) %>% 
+  mutate(
+    # exactly one ball in first draw
+    P1 = (  D1_B1 & !D1_B2 & !D1_B3 & !D1_B4 ) |
+         ( !D1_B1 &  D1_B2 & !D1_B3 & !D1_B4 ) |
+         ( !D1_B1 & !D1_B2 &  D1_B3 & !D1_B4 ) |
+         ( !D1_B1 & !D1_B2 & !D1_B3 &  D1_B4 ),
+
+    # exactly one ball in second draw
+    P2 = (  D2_B1 & !D2_B2 & !D2_B3 & !D2_B4 ) |
+         ( !D2_B1 &  D2_B2 & !D2_B3 & !D2_B4 ) |
+         ( !D2_B1 & !D2_B2 &  D2_B3 & !D2_B4 ) |
+         ( !D2_B1 & !D2_B2 & !D2_B3 &  D2_B4 ),
+
+    # exactly one ball in third draw
+    P3 = (  D3_B1 & !D3_B2 & !D3_B3 & !D3_B4 ) |
+         ( !D3_B1 &  D3_B2 & !D3_B3 & !D3_B4 ) |
+         ( !D3_B1 & !D3_B2 &  D3_B3 & !D3_B4 ) |
+         ( !D3_B1 & !D3_B2 & !D3_B3 &  D3_B4 ),
+    
+    # exactly one ball in each draw
+    E  = P1 & P2 & P3) %>%
+  filter(E)
+```
+
+```{r}
+expand_grid(
+  D1_B1 = c(TRUE, FALSE), D1_B2 = c(TRUE, FALSE), D1_B3 = c(TRUE, FALSE), D1_B4 = c(TRUE, FALSE),
+  D2_B1 = c(TRUE, FALSE), D2_B2 = c(TRUE, FALSE), D2_B3 = c(TRUE, FALSE), D2_B4 = c(TRUE, FALSE),
+  D3_B1 = c(TRUE, FALSE), D3_B2 = c(TRUE, FALSE), D3_B3 = c(TRUE, FALSE), D3_B4 = c(TRUE, FALSE)) %>% 
+  mutate(
+    # exactly one ball in first draw
+    P1 = (  D1_B1 & !D1_B2 & !D1_B3 & !D1_B4 ) |
+         ( !D1_B1 &  D1_B2 & !D1_B3 & !D1_B4 ) |
+         ( !D1_B1 & !D1_B2 &  D1_B3 & !D1_B4 ) |
+         ( !D1_B1 & !D1_B2 & !D1_B3 &  D1_B4 ),
+
+    # exactly one ball in second draw
+    P2 = (  D2_B1 & !D2_B2 & !D2_B3 & !D2_B4 ) |
+         ( !D2_B1 &  D2_B2 & !D2_B3 & !D2_B4 ) |
+         ( !D2_B1 & !D2_B2 &  D2_B3 & !D2_B4 ) |
+         ( !D2_B1 & !D2_B2 & !D2_B3 &  D2_B4 ),
+
+    # exactly one ball in third draw
+    P3 = (  D3_B1 & !D3_B2 & !D3_B3 & !D3_B4 ) |
+         ( !D3_B1 &  D3_B2 & !D3_B3 & !D3_B4 ) |
+         ( !D3_B1 & !D3_B2 &  D3_B3 & !D3_B4 ) |
+         ( !D3_B1 & !D3_B2 & !D3_B3 &  D3_B4 ),
+    
+    # exactly one ball in each draw
+    E  = P1 & P2 & P3) %>%
+  filter(E) %>%
+  mutate(
+    # first draw is B (B1 is B in BWWW bag)
+    D1_B = D1_B1,
+
+    # second draw is W (B2, B3, and B4 are W in BWWW bag)
+    D2_W = D2_B2 | D2_B3 | D2_B4, 
+
+    # third draw is B (B1 is B in BWWW bag)
+    D3_B = D3_B1,
+
+    # BWB event
+    H  = D1_B & D2_W & D3_B) %>%
+  filter(E) %>%
+  pull(H) %>%
+  mean()
+```
+
+```{r}
+bag <- c("B1", "W1", "W2", "W3")
+
+# Step 1: Create the sample space using Draw-Ball variables
+ss <- expand_grid(
+  D1 = bag,
+  D2 = bag,
+  D3 = bag
+)
+
+ss
+```
+
+```{r}
+# Step 2: Define the BWB event
+ss %>%
+  mutate(
+    E = TRUE,
+    H = (D1 == "B1") & (D2 %in% c("W1", "W2", "W3")) & (D3 == "B1")
+  ) %>%
+  filter(E) %>%
+  pull(H) %>%
+  mean()
+```
+
+```{r}
+dprop <- function(x, nb, nw) {
+  n <- nb + nw
+  if (x == "b") { nb / n } else if (x == "w") { nw / n } else NA  
+}
+
+dprop("b", nb = 1, nw = 3) * dprop("w", nb = 1, nw = 3) * dprop("b", nb = 1, nw = 3)
+```
+
+------------------------------------------------------------------------
+
+## Proportional syllogism {.scrollable}
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball)
+```
+
+## Proportional syllogism {.scrollable}
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3))
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3)) %>%  
+  filter(E)
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3),
+    #   -----------------------
+    H =   B1) %>% 
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+ball <- c(TRUE, FALSE)
+
+expand_grid(
+  B1 = ball,
+  W1 = ball,
+  W2 = ball,
+  W3 = ball) %>% 
+  mutate(
+    E = ( B1 & !W1 & !W2 & !W3) |
+        (!B1 &  W1 & !W2 & !W3) |
+        (!B1 & !W1 &  W2 & !W3) |
+        (!B1 & !W1 & !W2 &  W3),
+    #   -----------------------
+    H =   W1 |  W2 |  W3) %>% 
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+bag <- c("B", "W", "W", "W")
+
+expand_grid(
+  D1 = bag
+)
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+bag <- c("B", "W", "W", "W")
+
+expand_grid(
+  D1 = bag) %>% 
+  mutate(
+    E = TRUE,
+    H = (D1 == "B")) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+bag <- c("B", "W", "W", "W")
+
+expand_grid(
+  D1 = bag
+) %>%
+  mutate(
+    E = TRUE,
+    H = (D1 == "W")
+  ) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+bag <- c("B", "W", "W", "W")
+
+ss <-
+  expand_grid(
+    D1 = bag,
+    D2 = bag,
+    D3 = bag)
+
+ss
+```
+
+## Proportional syllogism
+
+```{r}
+#| output-location: column
+ss %>%
+  mutate(
+    E = TRUE,
+    H = (D1 == "B" & D2 == "W" & D3 == "B")
+  ) %>%
+  filter(E) %>% 
+  pull(H) %>% 
+  mean()
+```

@@ -1,0 +1,479 @@
+---
+title: "From model to meaning using R"
+date: 2025-03-24
+author: Edoardo \"Dado\" Marcora
+execute:
+  warning: false
+format:
+  html:
+    toc: true
+    df-print: kable
+---
+
+## Introduction
+
+This notebook shows how to use various packages to 1) import data from an Excel spreadsheet ([`readxl`](https://readxl.tidyverse.org/)), 2) evaluate and compare models ([`performance`](https://easystats.github.io/modelbased) and [`modelsummary`](https://modelsummary.com/)), and 3) estimate quantities of interest/estimands ([`modelbased`](https://easystats.github.io/modelbased/)) using a causal model and a statistical model with interaction (`m5`) of the mouse stress/sociability/neuronal activation experiment illustrated during the lecture of week 11 (2025-03-24, **Chapter 9: Models with interactions**) by [Evan Schaffer](https://www.schafferlab.com/evan-schaffer).
+
+The aim of the original study was to explore the effect of stress on the sociability of male and female mice in a standard social approach test. Neuronal activation during social approach was assessed using immunohistochemistry against the immediate early gene product cFos.
+
+Study available at <https://doi.org/10.1371/journal.pone.0281388>
+
+Data available at <https://doi.org/10.7910/DVN/1RAQON>
+
+## Setup environment
+
+```{r}
+#| output: false
+library(tidyverse)
+library(readxl)
+library(ggformula)
+library(modelbased)
+library(marginaleffects)
+library(emmeans)
+
+theme_set(theme_bw() + theme(legend.position = "top"))
+
+set.seed(666)
+```
+
+## Science before statistics: causal model and estimand
+
+In our analysis, the quantity of interest/estimand is the direct causal effect of stress (`StressCondition`, treatment variable) on neuronal activation (`CeLcfos`, outcome variable). I am going to ignore the `Treatment` and `Sex` variables in this example. However, in real-life, one should think about them (and other variables relevant to DGP, even if unobserved) and include them in the causal model, unless of course the assumption is that they are in no way causally related to the exposure and/or the outcome variable (which is clearly NOT the case here).
+
+Based on my general neuroscience domain knowledge and cursory examination of the experimental design, the DAG I propose (for didactic purpose) is the following:
+
+```{r}
+library(dagitty)
+
+dag <- dagitty("dag {
+  CeLcfos [outcome]
+  StressCondition [exposure]
+  Sociability -> CeLcfos
+  StressCondition -> CeLcfos
+  StressCondition -> Sociability
+}")
+
+coordinates(dag) <- list(
+  x = c(StressCondition = 0, Sociability = 0.5, CeLcfos = 1),
+  y = c(StressCondition = 0, Sociability = 1, CeLcfos = 0))
+
+plot(dag)
+```
+
+Please note that a DAG implies conditional independencies in the data that should be tested if this analysis was for real.
+
+According to this causal graph, in order to estimate the **direct** causal effect of `StressCondition` on `CeLcfos`, I must include `Sociability` as a control variable/covariate in the regression model. Doing this blocks the **indirect** causal effect of `StressCondition` on `CeLcfos` mediated by `Sociability`.
+
+```{r}
+# find the set of adjustment variables for the direct effect
+adjustmentSets(dag, exposure = "StressCondition", outcome = "CeLcfos", effect = "direct")
+```
+
+If I proposed a different DAG (see below) where `StressCondition` alters `Sociability` not only directly but also indirectly by altering neuronal activity (measured by the `CeLcfos` variable) in the amygdala--not an unlikely scenario--then including `Sociability` as a control variable/covariate in the regression model would be wrong. This is because (`Sociability` being a collider rather than a mediator in this alternative DAG) including `Sociability` as a control variable/covariate in the regression model would introduce a spurious correlation that confounds the estimate of the **direct** causal effect of `StressCondition` on `CeLcfos`.
+
+```{r}
+dag <- dagitty("dag {
+  CeLcfos [outcome]
+  StressCondition [exposure]
+  CeLcfos -> Sociability
+  StressCondition -> CeLcfos
+  StressCondition -> Sociability
+}")
+
+coordinates(dag) <- list(
+  x = c(StressCondition = 0, Sociability = 0.5, CeLcfos = 1),
+  y = c(StressCondition = 0, Sociability = 1, CeLcfos = 0))
+
+plot(dag)
+```
+
+```{r}
+# find the set of adjustment variables for the direct effect
+adjustmentSets(dag, exposure = "StressCondition", outcome = "CeLcfos", effect = "direct")
+```
+
+It should be clear by now that we need to specify the DAG/lay bare our causal assumptions in order to appropriately specify the statistical model we use to estimate the causal estimand!
+
+
+## Read and prep data
+
+This study is a good example of [how NOT to format supplementary data in an Excel spreadsheet]{.underline}! It shouldn"t take more than one call to the `read_xlsx()` function to import data from a properly formatted Excel spreadsheet.
+
+```{r}
+id1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C4:D11", col_names = c("ID", "Treatment"))
+id2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C16:D23", col_names = c("ID", "Treatment"))
+id3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C26:D33", col_names = c("ID", "Treatment"))
+id4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!C37:D44", col_names = c("ID", "Treatment"))
+
+id <- rbind(id1, id2, id3, id4)
+```
+
+```{r}
+cel1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H4:H11", col_names = "CeLcfos")
+cel2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H16:H23", col_names = "CeLcfos")
+cel3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H26:H33", col_names = "CeLcfos")
+cel4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!H37:H44", col_names = "CeLcfos")
+
+cel <- rbind(cel1, cel2, cel3, cel4)
+```
+
+```{r}
+soc1 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N4:N11", col_names = "Sociability")
+soc2 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N16:N23", col_names = "Sociability")
+soc3 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N26:N33", col_names = "Sociability")
+soc4 <- read_xlsx("Figure 3.xlsx", range = "New_Beh+cfos!N37:N44", col_names = "Sociability")
+
+soc <- rbind(soc1, soc2, soc3, soc4)
+```
+
+```{r}
+d <- cbind(id,soc,cel) %>%
+  mutate(Sex = factor(substr(ID, 1, 1))) %>% 
+  rowwise() %>% 
+  mutate(
+    StressCondition = case_when(
+      grepl("FC-", Treatment) ~ "Control",
+      grepl("FC+", Treatment) ~ "Shock",
+      grepl("Control", Treatment) ~ "Control",
+      grepl("Stress", Treatment) ~ "Shock"),
+    Treatment = case_when(
+      grepl("Veh", Treatment) ~ "Vehicle",
+      grepl("Alp", Treatment) ~ "Alprazolam")) %>%
+  ungroup() %>% 
+  mutate(logCeLcfos = log(CeLcfos),
+         Sex = factor(Sex),
+         Treatment = factor(Treatment),
+         StressCondition = factor(StressCondition)) %>% 
+  select(ID, CeLcfos, logCeLcfos, StressCondition, Sociability, everything())
+
+head(d)
+```
+
+## Exploratory data analysis
+
+```{r}
+gf_point(CeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>% gf_smooth(method = "gam", formula = y ~ s(x, bs = "cs"), se = TRUE)
+```
+
+The data point with zero sociability and high cfos+ cell count is suspicious but for the sake of this example I will keep it in the dataset. However, in real life, it would require more careful consideration.
+
+### CeLcfos \~ NULL
+
+```{r}
+gf_point(CeLcfos ~ 1, data = d) %>% coursekata::gf_model(CeLcfos ~ 1, data = d)
+```
+
+```{r}
+gf_density(CeLcfos ~ 1, data = d)
+```
+
+It is often but erroneously believed that linear regression assumes that the outcome variable is normally distributed. This misconception arises from not knowing/remembering the regression likelihood equation(s) of the general linear model, e.g.:
+
+$$
+y_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(\mu = \beta_0 + \beta_1 x_i, \sigma)
+$$
+
+or (equivalently):
+
+$$
+y_i = \beta_0 + \beta_1 x_i + \epsilon_i
+$$
+
+$$
+\epsilon_i \stackrel{\text{i.i.d.}} \sim \text{Normal}(0, \sigma)
+$$
+
+All the assumptions of the general linear model are unambiguously stated by these two equivalent notations!
+
+Specifically, to return to the misconception mentioned above, the linear regression model assumes that the outcome variable $y$ is normally distributed **conditional on the covariates** $x$ or, equivalently, that the **residuals** **are normally distributed**.
+
+For example, here I generated a dataset where the outcome variable $y$ is clearly NOT normally distributed:
+
+```{r}
+nsamples = 1000
+
+y_xA = rnorm(nsamples, mean = 2, sd = 4)
+y_xB = rnorm(nsamples, mean = 20, sd = 4)
+
+y_x <- tibble(y = c(y_xA, y_xB), x = factor(c(rep("A", nsamples), rep("B", nsamples))))
+```
+
+```{r}
+gf_dens(~ y, data = y_x)
+```
+
+However, it is normally distributed conditional on the covariate $x$, which is accordance with the assumption of the general linear mode:
+
+```{r}
+gf_dens(~ y | x, data = y_x)
+```
+
+```{r}
+gf_dens(~ y, color = ~ x, data = y_x)
+```
+
+```{r}
+m <- lm(y ~ x, data = y_x)
+
+summary(m)
+```
+
+```{r}
+#| fig-height: 10
+performance::check_model(m)
+```
+
+```{r}
+performance::check_normality(m)
+```
+
+```{r}
+gf_jitter(y ~ x, color = ~ x, alpha = 0.1, data = y_x) %>%
+  coursekata::gf_model(m) %>%
+  ggExtra::ggMarginal(y, type="density")
+```
+
+The "problem" with the `CeLcfos` outcome variable is not that it is not normally distributed, but that it is a count variable (or more precisely in this case a density, the number of "active neurons"/cfos+ cells per mm^2^ of the central lateral amygdala) and thus it cannot be negative.
+
+A normally distributed variable is defined over the entire real line $(-\infty, \infty)$ and, therefore, it is not appropriate for count data, especially if they are concentrated close to the zero boundary.
+
+```{r}
+mosaic::favstats(~ CeLcfos, data = d)
+```
+
+```{r}
+gf_density(~ CeLcfos, data = d)
+```
+
+```{r}
+gf_qq(~ CeLcfos, data = d) %>% gf_qqline()
+```
+
+A log transformation is often applied to count data in order to make them more amenable to commonly used null-hypothesis significance tests and general linear regression modeling, all of which assume that the outcome variable is conditionally normally distributed.
+
+```{r}
+mosaic::favstats(~ logCeLcfos, data = d)
+```
+
+```{r}
+gf_density(~ logCeLcfos, data = d)
+```
+
+```{r}
+gf_qq(~ logCeLcfos, data = d) %>% gf_qqline()
+```
+
+However, generalized linear models that, e.g., use the Poisson or negative binomial distribution are better suited for dealing with count data.
+
+The log transformation of counts is also problematic when the data includes observations of zero counts and the whole dataset need to be fudged by adding a value, usually 1, before transformation.
+
+### log(CeLcfos) \~ NULL
+
+```{r}
+gf_point(logCeLcfos ~ 1, data = d) %>% coursekata::gf_model(logCeLcfos ~ 1, data = d)
+```
+
+### log(CeLcfos) \~ StressCondition
+
+```{r}
+gf_point(logCeLcfos ~ StressCondition, color = ~ StressCondition, data = d) %>% coursekata::gf_model(logCeLcfos ~ StressCondition, data = d)
+```
+
+### log(CeLcfos) \~ Sociability
+
+```{r}
+gf_point(logCeLcfos ~ Sociability, data = d) %>% coursekata::gf_model(logCeLcfos ~ Sociability, data = d)
+```
+
+### log(CeLcfos) \~ StressCondition + Sociability
+
+```{r}
+gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
+  coursekata::gf_model(logCeLcfos ~ Sociability + StressCondition, data = d) %>% gf_refine(theme(legend.position = "none"))
+```
+
+### log(CeLcfos) \~ StressCondition \* Sociability
+
+```{r}
+gf_point(logCeLcfos ~ Sociability, color = ~ StressCondition, data = d) %>%
+  coursekata::gf_model(logCeLcfos ~ Sociability * StressCondition, data = d) %>% gf_refine(theme(legend.position = "none"))
+```
+
+## Specify, fit and evaluate statistical model based on causal model
+
+Here I specify and fit different models mainly for didactic purpose, because the causal model already forces us to include the `Sociability` variable as a covariate/control variable in addition to the treatment variable `StressCondition`. This is because our causal assumption is that `Sociability` acts as a pipe (mediator) in the causal path between `StressCondition` and `CeLcfos`. The only specification choice left is to decide whether to model `Sociability` as a modifier (moderator) of the effect of `StressCondition` on `CeLcfos` or not (i.e., whether to use the additive or the interaction model).
+
+Please note that **moderation** and **mediation** are two very different concepts that are often confused as one. Moderation occurs when the effect of the exposure on the outcome changes at different levels of a third variable (the moderator). Mediation occurs when the exposure influences the outcome through an intermediary variable (the mediator).
+
+### log(CeLcfos) \~ NULL
+
+```{r}
+m1 <- lm(log(CeLcfos) ~ NULL, data = d)
+
+summary(m1)
+```
+
+
+```{r}
+supernova::supernova(m1)
+```
+
+```{r}
+#| fig-height: 10
+performance::check_model(m1)
+```
+
+```{r}
+performance::check_autocorrelation(m1)
+```
+
+### log(CeLcfos) \~ StressCondition
+
+```{r}
+m2 <- lm(log(CeLcfos) ~ StressCondition, data = d)
+
+summary(m2)
+```
+
+```{r}
+supernova::supernova(m2)
+```
+
+```{r}
+#| fig-height: 10
+performance::check_model(m2)
+```
+
+```{r}
+performance::check_autocorrelation(m2)
+```
+
+### log(CeLcfos) \~ Sociability
+
+```{r}
+m3 <- lm(log(CeLcfos) ~ Sociability, data = d)
+
+summary(m3)
+```
+
+```{r}
+supernova::supernova(m3)
+```
+
+```{r}
+#| fig-height: 10
+performance::check_model(m3)
+```
+
+```{r}
+performance::check_autocorrelation(m3)
+```
+
+### log(CeLcfos) \~ StressCondition + Sociability
+
+```{r}
+m4 <- lm(log(CeLcfos) ~ StressCondition + Sociability, data = d)
+
+summary(m4)
+```
+
+```{r}
+supernova::supernova(m4)
+```
+
+```{r}
+#| fig-height: 10
+performance::check_model(m4)
+```
+
+```{r}
+performance::check_autocorrelation(m4)
+```
+
+### log(CeLcfos) \~ StressCondition \* Sociability
+
+```{r}
+m5 <- lm(log(CeLcfos) ~ StressCondition * Sociability, data = d)
+
+summary(m5)
+```
+
+```{r}
+supernova::supernova(m5)
+```
+
+```{r}
+#| fig-height: 10
+performance::check_model(m5)
+```
+
+```{r}
+performance::check_autocorrelation(m5)
+```
+
+## Model evaluation and comparison
+
+Here I use `modelsummary()` and `compare_performance()` functions from the [`modelsummary`](https://modelsummary.com/) and [`performance`](https://easystats.github.io/performance/) packages to evaluate and compare the models fitted above.
+
+```{r}
+modelsummary::modelsummary(list(m1, m2, m3, m4, m5), stars = TRUE, statistic = "conf.int")
+```
+
+```{r}
+plot(performance::compare_performance(m1, m2, m3, m4, m5, rank = TRUE, verbose = FALSE))
+```
+
+## Model predictions
+
+Statistical models provide a lot more insights than what you can get by simply looking at the estimates of the parameters (regression coefficients in the case of general linear models). In many cases, like models with interactions, non-linear effects, non-standard families, random effects, the parameters can be hard if not impossible to interpret as a quantity of interest/estimand.
+
+Here I use the `estimate_means()` and `estimate_contrasts()` functions from the [`modelbased`](https://easystats.github.io/modelbased/) package (a wrapper around the more powerful and flexible hence more difficult to learn [`marginaleffects`](https://marginaleffects.com/) and [`emmeans`](https://rvlenth.github.io/emmeans/) packages) to compute and plot model predictions, estimate quantities of interest using the model, and perform hypothesis tests with these quantities. The [`marginaleffects`](https://marginaleffects.com/) website is also a great learning resource about how to interpret statistical models. Another good resource is this [blog post](https://www.andrewheiss.com/blog/2022/05/20/marginalia/).
+
+Please note that model predictions are transformed back by exponentiation to the original scale of the outcome variable `CeLcfos` (count of celfos+ cells/mm\^2) for better interpretability.
+
+```{r}
+estimate_means(m5, by = c("Sociability", "StressCondition"), transform = exp) %>% plot()
+```
+
+```{r}
+estimate_means(m5, by = c("Sociability", "StressCondition"), transform = exp)
+```
+
+## Causal estimates with hypothesis tests
+
+Please note that exponentiating the difference of two logged values is equivalent to dividing the original values, hence the difference here is the ratio/fold-change the `Shock` over the `Control` group.
+
+At mean level of `Sociability`, the estimated fold-change of `CeLcfos` between the `Shock` and `Control` groups (the direct causal effect of `StressCondition` on `CeLcfos`) is:
+
+```{r}
+estimate_contrasts(m5,
+                   contrast = "StressCondition",
+                   transform = exp)
+```
+
+At this level of `Sociability`, the direct causal effect of `StressCondition` on `CeLcfos` is not statistically significant, but since we modeled `Sociability` as a moderator of this effect, the estimated fold-change of `CeLcfos` between the `Shock` and `Control` groups may be different at different levels of `Sociability`:
+
+```{r}
+estimate_contrasts(m5,
+                   contrast = "StressCondition",
+                   by = "Sociability",
+                   transform = exp)
+```
+
+The p-values above are uncorrected for multiple testing. The Bonferroni correction is the most conservative method to correct for multiple testing, but it is also the most likely to result in false negatives. The Benjamini-Hochberg procedure is a less conservative method that controls the false discovery rate (FDR) and is more appropriate when the number of tests is large.
+
+```{r}
+estimate_contrasts(m5,
+                   contrast = "StressCondition",
+                   by = "Sociability",
+                   transform = exp,
+                   p_adjust = "bonferroni")
+```
+
+After correction for multiple testing, the direct causal effect of `StressCondition` on `CeLcfos` is not statistically significant at multiple levels of `Sociability`.
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```

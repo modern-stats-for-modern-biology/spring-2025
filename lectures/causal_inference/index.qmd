@@ -1,0 +1,1460 @@
+---
+title: "Causal inference"
+subtitle: "Science before statistics"
+date: 2025-03-10
+author: Edoardo \"Dado\" Marcora
+format:
+  revealjs:
+    smaller: true
+    incremental: true
+    theme: [default, styles.scss]
+    execute:
+      echo: true
+      eval: true
+      warning: false
+      fragment: true
+    output-location: fragment
+    chalkboard: true
+df-print: paged
+bibliography: references.bib
+csl: nature-no-et-al.csl
+---
+
+```{r}
+#| include: false
+library(dagitty)
+
+net_dag <- dagitty(
+'dag {
+  malaria_risk [outcome]
+  net [exposure]
+  eligible -> net
+  health -> malaria_risk
+  health -> net
+  household -> eligible
+  household -> net
+  income -> eligible
+  income -> health
+  income -> malaria_risk
+  income -> net
+  net -> malaria_risk
+  resistance -> malaria_risk
+  temperature -> malaria_risk
+  temperature -> net    
+}')
+```
+
+```{r}
+#| include: false
+library(coursekata)
+
+theme_set(theme_minimal())
+
+M <- 100000 # number of Montecarlo sims used to build linear model plots
+```
+
+```{r}
+#| output-location: default
+rbern <- function(n, p = 0.5) rbinom(n, 1, p)
+inv_logit <- function(x) 1 / (1 + exp(-x))
+```
+
+```{r}
+#| include: false
+library(tidyverse)
+library(ggridges)
+library(latex2exp)
+```
+
+```{r}
+#| include: false
+data(Howell1, package = "rethinking")
+
+d.obs <-
+  Howell1 %>%
+  filter(age >= 18) %>%
+  select(weight, height) %>%
+  round() %>% 
+  select(H = height, W = weight)
+
+d.obs
+
+range(d.obs$H)
+
+mle.lm.fit <- lm(W ~ H, data = d.obs)
+```
+
+##  {background-image="images/last_week_tonight.jpg" background-size="contain"}
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide1.png){fig-align="center" width="979"}
+
+See also: [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To explain or to predict?
+
+::: notes
+A purely statistical model (likelihood) by itself does not necessarily capture the actual causal process. A likelihood says, “Given parameters $\theta$, here is the joint probability (or conditional probability) for the data $x$,” but it does not say whether or why one variable influences another or in what manner. To fully describe the data‐generating process (DGP), you typically need to add causal assumptions (for instance, a directed acyclic graph, or structural equation models) so that the model encodes not just statistical association but also causal relationships/effects.
+
+In short:
+
+-   Statistical model:
+
+    -   A parametric (or nonparametric) specification of $$p(x \mid \theta)$$, encoding correlations/associations
+
+-   Causal/Generative model:
+
+    -   A specification that includes causal structure (e.g., via a DAG or structural equations) so that you can interpret parameter changes as interventions or do predictions about “what if we do X?” instead of just “if we observe X?”
+
+Hence, to treat the likelihood as truly the “data‐generating process model,” you need to incorporate those causal assumptions. Otherwise, the likelihood alone is just a “data model” that might match the observed associations, but not necessarily represent the causal relationships/effects/generative process.
+:::
+
+##  {background-image="causal_salad/part.01.slide.07.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.01.slide.08.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.03.slide.14.png" background-size="contain"}
+
+##  {background-image="causal_salad/part.01.slide.05.png" background-size="contain"}
+
+## Models can be accurate without being correct!
+
+::: fragment
+![](images/models.solar_system.jpg){fig-align="center" width="603"}
+:::
+
+## What is causal inference?
+
+-   **Statistical inference**: learning [**statistical relationships**]{.orange} (association/mutual information) between random variables
+
+    -   Predict **unobserved outcomes** assuming the underlying DGP is [**unchanged**]{.red}\
+        [*What if I see this?*]{.gray}
+
+-   **Causal inference**: learning [**cause-and-effect relationships**]{.orange} between random variables
+
+    -   Predict **unobserved outcomes** assuming the underlying DGP is [**changed**]{.red} by an intervention:
+        -   **consequences of an intervention** (causal prediction, forward-looking)\
+            [*What if I do this?*]{.gray}
+
+        -   **counterfactual outcomes** (causal imputation, backward-looking)\
+            [*What if I had done something else?*]{.gray}
+
+##  {background-image="causal_salad/part.01.slide.10.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.01.slide.11.png" background-size="50%"}
+
+## The ladder of causation
+
+![](images/Slide18.png){fig-align="center"}
+
+## Experiments are no refuge {visibility="hidden"}
+
+-   Why do experiments work? When do they work (or not)?
+
+-   Should you test for balance after randomization?
+
+-   What if treatment allocation were imperfect?
+
+-   Should you control for anything? Everything?
+
+-   What is the causal effect in the target population?
+
+-   **Answers to these and other questions about experiments depend upon causal assumptions**
+
+## Description is no refuge {visibility="hidden"}
+
+-   The goal is to describe populations, not samples
+
+-   Sampling bias, stratified sampling, post-stratification, missing data, measurement error, etc.
+
+-   **In order to describe populations, we need to make causal assumptions about how the sample was generated**
+
+## Statistical learning is cause-blind
+
+::: fragment
+![](images/Slide20.png){fig-align="center" height="440"}
+
+[Goodfellow et al. (2014)](https://doi.org/10.48550/arXiv.1412.6572)
+:::
+
+## Statistical learning is cause-blind
+
+![](images/Slide21.png){fig-align="center" height="440"}
+
+[Goodfellow et al. (2014)](https://doi.org/10.48550/arXiv.1412.6572)
+
+## Statistical learning is cause-blind
+
+![](images/Slide22.png){fig-align="center" height="440"}
+
+[Goodfellow et al. (2014)](https://doi.org/10.48550/arXiv.1412.6572)
+
+## Statistical learning is cause-blind
+
+![](images/clipboard-710457897.png)
+
+## No causes in, no causes out!
+
+::::: columns
+::: {.column width="66%"}
+-   The data themselves do not contain information about causes
+
+-   It is not possible to reliably learn causes from data alone
+
+-   Statistical models alone are insufficient; they do not contain causal information
+
+-   Statistical learning methods (incl. multivariate linear regression) do not distinguish causes from confounds
+
+-   p-values are not causal statements
+
+-   AIC etc. are purely predictive
+:::
+
+::: {.column width="34%"}
+[![](images/cartwright_book_cover.jpg){fig-align="center"}](https://academic.oup.com/book/27760)
+:::
+:::::
+
+##  {background-image="causal_salad/part.01.slide.28.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.06.png" background-size="50%"}
+
+## Spurious correlations: correlation is not causation
+
+Source: <https://tylervigen.com/spurious-correlations>
+
+::::: columns
+::: {.column width="60%"}
+![](images/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska.svg)
+:::
+
+::: {.column width="40%"}
+![](images/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska_scatterplot.png)
+:::
+:::::
+
+## Spurious correlations: correlation is not causation
+
+Source: <https://tylervigen.com/spurious-correlations>
+
+::::: columns
+::: {.column width="40%"}
+![](images/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska_ai-image_large_1705049007.jpg)
+:::
+
+::: {.column width="60%"}
+> As the distance between Jupiter and the Sun increases, the gravitational pull on Earth fluctuates, leading to a rise in cosmic productivity waves. These waves, when they reach Alaska, have been found to have a magnetic effect on the influx of secretarial energy, prompting more individuals to pursue careers in Alaska as professional secretaries. It's like a celestial calling for secretarial excellence in the land of the midnight sun.
+:::
+:::::
+
+## Spurious correlations: correlation is not causation
+
+![](images/clipboard-3737784678.png)
+
+## Spurious correlations: correlation is not causation
+
+::::: columns
+::: column
+![](images/clipboard-1705799335.png){fig-align="center" width="330"}
+:::
+
+::: column
+![](images/clipboard-3293300046.png){fig-align="center" width="330"}
+:::
+:::::
+
+::: fragment
+After adjusting for the confounder (season/income), the statistical association between the exposure (ice cream sales/chocolate consumption) and the outcome (shark attacks/Nobel prize awards) disappears
+:::
+
+## … but sometime correlation is causation!
+
+-   If there are no confounders and there is a linear relationship between the exposure and the outcome, then correlation is causation!
+
+-   If there are no confounders and there is a statistical relationship between the exposure and the outcome, then association is causation!
+
+::: notes
+-   Adjusting for baseline covariates can make an estimate more precise
+:::
+
+## Causal inference workflow
+
+1.  **Specify causal question/estimand** (e.g., average treatment effect)
+
+2.  **Make causal model** (e.g., draw causal diagram)
+
+3.  **Test causal model**
+
+4.  **Translate causal model into statistical model** (e.g., multivariate linear regression)
+
+5.  **Test statistical model**
+
+6.  **Fit statistical model to data to estimate causal effect** (e.g., regression coefficient)
+
+7.  **Test causal predictions**
+
+8.  **Profit**
+
+::: fragment
+Next, we will illustrate this workflow with an example …
+:::
+
+## Specify causal question
+
+"*Does using a bed net reduce the risk of malaria?*"
+
+```{r}
+#| output-location: default
+data(net_data, package="causalworkshop") # https://r-causal.github.io/causal_workshop_website
+
+net_data
+```
+
+## Specify causal question
+
+"*Does using a bed net reduce the risk of malaria?*"
+
+```{r}
+#| output-location: default
+gf_density(~ malaria_risk, fill = ~ net, data = net_data)
+```
+
+## Specify causal question
+
+"*Does using a bed net reduce the risk of malaria?*"
+
+```{r}
+#| output-location: default
+favstats(malaria_risk ~ net, data = net_data) %>% knitr::kable()
+```
+
+## Specify causal question
+
+"*Does using a bed net reduce the risk of malaria?*"
+
+```{r}
+#| output-location: default
+lm(malaria_risk ~ net, data = net_data) %>%
+  broom::tidy(conf.int = TRUE) %>% select(term, estimate, conf.low, conf.high) %>% knitr::kable()
+```
+
+## Draw causal diagram (DAG)
+
+![](images/fig-net-data-dag-1.png){fig-align="center"}
+
+## Draw causal diagram (DAG)
+
+```{r}
+#| output-location: default
+#| eval: false
+library(dagitty)
+
+net_dag <- dagitty(
+'dag {
+  malaria_risk [outcome]
+  net [exposure]
+  eligible -> net
+  health -> malaria_risk
+  health -> net
+  household -> eligible
+  household -> net
+  income -> eligible
+  income -> health
+  income -> malaria_risk
+  income -> net
+  net -> malaria_risk
+  resistance -> malaria_risk
+  temperature -> malaria_risk
+  temperature -> net    
+}')
+```
+
+## Draw causal diagram (DAG)
+
+```{r}
+#| echo: false
+#| output-location: default
+set.seed(666)
+```
+
+```{r}
+#| output-location: default
+plot(net_dag)
+```
+
+## Translate DAG into statistical model
+
+Find all open backdoor paths between exposure and outcome
+
+::::: columns
+::: column
+![](images/fig-net-data-dag-1.png){fig-align="center"}
+:::
+
+::: column
+![](images/fig-net-data-confounding-1.png){fig-align="center"}
+:::
+:::::
+
+-   Backdoor paths are paths connecting exposure and outcome nodes with an arrow going into the exposure node
+
+## Translate DAG into statistical model
+
+Find all open backdoor paths between exposure and outcome
+
+```{r}
+#| output-location: default
+as_tibble(paths(net_dag)) %>% filter(open) %>% knitr::kable()
+```
+
+-   Backdoor paths are paths that, if left open, bias/confound the estimate of the causal effect of the exposure on the outcome
+
+## Translate DAG into statistical model
+
+Find minimal adjustment sets
+
+```{r}
+#| output-location: default
+adjustmentSets(net_dag)
+```
+
+-   These three variables are a **minimal adjustment set**, i.e., the minimum set of variables to adjust for in order to block all backdoor paths between exposure and outcome,
+
+-   such that the estimate of the statistical association between exposure and outcome can be interpreted as an estimate of the causal effect of the exposure on the outcome, not contaminated by confounding effects
+
+## Estimate causal effect using statistical model
+
+Use linear regression to adjust for variables in adjustment set
+
+```{r}
+#| output-location: default
+lm(malaria_risk ~ net + health + income + temperature, data = net_data) %>% 
+  broom::tidy(conf.int = TRUE) %>% select(term, estimate, conf.low, conf.high) %>% knitr::kable()
+```
+
+-   Assuming the statistical and causal models are a good approximation of reality, this is an estimate of the causal effect of bed net use on malaria risk, free of confounding effects
+
+##  {background-image="causal_salad/part.02.slide.06.png" background-size="50%"}
+
+## Make a causal model
+
+-   Fundamental component of a causal model: A function that determines how a variable is influenced by others
+
+::: fragment
+$$
+Y = f(X)
+$$
+:::
+
+-   In a graphical causal model (a.k.a. a causal diagram), this function is represented by an arrow that connects two variables
+
+::: fragment
+$$
+X \to Y
+$$
+:::
+
+-   There is no method for making causal models other than **science**
+
+-   There is no method for science other than **honest anarchy**
+
+## Make a causal model
+
+-   A causal model represents our knowledge about the data generating process (DGP)
+
+    -   For example, domain knowledge and previous studies/experiments
+
+    -   A causal model is a set of assumptions about the causal relationships between variables
+
+-   A causal model is often represented graphically as a directed acyclic graph (DAG)
+
+    -   A set of nodes (variables) connected by arrows (causal relationships), without cycles/loops
+
+-   A DAG only says which variables influence another, not how (functional form of the causal relationship)
+
+## Make a causal model
+
+-   Variables are nodes
+
+-   Cause-effect relationships are arrows:
+
+    -   $A \rightarrow B$
+
+    -   "$A$ is a possible cause of $B$"
+
+-   Absence of arrow from $A$ to $B$ is a stronger assumption:
+
+    -   "$A$ is **definitely not** a cause of $B$"
+
+-   Create DAG with team and stakeholders as a transparent representation of your shared understanding of the DGP and the causal assumptions that inform data collection and statistical analysis
+
+-   Include all possible causal variables (**even if not in the data**) and arrows
+
+-   Complexity is okay, reality is complex!
+
+## Make a causal model
+
+-   Terminology: $\quad A \rightarrow B \rightarrow C$
+
+    -   $A$ is a **parent** of $B$
+
+    -   $B$ is a **child** of $A$
+
+    -   $C$ is a **descendant** of $A$
+
+    -   $A$ is an **ancestor** of $C$
+
+    -   If a variable has one or more parents it is an **endogeneous** variable, otherwise it is an **exogeneous** variable
+
+    -   A **path** is a sequence of arrows through variables, regardless of the directions of arrows
+
+-   Examples:
+
+##  {background-image="causal_salad/part.02.slide.09.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.10.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.11.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.12.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.13.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.73.png" background-size="50%"}
+
+## Use causal model to design statistical model
+
+-   Causal models can be complicated
+
+-   But rules for analyzing them are simple
+
+-   Graph analysis allows:
+
+    -   Testing the causal model
+
+    -   Translating the causal model into a statistical model
+
+-   All of this requires understanding [*d*-separation](https://www.dagitty.net/learn/dsep/), i.e., identifying and blocking all open backdoor paths
+
+## The three elemental confounds
+
+::: notes
+counfounding paths/effects
+:::
+
+-   **Fork**: $Z$ is a common cause of $X$ and $Y$
+
+::: fragment
+$$X \leftarrow Z \rightarrow Y$$
+:::
+
+-   **Pipe** (a.k.a. chain or mediator): $Z$ is a mediator between $X$ and $Y$
+
+::: fragment
+$$X \rightarrow Z \rightarrow Y$$
+:::
+
+-   **Collider**: $Z$ is a common effect of $X$ and $Y$
+
+::: fragment
+$$X \rightarrow Z \leftarrow Y$$
+:::
+
+##  {background-image="causal_salad/part.02.slide.32.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.33.png" background-size="50%"}
+
+## The pipe
+
+```{r}
+#| output-location: default
+N <- 1000
+X <- rnorm(N)
+Z <- rbern(N, inv_logit(X))
+Y <- rnorm(N, (2 * Z - 1))
+d <- tibble(X, Y, Z)
+```
+
+::::: columns
+::: column
+**Unstratified**
+
+```{r}
+#| output-location: default
+#| fig-height: 6
+gf_point(Y ~ X, data = d, color = "grey") %>% gf_lm(color = "darkgrey")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X, data = d) %>% coef()
+```
+:::
+
+::: column
+**Stratified by** $Z$
+
+```{r}
+#| output-location: default
+#| fig-height: 6
+gf_point(Y ~ X, data = d, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X + Z, data = d) %>% coef()
+```
+:::
+:::::
+
+##  {background-image="causal_salad/part.02.slide.34.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.35.png" background-size="50%"}
+
+## The fork
+
+```{r}
+#| output-location: default
+N <- 1000
+Z <- rbern(N)
+X <- rnorm(N, (2 * Z - 1))
+Y <- rnorm(N, (2 * Z - 1))
+d <- tibble(X, Y, Z)
+```
+
+::::: columns
+::: column
+**Unstratified**
+
+```{r}
+#| output-location: default
+#| fig-height: 6
+gf_point(Y ~ X, data = d, color = "grey") %>% gf_lm(color = "darkgrey")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X, data = d) %>% coef()
+```
+:::
+
+::: column
+**Stratified by** $Z$
+
+```{r}
+#| output-location: default
+#| fig-height: 6
+gf_point(Y ~ X, data = d, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X + Z, data = d) %>% coef()
+```
+:::
+:::::
+
+##  {background-image="causal_salad/part.02.slide.36.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.37.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.38.png" background-size="50%"}
+
+## The collider
+
+```{r}
+#| output-location: default
+N <- 1000
+X <- rnorm(N)
+Y <- rnorm(N)
+Z <- rbern(N, inv_logit(2 * X + 2 * Y - 2))
+d <- tibble(X, Y, Z)
+```
+
+::::: columns
+::: column
+**Unstratified**
+
+```{r}
+#| output-location: default
+#| fig-height: 6
+gf_point(Y ~ X, data = d, color = "grey") %>% gf_lm(color = "darkgrey")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X, data = d) %>% coef()
+```
+:::
+
+::: column
+**Stratified by** $Z$
+
+```{r}
+#| output-location: default
+#| fig-height: 6
+gf_point(Y ~ X, data = d, color = ~ factor(Z)) %>% gf_lm() %>% gf_theme(legend.position="none")
+```
+
+```{r}
+#| output-location: default
+lm(Y ~ X + Z, data = d) %>% coef()
+```
+:::
+:::::
+
+##  {background-image="causal_salad/part.02.slide.40.png" background-size="50%"}
+
+## Simpson's paradox
+
+![](images/clipboard-4012926030.png)
+
+https://youtu.be/XwYHUv2nH34
+
+## Simpson's paradox
+
+![](images/clipboard-2005749411.png)
+
+https://youtu.be/XwYHUv2nH34
+
+## Berkson's paradox
+
+![](images/clipboard-2619765555.png)
+
+https://youtu.be/XwYHUv2nH34
+
+## Berkson's paradox
+
+![](images/clipboard-2521184635.png)
+
+https://youtu.be/XwYHUv2nH34
+
+##  {background-image="causal_salad/part.02.slide.41.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.42.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.43.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.44.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.45.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.46.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.47.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.48.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.49.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.50.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.51.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.52.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.53.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.54.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.55.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.56.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.57.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.58.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.59.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.60.png" background-size="50%"}
+
+## Table 2 fallacy
+
+-   Do not present or interpret individual coefficients as causal effects
+
+-   Interpretation depends upon the causal model, not just the statistical model
+
+-   A statistical model designed to identify $X \to Y$ will NOT also identify the causal effect of all other variables
+
+-   Each causal query requires its own, bespoke statistical model
+
+::: fragment
+[Westreich and Greenland (2013)](https://doi.org/10.1093/aje/kws412)
+:::
+
+##  {background-image="causal_salad/part.02.slide.62.png" background-size="50%"}
+
+## A crash course in good and bad controls
+
+-   **"Control" variable**: A variable included in the statistical model to enable estimation of the causal effect of another variable; it is NOT just any predictor!
+
+-   **Common but bad heuristics** for choosing control variables:
+
+    -   Anything in the spreadsheet (YOLO! causal salad)
+
+    -   Any variables not highly collinear
+
+    -   Any variable significantly associated with the outcome
+
+    -   Any variable that improves predictive performance (e.g., using automatic variable selection)
+
+    -   Any pre-treatment variable (baseline measurements)
+
+-   The right question: Does this variable block confounding without introducing new bias?
+
+-   A better approach: Use a DAG to justify each control variable
+
+::: notes
+-   Don't adjust for the future (post-treatment measurements) if you are estimating the total causal effect of exposure on outcome!
+:::
+
+::: fragment
+[Cinelli et al. (2021)](https://doi.org/10.1177/00491241221099552) A Crash Course in Good and Bad Controls
+:::
+
+##  {background-image="causal_salad/part.02.slide.64.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.65.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.66.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.67.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.68.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.69.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.70.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.71.png" background-size="50%"}
+
+##  {background-image="causal_salad/part.02.slide.72.png" background-size="50%"}
+
+## Estimate causal effect using statistical model
+
+-   Sometimes the causal model implies you need a **regression model**
+
+-   But this is NOT always the case
+
+-   Other models and approaches are available, e.g., **stratification**, **matching**, **propensity scores**, **instrumental variables**, **structural equation models**, **causal AI/ML**, etc.
+
+-   **Bayesian networks** are a **general approach** to handle arbitrary causal models
+
+-   See also: [Visual guides for causal inference](https://www.khstats.com/art/illustrations_viz)
+
+##  {background-image="images/clipboard-3308191871.png" background-size="75%"}
+
+https://youtu.be/XwYHUv2nH34
+
+## Much much more
+
+-   **Computation of treatment effects**: NOT a single parameter
+
+-   **Post-stratification**: effect for the population, not the sample
+
+-   **Partial-identification**: confounded but learning
+
+-   **Research design**
+
+## Full luxury causal workflow
+
+1.  Derive candidate **causal model** using "science" (domain knowledge, theory, etc.)
+
+2.  Program causal model as a **generative simulation** (e.g., a Bayesian network)
+
+3.  Design research and validate your statistical analysis using (2)
+
+4.  Confront model with data; celebrate both **wins and losses**
+
+5.  **Revise and repeat**
+
+## Full sadness non-causal workflow
+
+1.  Find or collect some variables that are **conceptually** (but not **logically**) related to the phenomenon
+
+2.  Probe the data anyway you can to reveal **asterisks**
+
+3.  Tell a **hopeful causal story** about why these asterisks exist
+
+4.  Never state the **assumptions** licensing this story
+
+5.  **Revel** in your magnificent *h*-index
+
+## Causal inference textbooks and online courses
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/primer-cover.jpg){height="440"}
+
+<http://bayes.cs.ucla.edu/PRIMER>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/book_of_why-cover.jpg){height="440"}
+
+<http://bayes.cs.ucla.edu/WHY>
+:::
+::::
+:::::::
+
+ 
+
+See also: [How to learn causal inference on your own for free](https://towardsdatascience.com/how-to-learn-causal-inference-on-your-own-for-free-98503abc0a06)
+
+## Causal inference textbooks and online courses
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/the_effect_book_cover.png){height="440"}
+
+<https://theeffectbook.net/>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/what_if_book_cover.jpg){height="440"}
+
+<https://miguelhernan.org/whatifbook>
+:::
+::::
+:::::::
+
+ 
+
+See also: [Causal inference in R](https://www.r-causal.org/)
+
+## Causal inference software tools
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/clipboard-2036735477.png){width="440"}
+
+<https://www.dagitty.net/>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/clipboard-2089884039.png){width="440"}
+
+<https://www.pywhy.org/dowhy>
+:::
+::::
+:::::::
+
+ 
+
+See also: [thinkCausal](https://thinkcausal.org/) and [simDAG](https://robindenz1.github.io/simDAG/)
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide1.png){fig-align="center" width="979"}
+
+See also: [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To explain or to predict?
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide2.png)
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide3.png)
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide4.png)
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide5.png)
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide6.png)
+
+## Statistical inference is inductive reasoning
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- -70
+beta1 <- 0.7
+sigma <- 5
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(M, rnorm(n, mu, sigma))
+
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+d %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  # gf_point(H ~ W, data = d %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Model 1 $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -70, \beta_1 = 0.7, \sigma = 5$)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
+
+## Statistical inference is inductive reasoning
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- 230
+beta1 <- -1.2
+sigma <- 2
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(M, rnorm(n, mu, sigma))
+
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+d %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  # gf_point(H ~ W, data = d %>% group_by(H) %>% sample_n(5), color = "skyblue4", size = 1) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Model 2 $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = 230, \beta_1 = -1.2, \sigma = 2$)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide6.png)
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide7.png)
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide8.png)
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide9.png)
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide10.png)
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide1.png){fig-align="center" width="979"}
+
+See also: [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To explain or to predict?
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide10.png)
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide11.png)
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide1.png){fig-align="center" width="979"}
+
+See also: [Shmueli (2010)](https://doi.org/10.1214/10-STS330) To explain or to predict?
+
+## Modern science: statistical (+ causal) inference
+
+![](images/ols_howell_learn.gif){height="400"}
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide11.png)
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide12.png)
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide13.png)
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide14.png)
+
+## Modern science: statistical (+ causal) inference
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- -53
+beta1 <- 0.634
+sigma <- 4
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(M, rnorm(n, mu, sigma))
+
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+d %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4$)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
+
+## Modern science: statistical (+ causal) inference
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- -53
+beta1 <- 0.634
+sigma <- 4
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(M, rnorm(n, mu, sigma))
+
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+d %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  gf_point(H ~ W, data = d %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4 \;$ and its predictions)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide14.png)
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide15.png)
+
+## Modern science: statistical (+ causal) inference
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- -53
+beta1 <- 0.634
+sigma <- 4
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(M, rnorm(n, mu, sigma))
+
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+d %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  gf_point(H ~ W, data = d %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4 \;$ and its predictions)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
+
+## Modern science: statistical (+ causal) inference
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| warning: false
+beta0 <- -53
+beta1 <- 0.634
+sigma <- 4
+
+set.seed(666)
+
+H <- seq(137, 179)
+n <- length(H)
+mu <- beta0 + beta1 * H
+W <- replicate(M, rnorm(n, mu, sigma))
+
+d <- bind_cols(tibble(H), as.data.frame(W)) %>%
+  pivot_longer(-H, names_to = "replicate", values_to = "W") %>%
+  mutate(H = factor(H))
+
+d.obs <- d.obs %>%
+  mutate(H = factor(H, levels = levels(d$H)))
+
+d %>%
+  gf_density_ridges(H ~ W, linetype = 0, fill = "orange", alpha = 0.5) %>%
+  #gf_point(H ~ W, data = d %>% group_by(H) %>% sample_n(5), color = "orange4", size = 1) %>%
+  gf_point(H ~ W, data = d.obs, color = "green4", size = 1) %>%
+  gf_model(W ~ H, color = "darkorange") %>%
+  gf_labs(title = TeX(r'(Best fit model (MLE) $\; y_i = \beta_0 + \beta_1 x_i + \epsilon_i\; \beta_0 = -53, \beta_1 = 0.634, \sigma = 4 \;$ and observed data used for training)'), y = "Height (cm)", x = "Weight (Kg)") %>%
+  gf_theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip() +
+  expand_limits(x = c(0, 80))
+```
+
+## Modern science: statistical (+ causal) inference
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| output-location: default
+performance::check_predictions(mle.lm.fit) %>%
+  plot() +
+  labs(x = "Weight (Kg)") +
+  scale_color_manual(values = c("Observed data" = "green4", "Model-predicted data" = "darkorange"))
+```
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide15.png)
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide16.png)
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide17.png)
+
+## Severe testing textbooks
+
+::::::: columns
+:::: {.column width="56%"}
+::: text-align-center
+![](images/lakens.improving_your_statistical_inferences.jpg){height="440"}
+
+<https://lakens.github.io/statistical_inferences>
+:::
+::::
+
+:::: {.column width="44%"}
+::: text-align-center
+![](images/mayo_book_cover.jpg){height="440"}
+
+<https://doi.org/10.1017/9781107286184>
+:::
+::::
+:::::::
+
+ 
+
+See also: [Gelman and Shalizi (2012)](https://doi.org/10.1111/j.2044-8317.2011.02037.x) Philosophy and the practice of Bayesian statistics
+
+##  {background-image="images/thats_all_folks.jpg" background-size="contain"}
+
+## Key take home messages
+
+-   Be thoughtful, skeptical, humble, open, and honest!
+
+-   If you can't simulate it, don't analyze it!
+
+-   All models say only what they are told to say!
+
+-   Test before you est(imate)!
+
+## The taxonomy of estimands
+
+![](images/Slide19.png){fig-align="center"}
+
+## What is a model? What is a good model?
+
+-   All models only say what they are told to say (and nothing more)!
+
+-   This is not a limitation or a flaw; it's just the way things are
+
+-   All models are lists of "*If this, then that*" statements
+
+-   A simple model:
+
+    -   "*If this die has six sides, then the probability any side is up in a throw is one in six*"
+
+    -   It is a very accurate model, too: it matches reality well; indeed, it makes beautiful predictions
+
+    -   It is a very useful model, too, for casino owners, because it makes them a lot of money!
+
+    -   But it is not a causal model, none of the "*if-then*" statements are causal
+
+-   All models are wrong, but some are useful!
+
+-   The final lesson is simple: put all models to the test!
+
+https://www.wmbriggs.com/post/43375/
+
+::: notes
+If Briggs is approaching models from the perspective of **logical probability** (often associated with Jaynesian probability), then his “If this, then that” framing aligns with the idea that **probability theory is an extension of logic**—where probabilities represent degrees of belief given specific premises.
+
+In this view:
+
+	•	A model is a formalized structure of inductive reasoning.
+
+	•	The “If this” represents the **assumptions, premises, and given data**.
+
+	•	The “Then that” represents the **conclusions, predictions, or inferred probabilities**.
+
+	•	Model outputs are always **conditional on the assumptions**—a key tenet of logical probability.
+
+**Strengths of This View**
+
+	1.	**Avoids Frequentist Misinterpretations**: Instead of treating probability as a long-run frequency, it focuses on rational belief updates given evidence.
+
+	2.	**Explicit Dependence on Assumptions**: Unlike some statistical modeling approaches that might obscure underlying premises, logical probability forces transparency about what is assumed.
+
+	3.	**Unifies Deductive and Inductive Logic**: Deduction is a special case where probability is 0 or 1, while induction generalizes inference under uncertainty.
+
+**Limitations**
+
+	1.	**Empirical Fit Still Matters**: While probability theory as logic is powerful, models must still be tested against data to ensure their premises approximate reality.
+
+	2.	**Not All Scientific Models Are Bayesian**: Many mechanistic models (e.g., physics-based models) operate independently of Bayesian inference.
+
+	3.	**Causal Inference Requires More Structure**: Logical probability alone doesn’t establish causal relationships without additional assumptions (e.g., causal graphs).
+
+**Bottom Line**
+
+If Briggs views **all models as conditional logical inferences**, then his framing is consistent **within the paradigm of logical probability**. However, broader scientific modeling includes many frameworks beyond just logical probability, such as mechanistic and non-Bayesian statistical models.
+:::
+
+## What makes a good model?
+
+::: nonincremental
+-   Any data set can be perfectly fit by an infinite number of models!
+:::
+
+$$
+y_i \sim \text{Norm}\bigl(\sin(\alpha \cdot x_i), 1/\tau\bigr)
+$$
+
+[Boué (2019)](https://arxiv.org/abs/1904.12320) "*Real numbers, data science and chaos: how to fit any dataset with a single parameter*"
+
+## Scientists’ attitudes toward bias, replicability and scientific practice
+
+![](causal_salad/journal.pone.0256607.g009.png)
+
+[Farrar et al. (2021)](https://doi.org/10.1371/journal.pone.0256607)
+
+## Scientists’ attitudes toward bias, replicability and scientific practice
+
+![](causal_salad/journal.pone.0256607.g012.png)
+
+[Farrar et al. (2021)](https://doi.org/10.1371/journal.pone.0256607)
+
+## Using LLMs for causal inference
+
+[PyWhy-LLM](https://github.com/py-why/pywhy-llm): modeler, identifier, estimator, validator
+
+![](images/clipboard-2489978496.png)
+
+## Reichenbach’s Common Cause Principle
+
+Association/correlation does not imply causation!
+
+…or does it?!?
+
+If two variables $A$ and $B$ are (marginally) dependent, i.e., $P(A, B) \neq P(A) \cdot P(B)$, then at least one of the following must hold:
+
+-   $A$ causes $B$ (directly or indirectly)
+
+-   $B$ causes $A$ (directly or indirectly)
+
+-   A third variable $C$ causes both $A$ and $B$
+
+## The three tasks of data science
+
+![](images/clipboard-3732634395.png)
+
+## Structural causal models
+
+![](images/clipboard-2459671386.png)
+
+## Structural causal models
+
+![](images/clipboard-1388134385.png)
+
+## Structural causal models
+
+![](images/clipboard-2780388836.png)
+
+## Structural causal models
+
+![](images/clipboard-184184298.png)
+
+## Structural causal models
+
+![](images/clipboard-3655065919.png)
+
+## Structural causal models
+
+![](images/clipboard-1766266548.png)
+
+## Structural causal models
+
+![](images/clipboard-1317269767.png)
+
+## Structural causal models
+
+![](images/clipboard-1882658466.png)
+
+## Adjustment methods
+
+![](images/clipboard-3370081483.png)
+
+## Adjustment methods
+
+![](images/clipboard-3176219523.png)
+
+## Adjustment methods
+
+![](images/clipboard-3966809145.png)
+
+## Adjustment methods
+
+![](images/clipboard-4058801271.png)
+
+## Summary
+
+![](images/clipboard-517776020.png)
+
+[https://youtu.be/dFp2Ou52-po](https://youtu.be/dFp2Ou52-po?si=3Z9QXxVxH_GWj8Vp)

@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Edoardo &quot;Dado&quot; Marcora">
+<meta name="dcterms.date" content="2024-03-19">
+
+<title>Power analysis using Monte Carlo simulations in R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#setup-environment" id="toc-setup-environment" class="nav-link" data-scroll-target="#setup-environment">Setup environment</a></li>
+  <li><a href="#background-information" id="toc-background-information" class="nav-link" data-scroll-target="#background-information">Background information</a>
+  <ul class="collapse">
+  <li><a href="#significance-level" id="toc-significance-level" class="nav-link" data-scroll-target="#significance-level">Significance level</a></li>
+  <li><a href="#power-level" id="toc-power-level" class="nav-link" data-scroll-target="#power-level">Power level</a></li>
+  <li><a href="#effect-size" id="toc-effect-size" class="nav-link" data-scroll-target="#effect-size">Effect size</a></li>
+  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
+  </ul></li>
+  <li><a href="#read-and-prep-data-from-pilot-study" id="toc-read-and-prep-data-from-pilot-study" class="nav-link" data-scroll-target="#read-and-prep-data-from-pilot-study">Read and prep data from pilot study</a></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory data analysis</a></li>
+  <li><a href="#fit-simple-linear-regression-model-to-the-data" id="toc-fit-simple-linear-regression-model-to-the-data" class="nav-link" data-scroll-target="#fit-simple-linear-regression-model-to-the-data">Fit simple linear regression model to the data</a></li>
+  <li><a href="#evaluate-model-and-compute-effect-sizes" id="toc-evaluate-model-and-compute-effect-sizes" class="nav-link" data-scroll-target="#evaluate-model-and-compute-effect-sizes">Evaluate model and compute effect sizes</a></li>
+  <li><a href="#power-analysis-using-pre-made-functions" id="toc-power-analysis-using-pre-made-functions" class="nav-link" data-scroll-target="#power-analysis-using-pre-made-functions">Power analysis using pre-made functions</a></li>
+  <li><a href="#power-analysis-using-monte-carlo-simulations" id="toc-power-analysis-using-monte-carlo-simulations" class="nav-link" data-scroll-target="#power-analysis-using-monte-carlo-simulations">Power analysis using Monte Carlo simulations</a>
+  <ul class="collapse">
+  <li><a href="#run-monte-carlo-simulation-a-large-number-of-times-and-visualize-the-p-value-distribution-for-a-specific-sample-size" id="toc-run-monte-carlo-simulation-a-large-number-of-times-and-visualize-the-p-value-distribution-for-a-specific-sample-size" class="nav-link" data-scroll-target="#run-monte-carlo-simulation-a-large-number-of-times-and-visualize-the-p-value-distribution-for-a-specific-sample-size">Run Monte Carlo simulation a large number of times and visualize the <em>p</em> value distribution for a specific sample size</a></li>
+  <li><a href="#find-design-by-running-the-monte-carlo-simulation-a-large-number-of-times-and-visualize-the-power-curve-for-a-range-of-sample-sizes" id="toc-find-design-by-running-the-monte-carlo-simulation-a-large-number-of-times-and-visualize-the-power-curve-for-a-range-of-sample-sizes" class="nav-link" data-scroll-target="#find-design-by-running-the-monte-carlo-simulation-a-large-number-of-times-and-visualize-the-power-curve-for-a-range-of-sample-sizes">Find design by running the Monte Carlo simulation a large number of times and visualize the power curve for a range of sample sizes</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#print-environment" id="toc-print-environment" class="nav-link" data-scroll-target="#print-environment">Print environment</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="index.ipynb" download="index.ipynb"><i class="bi bi-journal-code"></i>Jupyter</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Power analysis using Monte Carlo simulations in R</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Edoardo "Dado" Marcora </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 19, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Several R functions and packages (e.g., the built-in <code>stats::power.*</code> functions or the <a href="https://cran.r-project.org/web/packages/pwr/vignettes/pwr-vignette.html"><code>pwr</code></a> and <a href="https://cran.r-project.org/web/packages/pwrss/vignettes/examples.html"><code>pwrss</code></a> packages) as well as desktop (e.g., <a href="https://www.psychologie.hhu.de/arbeitsgruppen/allgemeine-psychologie-und-arbeitspsychologie/gpower.html">G*Power</a>,) or web (e.g., <a href="https://powerandsamplesize.com/">powerandsamplesize.com</a>, <a href="https://pwrss.shinyapps.io/index/">pwrss</a>, <a href="https://shiny.ieis.tue.nl/sample_size_justification/">sample size justification</a>) applications are used to perform power analysis of classical null-hypothesis significance tests for simple statistical models and study designs. However, this notebook focuses on the more general approach of using <a href="https://ritsokiguess.site/blogg/posts/2021-11-14-tidy-simulation/">Monte Carlo simulations</a> <span class="citation" data-cites="Morris2019">(<a href="#ref-Morris2019" role="doc-biblioref">Morris, White, and Crowther 2019</a>)</span> and (specifically and more conveniently) the <a href="https://github.com/flxzimmer/mlpwr"><code>mlpwr</code></a> package to perform power analysis of significance tests for statistical models and study designs of any complexity <span class="citation" data-cites="Zimmer2023">(<a href="#ref-Zimmer2023" role="doc-biblioref">Zimmer, Henninger, and Debelak 2023</a>)</span>.</p>
+</section>
+<section id="setup-environment" class="level2">
+<h2 class="anchored" data-anchor-id="setup-environment">Setup environment</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coursekata)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parameters)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effectsize)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">0</span>, <span class="at">ggeffects_margin =</span> <span class="st">"empirical"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="background-information" class="level2">
+<h2 class="anchored" data-anchor-id="background-information">Background information</h2>
+<p><em>A-priori</em> power analysis is critical for study design, sample size justification, and the interpretation of scientific claims based on null-hypothesis significance testing (NHST) 😭 <span class="citation" data-cites="Lakens2022">(<a href="#ref-Lakens2022" role="doc-biblioref">Lakens 2022</a>)</span>. In particular, it allows us to estimate the minimum sample size required to detect an “effect” of a given size with a given level of confidence, given the probability of detecting such an “effect” (power). Conversely, under sample size constraints, it allows us to estimate the probability of detecting an “effect” of a given size with a given level of confidence (power), given a sample size.</p>
+<p>If the inferential goal of a study is NHST 😭 and statistical power is low, then we should modify the design of the study in order to increase power (e.g., by increasing the sample size) or we may consider abandoning it to avoid wasting time and money.</p>
+<p>If the inferential goal of a study is NHST 😭, there are four possible outcomes:</p>
+<ol type="1">
+<li><p>A <strong>false positive</strong> (FP or Type I error), determined by ⍺ (the Type I error rate). The test yields a significant result, even though the null-hypothesis is true.</p></li>
+<li><p>A <strong>false negative</strong> (FN or Type II error), determined by β (the Type II error rate). The test yields a non-significant result, even though the alternative hypothesis is true.</p></li>
+<li><p>A <strong>true negative</strong> (TN), determined by 1 - ⍺. The test yields a non-significant result when the null-hypothesis is true.</p></li>
+<li><p>A <strong>true positive</strong> (TP), determined by 1 - β = <strong>power</strong>. The test yields a significant result when the alternative hypothesis is true.</p></li>
+</ol>
+<p><img src="images/confusion_matrix.png" class="img-fluid" width="800"></p>
+<p><img src="images/error_types.png" class="img-fluid" width="800"></p>
+<p>The median statistical power of studies in neuroscience is estimated to be 21% [8-31%] <span class="citation" data-cites="Button2013">(<a href="#ref-Button2013" role="doc-biblioref">Button et al. 2013</a>)</span>. This is rather unfortunate, because low power increases the likelihood that 1) a statistically significant results is a false positive (&gt;50% of published research findings are likely to be false positives <span class="citation" data-cites="Ioannidis2005">(<a href="#ref-Ioannidis2005" role="doc-biblioref">Ioannidis 2005</a>)</span>), and that 2) the effect size of a true positive results is overestimated (a.k.a. the “<em>winner’s curse</em>”).</p>
+<hr>
+<p>The following <strong>four quantities</strong> have an intimate relationship in power analysis:</p>
+<ol type="1">
+<li><p><strong>significance level</strong>, ⍺ = P(Type 1 error), i.e., the probability of concluding that there <em>is</em> an effect when there is <em>no</em> effect.</p></li>
+<li><p><strong>power level</strong>, 1 - β, β = P(Type 2 error), i.e., the probability of concluding there is <em>no</em> effect when there <em>is</em> an effect.</p></li>
+<li><p><strong>effect size</strong></p></li>
+<li><p><strong>sample size</strong></p></li>
+</ol>
+<p>Given any three, we can determine the fourth.</p>
+<section id="significance-level" class="level3">
+<h3 class="anchored" data-anchor-id="significance-level">Significance level</h3>
+<p>A generally accepted significance level/type I error rate α is 0.05. However, the default use of an significance level of 5% is sub-optimal <span class="citation" data-cites="Maier2022">(<a href="#ref-Maier2022" role="doc-biblioref">Maier and Lakens 2022</a>)</span>.</p>
+</section>
+<section id="power-level" class="level3">
+<h3 class="anchored" data-anchor-id="power-level">Power level</h3>
+<p>A generally accepted minimum level of power (1 - Type II error rate β) is 0.80 <span class="citation" data-cites="Cohen1988">(<a href="#ref-Cohen1988" role="doc-biblioref">Cohen 1988</a>)</span>. This minimum is based on the idea that with a Type I error rate of 0.05, the ratio of a Type II error to a Type I error is 0.20/0.05 = 4. In this setup, concluding that there <em>is</em> an effect when there is <em>no</em> effect (Type I error) is considered four times more costly than concluding there is <em>no</em> effect when there <em>is</em> an effect (Type II error). However, the default use of a power level of 80% is sub-optimal <span class="citation" data-cites="Lakens2022">(<a href="#ref-Lakens2022" role="doc-biblioref">Lakens 2022</a>)</span>.</p>
+</section>
+<section id="effect-size" class="level3">
+<h3 class="anchored" data-anchor-id="effect-size">Effect size</h3>
+<p>In statistics, an <a href="https://en.wikipedia.org/wiki/Effect_size">effect size</a> is a value measuring the strength of a statistical association between two variables in a “population”, or a sample-based estimate of that quantity. Despite the misleading use of causal language, the term “effect” in statistics does NOT imply a causal relationship between the two variables (association ≠ causation).</p>
+<p>The effect sizes used in power analysis should be informed by expert knowledge, a theoretical model, an exploratory study performed before calculating the minimum sample size required for a confirmatory study, or by searching the literature for effect sizes estimated in similar studies or (better) meta-analyses thereof. As a very last resort, Common Language Effect Size (CLES) indicators <span class="citation" data-cites="McGraw1992">(<a href="#ref-McGraw1992" role="doc-biblioref">McGraw and Wong 1992</a>)</span> or benchmarks provided by <span class="citation" data-cites="Cohen1988">(<a href="#ref-Cohen1988" role="doc-biblioref">Cohen 1988</a>)</span>, <span class="citation" data-cites="Chen2010">(<a href="#ref-Chen2010" role="doc-biblioref">Chen, Cohen, and Chen 2010</a>)</span>, and <span class="citation" data-cites="Funder2019">(<a href="#ref-Funder2019" role="doc-biblioref">Funder and Ozer 2019</a>)</span> can be used, but these can vary greatly depending on the field of study.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 29%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Test</th>
+<th>Effect size measure</th>
+<th>Small<br>
+(% variance)</th>
+<th>Medium<br>
+(% variance)</th>
+<th>Large<br>
+(% variance)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>t</em>-test</td>
+<td>Cohen’s <em>d</em><br>
+(or Hedges’s <em>g</em> if N ≤ 20)</td>
+<td>0.20<br>
+(1%)</td>
+<td>0.50<br>
+(6%)</td>
+<td>0.80<br>
+(16%)</td>
+</tr>
+<tr class="even">
+<td>Correlation/<br>
+Simple regression</td>
+<td>Pearson’s <em>r</em></td>
+<td>0.10 [0.1]<br>
+(1%)</td>
+<td>0.25 [0.3]<br>
+(6%)</td>
+<td>0.40 [0.5]<br>
+(16%)</td>
+</tr>
+<tr class="odd">
+<td>Multiple regression</td>
+<td>R<sup>2</sup></td>
+<td>0.02<br>
+(2%)</td>
+<td>0.13<br>
+(13%)</td>
+<td>0.26<br>
+(26%)</td>
+</tr>
+<tr class="even">
+<td>Multiple regression</td>
+<td><em>f</em><sup>2</sup></td>
+<td>0.02<br>
+(2%)</td>
+<td>0.15<br>
+(13%)</td>
+<td>0.35<br>
+(26%)</td>
+</tr>
+<tr class="odd">
+<td>Logistic regression</td>
+<td>OR<sup>*</sup></td>
+<td>1.46</td>
+<td>2.50</td>
+<td>4.14</td>
+</tr>
+</tbody>
+</table>
+<p><sup>*</sup> assuming a 10% probability of the outcome in the control group <span class="citation" data-cites="Chen2010">(<a href="#ref-Chen2010" role="doc-biblioref">Chen, Cohen, and Chen 2010</a>)</span></p>
+<p><span class="math inline">\(\text{Cohen's}\ d = \frac{M_1 - M_2}{SD_{\text{pooled}}} = \frac{M_1 - M_2}{\sqrt{(SD_1^2 + SD_2^2)/2}}\)</span></p>
+<p>Omnibus <em>F</em> test for one model: <span class="math inline">\(f^2 = \frac{R^2}{1-R^2}\)</span></p>
+<p>Omnibus <em>F</em> test for two (nested) models: <span class="math inline">\(f^2 = \frac{R^2_{AB} - R^2_A}{1-R^2_{AB}}\)</span></p>
+</section>
+<section id="see-also" class="level3">
+<h3 class="anchored" data-anchor-id="see-also">See also</h3>
+<ul>
+<li><p><a href="https://lakens.github.io/statistical_inferences/06-effectsize.html">Improving your statistical inferences: Effect size</a></p></li>
+<li><p><a href="https://lakens.github.io/statistical_inferences/08-samplesizejustification.html">Improving your statistical inferences: Sample size justification</a></p></li>
+<li><p><a href="https://www.statmethods.net/stats/power.html">Quick-R: Power analysis</a></p></li>
+</ul>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/VX_M3tIyiYk?si=_GD96QuJPt2AO_Zt" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</section>
+</section>
+<section id="read-and-prep-data-from-pilot-study" class="level2">
+<h2 class="anchored" data-anchor-id="read-and-prep-data-from-pilot-study">Read and prep data from pilot study</h2>
+<p>In the power analysis examples that follow, we will use real data from a pilot study (or synthetic data from a simulated study) of the effect that knocking out a gene (<code>geno</code>) has on a phenotype (<code>pheno</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"pilot.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>d1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">pheno</th>
+<th style="text-align: left;">geno</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">51.83</td>
+<td style="text-align: left;">WT</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">55.47</td>
+<td style="text-align: left;">WT</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">75.15</td>
+<td style="text-align: left;">WT</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">58.78</td>
+<td style="text-align: left;">WT</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">59.42</td>
+<td style="text-align: left;">WT</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">76.87</td>
+<td style="text-align: left;">WT</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">82.53</td>
+<td style="text-align: left;">KO</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">61.82</td>
+<td style="text-align: left;">KO</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">68.76</td>
+<td style="text-align: left;">KO</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">71.65</td>
+<td style="text-align: left;">KO</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">91.69</td>
+<td style="text-align: left;">KO</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">81.32</td>
+<td style="text-align: left;">KO</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> d1 <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">geno =</span> <span class="fu">fct_relevel</span>(geno, <span class="st">"WT"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exploratory-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory data analysis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_boxplot</span>(pheno <span class="sc">~</span> geno, <span class="at">color =</span> <span class="sc">~</span> geno, <span class="at">fill =</span> <span class="sc">~</span> geno, <span class="at">data =</span> d1) <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">favstats</span>(pheno <span class="sc">~</span> geno, <span class="at">data =</span> d1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">geno</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">Q1</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">Q3</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">missing</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">WT</td>
+<td style="text-align: right;">51.83</td>
+<td style="text-align: right;">56.29</td>
+<td style="text-align: right;">59.10</td>
+<td style="text-align: right;">71.21</td>
+<td style="text-align: right;">76.87</td>
+<td style="text-align: right;">62.92</td>
+<td style="text-align: right;">10.51</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">KO</td>
+<td style="text-align: right;">61.82</td>
+<td style="text-align: right;">69.48</td>
+<td style="text-align: right;">76.48</td>
+<td style="text-align: right;">82.23</td>
+<td style="text-align: right;">91.69</td>
+<td style="text-align: right;">76.29</td>
+<td style="text-align: right;">10.85</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="fit-simple-linear-regression-model-to-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="fit-simple-linear-regression-model-to-the-data">Fit simple linear regression model to the data</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(pheno <span class="sc">~</span> geno, <span class="at">data =</span> d1)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = pheno ~ geno, data = d1)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-14.47  -7.47  -3.82   7.73  15.39 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    62.92       4.36   14.43  5.1e-08 ***
+genoKO         13.38       6.17    2.17    0.055 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 10.7 on 10 degrees of freedom
+Multiple R-squared:  0.32,  Adjusted R-squared:  0.252 
+F-statistic:  4.7 on 1 and 10 DF,  p-value: 0.0553</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(m1, <span class="at">detrend =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="evaluate-model-and-compute-effect-sizes" class="level2">
+<h2 class="anchored" data-anchor-id="evaluate-model-and-compute-effect-sizes">Evaluate model and compute effect sizes</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 8%">
+<col style="width: 6%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 9%">
+<col style="width: 12%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: right;">Coefficient</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">CI</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+<th style="text-align: right;">t</th>
+<th style="text-align: right;">df_error</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">62.92</td>
+<td style="text-align: right;">4.360</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">53.2031</td>
+<td style="text-align: right;">72.63</td>
+<td style="text-align: right;">14.430</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">genoKO</td>
+<td style="text-align: right;">13.38</td>
+<td style="text-align: right;">6.167</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">-0.3641</td>
+<td style="text-align: right;">27.12</td>
+<td style="text-align: right;">2.169</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0553</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">supernova</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Analysis of Variance Table (Type III SS)
+ Model: pheno ~ geno
+
+                               SS df      MS     F   PRE     p
+ ----- --------------- | -------- -- ------- ----- ----- -----
+ Model (error reduced) |  536.735  1 536.735 4.705 .3200 .0553
+ Error (from model)    | 1140.782 10 114.078                  
+ ----- --------------- | -------- -- ------- ----- ----- -----
+ Total (empty model)   | 1677.517 11 152.502                  </code></pre>
+</div>
+</div>
+<p>R-squared (<span class="math inline">\(R^2\)</span> a.k.a. <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">coefficient of determination</a>) is the same as the <em>proportional reduction in error</em> (PRE) for the overall model [<code>Model (error reduced) PRE</code>] in the output of the <code>supernova()</code> function. R-squared is the proportion of variance in the dependent variable that can be explained by the independent variable(s) in a regression model. In other words, R-squared shows how well the model fits the data (the goodness of fit) and is a standardized measure of effect size for a regression model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> <span class="fu">rsquared</span>(m1)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>r2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.32</code></pre>
+</div>
+</div>
+<p>The linear regression model with one categorical predictor that we fitted above is equivalent to a two sample <em>t</em>-test:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(pheno <span class="sc">~</span> geno, <span class="at">data =</span> d1, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Two Sample t-test
+
+data:  pheno by geno
+t = -2.2, df = 10, p-value = 0.06
+alternative hypothesis: true difference in means between group WT and group KO is not equal to 0
+95 percent confidence interval:
+ -27.1157   0.3641
+sample estimates:
+mean in group WT mean in group KO 
+           62.92            76.29 </code></pre>
+</div>
+</div>
+<p>Cohen’s <em>d</em> is a standardized measure of effect size for a <em>t</em>-test:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cohens_d</span>(pheno <span class="sc">~</span> geno, <span class="at">data =</span> d1) <span class="sc">%&gt;%</span> <span class="fu">interpret_cohens_d</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Cohens_d</th>
+<th style="text-align: right;">CI</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+<th style="text-align: left;">Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">-1.252</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">-2.482</td>
+<td style="text-align: right;">0.0272</td>
+<td style="text-align: left;">large</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Finally, we compute the adjusted predictions and marginal effects of the model we fitted above using the <a href="https://strengejacke.github.io/ggeffects/"><code>ggeffects</code></a> package as <a href="../marginal_effects">previously shown</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pred1 <span class="ot">&lt;-</span> <span class="fu">predict_response</span>(m1, <span class="st">"geno"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>pred1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">x</th>
+<th style="text-align: right;">predicted</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+<th style="text-align: left;">group</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">WT</td>
+<td style="text-align: right;">62.92</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">53.20</td>
+<td style="text-align: right;">72.63</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">KO</td>
+<td style="text-align: right;">76.29</td>
+<td style="text-align: right;">4.36</td>
+<td style="text-align: right;">66.58</td>
+<td style="text-align: right;">86.01</td>
+<td style="text-align: left;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_predictions</span>(pred1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 17%">
+<col style="width: 9%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 9%">
+<col style="width: 4%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Level1</th>
+<th style="text-align: left;">Level2</th>
+<th style="text-align: right;">Difference</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+<th style="text-align: right;">t</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">KO</td>
+<td style="text-align: left;">WT</td>
+<td style="text-align: right;">13.38</td>
+<td style="text-align: right;">6.167</td>
+<td style="text-align: right;">-0.3641</td>
+<td style="text-align: right;">27.12</td>
+<td style="text-align: right;">2.169</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0553</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p><u>Do NOT describe “almost statistically significant” results like this one as “trending towards statistical significance”</u>! There is no such a thing as a “trend towards statistical significance” in probability theory/statistical inference. It is just <a href="https://mchankins.wordpress.com/2013/04/21/still-not-significant-2/">mambo-jumbo</a> used by followers of the “<em>null ritual</em>” to describe the result of a significance test when the <em>p</em>-value is near but not below the magical (yet completely arbitrary) threshold of 0.05 <span class="citation" data-cites="Gigerenzer2004">(<a href="#ref-Gigerenzer2004" role="doc-biblioref">Gigerenzer, Krauss, and Vitouch 2004</a>)</span>. Implying that a nearly significant <em>p</em>-value indicates such a trend or suggesting that the failure to achieve statistical significance was due to an insufficient amount of data is not only wholly mistaken but also actively misleading. This is because a <em>p</em>-value is quite likely to become less significant if data are added <span class="citation" data-cites="Wood2014">(<a href="#ref-Wood2014" role="doc-biblioref">Wood et al. 2014</a>)</span>.</p>
+<p><img src="images/clipboard-2262354245.png" class="img-fluid" width="800"></p>
+</section>
+<section id="power-analysis-using-pre-made-functions" class="level2">
+<h2 class="anchored" data-anchor-id="power-analysis-using-pre-made-functions">Power analysis using pre-made functions</h2>
+<p>Although not useful at all (because, <em>a-posteriori</em>, power is simply a statistical restatement of the <em>p</em>-value), we can calculate the power of our pilot study:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pwrss<span class="sc">::</span><span class="fu">power.t.test</span>(<span class="at">ncp =</span> <span class="sc">-</span><span class="fl">2.2</span>, <span class="at">df =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> power ncp.alt ncp.null alpha df t.crit.1 t.crit.2
+ 0.511    -2.2        0  0.05 10   -2.228    2.228</code></pre>
+</div>
+</div>
+<p>Assuming that the simple linear regression model we fitted to the pilot study data is a decent approximation of the DGP<sup>*</sup>, we can calculate the minimum sample size required to achieve a power level of 0.80 to detect the effect size we estimated above at an alpha level of 0.05, using the built-in <code>stats::power.t.test</code> function or analogous functions in the <a href="https://cran.r-project.org/web/packages/pwr/vignettes/pwr-vignette.html"><code>pwr</code></a> and <a href="https://cran.r-project.org/web/packages/pwrss/vignettes/examples.html"><code>pwrss</code></a> packages:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>stats<span class="sc">::</span><span class="fu">power.t.test</span>(<span class="at">delta =</span> <span class="sc">-</span><span class="fl">13.38</span>, <span class="at">sd =</span> <span class="fl">10.7</span>,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">power =</span> <span class="fl">0.80</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Two-sample t test power calculation 
+
+              n = 11.09
+          delta = 13.38
+             sd = 10.7
+      sig.level = 0.05
+          power = 0.8
+    alternative = two.sided
+
+NOTE: n is number in *each* group</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pwrss<span class="sc">::</span><span class="fu">pwrss.t.2means</span>(<span class="at">mu1 =</span> <span class="fl">62.92</span>, <span class="at">sd1 =</span> <span class="fl">10.51</span>,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">mu2 =</span> <span class="fl">76.29</span>, <span class="at">sd2 =</span> <span class="fl">10.85</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">power =</span> <span class="fl">0.80</span>, <span class="at">alpha =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Difference between Two means 
+ (Independent Samples t Test) 
+ H0: mu1 = mu2 
+ HA: mu1 != mu2 
+ ------------------------------ 
+  Statistical power = 0.8 
+  n1 = 12 
+  n2 = 12 
+ ------------------------------ 
+ Alternative = "not equal" 
+ Degrees of freedom = 22 
+ Non-centrality parameter = -3.066 
+ Type I error rate = 0.05 
+ Type II error rate = 0.2 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pwr<span class="sc">::</span><span class="fu">pwr.t.test</span>(<span class="at">d =</span> <span class="fl">1.25</span>,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">power =</span> <span class="fl">0.80</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Two-sample t test power calculation 
+
+              n = 11.09
+              d = 1.25
+      sig.level = 0.05
+          power = 0.8
+    alternative = two.sided
+
+NOTE: n is number in *each* group</code></pre>
+</div>
+</div>
+<p><sup>*</sup> this assumption is not well justified, because the sample size of the pilot study is rather small and thus the effect size estimate is very uncertain <code>d = 1.25 [0.03, 2.48]</code>. When searching the literature for effect sizes estimated in similar studies, be aware that (because of low power and publication bias) these effect sizes are likely to be overestimated (2X, see the figure below from <span class="citation" data-cites="Estimati2015"><span>“Estimating the Reproducibility of Psychological Science”</span> (<a href="#ref-Estimati2015" role="doc-biblioref">2015</a>)</span>, but see also counterpoint by <span class="citation" data-cites="Patil2016">Patil, Peng, and Leek (<a href="#ref-Patil2016" role="doc-biblioref">2016</a>)</span>). Therefore, the most reliable estimates of effect sizes are not from single studies but from meta-analyses that takes publication bias into account <span class="citation" data-cites="Lakens2022">(<a href="#ref-Lakens2022" role="doc-biblioref">Lakens 2022</a>)</span>.</p>
+<p><img src="images/effect_sizes_repro.jpg" class="img-fluid" width="800"></p>
+<p>Power analysis at the boundaries of the effect size 95% CI and at half size:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pwr<span class="sc">::</span><span class="fu">pwr.t.test</span>(<span class="at">d =</span> <span class="fl">0.03</span>,</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">power =</span> <span class="fl">0.80</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Two-sample t test power calculation 
+
+              n = 17443
+              d = 0.03
+      sig.level = 0.05
+          power = 0.8
+    alternative = two.sided
+
+NOTE: n is number in *each* group</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>pwr<span class="sc">::</span><span class="fu">pwr.t.test</span>(<span class="at">d =</span> <span class="fl">2.48</span>,</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">power =</span> <span class="fl">0.80</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Two-sample t test power calculation 
+
+              n = 3.799
+              d = 2.48
+      sig.level = 0.05
+          power = 0.8
+    alternative = two.sided
+
+NOTE: n is number in *each* group</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>pwr<span class="sc">::</span><span class="fu">pwr.t.test</span>(<span class="at">d =</span> <span class="fl">1.25</span> <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">power =</span> <span class="fl">0.80</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Two-sample t test power calculation 
+
+              n = 41.17
+              d = 0.625
+      sig.level = 0.05
+          power = 0.8
+    alternative = two.sided
+
+NOTE: n is number in *each* group</code></pre>
+</div>
+</div>
+<p>Click <a href="pwrss_linreg.html">here</a> for examples on how to use the <a href="https://cran.r-project.org/web/packages/pwrss/vignettes/examples.html"><code>pwrss</code></a> package to perform power analysis for multiple regression models and different types of significance tests (NHST, non-inferiority/superiority tests, and equivalence tests).</p>
+</section>
+<section id="power-analysis-using-monte-carlo-simulations" class="level2">
+<h2 class="anchored" data-anchor-id="power-analysis-using-monte-carlo-simulations">Power analysis using Monte Carlo simulations</h2>
+<p>For more complex statistical models and study designs, estimates of power can only be obtained using Monte Carlo simulations. For this more computationally expensive but also much more flexible approach, we need to define a function that, <u>given a sample size (N)</u>:</p>
+<ol type="1">
+<li><p>simulates data (from a model of the DGP or by resampling)</p></li>
+<li><p>performs significance testing</p></li>
+<li><p>returns the <em>p</em> value of the significance test</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>sim_p.gen <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate data by generating synthetic data</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  mean.WT <span class="ot">&lt;-</span> <span class="fl">62.92</span>; sd.WT <span class="ot">&lt;-</span> <span class="fl">10.51</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  mean.KO <span class="ot">&lt;-</span> <span class="fl">76.29</span>; sd.KO <span class="ot">&lt;-</span> <span class="fl">10.85</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  pheno.WT <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mean.WT, <span class="at">sd =</span> sd.WT)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  pheno.KO <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mean.KO, <span class="at">sd =</span> sd.KO)</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  d.WT <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">pheno =</span> pheno.WT, <span class="at">geno =</span> <span class="st">"WT"</span>)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  d.KO <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">pheno =</span> pheno.KO, <span class="at">geno =</span> <span class="st">"KO"</span>)</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(d.WT, d.KO)</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># perform significance testing</span></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">lm</span>(pheno <span class="sc">~</span> geno, <span class="at">data =</span> d)</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return p-value of significance test</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">p</span>(m)</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>sim_p.res <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate data by resampling real data</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> d1 <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(geno) <span class="sc">%&gt;%</span> <span class="fu">sample_n</span>(n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># perform significance testing</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">lm</span>(pheno <span class="sc">~</span> geno, <span class="at">data =</span> d)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return p-value of significance test</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">p</span>(m)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>sim_p.res.null <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate data by resampling real data</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> d1 <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(geno) <span class="sc">%&gt;%</span> <span class="fu">sample_n</span>(n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># perform significance testing (remove effect by shuffling)</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">shuffle</span>(pheno) <span class="sc">~</span> geno, <span class="at">data =</span> d)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return p-value of significance test</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">p</span>(m)</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="run-monte-carlo-simulation-a-large-number-of-times-and-visualize-the-p-value-distribution-for-a-specific-sample-size" class="level3">
+<h3 class="anchored" data-anchor-id="run-monte-carlo-simulation-a-large-number-of-times-and-visualize-the-p-value-distribution-for-a-specific-sample-size">Run Monte Carlo simulation a large number of times and visualize the <em>p</em> value distribution for a specific sample size</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="dv">1000</span> <span class="co"># number of Monte Carlo simulations</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">6</span>    <span class="co"># sample size</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>sim_ps <span class="ot">&lt;-</span> <span class="fu">do</span>(M) <span class="sc">*</span> <span class="fu">sim_p.gen</span>(N)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> sim_p.gen, <span class="at">fill =</span> <span class="sc">~</span> (sim_p.gen <span class="sc">&lt;=</span> <span class="fl">0.05</span>), <span class="at">binwidth =</span> <span class="fl">0.0125</span>, <span class="at">data =</span> sim_ps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The proportion of <em>p</em>-values below the significance level (e.g., <span class="math inline">\(\alpha = 0.05\)</span>) when the alternative hypothesis is true is equal to 1 - β, i.e., the power level:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tally</span>(sim_ps <span class="sc">&lt;=</span> <span class="fl">0.05</span>, <span class="at">format =</span> <span class="st">"proportion"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>X
+ TRUE FALSE 
+0.473 0.527 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>sim_ps <span class="ot">&lt;-</span> <span class="fu">do</span>(M) <span class="sc">*</span> <span class="fu">sim_p.res</span>(N)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> sim_p.res, <span class="at">fill =</span> <span class="sc">~</span> (sim_p.res <span class="sc">&lt;=</span> <span class="fl">0.05</span>), <span class="at">binwidth =</span> <span class="fl">0.0125</span>, <span class="at">data =</span> sim_ps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tally</span>(sim_ps <span class="sc">&lt;=</span> <span class="fl">0.05</span>, <span class="at">format =</span> <span class="st">"proportion"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>X
+ TRUE FALSE 
+0.519 0.481 </code></pre>
+</div>
+</div>
+<p>The proportion of <em>p</em>-values below the significance level (e.g., <span class="math inline">\(\alpha = 0.05\)</span>) assuming the null hypothesis is true is equal to ⍺, i.e., the significance level:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>sim_ps <span class="ot">&lt;-</span> <span class="fu">do</span>(M) <span class="sc">*</span> <span class="fu">sim_p.res.null</span>(N)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_histogram</span>(<span class="sc">~</span> sim_p.res.null, <span class="at">fill =</span> <span class="sc">~</span> (sim_p.res.null <span class="sc">&lt;=</span> <span class="fl">0.05</span>), <span class="at">binwidth =</span> <span class="fl">0.0125</span>, <span class="at">data =</span> sim_ps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tally</span>(sim_ps <span class="sc">&lt;=</span> <span class="fl">0.05</span>, <span class="at">format =</span> <span class="st">"proportion"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>X
+ TRUE FALSE 
+0.044 0.956 </code></pre>
+</div>
+</div>
+</section>
+<section id="find-design-by-running-the-monte-carlo-simulation-a-large-number-of-times-and-visualize-the-power-curve-for-a-range-of-sample-sizes" class="level3">
+<h3 class="anchored" data-anchor-id="find-design-by-running-the-monte-carlo-simulation-a-large-number-of-times-and-visualize-the-power-curve-for-a-range-of-sample-sizes">Find design by running the Monte Carlo simulation a large number of times and visualize the power curve for a range of sample sizes</h3>
+<p>The <code>find.design()</code> function of the <a href="https://github.com/flxzimmer/mlpwr"><code>mlpwr</code></a> package <span class="citation" data-cites="Zimmer2023">(<a href="#ref-Zimmer2023" role="doc-biblioref">Zimmer, Henninger, and Debelak 2023</a>)</span> takes as first argument a simulation function (similar to the ones above) that takes the sample size as input and returns <code>TRUE</code> or <code>FALSE</code> if the computed <em>p</em>-value is below the specified significance level (here we reuse the <code>sim_p.gen()</code> function above by wrapping it in an <a href="https://towardsdatascience.com/the-new-pipe-and-anonymous-function-syntax-in-r-54d98861014c">anonymous function</a> that check whether the returned <em>p</em>-value is below the specified significance level):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>ds <span class="ot">&lt;-</span> mlpwr<span class="sc">::</span><span class="fu">find.design</span>(\(n) <span class="fu">sim_p.gen</span>(n) <span class="sc">&lt;=</span> <span class="fl">0.05</span>, <span class="co"># alpha level</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">boundaries =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">40</span>),     <span class="co"># range of sample sizes</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">power =</span> <span class="fl">0.80</span>,              <span class="co"># power level (1 - beta)</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">evaluations =</span> M)           <span class="co"># number of Monte Carlo simulations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Print the power analysis results:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+mlpwr::find.design(simfun = function(n) sim_p.gen(n) &lt;= 0.05, 
+    boundaries = c(4, 40), power = 0.8, evaluations = M)
+
+Design: n = 12
+
+Power: 0.83865,  SE: 0.01268
+Evaluations: 1000,  Time: 4.18,  Updates: 16
+Surrogate: Logistic regression</code></pre>
+</div>
+</div>
+<p>Plot the power analysis results:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ds, <span class="at">addribbon =</span> <span class="cn">FALSE</span>, <span class="at">adderrorbars =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Button2013" class="csl-entry" role="listitem">
+Button, Katherine S., John P. A. Ioannidis, Claire Mokrysz, Brian A. Nosek, Jonathan Flint, Emma S. J. Robinson, and Marcus R. Munafò. 2013. <span>“Power Failure: Why Small Sample Size Undermines the Reliability of Neuroscience.”</span> <em>Nature Reviews Neuroscience</em> 14 (5): 365–76. <a href="https://doi.org/10.1038/nrn3475">https://doi.org/10.1038/nrn3475</a>.
+</div>
+<div id="ref-Chen2010" class="csl-entry" role="listitem">
+Chen, Henian, Patricia Cohen, and Sophie Chen. 2010. <span>“How Big Is a Big Odds Ratio? Interpreting the Magnitudes of Odds Ratios in Epidemiological Studies.”</span> <em>Communications in Statistics - Simulation and Computation</em> 39 (4): 860–64. <a href="https://doi.org/10.1080/03610911003650383">https://doi.org/10.1080/03610911003650383</a>.
+</div>
+<div id="ref-Cohen1988" class="csl-entry" role="listitem">
+Cohen, Jacob. 1988. <em>Statistical Power Analysis for the Behavioral Sciences</em>. Routledge. <a href="https://doi.org/10.4324/9780203771587">https://doi.org/10.4324/9780203771587</a>.
+</div>
+<div id="ref-Estimati2015" class="csl-entry" role="listitem">
+<span>“Estimating the Reproducibility of Psychological Science.”</span> 2015. <em>Science</em> 349 (6251). <a href="https://doi.org/10.1126/science.aac4716">https://doi.org/10.1126/science.aac4716</a>.
+</div>
+<div id="ref-Funder2019" class="csl-entry" role="listitem">
+Funder, David C., and Daniel J. Ozer. 2019. <span>“Evaluating Effect Size in Psychological Research: Sense and Nonsense.”</span> <em>Advances in Methods and Practices in Psychological Science</em> 2 (2): 156–68. <a href="https://doi.org/10.1177/2515245919847202">https://doi.org/10.1177/2515245919847202</a>.
+</div>
+<div id="ref-Gigerenzer2004" class="csl-entry" role="listitem">
+Gigerenzer, Gerd, Stefan Krauss, and Oliver Vitouch. 2004. <span>“The Null Ritual: What You Always Wanted to Know about Significance Testing but Were Afraid to Ask.”</span> In, 392–409. SAGE Publications, Inc. <a href="https://doi.org/10.4135/9781412986311.n21">https://doi.org/10.4135/9781412986311.n21</a>.
+</div>
+<div id="ref-Ioannidis2005" class="csl-entry" role="listitem">
+Ioannidis, John P. A. 2005. <span>“Why Most Published Research Findings Are False.”</span> <em>PLoS Medicine</em> 2 (8): e124. <a href="https://doi.org/10.1371/journal.pmed.0020124">https://doi.org/10.1371/journal.pmed.0020124</a>.
+</div>
+<div id="ref-Lakens2022" class="csl-entry" role="listitem">
+Lakens, Daniël. 2022. <span>“Sample Size Justification.”</span> <em>Collabra: Psychology</em> 8 (1). <a href="https://doi.org/10.1525/collabra.33267">https://doi.org/10.1525/collabra.33267</a>.
+</div>
+<div id="ref-Maier2022" class="csl-entry" role="listitem">
+Maier, Maximilian, and Daniël Lakens. 2022. <span>“Justify Your Alpha: A Primer on Two Practical Approaches.”</span> <em>Advances in Methods and Practices in Psychological Science</em> 5 (2): 251524592210803. <a href="https://doi.org/10.1177/25152459221080396">https://doi.org/10.1177/25152459221080396</a>.
+</div>
+<div id="ref-McGraw1992" class="csl-entry" role="listitem">
+McGraw, Kenneth O., and S. P. Wong. 1992. <span>“A Common Language Effect Size Statistic.”</span> <em>Psychological Bulletin</em> 111 (2): 361–65. <a href="https://doi.org/10.1037/0033-2909.111.2.361">https://doi.org/10.1037/0033-2909.111.2.361</a>.
+</div>
+<div id="ref-Morris2019" class="csl-entry" role="listitem">
+Morris, Tim P., Ian R. White, and Michael J. Crowther. 2019. <span>“Using Simulation Studies to Evaluate Statistical Methods.”</span> <em>Statistics in Medicine</em> 38 (11): 2074–2102. <a href="https://doi.org/10.1002/sim.8086">https://doi.org/10.1002/sim.8086</a>.
+</div>
+<div id="ref-Patil2016" class="csl-entry" role="listitem">
+Patil, Prasad, Roger D. Peng, and Jeffrey T. Leek. 2016. <span>“What Should Researchers Expect When They Replicate Studies? A Statistical View of Replicability in Psychological Science.”</span> <em>Perspectives on Psychological Science</em> 11 (4): 539–44. <a href="https://doi.org/10.1177/1745691616646366">https://doi.org/10.1177/1745691616646366</a>.
+</div>
+<div id="ref-Wood2014" class="csl-entry" role="listitem">
+Wood, J., N. Freemantle, M. King, and I. Nazareth. 2014. <span>“Trap of Trends to Statistical Significance: Likelihood of Near Significant P Value Becoming More Significant with Extra Data.”</span> <em>BMJ</em> 348 (mar31 2): g2215–15. <a href="https://doi.org/10.1136/bmj.g2215">https://doi.org/10.1136/bmj.g2215</a>.
+</div>
+<div id="ref-Zimmer2023" class="csl-entry" role="listitem">
+Zimmer, Felix, Mirka Henninger, and Rudolf Debelak. 2023. <span>“Sample Size Planning for Complex Study Designs: A Tutorial for the Mlpwr Package.”</span> <em>Behavior Research Methods</em>, November. <a href="https://doi.org/10.3758/s13428-023-02269-0">https://doi.org/10.3758/s13428-023-02269-0</a>.
+</div>
+</div>
+</section>
+<section id="print-environment" class="level2">
+<h2 class="anchored" data-anchor-id="print-environment">Print environment</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.4.2 (2024-10-31)
+ os       macOS Sequoia 15.3.1
+ system   aarch64, darwin20
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       America/New_York
+ date     2025-02-26
+ pandoc   3.2 @ /Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
+ quarto   1.6.42 @ /usr/local/bin/quarto
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package             * version  date (UTC) lib source
+ backports             1.5.0    2024-05-23 [1] CRAN (R 4.4.0)
+ bayestestR            0.15.2   2025-02-07 [1] CRAN (R 4.4.1)
+ bit                   4.5.0.1  2024-12-03 [1] CRAN (R 4.4.1)
+ bit64                 4.6.0-1  2025-01-16 [1] CRAN (R 4.4.1)
+ checkmate             2.3.2    2024-07-29 [1] CRAN (R 4.4.0)
+ cli                   3.6.4    2025-02-13 [1] CRAN (R 4.4.1)
+ coda                  0.19-4.1 2024-01-31 [1] CRAN (R 4.4.0)
+ codetools             0.2-20   2024-03-31 [2] CRAN (R 4.4.2)
+ collapse              2.0.19   2025-01-09 [1] CRAN (R 4.4.1)
+ colorspace            2.1-1    2024-07-26 [1] CRAN (R 4.4.0)
+ coursekata          * 0.18.1   2024-12-12 [1] CRAN (R 4.4.1)
+ crayon                1.5.3    2024-06-20 [1] CRAN (R 4.4.0)
+ data.table            1.16.4   2024-12-06 [1] CRAN (R 4.4.1)
+ datawizard            1.0.0    2025-01-10 [1] CRAN (R 4.4.1)
+ DiceKriging           1.6.0    2021-02-23 [1] CRAN (R 4.4.1)
+ digest                0.6.37   2024-08-19 [1] CRAN (R 4.4.1)
+ dplyr               * 1.1.4    2023-11-17 [1] CRAN (R 4.4.0)
+ dslabs              * 0.8.0    2024-03-01 [1] CRAN (R 4.4.0)
+ effectsize          * 1.0.0    2024-12-10 [1] CRAN (R 4.4.1)
+ emmeans               1.10.7   2025-01-31 [1] CRAN (R 4.4.1)
+ estimability          1.5.1    2024-05-12 [1] CRAN (R 4.4.0)
+ evaluate              1.0.3    2025-01-10 [1] CRAN (R 4.4.1)
+ farver                2.1.2    2024-05-13 [1] CRAN (R 4.4.0)
+ fastmap               1.2.0    2024-05-15 [1] CRAN (R 4.4.0)
+ fivethirtyeight     * 0.6.2    2021-10-07 [1] CRAN (R 4.4.0)
+ fivethirtyeightdata * 0.1.0    2024-08-09 [1] Github (fivethirtyeightdata/fivethirtyeightdata@8de5de4)
+ forcats             * 1.0.0    2023-01-29 [1] CRAN (R 4.4.0)
+ Formula               1.2-5    2023-02-24 [1] CRAN (R 4.4.0)
+ generics              0.1.3    2022-07-05 [1] CRAN (R 4.4.0)
+ ggeffects           * 2.2.0    2025-02-05 [1] CRAN (R 4.4.1)
+ ggformula           * 0.12.0   2023-11-09 [1] CRAN (R 4.4.0)
+ ggplot2             * 3.5.1    2024-04-23 [1] CRAN (R 4.4.0)
+ ggrepel               0.9.6    2024-09-07 [1] CRAN (R 4.4.1)
+ ggridges              0.5.6    2024-01-23 [1] CRAN (R 4.4.0)
+ glue                  1.8.0    2024-09-30 [1] CRAN (R 4.4.1)
+ gtable                0.3.6    2024-10-25 [1] CRAN (R 4.4.1)
+ haven                 2.5.4    2023-11-30 [1] CRAN (R 4.4.0)
+ hms                   1.1.3    2023-03-21 [1] CRAN (R 4.4.0)
+ htmltools             0.5.8.1  2024-04-04 [1] CRAN (R 4.4.0)
+ htmlwidgets           1.6.4    2023-12-06 [1] CRAN (R 4.4.0)
+ insight               1.0.2    2025-02-06 [1] CRAN (R 4.4.1)
+ jsonlite              1.9.0    2025-02-19 [1] CRAN (R 4.4.1)
+ knitr                 1.49     2024-11-08 [1] CRAN (R 4.4.1)
+ labeling              0.4.3    2023-08-29 [1] CRAN (R 4.4.0)
+ labelled              2.14.0   2025-01-08 [1] CRAN (R 4.4.1)
+ lattice             * 0.22-6   2024-03-20 [2] CRAN (R 4.4.2)
+ lifecycle             1.0.4    2023-11-07 [1] CRAN (R 4.4.0)
+ Lock5withR          * 1.2.2    2024-08-09 [1] Github (rpruim/Lock5withR@f2773d9)
+ lsr                 * 0.5.2    2021-12-01 [1] CRAN (R 4.4.0)
+ lubridate           * 1.9.4    2024-12-08 [1] CRAN (R 4.4.1)
+ magrittr              2.0.3    2022-03-30 [1] CRAN (R 4.4.0)
+ marginaleffects       0.25.0   2025-02-01 [1] CRAN (R 4.4.1)
+ MASS                  7.3-61   2024-06-13 [2] CRAN (R 4.4.2)
+ Matrix              * 1.7-1    2024-10-18 [2] CRAN (R 4.4.2)
+ Metrics             * 0.1.4    2018-07-09 [1] CRAN (R 4.4.0)
+ mgcv                  1.9-1    2023-12-21 [2] CRAN (R 4.4.2)
+ mlpwr                 1.1.1    2024-10-03 [1] CRAN (R 4.4.1)
+ modelbased            0.9.0    2025-02-05 [1] CRAN (R 4.4.1)
+ mosaic              * 1.9.1    2024-02-23 [1] CRAN (R 4.4.0)
+ mosaicCore            0.9.4.0  2023-11-05 [1] CRAN (R 4.4.0)
+ mosaicData          * 0.20.4   2023-11-05 [1] CRAN (R 4.4.0)
+ multcomp              1.4-28   2025-01-29 [1] CRAN (R 4.4.1)
+ munsell               0.5.1    2024-04-01 [1] CRAN (R 4.4.0)
+ mvtnorm               1.3-3    2025-01-10 [1] CRAN (R 4.4.1)
+ nlme                  3.1-166  2024-08-14 [2] CRAN (R 4.4.2)
+ palmerpenguins        0.1.1    2022-08-15 [1] CRAN (R 4.4.0)
+ parameters          * 0.24.1   2025-01-14 [1] CRAN (R 4.4.1)
+ patchwork             1.3.0    2024-09-16 [1] CRAN (R 4.4.1)
+ performance         * 0.13.0   2025-01-15 [1] CRAN (R 4.4.1)
+ pillar                1.10.1   2025-01-07 [1] CRAN (R 4.4.1)
+ pkgconfig             2.0.3    2019-09-22 [1] CRAN (R 4.4.0)
+ purrr               * 1.0.4    2025-02-05 [1] CRAN (R 4.4.1)
+ pwr                   1.3-0    2020-03-17 [1] CRAN (R 4.4.0)
+ pwrss                 0.3.1    2023-04-11 [1] CRAN (R 4.4.0)
+ R6                    2.6.1    2025-02-15 [1] CRAN (R 4.4.1)
+ randtoolbox           2.0.5    2024-10-18 [1] CRAN (R 4.4.1)
+ Rcpp                  1.0.14   2025-01-12 [1] CRAN (R 4.4.1)
+ readr               * 2.1.5    2024-01-10 [1] CRAN (R 4.4.0)
+ rgenoud               5.9-0.11 2024-09-04 [1] CRAN (R 4.4.1)
+ rlang                 1.1.5    2025-01-17 [1] CRAN (R 4.4.1)
+ rmarkdown             2.29     2024-11-04 [1] CRAN (R 4.4.1)
+ rngWELL               0.10-10  2024-10-17 [1] CRAN (R 4.4.1)
+ rstudioapi            0.17.1   2024-10-22 [1] CRAN (R 4.4.1)
+ sandwich              3.1-1    2024-09-15 [1] CRAN (R 4.4.1)
+ scales                1.3.0    2023-11-28 [1] CRAN (R 4.4.0)
+ see                   0.10.0   2025-01-22 [1] CRAN (R 4.4.1)
+ sessioninfo           1.2.3    2025-02-05 [1] CRAN (R 4.4.1)
+ sjlabelled            1.2.0    2022-04-10 [1] CRAN (R 4.4.0)
+ snakecase             0.11.1   2023-08-27 [1] CRAN (R 4.4.0)
+ stringi               1.8.4    2024-05-06 [1] CRAN (R 4.4.0)
+ stringr             * 1.5.1    2023-11-14 [1] CRAN (R 4.4.0)
+ supernova           * 3.0.0    2024-02-07 [1] CRAN (R 4.4.0)
+ survival              3.7-0    2024-06-05 [2] CRAN (R 4.4.2)
+ TH.data               1.1-3    2025-01-17 [1] CRAN (R 4.4.1)
+ tibble              * 3.2.1    2023-03-20 [1] CRAN (R 4.4.0)
+ tidyr               * 1.3.1    2024-01-24 [1] CRAN (R 4.4.0)
+ tidyselect            1.2.1    2024-03-11 [1] CRAN (R 4.4.0)
+ tidyverse           * 2.0.0    2023-02-22 [1] CRAN (R 4.4.0)
+ timechange            0.3.0    2024-01-18 [1] CRAN (R 4.4.0)
+ tzdb                  0.4.0    2023-05-12 [1] CRAN (R 4.4.0)
+ vctrs                 0.6.5    2023-12-01 [1] CRAN (R 4.4.0)
+ vroom                 1.6.5    2023-12-05 [1] CRAN (R 4.4.0)
+ withr                 3.0.2    2024-10-28 [1] CRAN (R 4.4.1)
+ xfun                  0.51     2025-02-19 [1] CRAN (R 4.4.1)
+ xtable                1.8-4    2019-04-21 [1] CRAN (R 4.4.0)
+ yaml                  2.3.10   2024-07-26 [1] CRAN (R 4.4.0)
+ zoo                   1.8-12   2023-04-13 [1] CRAN (R 4.4.1)
+
+ [1] /Users/marcoe02/.Rlib
+ [2] /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

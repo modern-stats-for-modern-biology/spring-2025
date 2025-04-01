@@ -1,0 +1,106 @@
+---
+title: "Models"
+format:
+  html:
+    toc: true
+    df-print: paged
+execution:
+  warning: false
+editor: visual
+---
+
+From ChatGPT: https://chatgpt.com/share/67d4304d-1ef8-8012-b917-eead3053fdfb
+
+## Executive Summary: The Argument-Function Structure of Models
+
+A **model** can be broadly defined as:
+
+> **A structured system that maps inputs (premises, assumptions, or data) to outputs (truth values, probabilities, or predictions) through a set of rules (logical, probabilistic, or statistical).**
+
+This definition applies across different domains:
+
+- **Propositional Logic:** Inputs are premises, rules are logical inference, output is a truth value.
+- **Possible World Semantics:** Inputs are possible worlds, rules define accessibility and valuation, output is a truth assignment.
+- **Logical Probability:** Inputs are propositions, rules are probabilistic laws, output is a probability.
+- **Statistical Inference:** Inputs are data, rules are statistical models, output is a predicted or inferred value.
+
+### 1. Propositional Logic as an Argument
+A **logical model** evaluates the truth of a conclusion based on premises:
+
+**Example:** Given premises $A$ and $A \rightarrow B$, we conclude $B$ by modus ponens.
+
+### 2. Possible World Semantics as a Function
+A **possible world model** evaluates a proposition’s truth across different scenarios:
+
+**Example:** In one world, "It is raining" ($R$) is true; in another, $R$ is false. The accessibility relation determines if one world is possible given another.
+
+### 3. Logical Probability as a Weighted Argument
+A **probabilistic model** assigns confidence to a conclusion given premises:
+
+**Example:** If prior knowledge suggests $P(A) = 0.7$ and $P(B|A) = 0.9$, then $P(B)$ is inferred using Bayes' theorem.
+
+### 4. Statistical Inference as a Function Mapping Inputs to Outputs
+A **statistical model** predicts an outcome based on input variables and learned patterns:
+
+**Example:** Given data $(X_1, Y_1), (X_2, Y_2), \dots$, a regression model estimates a function $f(X) = Y$ that minimizes error.
+
+### Conclusion
+All models, whether logical, probabilistic, or statistical, share a **functional structure**: inputs (premises/data) are processed through rules (logic/statistics) to generate conclusions (truth values/probabilities/predictions). This unified definition highlights the fundamental nature of models across reasoning frameworks.
+
+
+
+## Defining a Model in Propositional Logic, Possible World Semantics, Logical Probability, and Statistical Inference
+
+A general way to define a *model* in these contexts is:
+
+> **A structured representation of a system or domain that assigns truth values (or probability distributions) to propositions across possible worlds, based on a set of rules, assumptions, or relationships (e.g., logical entailments, probabilistic dependencies, or statistical patterns).**
+
+This definition is broad enough to cover different interpretations of "model." Let's break it down:
+
+### 1. Propositional Logic
+
+A **model** for propositional logic is a function that assigns truth values to atomic propositions. Formally:
+
+$$ M: \mathcal{P} \to \{ \text{true}, \text{false} \} $$
+
+where $\mathcal{P}$ is the set of propositional variables. The model satisfies a formula $\phi$ (denoted $M \models \phi$) if the truth assignments make $\phi$ true according to logical rules.
+
+### 2. Possible World Semantics
+
+In possible world semantics (e.g., in modal logic or Bayesian networks), a model consists of:
+
+-   A set of possible worlds $W$
+-   A valuation function $V: W \times \mathcal{P} \to \{ \text{true}, \text{false} \}$, determining the truth of propositions in each world
+-   (For modal logic) An accessibility relation $R \subseteq W \times W$, defining how worlds relate
+
+### 3. Logical Probability
+
+Logical probability (e.g., in Keynes, Carnap, or Jaynes' frameworks) extends models by assigning **degrees of belief** rather than binary truth values. A model is then a probability function:
+
+$$ P: \mathcal{P} \to [0,1] $$
+
+or more generally,
+
+$$ P: \sigma(\mathcal{W}) \to [0,1] $$
+
+where $\sigma(\mathcal{W})$ is a sigma-algebra over possible worlds.
+
+### 4. Statistical Inference
+
+In statistical modeling, a model is a **parametric or nonparametric function** that maps input variables to an expected output distribution:
+
+$$ P(Y | X, \theta) $$
+
+where $\theta$ represents unknown parameters, and $X, Y$ are observed and target variables, respectively. The model specifies **conditional probability relationships**, which can be inferred from data.
+
+### "A Series of If-Then Statements"?
+
+This perspective aligns with models in **logic programming** or **causal inference**, where models take the form:
+
+-   **Logical Rules:** $A \rightarrow B$ (Material implication)
+-   **Statistical Dependencies:** $P(B | A)$
+-   **Causal Models:** $do(A) \Rightarrow B$ (Intervention-based causality)
+
+### Conclusion
+
+In sum, a *model* in these contexts is a **mathematical structure that encodes the relationships between propositions, probabilities, or statistical patterns, often guided by conditional (if-then) rules.**

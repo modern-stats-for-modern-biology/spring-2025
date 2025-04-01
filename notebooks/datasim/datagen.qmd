@@ -1,0 +1,76 @@
+---
+title: "Simulate data from linear models"
+---
+
+```{r}
+suppressPackageStartupMessages({
+  library(coursekata)
+})
+```
+
+```{r}
+set.seed(42)  # for reproducibility
+
+n <- 30        # sample size
+beta0 <- 10
+beta1 <- 0.5
+sd <- 3
+
+# 1. Generate X values (Weight) from a uniform distribution
+X <- runif(n, min = 10, max = 50)
+
+# 2. Generate Y values (Barks) from the specified model,
+Y <- beta0 + beta1 * X + rnorm(n, mean = 0, sd = sd)
+
+# 3. Combine into a data frame
+df <- tibble(Weight = X, Barks = Y)
+
+# 4. Check summary
+summary(df)
+
+df %>% write.csv("simdata_cont.csv", row.names = FALSE)
+```
+
+```{r}
+gf_point(Y ~ X, data = df) %>% gf_lm()
+
+m <- lm(Y ~ X, data = df)
+
+summary(m)
+```
+
+------------------------------------------------------------------------
+
+```{r}
+set.seed(42)  # for reproducibility
+
+n <- 30        # sample size
+beta0 <- 40
+beta1 <- -4
+sd <- 3
+
+# 1. Generate X values (treated and untreated)
+X <- rep(c("Control", "Drug"), each = floor(n / 2))
+
+# Convert X into a numeric indicator: 0 for Control, 1 for Drug
+X_numeric <- ifelse(X == "Drug", 1, 0)
+
+# 2. Generate Y values (gene expression) from the specified model
+Y <- beta0 + beta1 * X_numeric + rnorm(n, mean = 0, sd = sd)
+
+# 3. Combine into a data frame
+df <- tibble(Treatment = X, Y = Y)
+
+# 4. Check summary
+summary(df)
+
+df %>% write.csv("simdata_cat.csv", row.names = FALSE)
+```
+
+```{r}
+gf_jitter(Y ~ Treatment, data = df, width = 0.1) %>% gf_boxplot()
+
+m <- lm(Y ~ Treatment, data = df)
+
+summary(m)
+```

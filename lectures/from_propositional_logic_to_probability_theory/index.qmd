@@ -1,0 +1,2805 @@
+---
+title: "From propositional logic to probability theory" 
+subtitle: "Statistical inference"
+date: 2025-02-11
+author: "Edoardo \"Dado\" Marcora"
+format:
+  revealjs:
+    smaller: true
+    incremental: true
+    theme: [default, styles.scss]
+    execute:
+      echo: true
+      eval: true
+      warning: false
+      fragment: true
+    output-location: fragment
+df-print: kable
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+theme_set(theme_minimal())
+
+#| output-location: default
+# def conditional operator
+`%=>%` <- function(A, B) {
+  !A | B
+}
+
+# def biconditional operator 
+`%<=>%` <- function(A, B) {
+  (A %=>% B) & (B %=>% A)
+}
+```
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide1.png){fig-align="center" width="979"}
+
+[Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
+
+## Deductive and inductive reasoning
+
+-   The goal of **deductive reasoning** is to determine whether an argument is valid, i.e., the **conclusion is guaranteed to be true**, assuming the premises are true
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & \text{All men are mortal} \\
+2. & \text{Socrates is a man} \\
+\hline
+\therefore & \text{Socrates is mortal} \\
+\end{array}
+$$
+:::
+
+-   The goal of **inductive reasoning** is to determine whether an argument is strong, i.e., the **conclusion is likely to be true**, assuming the premises are true
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & \text{~90% of men are RH} \\
+2. & \text{Socrates is a man} \\
+\hline
+\therefore & \text{Socrates is RH} \\
+\end{array}
+$$
+:::
+
+## Statistical inference is inductive reasoning
+
+![](images/Slide2.png)
+
+## Scientific reasoning is inductive reasoning
+
+> *All of the things we say in science, all of the conclusions, are uncertain.*
+>
+> *Scientific knowledge is a body of statements of varying degrees of certainty — some most unsure, some nearly sure, but none absolutely certain.*
+>
+> *And it is of paramount importance, in order to make progress, that we recognize this ignorance and this doubt.*
+>
+> *Because we have this doubt, we then propose looking in new directions for new ideas.*
+>
+> — [Richard Feynman](https://en.wikipedia.org/wiki/Richard_Feynman) (1918 – 1988, Nobel-prize winning theoretical physicist)
+
+![](images/richardfeynman1.webp){width="200"}
+
+::: notes
+Plausible reasoning/Reasoning under uncertainty
+:::
+
+## Scientific reasoning is inductive reasoning, but …
+
+![](images/clipboard-3461289063.png)
+
+This article discusses a study \[[Yao et al. (2023)](https://link.springer.com/article/10.1007/s11192-023-04759-6)\] analyzing the frequency of hedging words, such as "might" and "probably", in scientific literature over the past two decades. The findings indicate that the use of such words has declined by approximately 40% during this period.
+
+## What the &#%! is probability?
+
+![](images/clipboard-452697347.png){height="200"}
+
+## What the &#%! is probability?
+
+-   **Ontological interpretations** (probability as an objective feature of reality)
+
+    -   **Limiting relative frequency** (*frequentist*): The proportion of times an event occurs in an infinite sequence of trials (a.k.a. “long-run” relative frequency)
+
+    -   **Physical chance/propensity**: The inherent tendency or disposition of a physical system to produce a particular outcome
+
+-   **Epistemological interpretations** (probability as a subjective measure of uncertainty)
+
+    -   **Rational degree of belief** in the truth of a proposition (*subjective Bayesian*): A personal but coherent assignment of probabilities to possible worlds, updated via Bayes' rule
+
+    -   **Rational degree of evidential support**/the strength of an inductive argument (*objective Bayesian*): The proportion of possible worlds where both the hypothesis and the evidence are true, relative to the possible worlds where the evidence is true
+
+::: notes
+In this series of lectures, we focus on the **objective Bayesian** interpretation of probability, because it incorporates all the others–except when probability measures fundamental randomness (quantum mechanics)
+:::
+
+::: notes
+Objective Bayesianism, in the absence of additional evidence, must agree with the classical interpretation. This is because objective Bayesians use principles like maximum entropy, which leads to the Principle of Indifference when no additional constraints are available.
+
+Key Relationship Between Classical and Objective Bayesian Probability
+
+-   Classical probability is a special case of objective Bayesianism when no extra evidence is available
+
+-   Objective Bayesianism extends classical probability by allowing non-uniform priors when justified by additional evidence or logical constraints
+:::
+
+## Artificial intelligence
+
+::: nonincremental
+-   Our goal in this series of lectures is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical reasoning (deductive and inductive)
+:::
+
+![](images/How-to-build-a-thinking-AI-model.webp){height="500"}
+
+## Artificial intelligence
+
+::: nonincremental
+-   Our goal in this series of lectures is to program an **artificial intelligence (AI)**: A computer algorithm that is capable of logical reasoning (deductive and inductive)
+
+-   To achieve this, we need a way to translate a logical argument from English to a language that the computer understands
+:::
+
+-   Specifically, we will use:
+
+    -   **Propositional logic** (mathematical language) to formalize **deductive reasoning**
+
+    -   **Probability theory** (mathematical language) to formalize **inductive reasoning**
+
+    -   **R** (programming language) to translate a deductive or inductive argument written in the language of propositional logic or probability theory into a computer algorithm
+
+## From propositional logic to probability theory
+
+-   **Propositional logic** is a mathematical language that we use to:
+
+    -   **represent knowledge** with propositions (logical variables), and
+    -   **reason** about the **truth** of propositions, given a knowledge base
+
+-   **Probability theory** extends propositional logic to **reason** about the **plausibility** of propositions, given a knowledge base
+
+## From propositional logic to probability theory
+
+![](images/Slide39.png)
+
+## From propositional logic to probability theory
+
+![](images/Slide40.png)
+
+## From propositional logic to probability theory
+
+![](images/Slide41.png)
+
+## From propositional logic to probability theory
+
+![](images/Slide42.png)
+
+## From propositional logic to probability theory
+
+![](images/Slide43.png)
+
+## From propositional logic to probability theory
+
+![](images/Slide44.png)
+
+## From propositional logic to probability theory
+
+![](images/Slide45.png)
+
+## Sample space and outcomes
+
+-   The universe/**sample space** ($\Omega$) is the set of all possible worlds/**outcomes** ($\omega$), i.e., the set of all possible combinations of truth-value assignments for a given set of atomic variables
+
+-   The sample space for a set of $n$ atomic variables consists of $2^n$ possible outcomes
+
+::: fragment
+$$\Omega = \{ \omega_1, \omega_2, \ldots, \omega_{2^n} \}$$
+:::
+
+-   For example, given a set of two atomic variables $A$ and $B$, the sample space consists of four possible outcomes
+
+::: fragment
+|  $\Omega$  |      $A$       |      $B$       |
+|:----------:|:--------------:|:--------------:|
+| $\omega_1$ | [TRUE]{.green} | [TRUE]{.green} |
+| $\omega_2$ | [TRUE]{.green} | [FALSE]{.red}  |
+| $\omega_3$ | [FALSE]{.red}  | [TRUE]{.green} |
+| $\omega_4$ | [FALSE]{.red}  | [FALSE]{.red}  |
+:::
+
+## Sample space and outcomes
+
+```{r}
+#| include: false
+vars <- c("A", "B")
+
+ss <-
+  expand_grid(!!!set_names(map(vars, ~ c(TRUE, FALSE)), vars)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>%
+  select(Ω, everything())
+
+ss
+```
+
+```{r}
+ss <-
+  expand_grid(
+    A = c(TRUE, FALSE),
+    B = c(TRUE, FALSE)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>%
+  select(Ω, everything())
+
+ss
+```
+
+## Propositions and events
+
+-   An **event** is a subset of the sample space, including the empty set ($\emptyset$) and the sample space itself ($\Omega$)
+
+-   Event $X$: the subset of the sample space where proposition $X$ is true
+
+-   The terms **proposition** and **event** are often used interchangeably
+
+-   Probability applies to propositions/events
+
+    -   $P(X)$ = probability that proposition $X$ is true
+
+    -   $P(X)$ = probability that event $X$ occurs
+
+## Propositions and events
+
+::: nonincremental
+-   Proposition $X$: $\: A$
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+ss
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   Proposition $X$: $\: A$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(X = A)
+```
+
+-   Event $X$: the subset of $\Omega$ where $X$ is true
+
+::: fragment
+```{r}
+ss %>% mutate(X = A) %>% filter(X)
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   Proposition $X$: $\: \lnot A$
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+ss
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   Proposition $X$: $\: \lnot A$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(X = !A)
+```
+
+-   Event $X$: the subset of $\Omega$ where $X$ is true
+
+::: fragment
+```{r}
+ss %>% mutate(X = !A) %>% filter(X)
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   Proposition $X$: $\: A \implies B$
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+ss
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   Proposition $X$: $\: A \implies B$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(X = A %=>% B)
+```
+
+-   Event $X$: the subset of $\Omega$ where $X$ is true
+
+::: fragment
+```{r}
+ss %>% mutate(X = A %=>% B) %>% filter(X)
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   Proposition $X$: $\: \lnot A \lor B$
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+ss
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   Proposition $X$: $\: \lnot A \lor B$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(X = !A | B)
+```
+
+-   Event $X$: the subset of $\Omega$ where $X$ is true
+
+::: fragment
+```{r}
+ss %>% mutate(X = !A | B) %>% filter(X)
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   If $X$ is a tautology ($\top$), then event $X$ is the sample space $\Omega$
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+ss
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   If $X$ is a tautology ($\top$), then event $X$ is the sample space $\Omega$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(X = A | !A)
+```
+
+::: fragment
+```{r}
+ss %>% mutate(X = A | !A) %>% filter(X)
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   If $X$ is a contradiction ($\bot$), then event $X$ is the empty set $\emptyset$
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+ss
+```
+:::
+
+## Propositions and events
+
+::: nonincremental
+-   If $X$ is a contradiction ($\bot$), then event $X$ is the empty set $\emptyset$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(X = A & !A)
+```
+
+::: fragment
+```{r}
+ss %>% mutate(X = A & !A) %>% filter(X)
+```
+:::
+
+ 
+
+-   A **tautology** is a proposition which is true in every possible world (certainly true)
+
+-   A **contradiction** is a proposition which is false in every possible world (certainly false)
+
+-   A **contingent proposition** is one that is true in some possible worlds and false in others
+
+## From propositional logic to probability theory
+
+![](images/Slide45.png)
+
+## Artificial intelligence for inductive reasoning
+
+-   We will implement this $P$ function in R to build an AI for deductive reasoning
+
+    -   **Input**: A deductive argument with one or more premises (`P1`, `P2`, …) and a conclusion (`H`)
+
+    -   **Output**: A `Numeric` value, measuring the inductive strength of the argument
+
+-   First, we will program this computer algorithm step-by-step
+
+-   Then, we will wrap it up into a reusable function called `P`
+
+-   We will use the *proportional syllogism* (a classical argument that is foundational to statistical inference) as an example
+
+## Proportional syllogism
+
+The proportional syllogism is a logical argument that draws a conclusion based on a proportion
+
+::::: columns
+::: {.column .fragment .nonincremental}
+**Premises**
+
+-   A bag contains two blue balls and one white ball
+
+-   One ball is drawn from the bag
+
+**Conclusion**
+
+-   A blue ball is drawn from the bag
+:::
+
+::: {.column .fragment .nonincremental}
+$$
+\begin{array}{ll}
+1. & B1 \lor B2 \lor W1 \\
+2. & \neg((B1 \land B2) \lor (B1 \land W1) \lor (B2 \land W1)) \\
+\hline
+\therefore & B1 \lor B2
+\end{array}
+$$
+:::
+:::::
+
+## Proportional syllogism
+
+The proportional syllogism is a logical argument that draws a conclusion based on a proportion
+
+$$
+\begin{array}{ll}
+1. & B1 \lor B2 \lor W1 \\
+2. & \neg((B1 \land B2) \lor (B1 \land W1) \lor (B2 \land W1)) \\
+\hline
+\therefore & B1 \lor B2
+\end{array}
+$$
+
+-   The goal is to assess the **inductive strength** of this argument, i.e., to measure how likely the conclusion is to be true given that the premises are true
+
+-   We will assess the inductive strength of this argument following these steps:
+
+    -   Build the truth table of this argument
+        -   First, create a data frame with all possible combinations of atomic variables
+        -   Second, add columns for premises ($E = P1, P2$) and conclusion ($H$)
+    -   Calculate the proportion of rows where $E$ is true, in which $H$ is also true (probability)
+
+## Proportional syllogism
+
+Create a data frame with all possible combinations of atomic variables
+
+```{r}
+expand_grid(
+  B1 = c(TRUE, FALSE),
+  B2 = c(TRUE, FALSE),
+  W1 = c(TRUE, FALSE))
+```
+
+## Proportional syllogism
+
+Add columns for premises ($E = P1, P2$) and conclusion ($H$)
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
+    H  = B1 | B2
+  )
+```
+
+## Proportional syllogism
+
+Calculate the proportion of rows where $E$ is true, in which $H$ is also true
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
+    H  = B1 | B2
+  )
+```
+
+## Proportional syllogism
+
+Calculate the proportion of rows where $E$ is true, in which $H$ is also true
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
+    H  = B1 | B2
+  ) %>%
+  filter(E)
+```
+
+## Proportional syllogism
+
+Calculate the proportion of rows where $E$ is true, in which $H$ is also true
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
+    H  = B1 | B2
+  ) %>%
+  filter(E) %>%
+  pull(H)
+```
+
+## Proportional syllogism
+
+Calculate the proportion of rows where $E$ is true, in which $H$ is also true
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
+    H  = B1 | B2
+  ) %>%
+  filter(E) %>%
+  pull(H) %>%
+  all() # validity = V(H | E)
+```
+
+## Proportional syllogism
+
+Calculate the proportion of rows where $E$ is true, in which $H$ is also true
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>%
+  mutate(
+    P1 = B1 | B2 | W1,
+    P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)),
+    E  = P1 & P2, # same as (B1 & !B2 & !W1) | (!B1 & B2 & !W1) | (!B1 & !B2 & W1)
+    H  = B1 | B2
+  ) %>%
+  filter(E) %>%
+  pull(H) %>%
+  mean() # probability = P(H | E)
+```
+
+::: fragment
+![](images/100pcs-lot-Eco-Friendly-Blue-White-Ball-Pits-Soft-Plastic-Water-Pool-Ocean-Wave-Baby-Funny.jpg){height="300"}
+:::
+
+## Proportional syllogism
+
+Artificial intelligence for inductive reasoning implemented in a single line of R code! 🤯
+
+```{r}
+#| output-location: default
+expand_grid(B1 = c(TRUE, FALSE), B2 = c(TRUE, FALSE), W1 = c(TRUE, FALSE)) %>% mutate(P1 = B1 | B2 | W1, P2 = !((B1 & B2) | (B1 & W1) | (B2 & W1)), E = P1 & P2, H  = B1 | B2) %>% filter(E) %>% pull(H) %>% mean()
+```
+
+-   In this example with **two (2) blue balls** and **one (1) white ball**:
+
+::: fragment
+$$P(H \mid E) = 0.6667 = \frac{2}{2 + 1}$$
+:::
+
+-   In general, for any number of blue balls ($b$) and white balls ($w$):
+
+::: fragment
+$$P(H \mid E) = \frac{b}{b + w}$$
+:::
+
+-   This mathematical formula captures the logic of the proportional syllogism, which also gives the probability of success in a [Bernoulli trial](https://en.wikipedia.org/wiki/Bernoulli_trial)
+
+-   This logic is fundamental to probability theory and inductive reasoning
+
+## Artificial intelligence for inductive reasoning
+
+```{r}
+#| output-location: default
+library(rlang)
+```
+
+```{r}
+#| output-location: default
+P <- function(..., H) {
+  # capture premises as a list of quosures
+  premises <- enquos(...)
+
+  # capture conclusion (H) as a quosure
+  H <- enquo(H)
+
+  if (length(premises) == 0) {
+    # if no premises are provided, set evidence (E) to TRUE (tautology)
+    E <- expr(TRUE)
+  } else {
+    # else set evidence (E) to conjunction of all premises
+    E <- reduce(premises, ~ expr((!! .x) & (!! .y)))
+  }
+    
+  # extract atomic variables from E and H
+  vars <- unique(c(all.vars(E), all.vars(H)))
+  
+  # build truth table and calculate proportion of rows where E is true, in which H is also true
+  expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars)) %>%
+    mutate(E = !!E, H = !!H) %>%
+    filter(E) %>%
+    pull(H) %>%
+    mean()
+}
+```
+
+## Classical strong and weak inductive arguments
+
+::::: columns
+::: {.column width="50%"}
+***Modus ponens***
+
+$$
+\begin{array}{c}
+A \implies B \\
+A \\
+\hline
+B
+\end{array}
+$$
+:::
+
+::: {.column width="50%"}
+***Modus tollens, inverse of***
+
+$$
+\begin{array}{c}
+A \implies B \\
+\neg B \\
+\hline
+A
+\end{array}
+$$
+:::
+:::::
+
+::::: columns
+::: {.column width="50%"}
+**Affirming the consequent**
+
+$$
+\begin{array}{c}
+A \implies B \\
+B \\
+\hline
+A
+\end{array}
+$$
+:::
+
+::: {.column width="50%"}
+**Denying the antecedent, inverse of**
+
+$$
+\begin{array}{c}
+A \implies B \\
+\neg A \\
+\hline
+B
+\end{array}
+$$
+:::
+:::::
+
+```{r}
+#| include: false
+library(flextable)
+
+P.flex <- function(..., H, table = TRUE, flex = TRUE) {
+  # capture premises as a list of quosures
+  premises <- enquos(...)
+  
+  # capture conclusion (H) as a quosure
+  H <- enquo(H)
+  
+  # extract atomic variables from premises and H
+  vars <- unique(c(unlist(lapply(premises, all.vars)), all.vars(H)))
+  
+  # create data frame with all possible combinations of atomic variables/worlds (universe)
+  tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars))
+
+  # add columns for premises
+  for (i in seq_along(premises)) {
+    tt[[paste0("P", i)]] <- eval_tidy(premises[[i]], data = tt)
+  }
+  
+  # add columns for conjunction of all premises (E) and H
+  tt <- tt %>%
+    mutate(
+      E = if_all(starts_with("P"), identity),
+      H = eval_tidy(H, data = tt)
+    )
+  
+  # calculate P(H | E) by checking whether in every possible world/row where E is true, H is also true
+  P <- tt %>%
+    filter(E) %>%
+    pull(H) %>%
+    mean()
+  
+  # return P(H | E) if truth table output is not requested
+  if (!table) {
+    return(P)
+  }
+  
+  # return truth table if formatted truth table output is not requested
+  if (!flex) {
+    return(tt)
+  }
+  
+  # define colors
+  highlight_color <- "beige"  # Standard HTML color name
+  true_color <- "darkgreen"
+  false_color <- "darkred"
+  
+  # convert the truth table into a flextable
+  tt.formatted <- flextable(tt) %>%
+    bold(part = "header") %>%  # Bold the header
+    bold(part = "footer") %>%  # Bold the footer
+    bg(i = which(tt$E == TRUE), bg = highlight_color, part = "body")  # Highlight E = TRUE rows
+  
+  # apply text colors
+  for (col in colnames(tt)) {
+    tt.formatted <- tt.formatted %>%
+      color(i = which(tt[[col]] == TRUE), j = col, color = true_color) %>%
+      color(i = which(tt[[col]] == FALSE), j = col, color = false_color)
+  }
+  
+  # add footer with the calculated P(C | K) value
+  tt.formatted <- tt.formatted %>%
+    add_footer_row(
+      values = paste("P(H | E) =", round(P, 3)),
+      colwidths = ncol(tt)
+    ) %>%
+    align(align = "right", part = "footer")
+
+  # return formatted truth table
+  return(tt.formatted)
+}
+```
+
+## *Modus ponens*
+
+*Modus ponens* is a logical argument that affirms the antecedent to conclude the consequent
+
+::::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   It is raining
+
+**Conclusion**
+
+-   The ground is wet
+:::
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & R \implies W \\
+2. & R \\
+\hline
+\therefore & W
+\end{array}
+$$
+:::
+:::::
+
+::::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, P2 = R, H = W)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  P2 = R,       
+  H  = W)
+```
+:::
+:::::
+:::::::::
+
+## Affirming the consequent
+
+Affirming the consequent is a logical argument that affirms the consequent to conclude the antecedent
+
+::::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   The ground is wet
+
+**Conclusion**
+
+-   It is raining
+:::
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & R \implies W \\
+2. & W \\
+\hline
+\therefore & R
+\end{array}
+$$
+:::
+:::::
+
+::::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, P2 = W, H = R)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  P2 = W,
+  H  = R)
+```
+:::
+:::::
+:::::::::
+
+## Affirming the consequent
+
+Affirming the consequent is a logical argument that affirms the consequent to conclude the antecedent
+
+:::::: columns
+:::: column
+::: nonincremental
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   ~~The ground is wet~~
+
+**Conclusion**
+
+-   It is raining
+:::
+
+$$
+\begin{array}{ll}
+1. & R \implies W \\
+\hline
+\therefore & R
+\end{array}
+$$
+::::
+
+::: {.column .fragment}
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, H = R)
+```
+
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  H  = R)
+```
+:::
+::::::
+
+## *Modus tollens*, inverse of
+
+A logical argument that denies the consequent to conclude the antecedent
+
+::::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   The ground is not wet
+
+**Conclusion**
+
+-   It is raining
+:::
+
+::: fragment
+$$
+\begin{array}{ll}
+1. & R \implies W \\
+2. & \neg W \\
+\hline
+\therefore & R
+\end{array}
+$$
+:::
+:::::
+
+::::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, P2 = !W, H = R)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  P2 = !W,
+  H  = R)
+```
+:::
+:::::
+:::::::::
+
+## Denying the antecedent, inverse of
+
+A logical argument that denies the antecedent to conclude the consequent
+
+::::::::: columns
+::::: column
+::: {.fragment .nonincremental}
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   It is not raining
+
+**Conclusion**
+
+-   The ground is wet
+:::
+
+::: fragment
+$$
+\begin{array}{c}
+1. & R \implies W \\
+2. & \neg R \\
+\hline
+\therefore & W
+\end{array}
+$$
+:::
+:::::
+
+::::: column
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, P2 = !R, H = W)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  P2 = !R,
+  H  = W)
+```
+:::
+:::::
+:::::::::
+
+## Denying the antecedent, inverse of
+
+A logical argument that denies the antecedent to conclude the consequent
+
+:::::: columns
+:::: column
+::: nonincremental
+**Premises**
+
+-   If it is raining, then the ground is wet
+
+-   ~~It is not raining~~
+
+**Conclusion**
+
+-   The ground is wet
+:::
+
+$$
+\begin{array}{c}
+1. & R \implies W \\
+\hline
+\therefore & W
+\end{array}
+$$
+::::
+
+::: {.column .fragment}
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(P1 = R %=>% W, H = W)
+```
+
+```{r}
+#| output-location: default
+P(P1 = R %=>% W,
+  H  = W)
+```
+:::
+::::::
+
+## From propositional logic to probability theory
+
+-   Desiderata of probability theory ([Cox's theorem](https://en.wikipedia.org/wiki/Cox%27s_theorem))
+
+    -   Probability theory must be consistent with propositional logic
+
+    -   Probability theory must respect common-sense directional rules
+
+    -   Probability theory must provide a quantitative measure of inductive strength
+
+::: notes
+-   Probability theory must generalize propositional logic to handle degrees of plausibility
+-   Probability theory must preserve qualitative consistency (e.g., stronger evidence should not decrease probability)
+-   Probability theory must assign numerical values to plausibility, enabling quantitative inductive reasoning
+:::
+
+-   Axioms of probability theory
+
+    -   Inductive strength is a real number: $\: P(H \mid E) \in \mathbb{R}$
+
+    -   All available background information must be considered
+
+    -   Laplace's [principle of indifference](https://en.wikipedia.org/wiki/Principle_of_indifference): Equal ignorance implies equal probability
+
+::: notes
+A longer definition of the principle of indifference (also called the principle of insufficient reason):
+
+“When there is no available evidence or rational basis to favor one possibility over another, all possibilities should be assigned equal probability. That is, if a set of disjoint and exhaustive outcomes are indistinguishable given the known information, they must be treated as equally probable.”
+
+See also: https://en.wikipedia.org/wiki/Principle_of_maximum_entropy
+:::
+
+[For more information:]{.fragment}
+
+-   [Probability as logical inference: A dramatic reading of E.T. Jaynes' textbook](https://youtu.be/zOeOgXbC5hE)
+
+-   [One probability to rule them all?](https://youtu.be/HCG57e7Ogv8?si=2PY1EBoPfjLdS6yd)
+
+## From propositional logic to probability theory
+
+-   Probability measures:
+
+    -   how strongly the premises entail the conclusion
+
+    -   the inductive strength of an argument
+
+    -   the degree of entailment of an argument
+
+    -   the plausibility of the conclusion, given the premises
+
+    -   how likely the conclusion is to be true, assuming the premises are true
+
+-   **All probability is conditional!** There is no such thing as $P(H)$, only $P(H \mid E)$
+
+-   Once the premises and the conclusion are subjectively chosen, the resulting **probability is entirely objective**: [Probability theory is just counting!](https://youtu.be/_NEMHM1wDfI)
+
+## Probability theory: Fundamental theorems
+
+From the axioms of probability theory, it can be mathematically proven that:
+
+-   $P(A \mid C) = 1$ iff $A$ is certainly true ($\top$), given $C$
+
+-   $P(A \mid C) = 0$ iff $A$ is certainly false ($\bot$), given $C$
+
+-   $0 \le P(A \mid C) \le 1$
+
+-   $P(A \land B \mid C) = P(A \mid C) \cdot P(B \mid A \land C)$
+
+## Proportional syllogism
+
+![](images/100pcs-lot-Eco-Friendly-Blue-White-Ball-Pits-Soft-Plastic-Water-Pool-Ocean-Wave-Baby-Funny.jpg){fig-align="center" height="550"}
+
+## Proportional syllogism on steroids
+
+![](images/blue_white_on_steroids.png){fig-align="center" height="550"}
+
+## Proportional syllogism on steroids
+
+![](images/blue_yellow_green_transparent_balls.jpeg){fig-align="center" height="550"}
+
+## Proportional syllogism on steroids
+
+![](proportional_syllogism_on_steroids/Slide1.png){fig-align="center" height="50"}
+
+## Proportional syllogism on steroids
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: {.column .fragment}
+$A \:$ ["*A yellow ball is drawn from the bag.*"]{.fragment}
+:::
+
+::: {.column .fragment}
+$B \:$ ["*A blue ball is drawn from the bag.*"]{.fragment}
+:::
+:::::
+
+## Proportional syllogism on steroids
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::::::::::: columns
+::::::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+::: {.fragment fragment-index="1"}
+$$P(A \mid C) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+:::
+
+::: {.fragment fragment-index="2"}
+$$P(B \mid C) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+:::
+
+::: {.fragment fragment-index="5"}
+$$P(A \land B \mid C) = \frac{2}{10} = 0.2$$
+:::
+
+::: {.fragment fragment-index="7"}
+$$P(A \mid B \land C) = \frac{2}{6} = 0.33$$
+:::
+:::::::
+
+::::::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+::: {.fragment fragment-index="3"}
+$$P(\lnot A \mid C) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+:::
+
+::: {.fragment fragment-index="4"}
+$$P(\lnot B \mid C) = \frac{3 + 1}{10} = \frac{4}{10} = 0.4$$
+:::
+
+::: {.fragment fragment-index="6"}
+$$P(A \lor B \mid C) = \frac{9}{10} = 0.9$$
+:::
+
+::: {.fragment fragment-index="8"}
+$$P(B \mid A \land C) = \frac{2}{5} = 0.4$$
+:::
+:::::::
+:::::::::::::
+
+## Proportional syllogism on steroids
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(\lnot A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(\lnot B) = \frac{3 + 1}{10} = \frac{4}{10} = 0.4$$
+
+$$P(A \lor B) = \frac{9}{10} = 0.9$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+## Probability theory: Negation rule
+
+**Negation (NOT) operator**, also known as the "*complement rule*"
+
+$$P(\lnot A \mid C) = 1 - P(A \mid C)$$
+
+::: fragment
+$$P(\lnot A) = 1 - P(A)$$
+:::
+
+## Probability theory: Negation rule
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(\lnot A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(\lnot B) = \frac{3 + 1}{10} = \frac{4}{10} = 0.4$$
+
+$$P(A \lor B) = \frac{9}{10} = 0.9$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+::: fragment
+$$P(\lnot A) = 1 - P(A) = 1 - 0.5 = 0.5$$
+:::
+
+## Probability theory: Negation rule
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(\lnot A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(\lnot B) = \frac{3 + 1}{10} = \frac{4}{10} = 0.4$$
+
+$$P(A \lor B) = \frac{9}{10} = 0.9$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+$$P(\lnot B) = 1 - P(B) = 1 - 0.6 = 0.4$$
+
+## Probability theory: Conjunction rule
+
+**Conjunction (AND) operator**, also known as the "*product rule*" or Bayes' theorem
+
+$$P(A \land B \mid C) = P(A \mid C) \cdot P(B \mid A \land C)$$
+
+::: fragment
+$$P(A \land B) = P(A) \cdot P(B \mid A)$$
+:::
+
+::: fragment
+$$P(B \land A) = P(B) \cdot P(A \mid B)$$
+:::
+
+## Probability theory: Conjunction rule
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(\lnot A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(\lnot B) = \frac{3 + 1}{10} = \frac{4}{10} = 0.4$$
+
+$$P(A \lor B) = \frac{9}{10} = 0.9$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+::: fragment
+$$P(A \land B) = P(A) \cdot P(B \mid A) = 0.5 \times 0.4 = 0.2$$
+:::
+
+## Probability theory: Conjunction rule
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(\lnot A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(\lnot B) = \frac{3 + 1}{10} = \frac{4}{10} = 0.4$$
+
+$$P(A \lor B) = \frac{9}{10} = 0.9$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+$$P(B \land A) = P(B) \cdot P(A \mid B) = 0.6 \times 0.33 = 0.2$$
+
+## Probability theory: Conjunction rule
+
+**Conjunction (AND) operator**, also known as the "*product rule*" or Bayes' theorem
+
+$$P(A \land B \mid C) = P(A \mid C) \cdot P(B \mid A \land C)$$
+
+$$P(A \land B) = P(A) \cdot P(B \mid A)$$
+
+$$P(B \land A) = P(B) \cdot P(A \mid B)$$
+
+::: fragment
+$$P(A \land B) = P(B \land A)$$
+:::
+
+::: fragment
+$$P(A) \cdot P(B \mid A) = P(B) \cdot P(A \mid B)$$
+:::
+
+::: fragment
+$$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}$$
+:::
+
+## Probability theory: Bayes' rule
+
+$$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}$$
+
+## Probability theory: Bayes' rule
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(\lnot A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(\lnot B) = \frac{3 + 1}{10} = \frac{4}{10} = 0.4$$
+
+$$P(A \lor B) = \frac{9}{10} = 0.9$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+::: fragment
+$$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)} = \frac{0.6 \times 0.33}{0.5} = \frac{0.2}{0.5} = 0.4$$
+:::
+
+## Probability theory: Bayes' rule
+
+$$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}$$
+
+-   This theorem is the single most fundamental equation in probability theory and inductive reasoning, including statistical inference and scientific reasoning
+
+-   Bayes’ theorem is more than just a formula: It captures the *mathematical shape* of uncertainty, or more precisely, the *dynamics* of how uncertainty updates in response to new information
+
+-   For example, in cognitive neuroscience and AI, it provides a foundation for modeling and understanding how the brain works
+
+-   Bayes’ theorem is undoubtedly one of the most revolutionary ideas in human history!
+
+## Probability theory: Conjunction rule
+
+**Conjunction (AND) operator**, also known as the "*product rule*" or Bayes' theorem
+
+$$P(A \land B \mid C) = P(A \mid C) \cdot P(B \mid A \land C)$$
+
+::: fragment
+$$P(A \land B) = P(A) \cdot P(B \mid A)$$
+:::
+
+::: fragment
+$$P(B \land A) = P(B) \cdot P(A \mid B)$$
+:::
+
+::: fragment
+$$P(A \land B) = P(B \land A)$$
+:::
+
+::::: columns
+::: {.fragment .column}
+$$P(B \mid A) = \frac{P(A \land B)}{P(A)}$$
+:::
+
+::: {.fragment .column}
+$$P(A \mid B) = \frac{P(B \land A)}{P(B)}$$
+:::
+:::::
+
+## Probability theory: Conditional probability
+
+::::: columns
+::: column
+$$P(A \mid B) = \frac{P(A \land B)}{P(B)}$$
+:::
+
+::: column
+$$P(B \mid A) = \frac{P(A \land B)}{P(A)}$$
+:::
+:::::
+
+::: fragment
+![](images/jaws.png){fig-align="center" height="400"}
+:::
+
+## Probability theory: Conditional probability
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(\lnot A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(\lnot B) = \frac{3 + 1}{10} = \frac{4}{10} = 0.4$$
+
+$$P(A \lor B) = \frac{9}{10} = 0.9$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+::: fragment
+$$P(A \mid B) = \frac{P(A \land B)}{P(B)} = \frac{0.2}{0.6} = 0.33$$
+:::
+
+## Probability theory: Conditional probability
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(\lnot A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(\lnot B) = \frac{3 + 1}{10} = \frac{4}{10} = 0.4$$
+
+$$P(A \lor B) = \frac{9}{10} = 0.9$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+$$P(B \mid A) = \frac{P(A \land B)}{P(A)} = \frac{0.2}{0.5} = 0.4$$
+
+## Probability theory: Conditional probability
+
+::::: columns
+::: column
+$$P(A \mid B) = \frac{P(A \land B)}{P(B)}$$
+:::
+
+::: column
+$$P(B \mid A) = \frac{P(A \land B)}{P(A)}$$
+:::
+:::::
+
+![](images/jaws.png){fig-align="center" height="400"}
+
+## Probability theory: Independent events
+
+::::: columns
+::: column
+$$P(A \mid B) = \frac{P(A \land B)}{P(B)}$$
+:::
+
+::: column
+$$P(B \mid A) = \frac{P(A \land B)}{P(A)}$$
+:::
+:::::
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
+:::
+
+:::::: fragment
+::::: columns
+::: column
+$$P(A \mid B) = P(A)$$
+:::
+
+::: column
+$$P(B \mid A) = P(B)$$
+:::
+:::::
+::::::
+
+-   If $A$ and $B$ are independent events, then the product rule simplifies to:
+
+::: fragment
+$$P(A \land B) = P(A) \cdot P(B \mid A)$$
+:::
+
+## Probability theory: Independent events
+
+::::: columns
+::: column
+$$P(A \mid B) = \frac{P(A \land B)}{P(B)}$$
+:::
+
+::: column
+$$P(B \mid A) = \frac{P(A \land B)}{P(A)}$$
+:::
+:::::
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
+:::
+
+::::: columns
+::: column
+$$P(A \mid B) = P(A)$$
+:::
+
+::: column
+$$P(B \mid A) = P(B)$$
+:::
+:::::
+
+::: nonincremental
+-   If $A$ and $B$ are independent events, then the product rule simplifies to:
+:::
+
+$$P(A \land B) = P(A) \cdot P(B)$$
+
+## Probability theory: Independent events
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(B \land A) = \frac{2}{10} = 0.2$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+::: fragment
+$$P(A \mid B) = 0.33 \quad \ne \quad P(A) = 0.5$$
+:::
+
+::: {.fragment .text-align-center}
+Events $A$ and $B$ are **dependent**, i.e., **associated**
+:::
+
+## Probability theory: Independent events
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(B \land A) = \frac{2}{10} = 0.2$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+$$P(B \mid A) = 0.4 \quad \ne \quad P(B) = 0.6$$
+
+::: text-align-center
+Events $A$ and $B$ are **dependent**, i.e., **associated**
+:::
+
+## Probability theory: Independent events
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(B \land A) = \frac{2}{10} = 0.2$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+$$P(A \land B) = 0.2 \quad \ne \quad P(A) \cdot P(B) = 0.5 \times 0.6 = 0.3$$
+
+::: text-align-center
+Events $A$ and $B$ are **dependent**, i.e., **associated**
+:::
+
+## Probability theory: Independent events
+
+![](proportional_syllogism_on_steroids/Slide3.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3}{10} = 0.3$$
+
+$$P(A \land B) = \frac{0}{10} = 0$$
+
+$$P(A \mid B) = \frac{0}{6} = 0$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(B) = \frac{6}{10} = 0.6$$
+
+$$P(B \land A) = \frac{0}{10} = 0$$
+
+$$P(B \mid A) = \frac{0}{3} = 0$$
+:::
+:::::
+
+::: fragment
+$$P(A \mid B) = 0 \quad \ne \quad P(A) = 0.3$$
+:::
+
+::: {.fragment .text-align-center}
+Events $A$ and $B$ are **dependent**, i.e., **associated**
+:::
+
+## Probability theory: Independent events
+
+![](proportional_syllogism_on_steroids/Slide3.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3}{10} = 0.3$$
+
+$$P(A \land B) = \frac{0}{10} = 0$$
+
+$$P(A \mid B) = \frac{0}{6} = 0$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(B) = \frac{6}{10} = 0.6$$
+
+$$P(B \land A) = \frac{0}{10} = 0$$
+
+$$P(B \mid A) = \frac{0}{3} = 0$$
+:::
+:::::
+
+$$P(B \mid A) = 0 \quad \ne \quad P(B) = 0.6$$
+
+::: text-align-center
+Events $A$ and $B$ are **dependent**, i.e., **associated**
+:::
+
+## Probability theory: Independent events
+
+![](proportional_syllogism_on_steroids/Slide3.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3}{10} = 0.3$$
+
+$$P(A \land B) = \frac{0}{10} = 0$$
+
+$$P(A \mid B) = \frac{0}{6} = 0$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(B) = \frac{6}{10} = 0.6$$
+
+$$P(B \land A) = \frac{0}{10} = 0$$
+
+$$P(B \mid A) = \frac{0}{3} = 0$$
+:::
+:::::
+
+$$P(A \land B) = 0 \quad \ne \quad P(A) \cdot P(B) = 0.3 \times 0.6 = 0.18$$
+
+::: text-align-center
+Events $A$ and $B$ are **dependent**, i.e., **associated**
+:::
+
+## Probability theory: Independent events
+
+![](proportional_syllogism_on_steroids/Slide4.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(A \land B) = \frac{1}{10} = 0.1$$
+
+$$P(A \mid B) = \frac{1}{2} = 0.5$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(B) = \frac{1 + 1}{10} = \frac{2}{10} = 0.2$$
+
+$$P(B \land A) = \frac{1}{10} = 0.1$$
+
+$$P(B \mid A) = \frac{1}{5} = 0.2$$
+:::
+:::::
+
+::: fragment
+$$P(A \mid B) = P(A) = 0.5$$
+:::
+
+::: {.fragment .text-align-center}
+Events $A$ and $B$ are **independent**, i.e., **NOT associated**!
+:::
+
+## Probability theory: Independent events
+
+![](proportional_syllogism_on_steroids/Slide4.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(A \land B) = \frac{1}{10} = 0.1$$
+
+$$P(A \mid B) = \frac{1}{2} = 0.5$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(B) = \frac{1 + 1}{10} = \frac{2}{10} = 0.2$$
+
+$$P(B \land A) = \frac{1}{10} = 0.1$$
+
+$$P(B \mid A) = \frac{1}{5} = 0.2$$
+:::
+:::::
+
+$$P(B \mid A) = P(B) = 0.2$$
+
+::: text-align-center
+Events $A$ and $B$ are **independent**, i.e., **NOT associated**!
+:::
+
+## Probability theory: Independent events
+
+![](proportional_syllogism_on_steroids/Slide4.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(A \land B) = \frac{1}{10} = 0.1$$
+
+$$P(A \mid B) = \frac{1}{2} = 0.5$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(B) = \frac{1 + 1}{10} = \frac{2}{10} = 0.2$$
+
+$$P(B \land A) = \frac{1}{10} = 0.1$$
+
+$$P(B \mid A) = \frac{1}{5} = 0.2$$
+:::
+:::::
+
+$$P(A \land B) = P(A) \cdot P(B) = 0.5 \times 0.2 = 0.1$$
+
+::: text-align-center
+Events $A$ and $B$ are **independent**, i.e., **NOT associated**!
+:::
+
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+::: fragment
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+:::
+
+## Probability theory: Disjunction rule
+
+![](proportional_syllogism_on_steroids/Slide2.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(B) = \frac{2 + 4}{10} = \frac{6}{10} = 0.6$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{6} = 0.33$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(\lnot A) = \frac{4 + 1}{10} = \frac{5}{10} = 0.5$$
+
+$$P(\lnot B) = \frac{3 + 1}{10} = \frac{4}{10} = 0.4$$
+
+$$P(A \lor B) = \frac{9}{10} = 0.9$$
+
+$$P(B \mid A) = \frac{2}{5} = 0.4$$
+:::
+:::::
+
+::: fragment
+$$P(A \lor B) = P(A) + P(B) - P(A \land B) = 0.5 + 0.6 - 0.2 = 0.9$$
+:::
+
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+## Probability theory: Disjoint events
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **disjoint**/mutually exclusive iff they cannot occur simultaneously (or they cannot both be true), i.e., their intersection is the empty set ($\emptyset$)
+:::
+
+::: fragment
+$$
+P(A \land B) = 0 \quad (A \land B) \equiv \bot \quad (A \cap B) = \emptyset
+$$
+:::
+
+-   If $A$ and $B$ are disjoint events, then the sum rule simplifies to:
+
+::: fragment
+$$
+P(A \lor B) = P(A) + P(B) - P(A \land B)
+$$
+:::
+
+## Probability theory: Disjoint events
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **disjoint**/mutually exclusive iff they cannot occur simultaneously (or they cannot both be true), i.e., their intersection is the empty set ($\emptyset$)
+:::
+
+$$
+P(A \land B) = 0 \quad (A \land B) \equiv \bot \quad (A \cap B) = \emptyset
+$$
+
+::: nonincremental
+-   If $A$ and $B$ are disjoint events, then the sum rule simplifies to:
+:::
+
+$$
+P(A \lor B) = P(A) + P(B)
+$$
+
+## Probability theory: Disjoint events
+
+![](proportional_syllogism_on_steroids/Slide3.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3}{10} = 0.3$$
+
+$$P(A \land B) = \frac{0}{10} = 0$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(B) = \frac{6}{10} = 0.6$$
+
+$$P(A \lor B) = \frac{3 + 6}{10} = \frac{9}{10} = 0.9$$
+:::
+:::::
+
+::: fragment
+$$P(A \land B) = 0$$
+:::
+
+::: fragment
+$$P(A \lor B) = P(A) + P(B) = 0.3 + 0.6 = 0.9$$
+:::
+
+## Probability theory: Disjunction rule
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+## Probability theory: Exhaustive events
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or at least one of them must be true), i.e., their union is the sample space ($\Omega$)
+:::
+
+::: fragment
+$$
+P(A \lor B) = 1 \quad (A \lor B) \equiv \top \quad (A \cup B) = \Omega
+$$
+:::
+
+-   If $A$ and $B$ are **disjoint** (i.e., $P(A \land B) = 0$) **and exhaustive** events (i.e., partitions of the sample space), then the sum rule simplifies to:
+
+::: fragment
+$$
+P(A \lor B) = P(A) + P(B) - P(A \land B)
+$$
+:::
+
+## Probability theory: Exhaustive events
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or at least one of them must be true), i.e., their union is the sample space ($\Omega$)
+:::
+
+$$
+P(A \lor B) = 1 \quad (A \lor B) \equiv \top \quad (A \cup B) = \Omega
+$$
+
+::: nonincremental
+-   If $A$ and $B$ are **disjoint** (i.e., $P(A \land B) = 0$) **and exhaustive** events (i.e., partitions of the sample space), then the sum rule simplifies to:
+:::
+
+$$
+P(A \lor B) = P(A) + P(B)
+$$
+
+## Probability theory: Exhaustive events
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or at least one of them must be true), i.e., their union is the sample space ($\Omega$)
+:::
+
+$$
+P(A \lor B) = 1 \quad (A \lor B) \equiv \top \quad (A \cup B) = \Omega
+$$
+
+::: nonincremental
+-   If $A$ and $B$ are **disjoint** (i.e., $P(A \land B) = 0$) **and exhaustive** events (i.e., partitions of the sample space), then the sum rule simplifies to:
+:::
+
+$$
+1 = P(A) + P(B)
+$$
+
+## Probability theory: Exhaustive events
+
+**Disjunction (OR) operator**, also known as the "*sum rule*"
+
+$$P(A \lor B \mid C) = P(A \mid C) + P(B \mid C) - P(A \land B \mid C)$$
+
+$$P(A \lor B) = P(A) + P(B) - P(A \land B)$$
+
+::: nonincremental
+-   Two events (or propositions) $A$ and $B$ are **exhaustive** iff at least one of them must occur (or at least one of them must be true), i.e., their union is the sample space ($\Omega$)
+:::
+
+$$
+P(A \lor B) = 1 \quad (A \lor B) \equiv \top \quad (A \cup B) = \Omega
+$$
+
+::: nonincremental
+-   If $A$ and $B$ are **disjoint** (i.e., $P(A \land B) = 0$) **and exhaustive** events (i.e., partitions of the sample space), then the sum rule simplifies to:
+:::
+
+$$
+P(A) + P(B) = 1
+$$
+
+## Probability theory: Partitions
+
+![](proportional_syllogism_on_steroids/Slide7.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3}{10} = 0.3$$
+
+$$P(A \land B) = \frac{0}{10} = 0$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(B) = \frac{7}{10} = 0.7$$
+
+$$P(A \lor B) = \frac{3 + 7}{10} = \frac{10}{10} = 1$$
+:::
+:::::
+
+::: fragment
+$$P(A \land B) = 0 \quad \quad P(A \lor B) = 1$$
+:::
+
+::: fragment
+$$P(A \lor B) = P(A) + P(B) = 0.3 + 0.7 = 1$$
+:::
+
+## Probability theory: Law of total probability
+
+-   **Disjoint and exhaustive** events are **partitions** of the sample space
+
+-   Let $\{X_1, X_2, \ldots, X_n\}$ be a set of disjoint and exhaustive events/partitions
+
+-   Then, for any event $A$, the law of total probability states that:
+
+::: fragment
+$$P(A) = \sum_{i=1}^n P(A \land X_i)$$
+:::
+
+::: fragment
+$$P(A) = \sum_{i=1}^n P(X_i) \cdot P(A \mid X_i)$$
+:::
+
+-   **Outcomes** (a.k.a. atomic events) **are partitions** of the sample space!
+
+## Probability theory: Law of total probability
+
+::: nonincremental
+-   $B$ and $\lnot B$ are disjoint and exhaustive events, therefore:
+:::
+
+::: fragment
+$$P(A) = P(A \land B) + P(A \land \lnot B)$$
+:::
+
+::: fragment
+$$P(A) = P(B) \cdot P(A \mid B) + P(\lnot B) \cdot P(A \mid \lnot B)$$
+:::
+
+## Probability theory: Law of total probability
+
+![](proportional_syllogism_on_steroids/Slide5.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(B) = \frac{2 + 5}{10} = \frac{7}{10} = 0.7$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{2 + 5} = \frac{2}{7} = 0.29$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(\lnot A) = \frac{5}{10} = 0.5$$
+
+$$P(\lnot B) = \frac{3}{10} = 0.3$$
+
+$$P(A \land \lnot B) = \frac{3}{10} = 0.3$$
+
+$$P(A \mid \lnot B) = \frac{3}{3} = 1$$
+:::
+:::::
+
+::: fragment
+$$P(A) = P(A \land B) + P(A \land \lnot B) = 0.2 + 0.3 = 0.5$$
+:::
+
+## Probability theory: Law of total probability
+
+![](proportional_syllogism_on_steroids/Slide5.png){fig-align="center" height="50"}
+
+::::: columns
+::: column
+$A \:$ "*A yellow ball is drawn from the bag.*"
+
+$$P(A) = \frac{3 + 2}{10} = \frac{5}{10} = 0.5$$
+
+$$P(B) = \frac{2 + 5}{10} = \frac{7}{10} = 0.7$$
+
+$$P(A \land B) = \frac{2}{10} = 0.2$$
+
+$$P(A \mid B) = \frac{2}{2 + 5} = \frac{2}{7} = 0.29$$
+:::
+
+::: column
+$B \:$ "*A blue ball is drawn from the bag.*"
+
+$$P(\lnot A) = \frac{5}{10} = 0.5$$
+
+$$P(\lnot B) = \frac{3}{10} = 0.3$$
+
+$$P(A \land \lnot B) = \frac{3}{10} = 0.3$$
+
+$$P(A \mid \lnot B) = \frac{3}{3} = 1$$
+:::
+:::::
+
+$$P(A) = P(B) \cdot P(A \mid B) + P(\lnot B) \cdot P(A \mid \lnot B) = 0.7 \times 0.29 + 0.3 \times 1 = 0.5$$
+
+## Probability theory: Law of total probability
+
+::: nonincremental
+-   $B$ and $\lnot B$ are disjoint and exhaustive events, therefore:
+:::
+
+$$P(A) = P(A \land B) + P(A \land \lnot B)$$
+
+$$P(A) = P(B) \cdot P(A \mid B) + P(\lnot B) \cdot P(A \mid \lnot B)$$
+
+-   Thus, Bayes' theorem becomes:
+
+::: fragment
+$$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}$$
+:::
+
+## Probability theory: Law of total probability
+
+::: nonincremental
+-   $B$ and $\lnot B$ are disjoint and exhaustive events, therefore:
+:::
+
+$$P(A) = P(A \land B) + P(A \land \lnot B)$$
+
+$$P(A) = P(B) \cdot P(A \mid B) + P(\lnot B) \cdot P(A \mid \lnot B)$$
+
+::: nonincremental
+-   Thus, Bayes' theorem becomes:
+:::
+
+$$P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(B) \cdot P(A \mid B) + P(\lnot B) \cdot P(A \mid \lnot B)}$$
+
+## Probability theory: Rules of probability calculus
+
+-   **Negation rule (NOT)**
+
+::: fragment
+$$
+P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
+$$
+:::
+
+-   **Conjuction rule (AND)**: Product rule
+
+    -   $P(A \land B) = P(A) \cdot P(B \mid A)$
+
+    -   Iff $A$ and $B$ are independent, i.e., $P(B \mid A) = P(B)$:
+
+    -   $P(A \land B) = P(A) \cdot P(B)$
+
+-   Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
+
+:::::: fragment
+::::: columns
+::: column
+$$P(A \mid B) = P(A)$$
+:::
+
+::: column
+$$P(B \mid A) = P(B)$$
+:::
+:::::
+::::::
+
+-   If $A$ and $B$ are **dependent**, then $A$ is said to be **associated** with $B$, and viceversa
+
+## Probability theory: Rules of probability calculus
+
+::: nonincremental
+-   **Negation rule (NOT)**
+:::
+
+$$
+P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
+$$
+
+::: nonincremental
+-   **Conjuction rule (AND)**: Bayes' theorem
+:::
+
+$$
+P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}
+$$
+
+## Probability theory: Rules of probability calculus
+
+::: nonincremental
+-   **Negation rule (NOT)**
+:::
+
+$$
+P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
+$$
+
+::: nonincremental
+-   **Conjuction rule (AND)**: Conditional probability
+:::
+
+$$
+P(A \mid B) = \frac{P(A \land B)}{P(B)} \quad \quad P(B \mid A) = \frac{P(A \land B)}{P(A)}
+$$
+
+-   **Disjunction rule (OR)**: Sum rule
+
+    -   $P(A \lor B) = P(A) + P(B) - P(A \land B)$
+
+    -   Iff A and B are disjoint/mutually exclusive, i.e., $P(A \land B) = 0$:
+
+    -   $P(A \lor B) = P(A) + P(B)$
+
+## Logical probability textbooks
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/probability_and_inductive_logic.jpg){height="550"}
+
+<https://doi.org/10.1017/CBO9780511801297>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/probability_theory-logic_of_science.jpg){height="550"}
+
+<https://doi.org/10.1017/CBO9780511790423>
+:::
+::::
+:::::::
+
+## Probability theory textbooks and online courses
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/tsitsiklis_intro_to_prob.jpg){height="500"}
+
+<https://youtube.com/playlist?list=PLUl4u3cNGP60hI9ATjSFgLZpbNJ7myAg6>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/blitzstein_intro_to_prob.jpg){height="500"}
+
+<https://projects.iq.harvard.edu/stat110>
+:::
+::::
+:::::::
+
+##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
+
+## Gambler's fallacy
+
+![](images/gamblers-fallacy.png){height="280"}
+
+## Association does not imply causation
+
+::: fragment
+"Correlation is not causation" - correlation is just a special case of statistical association
+:::
+
+::: fragment
+Two propositions/events $A$ and $B$ are associated iff they are NOT independent
+:::
+
+-   $P(A \mid B) \ne P(A)$
+
+::: fragment
+or, equivalently
+:::
+
+-   $P(B \mid A) \ne P(B)$
+
+::: fragment
+For example,
+:::
+
+-   $P(\text{heart attack} \mid \text{high cholesterol levels}) > P(\text{heart attack})$
+
+-   $P(\text{shark attack} \mid \text{high ice cream sales}) > P(\text{shark attack})$
+
+::: fragment
+We bring causation to probability; we do not get causation from probability!
+:::
+
+## Association does not imply causation
+
+A statistical association is a logical relationship between two propositions/events and does not imply a causal relationship between them
+
+::: fragment
+For example,
+:::
+
+-   reducing cholesterol levels lowers the risk of a heart attack (causal relationship), however
+
+-   reducing ice cream sales does not lower the risk of a shark attack, even though there is a statistical association between high ice cream sales and shark attacks
+
+:::: fragment
+::: text-align-center
+![](images/17009_masters-degrees-awarded-in-biological-and-biomedical-sciences_correlates-with_inflation-in-the-us.svg){height="240"}
+
+[Spurious Correlations - Tyler Vigen](https://tylervigen.com/spurious-correlations)
+:::
+::::
+
+## The "ladder of causation"
+
+From Pearl and Mackenzie (2018) [The Book of Why](https://bayes.cs.ucla.edu/WHY/)
+
+::: text-align-center
+![](images/ladder_of_causation2.jpg)
+:::
+
+## Probability distribution
+
+-   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
+
+::: fragment
+$$\forall \omega \in \Omega \quad p(\omega) = \frac{1}{|\Omega|}$$
+
+where $p(\omega)$ is the probability (or more precisely the *probability mass*) of $\omega$
+:::
+
+-   $p$ is also known as **probability distribution** or *probability mass function* (PMF) of $\Omega$
+
+-   For example, given the following sample space
+
+::: fragment
+```{r}
+#| echo: false
+ss
+```
+:::
+
+## Probability distribution
+
+::: nonincremental
+-   Jaynes’ [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy) states that, in the absence of additional information, outcomes in the sample space are equally likely
+:::
+
+$$\forall \omega \in \Omega \quad p(\omega) = \frac{1}{|\Omega|}$$
+
+::: nonincremental
+where $p(\omega)$ is the probability (or more precisely the *probability mass*) of $\omega$
+
+-   $p$ is also known as **probability distribution** or *probability mass function* (PMF) of $\Omega$
+
+-   For example, given the following sample space $\quad p(\omega) = \frac{1}{4} = 0.25$
+:::
+
+::: fragment
+```{r}
+ss %>% mutate(p = 1 / n())
+```
+:::
+
+## Probability calculation
+
+::: fragment
+The probability of proposition/event $X$ is calculated as
+:::
+
+::: fragment
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+:::
+
+::: fragment
+For example, if proposition $X$ is $A \lor B$, then $P(X)$ is
+:::
+
+::: fragment
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  filter(X) %>% 
+  summarize(`P(X)` = sum(p))
+```
+:::
+
+::: fragment
+or more succinctly
+:::
+
+::: fragment
+```{r}
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  summarize(`P(X)` = sum(p[X]))
+```
+:::
+
+## Probability function in R
+
+```{r}
+library(tidyverse)
+library(rlang)
+
+P <- function(H, ...) {
+  # Capture the hypothesis H and premises E as quosures
+  H <- enquo(H)
+  E <- enquos(...)
+
+  # Extract the propositional variables from H and E
+  extract_vars <- function(expr) all.vars(expr)
+
+  # Generate all possible combinations of truth values
+  generate_sample_space <- function(vars) {
+    expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars))
+  }
+
+  # Combine multiple logical expressions with AND
+  combine_with_and <- function(exprs) {
+    if (length(exprs) > 1) {
+      reduce(exprs, ~ expr(!!..1 & !!..2))
+    } else {
+      exprs[[1]]
+    }
+  }
+
+  # Extract all variables from H and E
+  vars <- unique(c(extract_vars(H), if (length(E) > 0) extract_vars(combine_with_and(E))))
+
+  # Generate the sample space
+  S <- generate_sample_space(vars)
+
+  # Evaluate and filter the sample space based on premises E
+  if (length(E) > 0) {
+    E_condition <- combine_with_and(E)
+    S <- S %>% filter(eval_tidy(E_condition, data = S))
+  }
+
+  # Filter based on hypothesis H and calculate the probability of H given E
+  H_condition <- H
+  P_H_given_E <- S %>% filter(eval_tidy(H_condition, data = S)) %>% nrow() / nrow(S)
+
+  return(P_H_given_E)
+}
+```
+
+## Probability function in R
+
+```{r}
+#| output-location: slide
+run_probability_function_tests <- function() {
+  cat("Running probability function tests\n")
+  
+  # Test 01: Simple OR operation, expecting probability 0.75
+  # A OR B
+  expected1 <- 0.75
+  result1 <- P(A | B)
+  cat("Test  1 - Expected:", expected1, "Result:", result1, "\n")
+
+  # Test 02: AND operation with a single string premise, expecting probability 0.3333
+  # A OR B
+  # -------
+  # A AND B
+  expected2 <- 0.3333
+  result2 <- P(A & B, A | B)
+  cat("Test  2 - Expected:", expected2, "Result:", result2, "\n")
+
+  # Test 3: Implication with no premises, expecting probability 0.75
+  # A => B
+  expected3 <- 0.75
+  result3 <- P(!A | B)
+  cat("Test  3 - Expected:", expected3, "Result:", result3, "\n")
+
+  # Test 4: Complex premise with a vector of strings, expecting probability 1
+  # A AND (B OR C)
+  # --------------
+  # A OR B
+  expected4 <- 1
+  result4 <- P(A | B, A & (B | C))
+  cat("Test  4 - Expected:", expected4, "Result:", result4, "\n")
+
+  # Test 5: Complex premise with negation as a vector, expecting probability 0.5
+  # A OR B
+  # NOT (A AND B)
+  # -----------
+  # A AND NOT B
+  expected5 <- 0.5
+  result5 <- P(A & !B, A | B, !(A & B))
+  cat("Test  5 - Expected:", expected5, "Result:", result5, "\n")
+
+  # Test 6: Complex logical relationships with a vector, expecting probability 0.75
+  # B1 OR B2 OR B3 OR W
+  # NOT (B1 AND W)
+  # NOT (B2 AND W)
+  # NOT (B3 AND W)
+  # NOT (B1 AND B2)
+  # NOT (B1 AND B3)
+  # NOT (B2 AND B3)
+  # -------------------
+  # B1 OR B2 OR B3
+  expected6 <- 0.75
+  result6 <- P(B1 | B2 | B3, B1 | B2 | B3 | W, !(B1 & W), !(B2 & W), !(B3 & W), !(B1 & B2), !(B1 & B3), !(B2 & B3))
+  cat("Test  6 - Expected:", expected6, "Result:", result6, "\n")
+
+  # Test 7: Modus Ponens (valid)
+  expected7 <- 1
+  result7 <- P(q, !p | q, p)
+  cat("Test  7 (Modus Ponens) - Expected:", expected7, "Result:", result7, "\n")
+
+  # Test 8: Modus Tollens (valid)
+  expected8 <- 1
+  result8 <- P(!p, !p | q, !q)
+  cat("Test  8 (Modus Tollens) - Expected:", expected8, "Result:", result8, "\n")
+
+  # Test 9: Affirming the Consequent (invalid)
+  expected9 <- 0.5
+  result9 <- P(p, !p | q, q)
+  cat("Test  9 (Affirming the Consequent) - Expected:", expected9, "Result:", result9, "\n")
+
+  # Test 10: Denying the Antecedent (invalid)
+  expected10 <- 0.5
+  result10 <- P(!q, !p | q, !p)
+  cat("Test 10 (Denying the Antecedent) - Expected:", expected10, "Result:", result10, "\n")
+
+  # Test 11: Valid chain argument (Transitivity)
+  expected11 <- 1
+  result11 <- P(r, !p | q, !q | r, p)
+  cat("Test 11 (Transitivity) - Expected:", expected11, "Result:", result11, "\n")
+
+  # Test 12: Invalid chain argument (Broken chain)
+  expected12 <- 0.6667  # Corrected from 0.5 to 2/3
+  result12 <- P(r, !p | q, !s | r, p)
+  cat("Test 12 (Broken Chain) - Expected:", expected12, "Result:", result12, "\n")
+
+  # Test 13: Double negation (valid)
+  expected13 <- 1
+  result13 <- P(p, !(!p))
+  cat("Test 13 (Double Negation) - Expected:", expected13, "Result:", result13, "\n")
+
+  # Test 14: Contradiction (invalid)
+  expected14 <- NaN
+  result14 <- P(p, !p, p)
+  cat("Test 14 (Contradiction) - Expected:", expected14, "Result:", result14, "\n")
+}
+
+# Run the probability function tests
+run_probability_function_tests()
+```

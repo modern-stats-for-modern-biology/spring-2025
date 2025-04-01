@@ -1,0 +1,163 @@
+---
+title: "Power analysis for linear regression models using R"
+date: 2024-03-19
+author: Edoardo \"Dado\" Marcora
+execute:
+  warning: false
+format:
+  html:
+    toc: true
+    df-print: paged
+---
+
+## Setup environment
+
+```{r}
+#| output: false
+library(pwrss)
+```
+
+`pwrss` [package documentation](https://cran.r-project.org/web/packages/pwrss/vignettes/examples.html) and [web app](https://pwrss.shinyapps.io/index/) (made with [Shiny](https://shiny.posit.co/)).
+
+## Power analysis of omnibus F test for one model
+
+The omnibus F test in linear regression is used to test whether $R^2 > 0$.
+
+Assume that we want to predict a continuous outcome variable $Y$ using predictor variables $X_1$, $X_2$, and $X_3$ (binary or continuous) in a linear regression model:
+
+$$
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \epsilon,\quad \epsilon \sim N(0, \sigma)
+$$
+
+If we expect 30% of the variance of the outcome variable $Y$ ($R^2 = 0.30$; `r2 = 0.30`) to be explained by the three predictor variables ($X_1$, $X_2$, and $X_3$; `k = 3`), then what is the minimum required sample size in order to achieve 80% power (`power = 0.80`) at an ɑ level of 0.05 (`alpha = 0.05`)?
+
+```{r}
+pwrss.f.reg(r2 = 0.30, k = 3, power = 0.80, alpha = 0.05)
+```
+
+## Power analysis of omnibus F test for two (nested) models
+
+The omnibus F test in linear regression is also used to test whether $\Delta R^2 > 0$.
+
+Assume that we add predictor variables $X_4$ and $X_5$ (binary or continuous) to the aforementioned linear regression model:
+
+$$
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \beta_4 X_4 + \beta_5 X_5 + \epsilon,\quad \epsilon \sim N(0, \sigma)
+$$
+
+If we expect 15% more variance of the outcome variable $Y$ ($\Delta R^2 = 0.15$; `r2 = 0.15`) to be explained by adding two more predictor variables ($X_4$ and $X_5$; `m = 2`) for a total of five predictor variables ($X_1$, $X_2$, $X_3$, $X_4$, and $X_5$; `k = 5`), then what is the minimum required sample size in order to achieve 80% power (`power = 0.80`) at an ɑ level of 0.05 (`alpha = 0.05`)?
+
+```{r}
+pwrss.f.reg(r2 = 0.15, m = 2, k = 5, power = 0.80, alpha = 0.05)
+```
+
+## Power analysis of *t* test for single regression coefficient
+
+### Continuous predictor variable - standardized effect size
+
+The *t* test in linear regression is used to test whether $\beta_1 \ne 0$ (or $\beta_1 < 0$ or $\beta_1 > 0$).
+
+Assume the aforementioned linear regression model:
+
+$$
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \epsilon,\quad \epsilon \sim N(0, \sigma)
+$$
+
+If the predictor variable $X_1$ is [continuous]{.underline} and we expect a [standardized]{.underline} regression coefficient of 0.20 ($\beta_1 = 0.20$; `beta_1 = 0.20`) and 30% of the variance of the outcome variable $Y$ ($R^2 = 0.30$; `r2 = 0.30`) to be explained by the three predictor variables ($X_1$, $X_2$, and $X_3$; `k = 3`), then what is the minimum required sample size in order to achieve 80% power (`power = 0.80`) at an ɑ level of 0.05 (`alpha = 0.05`)?
+
+```{r}
+pwrss.t.reg(beta1 = 0.20,
+            r2 = 0.30, k = 3,
+            power = 0.80, alpha = 0.05,
+            alternative = "not equal") # or "less" or "greater"
+```
+
+If the predictor variable $X_1$ is continuous, then the standardized regression coefficient $\beta_1$ (`beta_1`) is the correlation coefficient *r* (which can be calculated, e.g., using the `t_to_r()` function from the `effectsize` package).
+
+If a standardized regression coefficient `beta_1` is used, then `sdx` and `sdy` do not need to be specified because `sdx = 1` and `sdy = 1` by default.
+
+### Continuous predictor variable - unstandardized effect size
+
+If an unstandardized regression coefficient `beta1` is used, then `sdx` and `sdy` need to be specified.
+
+If the predictor variable $X_1$ is [continuous]{.underline} and we expect an [unstandardized]{.underline} regression coefficient of 0.60 ( $\beta_1 = 0.60$; `beta_1 = 0.60`), a standard deviation of 12 for the outcome variable $Y$ (`sdy = 12)`, a standard deviation of 4 for the predictor variable $X_1$ (`sdx = 4)`, and 30% of the variance of the outcome variable $Y$ ($R^2 = 0.30$; `r2 = 0.30`) to be explained by the three predictor variables ($X_1$, $X_2$, and $X_3$; `k = 3`), then what is the minimum required sample size in order to achieve 80% power (`power = 0.80`) at an ɑ level of 0.05 (`alpha = 0.05`)?
+
+```{r}
+pwrss.t.reg(beta1 = 0.60, sdy = 12, sdx = 4,
+            r2 = 0.30, k = 3,
+            power = 0.80, alpha = 0.05,
+            alternative = "not equal") # or "less" or "greater"
+```
+
+### Binary predictor variable
+
+If the predictor variable $X_1$ is binary (e.g., treated vs. control), then the standardized regression coefficient $\beta_1$ (`beta_1`) is Cohen’s *d* (which can be calculated, e.g., using the `t_to_d()` function from the [`effectsize`](https://easystats.github.io/effectsize/) package) and the standard deviation of the predictor variable $X_1$ is $\sqrt{p(1-p)}$ \[`sdx = sqrt(p*(1-p))`\], where $p$ is the proportion of sample in one of the two groups.
+
+If the predictor variable $X_1$ is binary and we expect a standardized regression coefficient of 0.20 ( $\beta_1 = 0.20$; `beta_1 = 0.20`), 50% of sample in one of the two groups ($p = 0.50$; `p <- 0.50`), and 30% of the variance of the outcome variable $Y$ ($R^2 = 0.30$; `r2 = 0.30`) to be explained by the three predictor variables ($X_1$, $X_2$, and $X_3$; `k = 3`), then what is the minimum required sample size in order to achieve 80% power (`power = 0.80`) at an ɑ level of 0.05 (`alpha = 0.05`)?
+
+```{r}
+p <- 0.50
+
+pwrss.t.reg(beta1 = 0.20, sdx = sqrt(p*(1-p)),
+            r2 = 0.30, k = 3,
+            power = 0.80, alpha = 0.05,
+            alternative = "not equal") # or "less" or "greater"
+```
+
+### Non-inferiority/superiority tests and equivalence tests
+
+Non-inferiority/superiority tests are used for testing practically significant effects; equivalence tests are used for testing practically null effects. These tests can be performed using the [`ggeffects`](https://strengejacke.github.io/ggeffects/) or other packages.
+
+See also:
+
+-   [Improving your statistical inferences: Equivalence testing and interval hypotheses](https://lakens.github.io/statistical_inferences/09-equivalencetest.html)
+
+-   [Equivalence, non-inferiority and superiority testing](https://rpsychologist.com/d3/equivalence/)
+
+**Non-inferiority**: The intervention is expected to be non-inferior to some other intervention. Assume that the effect of some other intervention is `beta0 = 0.10`. The `beta1 - beta0` is expected to be positive and should be at least -0.05 (`margin = -0.05`). What is the minimum required sample size?
+
+This is the case when higher values of an outcome is better. When lower values of an outcome is better the `beta1 - beta0` difference is expected to be NEGATIVE and the `margin` takes POSITIVE values.
+
+```{r}
+p <- 0.50
+
+pwrss.t.reg(beta1 = 0.20, sdx = sqrt(p*(1-p)),
+            beta0 = 0.10, margin = -0.05, 
+            r2 = 0.30, k = 3,
+            power = 0.80, alpha = 0.05,
+            alternative = "non-inferior")
+```
+
+**Superiority**: The intervention is expected to be superior to some other intervention. Assume that the effect of some other intervention is `beta0 = 0.10`. The `beta1 - beta0` is expected to be positive and should be at least 0.05 (`margin = 0.05`). What is the minimum required sample size?
+
+This is the case when higher values of an outcome is better. When lower values of an outcome is better `beta1 - beta0` difference is expected to be NEGATIVE and the `margin` takes NEGATIVE values.
+
+```{r}
+p <- 0.50
+
+pwrss.t.reg(beta1 = 0.20, sdx = sqrt(p*(1-p)),
+            beta0 = 0.10, margin = 0.05, 
+            r2 = 0.30, k = 3,
+            power = 0.80, alpha = 0.05,
+            alternative = "superior")
+
+```
+
+**Equivalence**: The intervention is expected to be equivalent to some other intervention. Assume the effect of some other intervention is `beta0 = 0.20`. The `beta1 - beta0` is expected to be within -0.05 and 0.05 (`margin = 0.05`). What is the minimum required sample size?
+
+`margin` always takes positive values for equivalence; specify the absolute value.
+
+```{r}
+p <- 0.50
+pwrss.t.reg(beta1 = 0.20, sdx = sqrt(p*(1-p)),
+            beta0 = 0.20, margin = 0.05, 
+            r2 = 0.30, k = 3,
+            power = 0.80, alpha = 0.05,
+            alternative = "equivalent")
+```
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```

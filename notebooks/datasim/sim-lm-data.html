@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.41">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Simulate data from linear models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="sim-lm-data_files/libs/clipboard/clipboard.min.js"></script>
+<script src="sim-lm-data_files/libs/quarto-html/quarto.js"></script>
+<script src="sim-lm-data_files/libs/quarto-html/popper.min.js"></script>
+<script src="sim-lm-data_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="sim-lm-data_files/libs/quarto-html/anchor.min.js"></script>
+<link href="sim-lm-data_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="sim-lm-data_files/libs/quarto-html/quarto-syntax-highlighting-48ffa3e5b9d089919c6712c39e5b00f2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="sim-lm-data_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="sim-lm-data_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="sim-lm-data_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#goals" id="toc-goals" class="nav-link active" data-scroll-target="#goals">Goals</a></li>
+  <li><a href="#why-simulate-data" id="toc-why-simulate-data" class="nav-link" data-scroll-target="#why-simulate-data">Why simulate data?</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting started</a></li>
+  <li><a href="#continuos-predictor" id="toc-continuos-predictor" class="nav-link" data-scroll-target="#continuos-predictor">Continuos predictor</a>
+  <ul class="collapse">
+  <li><a href="#data-story" id="toc-data-story" class="nav-link" data-scroll-target="#data-story">Data story</a></li>
+  <li><a href="#specify-model-and-simulate-a-single-dataset" id="toc-specify-model-and-simulate-a-single-dataset" class="nav-link" data-scroll-target="#specify-model-and-simulate-a-single-dataset">Specify model and simulate a single dataset</a></li>
+  <li><a href="#plot-the-data" id="toc-plot-the-data" class="nav-link" data-scroll-target="#plot-the-data">Plot the data</a></li>
+  <li><a href="#fit-the-linear-model-to-the-data" id="toc-fit-the-linear-model-to-the-data" class="nav-link" data-scroll-target="#fit-the-linear-model-to-the-data">Fit the linear model to the data</a></li>
+  </ul></li>
+  <li><a href="#categorical-predictor" id="toc-categorical-predictor" class="nav-link" data-scroll-target="#categorical-predictor">Categorical predictor</a>
+  <ul class="collapse">
+  <li><a href="#data-story-1" id="toc-data-story-1" class="nav-link" data-scroll-target="#data-story-1">Data story</a></li>
+  <li><a href="#specify-model-and-simulate-a-single-dataset-1" id="toc-specify-model-and-simulate-a-single-dataset-1" class="nav-link" data-scroll-target="#specify-model-and-simulate-a-single-dataset-1">Specify model and simulate a single dataset</a></li>
+  <li><a href="#plot-the-data-1" id="toc-plot-the-data-1" class="nav-link" data-scroll-target="#plot-the-data-1">Plot the data</a></li>
+  <li><a href="#fit-the-linear-model-to-the-data-1" id="toc-fit-the-linear-model-to-the-data-1" class="nav-link" data-scroll-target="#fit-the-linear-model-to-the-data-1">Fit the linear model to the data</a></li>
+  </ul></li>
+  <li><a href="#task-1-manual-fitting-with-continous-predictor" id="toc-task-1-manual-fitting-with-continous-predictor" class="nav-link" data-scroll-target="#task-1-manual-fitting-with-continous-predictor">Task 1: Manual fitting with continous predictor</a>
+  <ul class="collapse">
+  <li><a href="#objective" id="toc-objective" class="nav-link" data-scroll-target="#objective">Objective</a></li>
+  <li><a href="#instructions" id="toc-instructions" class="nav-link" data-scroll-target="#instructions">Instructions</a></li>
+  <li><a href="#observed-data" id="toc-observed-data" class="nav-link" data-scroll-target="#observed-data">Observed data</a></li>
+  <li><a href="#helper-function" id="toc-helper-function" class="nav-link" data-scroll-target="#helper-function">Helper function</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
+  </ul></li>
+  <li><a href="#task-2-manual-fitting-with-categorical-predictor" id="toc-task-2-manual-fitting-with-categorical-predictor" class="nav-link" data-scroll-target="#task-2-manual-fitting-with-categorical-predictor">Task 2: Manual fitting with categorical predictor</a>
+  <ul class="collapse">
+  <li><a href="#objective-1" id="toc-objective-1" class="nav-link" data-scroll-target="#objective-1">Objective</a></li>
+  <li><a href="#instructions-1" id="toc-instructions-1" class="nav-link" data-scroll-target="#instructions-1">Instructions</a></li>
+  <li><a href="#observed-data-1" id="toc-observed-data-1" class="nav-link" data-scroll-target="#observed-data-1">Observed data</a></li>
+  <li><a href="#helper-function-1" id="toc-helper-function-1" class="nav-link" data-scroll-target="#helper-function-1">Helper function</a></li>
+  <li><a href="#example-1" id="toc-example-1" class="nav-link" data-scroll-target="#example-1">Example</a></li>
+  </ul></li>
+  <li><a href="#task-3-simulation-of-multiple-experiments-with-continuous-predictor" id="toc-task-3-simulation-of-multiple-experiments-with-continuous-predictor" class="nav-link" data-scroll-target="#task-3-simulation-of-multiple-experiments-with-continuous-predictor">Task 3: Simulation of multiple experiments with continuous predictor</a>
+  <ul class="collapse">
+  <li><a href="#objective-2" id="toc-objective-2" class="nav-link" data-scroll-target="#objective-2">Objective</a></li>
+  <li><a href="#instructions-2" id="toc-instructions-2" class="nav-link" data-scroll-target="#instructions-2">Instructions</a></li>
+  <li><a href="#helper-functions" id="toc-helper-functions" class="nav-link" data-scroll-target="#helper-functions">Helper functions</a></li>
+  <li><a href="#example-pvals" id="toc-example-pvals" class="nav-link" data-scroll-target="#example-pvals">Example (pvals)</a></li>
+  <li><a href="#example-slopes" id="toc-example-slopes" class="nav-link" data-scroll-target="#example-slopes">Example (slopes)</a></li>
+  </ul></li>
+  <li><a href="#task-4-simulation-of-multiple-experiments-with-categorical-predictor" id="toc-task-4-simulation-of-multiple-experiments-with-categorical-predictor" class="nav-link" data-scroll-target="#task-4-simulation-of-multiple-experiments-with-categorical-predictor">Task 4: Simulation of multiple experiments with categorical predictor</a>
+  <ul class="collapse">
+  <li><a href="#objective-3" id="toc-objective-3" class="nav-link" data-scroll-target="#objective-3">Objective</a></li>
+  <li><a href="#instructions-3" id="toc-instructions-3" class="nav-link" data-scroll-target="#instructions-3">Instructions</a></li>
+  <li><a href="#helper-functions-1" id="toc-helper-functions-1" class="nav-link" data-scroll-target="#helper-functions-1">Helper functions</a></li>
+  <li><a href="#example-pvals-1" id="toc-example-pvals-1" class="nav-link" data-scroll-target="#example-pvals-1">Example (pvals)</a></li>
+  <li><a href="#example-slopes-1" id="toc-example-slopes-1" class="nav-link" data-scroll-target="#example-slopes-1">Example (slopes)</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="sim-lm-data.ipynb" download="sim-lm-data.ipynb"><i class="bi bi-journal-code"></i>Jupyter</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Simulate data from linear models</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="goals" class="level2">
+<h2 class="anchored" data-anchor-id="goals">Goals</h2>
+<ul>
+<li>Learn how to simulate data from a linear model of the data generating process (DGP)</li>
+<li>See firsthand how well model fitting procedures like <code>lm</code> recovers the true values of the model parameters</li>
+<li>Explore how p-values and effect sizes are distributed “under the null”</li>
+<li>Explore how sample size (<code>n</code>) and amount of unexplained variation/error (<code>sd</code>) affect the false positives rate</li>
+</ul>
+</section>
+<section id="why-simulate-data" class="level2">
+<h2 class="anchored" data-anchor-id="why-simulate-data">Why simulate data?</h2>
+<p>In the previous notebook, we used real data on veery behavior to fit linear models. However, we never truly knew the “real” population parameters.</p>
+<p>Simulation lets you:</p>
+<ul>
+<li><p>Specify a linear model with known parameter values as the “true” Data Generating Process (DGP) (a.k.a. the “population”)</p></li>
+<li><p>Generate (simulate) a data set from this process/population</p></li>
+<li><p>Fit the simulated data (e.g., using <code>lm</code>) to see if your estimates are close to the true values</p></li>
+<li><p>Experiment with sample size and other parameters to see how it affects your ability to detect meaningful differences, or how easy it is to mistakenly calling a difference to be “statistically significant” when the true effect is zero. When you understand the mechanics of simulating data, you gain deeper insight into why inference algorithms like <code>lm</code> work and when they can fail</p></li>
+</ul>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">Getting started</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(coursekata)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="continuos-predictor" class="level2">
+<h2 class="anchored" data-anchor-id="continuos-predictor">Continuos predictor</h2>
+<section id="data-story" class="level3">
+<h3 class="anchored" data-anchor-id="data-story">Data story</h3>
+<p>Suppose that the number of barks (<code>Barks</code>) a dog makes is linearly related to its weight (<code>Weight</code>). We propose a simple model:</p>
+<p><code>Barks = β0 + β1·Weight + ϵ</code></p>
+<ul>
+<li><code>β0</code> is the intercept, representing the hypothetical number of barks when a dog’s weight is 0.</li>
+<li><code>β1</code> is the slope, indicating the change in the number of barks for each 1-unit increase in weight.</li>
+<li><code>ϵ</code> represents random noise (assumed to be normally distributed) that captures the inherent variability in barking behavior.</li>
+</ul>
+</section>
+<section id="specify-model-and-simulate-a-single-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="specify-model-and-simulate-a-single-dataset">Specify model and simulate a single dataset</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)  <span class="co"># for reproducibility</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">&lt;-</span>  <span class="dv">30</span>  <span class="co"># sample size</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>beta0 <span class="ot">&lt;-</span>  <span class="dv">40</span>  <span class="co"># true intercept</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>beta1 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.4</span> <span class="co"># true slope</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>sd    <span class="ot">&lt;-</span>  <span class="dv">2</span>   <span class="co"># true standard deviation of the error term</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate the continuos predictor variable (Weight) values, between 10 and 50 from a uniform distribution</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>Weight <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="dv">10</span>, <span class="at">max =</span> <span class="dv">50</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate the response variable (Barks) values using the specified model</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>Barks <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> beta1 <span class="sc">*</span> Weight <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine into a data frame</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(Weight, Barks)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Check summary</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Weight         Barks     
+ Min.   :13.3   Min.   :16.0  
+ 1st Qu.:28.0   1st Qu.:20.9  
+ Median :36.0   Median :27.1  
+ Mean   :34.6   Mean   :25.5  
+ 3rd Qu.:46.2   3rd Qu.:28.3  
+ Max.   :49.6   Max.   :36.2  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  Weight Barks
+   &lt;dbl&gt; &lt;dbl&gt;
+1   46.6  22.6
+2   47.5  20.4
+3   21.4  26.1
+4   43.2  17.8
+5   35.7  28.4
+6   30.8  27.1</code></pre>
+</div>
+</div>
+</section>
+<section id="plot-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="plot-the-data">Plot the data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(Barks <span class="sc">~</span> Weight, <span class="at">data =</span> df) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sim-lm-data_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fit-the-linear-model-to-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="fit-the-linear-model-to-the-data">Fit the linear model to the data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(Barks <span class="sc">~</span> Weight, <span class="at">data =</span> df)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Barks ~ Weight, data = df)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-4.946 -1.242 -0.071  1.852  4.569 
+
+Coefficients:
+            Estimate Std. Error t value             Pr(&gt;|t|)    
+(Intercept)  40.1589     1.3669    29.4 &lt; 0.0000000000000002 ***
+Weight       -0.4245     0.0375   -11.3      0.0000000000059 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.36 on 28 degrees of freedom
+Multiple R-squared:  0.82,  Adjusted R-squared:  0.814 
+F-statistic:  128 on 1 and 28 DF,  p-value: 0.00000000000594</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="categorical-predictor" class="level2">
+<h2 class="anchored" data-anchor-id="categorical-predictor">Categorical predictor</h2>
+<section id="data-story-1" class="level3">
+<h3 class="anchored" data-anchor-id="data-story-1">Data story</h3>
+<p>Suppose that the expression level of a particular gene (<code>Gxp</code>) in cells is influenced by whether the cells are treated with a drug. In this experiment, cells are divided into two groups: one group remains untreated (<code>Control</code>), and the other group is exposed to the drug (<code>Drug</code>). We propose a simple model:</p>
+<p><code>Gxp = β0 + β1·Treatment + ϵ</code></p>
+<ul>
+<li><code>β0</code> is the intercept, representing the average gene expression level in untreated cells (i.e., when <code>Treatment = 0/Control</code>)</li>
+<li><code>β1</code> is the slope, indicating how much gene expression changes on average when cells are treated with the drug</li>
+<li><code>ϵ</code> represents random noise (assumed to be normally distributed) that captures the inherent variability in gene expression measurements</li>
+</ul>
+<p>This model allows us to quantify the drug’s impact by comparing the baseline expression in the control group with the altered expression in the treated group (i.e., <code>Treatment = 1/Drug</code> - <code>Treatment = 0/Control</code>).</p>
+</section>
+<section id="specify-model-and-simulate-a-single-dataset-1" class="level3">
+<h3 class="anchored" data-anchor-id="specify-model-and-simulate-a-single-dataset-1">Specify model and simulate a single dataset</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)  <span class="co"># for reproducibility</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>n     <span class="ot">&lt;-</span> <span class="dv">30</span>   <span class="co"># sample size</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>beta0 <span class="ot">&lt;-</span> <span class="dv">20</span>   <span class="co"># true intercept</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>beta1 <span class="ot">&lt;-</span> <span class="dv">10</span>   <span class="co"># true slope</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>sd    <span class="ot">&lt;-</span> <span class="dv">2</span>    <span class="co"># true standard deviation of the error term</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate the categorical predictor variable (Treatment) values, equally split between Control and Drug</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>Treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Drug"</span>), <span class="at">each =</span> <span class="fu">floor</span>(n <span class="sc">/</span> <span class="dv">2</span>))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to binary predictor variable: 0 for Control, 1 for Drug</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>TreatmentBin <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(Treatment <span class="sc">==</span> <span class="st">"Drug"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate the response variable (Gxp) values using the specified model</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>Gxp <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> beta1 <span class="sc">*</span> TreatmentBin <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine into a data frame</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(Treatment, Gxp)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Check summary</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Treatment              Gxp      
+ Length:30          Min.   :17.2  
+ Class :character   1st Qu.:20.8  
+ Mode  :character   Median :24.6  
+                    Mean   :25.1  
+                    3rd Qu.:29.4  
+                    Max.   :33.8  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  Treatment   Gxp
+  &lt;chr&gt;     &lt;dbl&gt;
+1 Control    22.7
+2 Control    18.9
+3 Control    20.7
+4 Control    21.3
+5 Control    20.8
+6 Control    19.8</code></pre>
+</div>
+</div>
+</section>
+<section id="plot-the-data-1" class="level3">
+<h3 class="anchored" data-anchor-id="plot-the-data-1">Plot the data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_jitter</span>(Gxp <span class="sc">~</span> Treatment, <span class="at">data =</span> df, <span class="at">width =</span> <span class="fl">0.1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_boxplot</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sim-lm-data_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fit-the-linear-model-to-the-data-1" class="level3">
+<h3 class="anchored" data-anchor-id="fit-the-linear-model-to-the-data-1">Fit the linear model to the data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(Gxp <span class="sc">~</span> Treatment, <span class="at">data =</span> df)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Gxp ~ Treatment, data = df)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+ -4.62  -1.22  -0.04   1.74   4.49 
+
+Coefficients:
+              Estimate Std. Error t value             Pr(&gt;|t|)    
+(Intercept)     20.968      0.621   33.76 &lt; 0.0000000000000002 ***
+TreatmentDrug    8.337      0.878    9.49         0.0000000003 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.41 on 28 degrees of freedom
+Multiple R-squared:  0.763, Adjusted R-squared:  0.754 
+F-statistic: 90.1 on 1 and 28 DF,  p-value: 0.0000000003</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="task-1-manual-fitting-with-continous-predictor" class="level2">
+<h2 class="anchored" data-anchor-id="task-1-manual-fitting-with-continous-predictor">Task 1: Manual fitting with continous predictor</h2>
+<section id="objective" class="level3">
+<h3 class="anchored" data-anchor-id="objective">Objective</h3>
+<p>Simulate a dataset using a model with a continuous predictor, then manually adjust the intercept, slope, and error parameters to “fit” the synthetic dataset provided (without being told the true values of the parameters). Finally, compare your manually tuned parameters with the estimates obtained from <code>lm()</code> and the ones used to generate the data.</p>
+</section>
+<section id="instructions" class="level3">
+<h3 class="anchored" data-anchor-id="instructions">Instructions</h3>
+<ol type="1">
+<li><strong>Simulate the data:</strong>
+<ul>
+<li><p>Use a continuous predictor (e.g., Weight) and assume a model of the form:</p>
+<blockquote class="blockquote">
+<p>Barks = β₀ + β₁ ⋅ Weight + ϵ</p>
+</blockquote>
+<p>where <strong>β₀</strong> represents the hypothetical number of barks when <code>Weight = 0</code>, <strong>β₁</strong> is the change in barks per unit increase in weight, and <strong>ϵ</strong> is normally distributed noise.</p></li>
+<li><p>Simulate your dataset.</p></li>
+</ul></li>
+<li><strong>Manual parameter fitting:</strong>
+<ul>
+<li>Without knowing the true generating parameters, experiment with different values for <code>beta0</code>, <code>beta1</code>, and <code>sd</code> (error standard deviation) to simulate data that “resemble/match” the observed data.</li>
+<li>Plot your manually generated predictions alongside the observed data to visualize the match.</li>
+</ul></li>
+<li><strong>Model fitting and comparison:</strong>
+<ul>
+<li>Fit the model using <code>lm()</code>.</li>
+<li>Compare your manually tuned parameter values with the estimates produced by <code>lm()</code> and, when given by your instructor, with the ones used to generate the data.</li>
+</ul></li>
+</ol>
+</section>
+<section id="observed-data" class="level3">
+<h3 class="anchored" data-anchor-id="observed-data">Observed data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>csv_data <span class="ot">&lt;-</span> <span class="st">'Weight,Barks</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="st">46.5922417398542,35.2039720641373</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="st">47.4830165319145,32.888749501709</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="st">21.4455813914537,12.7534244330125</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="st">43.217905042693,24.28755173562</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="st">35.6698207557201,31.7952504150506</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="st">30.7638379652053,24.4620032003672</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="st">39.4635325856507,24.3878409908853</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="st">15.3866638895124,17.1775798774773</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="st">36.2796916160733,31.7838699055544</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="st">38.202591361478,34.7868760645339</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="st">28.3096710499376,22.8634281301502</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="st">38.7644900660962,28.6104368847413</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="st">47.386889886111,28.4039556874712</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="st">20.217152973637,21.4888685513123</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="st">28.4917129017413,22.3258718229903</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="st">47.6005809102207,35.166640824834</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="st">49.129057135433,36.6790405794029</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="st">14.6994944661856,20.4550577990026</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="st">28.9998832624406,22.6731625049986</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="st">32.4133098497987,27.7215202947933</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="st">46.1612554918975,27.9296017087287</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="st">15.5484067089856,15.4208263293543</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="st">49.5556691568345,32.2251117958877</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="st">47.8667293023318,26.690741701326</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="st">13.2975023239851,16.7571189826693</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="st">30.5684713739902,25.9022314875959</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="st">25.6081386841834,21.7208974464457</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a><span class="st">46.2295252364129,35.389252325305</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="st">27.8787851240486,21.7592780807946</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="st">43.4401703998446,27.6152420666644'</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a dataframe using read.csv with the text argument</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>df.obs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">text =</span> csv_data)</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few rows of the dataframe</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df.obs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Weight Barks
+1  46.59 35.20
+2  47.48 32.89
+3  21.45 12.75
+4  43.22 24.29
+5  35.67 31.80
+6  30.76 24.46</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(Barks <span class="sc">~</span> Weight, <span class="at">data =</span> df.obs) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sim-lm-data_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="helper-function" class="level3">
+<h3 class="anchored" data-anchor-id="helper-function">Helper function</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>sim_data.cont <span class="ot">&lt;-</span> <span class="cf">function</span>(n, beta0, beta1, sd) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the continuos predictor variable (Weight) values, between 10 and 50 from a uniform distribution</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  Weight <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="dv">10</span>, <span class="at">max =</span> <span class="dv">50</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the response variable (Barks) values using the specified model</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  Barks <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> beta1 <span class="sc">*</span> Weight <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Combine into a data frame</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(Weight, Barks)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="example" class="level3">
+<h3 class="anchored" data-anchor-id="example">Example</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df.sim <span class="ot">&lt;-</span> <span class="fu">sim_data.cont</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">beta0 =</span> <span class="dv">40</span>, <span class="at">beta1 =</span> <span class="sc">-</span><span class="fl">0.4</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(Barks <span class="sc">~</span> Weight, <span class="at">data =</span> df.sim) <span class="sc">%&gt;%</span> <span class="fu">gf_lm</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sim-lm-data_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="task-2-manual-fitting-with-categorical-predictor" class="level2">
+<h2 class="anchored" data-anchor-id="task-2-manual-fitting-with-categorical-predictor">Task 2: Manual fitting with categorical predictor</h2>
+<section id="objective-1" class="level3">
+<h3 class="anchored" data-anchor-id="objective-1">Objective</h3>
+<p>Simulate a dataset using a model with a categorical predictor, then manually adjust the intercept, slope, and error parameters to “fit” the synthetic dataset provided (without being told the true values of the parameters). Finally, compare your manually tuned parameters with the estimates obtained from <code>lm()</code> and the ones used to generate the data.</p>
+</section>
+<section id="instructions-1" class="level3">
+<h3 class="anchored" data-anchor-id="instructions-1">Instructions</h3>
+<ol type="1">
+<li><strong>Simulate the data:</strong>
+<ul>
+<li><p>Use a categorical predictor (e.g., <code>Treatment</code> with levels <code>Control</code> and <code>Drug</code>).</p></li>
+<li><p>Assume a model of the form:</p>
+<blockquote class="blockquote">
+<p>Gxp = β₀ + β₁ ⋅ Drug + ϵ</p>
+</blockquote>
+<p>where <strong>β₀</strong> is the baseline gene expression level in untreated cells, <strong>β₁</strong> is the effect of the drug treatment, and <strong>ϵ</strong> is normally distributed noise.</p></li>
+<li><p>Simulate your dataset.</p></li>
+</ul></li>
+<li><strong>Manual parameter fitting:</strong>
+<ul>
+<li>Without knowing the true generating parameters, experiment with different values for <code>beta0</code>, <code>beta1</code>, and <code>sd</code> (error standard deviation) to simulate data that “resemble/match” the observed data.</li>
+<li>Plot your manually generated predictions alongside the observed data to visualize the match.</li>
+</ul></li>
+<li><strong>Model fitting and comparison:</strong>
+<ul>
+<li>Fit the model using <code>lm()</code>.</li>
+<li>Compare your manually tuned parameter values with the estimates produced by <code>lm()</code> and, when given by your instructor, with the ones used to generate the data.</li>
+</ul></li>
+</ol>
+</section>
+<section id="observed-data-1" class="level3">
+<h3 class="anchored" data-anchor-id="observed-data-1">Observed data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>csv_data <span class="ot">&lt;-</span> <span class="st">'Treatment,Gxp</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="st">Control,44.11287534144</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="st">Control,38.3059054858117</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="st">Control,41.089385234012</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="st">Control,41.8985878148831</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="st">Control,41.212804969423</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="st">Control,39.6816264517255</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="st">Control,44.5345659923168</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="st">Control,39.7160228847607</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="st">Control,46.0552711416311</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="st">Control,39.8118577028427</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="st">Control,43.9146089626705</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="st">Control,46.8599361781033</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="st">Control,35.833417896663</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="st">Control,39.1636336995479</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="st">Control,39.600035990819</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,37.9078511942102</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,35.1472412357518</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,28.0306337372857</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,28.6785992142734</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,39.9603400371906</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,35.0800842177646</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,30.65607469806</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,35.4842479327211</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,39.6440240975178</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,41.6855803837949</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,34.7085926051814</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,35.2281918516932</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,30.7105107444157</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,37.3802920644938</span></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="st">Drug,34.0800153721196'</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a dataframe using read.csv with the text argument</span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>df.obs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">text =</span> csv_data)</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few rows of the dataframe</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df.obs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Treatment   Gxp
+1   Control 44.11
+2   Control 38.31
+3   Control 41.09
+4   Control 41.90
+5   Control 41.21
+6   Control 39.68</code></pre>
+</div>
+</div>
+</section>
+<section id="helper-function-1" class="level3">
+<h3 class="anchored" data-anchor-id="helper-function-1">Helper function</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>sim_data.cat <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">beta0 =</span> <span class="dv">20</span>, <span class="at">beta1 =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>) {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the categorical predictor variable (Treatment) values, equally split between Control and Drug</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  Treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Drug"</span>), <span class="at">each =</span> <span class="fu">floor</span>(n <span class="sc">/</span> <span class="dv">2</span>))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert to binary predictor variable: 0 for Control, 1 for Drug</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  TreatmentBin <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(Treatment <span class="sc">==</span> <span class="st">"Drug"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the response variable (Gxp) values using the specified model</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  Gxp <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> beta1 <span class="sc">*</span> TreatmentBin <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_jitter</span>(Gxp <span class="sc">~</span> Treatment, <span class="at">data =</span> df.obs, <span class="at">width =</span> <span class="fl">0.1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_boxplot</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sim-lm-data_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="example-1" class="level3">
+<h3 class="anchored" data-anchor-id="example-1">Example</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df.sim <span class="ot">&lt;-</span> <span class="fu">sim_data.cat</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">beta0 =</span> <span class="dv">20</span>, <span class="at">beta1 =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_jitter</span>(Gxp <span class="sc">~</span> Treatment, <span class="at">data =</span> df.sim, <span class="at">width =</span> <span class="fl">0.1</span>) <span class="sc">%&gt;%</span> <span class="fu">gf_boxplot</span>() <span class="sc">%&gt;%</span> <span class="fu">gf_lims</span>(<span class="at">y =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sim-lm-data_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="task-3-simulation-of-multiple-experiments-with-continuous-predictor" class="level2">
+<h2 class="anchored" data-anchor-id="task-3-simulation-of-multiple-experiments-with-continuous-predictor">Task 3: Simulation of multiple experiments with continuous predictor</h2>
+<section id="objective-2" class="level3">
+<h3 class="anchored" data-anchor-id="objective-2">Objective</h3>
+<p>Perform a similar simulation study as in Task 3, but using a model with a continuous predictor. Calculate the false positive rate at α = 0.05.</p>
+</section>
+<section id="instructions-2" class="level3">
+<h3 class="anchored" data-anchor-id="instructions-2">Instructions</h3>
+<ol type="1">
+<li><strong>Simulation setup:</strong>
+<ul>
+<li>Use a model with a single continuous predictor (e.g., <code>Weight</code>).</li>
+<li>Set the true slope (<code>beta1</code>) to 0, meaning there is no real relationship between the predictor and the response.</li>
+</ul></li>
+<li><strong>Simulate 1000 datasets:</strong>
+<ul>
+<li>Simulate 1000 datasets using your chosen parameters.</li>
+<li>For each dataset, fit a linear model using <code>lm()</code> and extract the estimated slope and the p-value for the continuous predictor.</li>
+</ul></li>
+<li><strong>Visualization:</strong>
+<ul>
+<li>Plot histograms of the 1000 estimated slopes and the corresponding p-values.</li>
+<li>Analyze the distributions to understand the variability of the estimates under the null hypothesis.</li>
+</ul></li>
+<li><strong>Calculate the false positive rate:</strong>
+<ul>
+<li>Calculate the proportion of simulations where the p-value is less than 0.05. This proportion represents the false positive rate (Type I error rate) under the null hypothesis.</li>
+</ul></li>
+<li><strong>Extension:</strong>
+<ul>
+<li>Repeat the simulation with varying sample sizes, different error variances, or even with a non-zero slope.</li>
+<li>Discuss how these changes affect the distributions of the p-values, estimated slopes, and the false positive rate.</li>
+</ul></li>
+</ol>
+</section>
+<section id="helper-functions" class="level3">
+<h3 class="anchored" data-anchor-id="helper-functions">Helper functions</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>sim_pval.cont <span class="ot">&lt;-</span> <span class="cf">function</span>(n, beta0, beta1, sd) {</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the continuos predictor variable (Weight) values, between 10 and 50 from a uniform distribution</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  Weight <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="dv">10</span>, <span class="at">max =</span> <span class="dv">50</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the response variable (Barks) values using the specified model</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  Barks <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> beta1 <span class="sc">*</span> Weight <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fit the linear model</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Barks <span class="sc">~</span> Weight)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract and return the p-value for beta1 (the slope coefficient)</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  pval <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>]</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(<span class="at">pval =</span> pval))</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="fu">sim_pval.cont</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">beta0 =</span> <span class="dv">40</span>, <span class="at">beta1 =</span> <span class="sc">-</span><span class="fl">0.4</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               pval 
+0.00000000000001797 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>sim_slope.cont <span class="ot">&lt;-</span> <span class="cf">function</span>(n, beta0, beta1, sd) {</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the continuos predictor variable (Weight) values, between 10 and 50 from a uniform distribution</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  Weight <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="dv">10</span>, <span class="at">max =</span> <span class="dv">50</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the response variable (Barks) values using the specified model</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  Barks <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> beta1 <span class="sc">*</span> Weight <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fit the linear model</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Barks <span class="sc">~</span> Weight)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract and return the estimated value of beta1 (the slope coefficient)</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  slope <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>]</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(<span class="at">slope =</span> slope))</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="fu">sim_slope.cont</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">beta0 =</span> <span class="dv">40</span>, <span class="at">beta1 =</span> <span class="sc">-</span><span class="fl">0.4</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  slope 
+-0.3506 </code></pre>
+</div>
+</div>
+</section>
+<section id="example-pvals" class="level3">
+<h3 class="anchored" data-anchor-id="example-pvals">Example (pvals)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pvals <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">1000</span>) <span class="sc">*</span> <span class="fu">sim_pval.cont</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">beta0 =</span> <span class="dv">40</span>, <span class="at">beta1 =</span> <span class="sc">-</span><span class="fl">0.4</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pvals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   pval
+1 0.0000000000004457013
+2 0.0000000000000001316
+3 0.0000000000017606495
+4 0.0000000000000018214
+5 0.0000000000006116841
+6 0.0000000000000037468</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>pvals <span class="sc">%&gt;%</span> <span class="fu">gf_histogram</span>(<span class="sc">~</span> pval)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sim-lm-data_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="example-slopes" class="level3">
+<h3 class="anchored" data-anchor-id="example-slopes">Example (slopes)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">1000</span>) <span class="sc">*</span> <span class="fu">sim_slope.cont</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">beta0 =</span> <span class="dv">40</span>, <span class="at">beta1 =</span> <span class="sc">-</span><span class="fl">0.4</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(slopes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    slope
+1 -0.4468
+2 -0.4014
+3 -0.4431
+4 -0.3836
+5 -0.4228
+6 -0.3855</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="sc">%&gt;%</span> <span class="fu">gf_histogram</span>(<span class="sc">~</span> slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sim-lm-data_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="task-4-simulation-of-multiple-experiments-with-categorical-predictor" class="level2">
+<h2 class="anchored" data-anchor-id="task-4-simulation-of-multiple-experiments-with-categorical-predictor">Task 4: Simulation of multiple experiments with categorical predictor</h2>
+<section id="objective-3" class="level3">
+<h3 class="anchored" data-anchor-id="objective-3">Objective</h3>
+<p>Investigate the behavior of p-values and estimated slopes when the true effect is zero by simulating multiple datasets with a categorical predictor, and calculate the false positive rate at α = 0.05.</p>
+</section>
+<section id="instructions-3" class="level3">
+<h3 class="anchored" data-anchor-id="instructions-3">Instructions</h3>
+<ol type="1">
+<li><strong>Simulation setup:</strong>
+<ul>
+<li>Use a model with a single categorical predictor (e.g., <code>Treatment</code> with levels <code>Control</code> and <code>Drug</code>).</li>
+<li>Set the true slope (<code>beta1</code>) to 0, meaning there is no real difference between groups.</li>
+</ul></li>
+<li><strong>Simulate 1000 datasets:</strong>
+<ul>
+<li>Simulate 1000 datasets using your chosen parameters.</li>
+<li>For each dataset, fit a linear model using <code>lm()</code> and extract the estimated slope and the p-value for the treatment effect.</li>
+</ul></li>
+<li><strong>Visualization:</strong>
+<ul>
+<li>Plot histograms of the 1000 estimated slopes and the corresponding p-values.</li>
+<li>Analyze the distributions to understand the variability of the estimates under the null hypothesis.</li>
+</ul></li>
+<li><strong>Calculate the false positive rate:</strong>
+<ul>
+<li>Compute the proportion of simulations in which the p-value is less than 0.05. This proportion represents the false positive rate (Type I error rate) under the null hypothesis.</li>
+</ul></li>
+<li><strong>Extension:</strong>
+<ul>
+<li>Repeat the simulation with varying sample sizes, different error variances, or even with a non-zero slope.</li>
+<li>Discuss how these changes affect the distributions of the p-values, estimated slopes, and the false positive rate.</li>
+</ul></li>
+</ol>
+</section>
+<section id="helper-functions-1" class="level3">
+<h3 class="anchored" data-anchor-id="helper-functions-1">Helper functions</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>sim_pval.cat <span class="ot">&lt;-</span> <span class="cf">function</span>(n, beta0, beta1, sd) {</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the categorical predictor variable (Treatment) values, equally split between Control and Drug</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  Treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Drug"</span>), <span class="at">each =</span> <span class="fu">floor</span>(n <span class="sc">/</span> <span class="dv">2</span>))</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert to binary predictor variable: 0 for Control, 1 for Drug</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  TreatmentBin <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(Treatment <span class="sc">==</span> <span class="st">"Drug"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the response variable (Gxp) values using the specified model</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  Gxp <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> beta1 <span class="sc">*</span> TreatmentBin <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd)</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fit the linear model</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Gxp <span class="sc">~</span> Treatment)</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract and return the p-value for beta1 (the slope coefficient)</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>  pval <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>]</span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(<span class="at">pval =</span> pval))</span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a><span class="fu">sim_pval.cat</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">beta0 =</span> <span class="dv">20</span>, <span class="at">beta1 =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             pval 
+0.000000000000782 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>sim_slope.cat <span class="ot">&lt;-</span> <span class="cf">function</span>(n, beta0, beta1, sd) {</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the categorical predictor variable (Treatment) values, equally split between Control and Drug</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  Treatment <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Drug"</span>), <span class="at">each =</span> <span class="fu">floor</span>(n <span class="sc">/</span> <span class="dv">2</span>))</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert to binary predictor variable: 0 for Control, 1 for Drug</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  TreatmentBin <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(Treatment <span class="sc">==</span> <span class="st">"Drug"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the response variable (Gxp) values using the specified model</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  Gxp <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> beta1 <span class="sc">*</span> TreatmentBin <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fit the linear model</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Gxp <span class="sc">~</span> Treatment)</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract and return the estimated value of beta1 (the slope coefficient)</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>  slope <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>]</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(<span class="at">slope =</span> slope))</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a><span class="fu">sim_slope.cat</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">beta0 =</span> <span class="dv">20</span>, <span class="at">beta1 =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>slope 
+10.27 </code></pre>
+</div>
+</div>
+</section>
+<section id="example-pvals-1" class="level3">
+<h3 class="anchored" data-anchor-id="example-pvals-1">Example (pvals)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>pvals <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">1000</span>) <span class="sc">*</span> <span class="fu">sim_pval.cat</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">beta0 =</span> <span class="dv">20</span>, <span class="at">beta1 =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pvals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  pval
+1 0.000000000000106403
+2 0.000000000000012553
+3 0.000000000000002582
+4 0.000000000000003570
+5 0.000000000000205441
+6 0.000000000000686293</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>pvals <span class="sc">%&gt;%</span> <span class="fu">gf_histogram</span>(<span class="sc">~</span> pval)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sim-lm-data_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="example-slopes-1" class="level3">
+<h3 class="anchored" data-anchor-id="example-slopes-1">Example (slopes)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="ot">&lt;-</span> <span class="fu">do</span>(<span class="dv">1000</span>) <span class="sc">*</span> <span class="fu">sim_slope.cat</span>(<span class="at">n =</span> <span class="dv">30</span>, <span class="at">beta0 =</span> <span class="dv">20</span>, <span class="at">beta1 =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(slopes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   slope
+1 11.115
+2 10.303
+3  9.223
+4 10.489
+5  9.660
+6  9.441</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="sc">%&gt;%</span> <span class="fu">gf_histogram</span>(<span class="sc">~</span> slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sim-lm-data_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

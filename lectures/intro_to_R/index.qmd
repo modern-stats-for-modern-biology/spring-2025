@@ -1,0 +1,2473 @@
+---
+title: "Introduction to R"
+date: 2025-01-21
+author: Edoardo \"Dado\" Marcora
+format:
+  revealjs:
+    smaller: true
+    incremental: true
+    theme: [default, styles.scss]
+    execute:
+      echo: true
+      eval: true
+      warning: false
+      fragment: true
+    output-location: fragment
+df-print: paged
+---
+
+```{r}
+#| include: false
+library(dplyr)
+```
+
+## The three golden rules of statistics
+
+::: notes
+Stats as a checklist:
+
+1.  Check your data type
+2.  Select inference method
+3.  Calculate required sample statistics
+4.  Lookup critical values
+5.  Report results
+
+No!
+
+Statistics is mathematical modeling under uncertainty
+
+Statistical thinking
+:::
+
+::: nonincremental
+-   Know thy problem
+-   Know thy data
+-   Know thy tools
+:::
+
+ 
+
+::: fragment
+Source:
+
+{{< video https://youtu.be/be2wuOaglFY height="300" width="400">}}
+:::
+
+## Know thy tools
+
+::: text-align-center
+![](images/womans-hands-cut-cake-pink-cream-shutterstock_587660750-35333562.jpg){height="500"}
+:::
+
+## Know thy tools
+
+::: text-align-center
+![](images/gettyimages-157512755-2048x2048.jpg){height="500"}
+:::
+
+## What is R?
+
+-   R is a *programming language*, i.e., a **language** used to communicate instructions to a computer
+
+-   Like all languages, it comprises **syntax** (structure) and **semantics** (meaning)
+
+-   Syntax: The set of rules that govern how symbols can be combined to form valid statements (e.g., function calls, assignments)
+
+-   Semantics: The meaning associated with syntactically valid statements (e.g., what operations a function performs, what value it returns)
+
+## R: Books
+
+::::: columns
+::: column
+[![R for Data Science (2e)](images/r4ds_cover.jpg){height="550"}](https://r4ds.hadley.nz/)
+:::
+
+::: column
+[![Advanced R (2e)](images/adv-r_cover.jpg){height="550"}](https://adv-r.hadley.nz/)
+:::
+:::::
+
+## R: Cheatsheets
+
+### Tidyverse
+
+:::::: columns
+:::: column
+::: nonincremental
+-   [Data import with `readr`](https://rstudio.github.io/cheatsheets/html/data-import.html)
+-   [Data tidying with `tidyr`](https://rstudio.github.io/cheatsheets/html/tidyr.html)
+-   [Data transformation with `dplyr`](https://rstudio.github.io/cheatsheets/html/data-transformation.html)
+-   [Data visualization with `ggplot2`](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
+:::
+::::
+
+::: column
+![](images/whole-game.png){height="150"}
+:::
+::::::
+
+### CourseKata
+
+::: nonincremental
+-   [R cheatsheet (XCD)](r-cheatsheet-XCD.pdf)
+:::
+
+### R syntax comparison
+
+::: nonincremental
+-   [Dollar sign vs Formula vs Tidyverse syntax](syntax.pdf)
+:::
+
+## R: Objects and function calls
+
+-   In R, **everything that exists is an object** and **everything that happens is a function call**
+
+-   Some objects (e.g., *vectors*, *lists* and *data frames*) store **data** (a.k.a. *values*)
+
+    -   **Numeric** (**Integer** and **Double**): `5` (5.0), `5L` (5), `17.2`, and `6.38E-4`
+
+    -   **Character**: `"Hello world!"` or `'Hello world!'`
+
+    -   **Logical**: `TRUE` or `FALSE` (can be abbreviated as `T` or `F`, respectively)
+
+    -   `NULL` (the null value)
+
+    -   `NA` (not available, missing/unknown value)
+
+    -   `Inf`, `-Inf`, and `NaN`
+
+-   Other objects (*functions*) store **code** (a.k.a. instructions)
+
+-   An object is saved in the computer's memory (*environment*) only if given a name
+
+::: fragment
+```{r}
+#| output-location: default
+message <- "Hello world!"
+```
+:::
+
+-   An object can be retrieved from the environment using its name
+
+::: fragment
+```{r}
+message
+```
+:::
+
+## R: Names
+
+-   A valid name consists of letters, numbers, and `.` or `_` characters
+
+-   Names are case-sensitive
+
+-   A valid name must start with a letter or `.`
+
+-   If a name is enclosed in back-ticks, there are essentially no restrictions on the characters that can be used, including spaces and special characters
+
+```{r}
+#| echo: false
+#| output-location: fragment
+rm(list = ls())
+```
+
+::: fragment
+```{r}
+#| output-location: default
+`Valid name with spaces and special character$` <- "Hello world!" # try not to do this!
+
+valid_name <- 5
+
+VALID_NAME <- TRUE # all upper-case names are usually reserved for user-defined constants
+
+valid.name <- NULL
+
+.valid_name <- NA
+```
+:::
+
+ 
+
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+ls.str()
+```
+:::
+
+## R: Functions and function calls
+
+-   Calling a function instructs the computer to execute the code stored in the function
+
+-   A function takes zero, one, or more objects (**arguments**) as input
+
+-   A function returns one object as output
+
+-   To call a function, place its arguments (with or without a name, separated by commas, and wrapped in parentheses) after its name
+
+::: fragment
+```{r}
+#| output-location: default
+sum_two_nums <- function(num1, num2) {
+  out <- num1 + num2
+  return(out)
+}
+```
+:::
+
+ 
+
+::: fragment
+```{r}
+sum_two_nums
+```
+:::
+
+::: fragment
+```{r}
+sum_two_nums(num1 = 2, num2 = 3)
+```
+:::
+
+::: fragment
+```{r}
+sum_two_nums(2, 3)
+```
+:::
+
+## R: The `print` function
+
+`print(x, ...)`
+
+-   The `print` function stores code that, when called, sends its first argument named `x` to an output device (screen, printer, file, etc.) and returns it invisibly
+
+```{r}
+#| echo: false
+#| output-location: default
+message <- "Hello world!"
+```
+
+::: fragment
+```{r}
+print(message)
+```
+:::
+
+-   If a function is not specified, the `print` function is called by default (and thus it can be omitted)
+
+::: fragment
+```{r}
+message
+```
+:::
+
+## R: Functions and function calls
+
+```{=html}
+<iframe src="https://www.rdocumentation.org/packages/stats/topics/Binomial" width="100%" height="100%"></iframe>
+```
+
+## R: Functions and function calls
+
+`dbinom(x, size, prob, log = FALSE)`
+
+-   It’s useful to distinguish between **formal arguments** (used when defining a function), and **supplied arguments** (used when calling a function)
+
+-   When calling a function, *supplied arguments* are matched with *formal arguments* first by exact name (perfect matching), then by partial name (prefix matching), and finally by position (if unnamed or name does not match)
+
+-   When calling a function, I'd recommend that you:
+
+    -   Use positional matching only for the first one or two commonly used arguments (if it enhances readibility)
+
+    -   Avoid using prefix matching
+
+    -   Supply named arguments after unnamed arguments
+
+-   The special "*match all the unmatched arguments*" `...` argument allows functions to accept any number of arguments, including unnamed and duplicate named ones
+
+-   Arguments can have **default values**, allowing them to be omitted in function calls
+
+-   R throws an error if any argument without a default value remains unmatched
+
+## R: Functions and function calls
+
+`dbinom(x, size, prob, log = FALSE)`
+
+::: fragment
+```{r}
+dbinom(x = 3, size = 10, prob = 0.5, log = FALSE)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(x = 3, size = 10, prob = 0.5, log = TRUE)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(x = 3, size = 10, prob = 0.5)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(size = 10, x = 3, prob = 0.5) # try not to do this!
+```
+:::
+
+::: fragment
+```{r}
+dbinom(size = 10, 3, TRUE, prob = 0.5) # definitely do not do this!
+```
+:::
+
+::: fragment
+```{r}
+dbinom(3, 10, 0.5)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(10, 3, 0.5)
+```
+:::
+
+::: fragment
+```{r}
+dbinom(3, size = 10, prob = 0.5)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+a <- 3; b <- 10; c <- 0.5
+```
+:::
+
+::: fragment
+```{r}
+dbinom(a, size = b, prob = c) # or `dbinom(a, b, c)`
+```
+:::
+
+## R: Function composition
+
+-   The output of a function can be used as the input of another function; this is called **function composition**
+
+-   Imagine you want to compute the standard deviation, which is the square root of the mean squared deviation
+
+-   `sqrt` and `mean` are built-in functions, `squared` and `deviation` can be defined as:
+
+::: fragment
+```{r}
+#| output-location: default
+squared <- function(x) x^2
+deviation <- function(x) x - mean(x)
+```
+:::
+
+-   You can either nest the function calls:
+
+::: fragment
+```{r}
+#| output-location: default
+d <- c(5, 7, 4, 5, 4, 5, 5, 3, 4, 2) # input data
+```
+:::
+
+::: fragment
+```{r}
+sqrt(mean(squared(deviation(d))))
+```
+:::
+
+-   Or you can store intermediate values as objects to be passed from fn to fn:
+
+::: fragment
+```{r}
+dev <- deviation(d)
+squared.dev <- squared(dev)
+mean.squared.dev <- mean(squared.dev)
+std.dev <- sqrt(mean.squared.dev)
+std.dev
+```
+:::
+
+## R: Function composition
+
+::: nonincremental
+-   Or you can use the pipe operator `%>%` from the `magrittr` package
+:::
+
+-   `d %>% f()` is equivalent to `f(d)`
+
+::: fragment
+```{r}
+d %>%
+  deviation() %>%
+  squared() %>%
+  mean() %>%
+  sqrt()
+```
+:::
+
+::: fragment
+```{r}
+d %>% deviation %>% squared %>% mean %>% sqrt
+```
+:::
+
+-   The pipe allows you to focus on the high-level composition of functions rather than the low-level flow of data
+
+-   The focus is on what’s being done (the verbs), rather than on what’s being modified (the nouns)
+
+-   Since version 4.1.0, R has a native pipe operator `|>` whose behaviour is by and large the same as that of `%>%`, but with a few [subtle but crucial differences](https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe)!
+
+## R: Function composition
+
+```{r}
+dbinom(3, size = 10, prob = 0.5)
+```
+
+::: fragment
+```{r}
+#| output-location: default
+a <- 3; b <- 10; c <- 0.5
+```
+:::
+
+::: fragment
+```{r}
+dbinom(a, size = b, prob = c)
+```
+:::
+
+::: fragment
+```{r}
+a %>% dbinom(size = b, prob = c) # same as `dbinom(a, size = b, prob = c)`
+```
+:::
+
+::: fragment
+```{r}
+dbinom(a, b, c)
+```
+:::
+
+::: fragment
+```{r}
+a %>% dbinom(b, c) # same as `dbinom(a, b, c)`
+```
+:::
+
+-   You can use `.` (or `_` if using the native pipe) as a placeholder for the object being piped
+
+::: fragment
+```{r}
+b %>% dbinom(a, size = ., prob = c) # same as `dbinom(a, size = b, prob = c)`
+```
+:::
+
+::: fragment
+```{r}
+b |> dbinom(a, size = _, prob = c) # same as `dbinom(a, size = b, prob = c)`
+```
+:::
+
+::: fragment
+```{r}
+b %>% dbinom(a, ., c) # same as `dbinom(a, b, c)`
+```
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+b |> dbinom(a, _, c) # error: pipe placeholder can only be used as a named argument!
+```
+:::
+
+## R: Operators
+
+::::: columns
+::: {.column width="35%"}
+-   **Arithmetic operators**:
+
+    ::: nonincremental
+    -   `+` (addition)
+    -   `-` (subtraction)
+    -   `*` (multiplication)
+    -   `/` (division)
+    -   `^` (exponent)
+    -   `%%` (modulus)
+    -   `%/%` (integer division)
+    :::
+
+-   **Assignment operators**:
+
+    ::: nonincremental
+    -   `<-` or `=` (assignment)
+    :::
+:::
+
+::: {.column width="65%"}
+-   **Comparison operators**:
+
+    ::: nonincremental
+    -   `==` (equal)
+    -   `!=` (not equal)
+    -   `<` (less than) `<=` (less than or equal to)
+    -   `>` (greater than) `>=` (greater than or equal to)
+    :::
+
+-   **Logical operators**:
+
+    ::: nonincremental
+    -   `&` or `&&` (logical AND, element-wise or not)
+    -   `|` or `||` (logical OR, element-wise or not)
+    -   `!` (logical NOT)
+    :::
+
+-   **Miscellaneous operators**:
+
+    ::: nonincremental
+    -   `%>%` or `|>` (pipe)
+    -   `:` (range) or `::` (package)
+    -   `?` (help) or `??` (search)
+    -   `%in%` (match)
+    :::
+:::
+:::::
+
+## R: Operators
+
+-   Operators are syntactic sugar for function calls
+
+::: fragment
+```{r}
+1 + 9
+```
+:::
+
+::: fragment
+```{r}
+`+`(1, 9)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+x <- 17.2 # assigns the name `x` to the value `17.2` and invisibly returns `NULL`
+```
+:::
+
+::: fragment
+```{r}
+x
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+assign("x", 17.2) # assigns the name `x` to the value `17.2` and invisibly returns `NULL`
+```
+:::
+
+::: fragment
+```{r}
+x
+```
+:::
+
+-   Function calls generally do not modify objects directly, unless reassigned
+
+::: fragment
+```{r}
+round(x)
+```
+:::
+
+::: fragment
+```{r}
+x
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+x <- round(x)
+```
+:::
+
+::: fragment
+```{r}
+x
+```
+:::
+
+## R: Flow control
+
+-   The two main ways to control the flow of execution in a program: **choices** and **loops**
+
+-   Choices (e.g., the `if` statement and the `ifelse` and `switch` functions) allow you to run different code depending on the input
+
+-   Loops (e.g., the `for` and `while` statements) allow you to repeatedly run code
+
+## R: Choices
+
+-   The basic form of an `if` statement is as follows:
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+if (condition) true_action
+if (condition) true_action else false_action
+```
+:::
+
+-   Typically the actions are contained within `{}`
+
+::: fragment
+```{r}
+grade <- 80
+
+if (grade > 90) {
+  "A"
+} else if (grade > 80) {
+  "B"
+} else if (grade > 50) {
+  "C"
+} else {
+  "F"
+}
+```
+:::
+
+## R: Choices
+
+::: nonincremental
+-   `if` returns a value that you can assign
+:::
+
+::: fragment
+```{r}
+grade <- 80
+
+passfail <- if (grade <= 50) "fail" else "pass"
+
+passfail
+```
+:::
+
+-   The `ifelse` (or `if_else` from the `dplyr` package) function is closely related to the `if` statement
+
+::: fragment
+```{r}
+passfail <- ifelse(grade <= 50, "fail", "pass")
+
+passfail
+```
+:::
+
+-   The `switch` function is closely related to the `if` statement and the `ifelse` (or `if_else`) function
+
+::: fragment
+```{r}
+operation <- "add"
+
+result <- switch(operation, add = 5 + 3, subtract = 5 - 3)
+
+result
+```
+:::
+
+## R: Loops
+
+-   The basic form of a `for` statement is as follows:
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+for (item in vector) perform_action
+```
+:::
+
+-   Typically the actions are contained within `{}`
+
+::: fragment
+```{r}
+for (i in 1:3) {
+  print(i)
+}
+```
+:::
+
+-   Another example:
+
+::: fragment
+```{r}
+xs <- c(1, 2, 3)
+
+for (x in xs) {
+  xs <- c(xs, x * 2)
+}
+
+xs
+```
+:::
+
+## R: Loops
+
+::: nonincremental
+-   The basic form of a `while` statement is as follows:
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+while(condition) perform_action
+```
+:::
+
+-   Typically the actions are contained within `{}`
+
+::: fragment
+```{r}
+for (i in 1:3) {
+  print(i)
+}
+```
+:::
+
+## R: Environments
+
+-   An **environment** is a collection of objects (data and functions) stored in the computer’s memory, each with a unique name within the environment
+
+-   A **session** refers to the period during which R is running, starting when R is launched and ending when R is closed
+
+-   Each session has a **global environment** where user-defined objects reside; additional environments are created dynamically (e.g., when loading a package)
+
+-   Objects that you name in your code are stored in the global environment (`.GlobalEnv`)
+
+```{r}
+#| echo: false
+#| output-location: default
+rm(list = ls())
+```
+
+::: fragment
+```{r}
+666
+```
+:::
+
+::: fragment
+```{r}
+x <- 666
+
+x
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+y <- (x / 6)
+
+z <- (y > 100)
+```
+:::
+
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+ls.str()
+```
+:::
+
+## R: Environments
+
+::: nonincremental
+-   Use the `ls` function to list the names of all objects in an environment
+:::
+
+::: fragment
+```{r}
+ls()
+```
+:::
+
+-   Use the `ls.str` function to list all objects in an environment
+
+::: fragment
+```{r}
+ls.str()
+```
+:::
+
+-   Use the `rm` function to remove one or more objects from an environment
+
+::: fragment
+```{r}
+rm(x)
+
+ls()
+```
+:::
+
+-   Use the `rm` and `ls` functions together to remove all objects from an environment
+
+::: fragment
+```{r}
+rm(list = ls())
+
+ls()
+```
+:::
+
+## R: Packages
+
+::: text-align-center
+![](images/iphone_app_store.jpg){height="550"}
+:::
+
+## R: Packages
+
+::: text-align-center
+![](images/packages.jpg){height="440"}
+:::
+
+-   As of today, CRAN and Bioconductor feature [21,939](https://www.r-pkg.org/) and [2,289](https://www.bioconductor.org/packages/release/BiocViews.html) packages, respectively. There are also almost 100K R packages on [GitHub](https://www.github.com/)!
+
+-   Browse for packages by topic using [CRAN](https://cloud.r-project.org/web/views/) and [Bioconductor](https://www.bioconductor.org/packages/release/BiocViews.html) "*task views*", or search for packages using [rdrr.io](https://rdrr.io/) and [Rdocumentation](https://www.rdocumentation.org/)
+
+## R: Packages
+
+-   A **package** is a collection of objects (functions and data) and their documentation stored as local files on the computer’s disk
+
+-   Packages extend the functionality of R, so you don't have to reinvent the wheel!
+
+-   Use the built-in `install.packages` function to download and install one or more packages from the [CRAN](https://cran.r-project.org/) online repository
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+install.packages("BiocManager")
+```
+:::
+
+-   Use the `install` function from the `BiocManager` package to install one or more packages from [CRAN](https://cran.r-project.org/), [Bioconductor](https://bioconductor.org/), and [GitHub](https://github.com/))
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+BiocManager::install("limma") # linear models for microarray and omics data
+```
+:::
+
+-   Use the `installed.packages` function to list all installed packages
+
+-   Use the `remove.packages` function to remove one or more packages
+
+-   Use the `update.packages` or `BiocManager::install` function to update all installed packages
+
+## R: Packages and environments
+
+-   Use the `library` function to load a package from the computer's disk into memory as an environment, which is then added/attached to the so called **search list**
+
+::: fragment
+```{r}
+#| output-location: default
+library(limma) # or `library("limma")`
+```
+:::
+
+```{r}
+#| include: false
+detach("package:dplyr")
+detach(".env")
+```
+
+-   Use the `search` function to list all the environments in the search list
+
+::: fragment
+```{r}
+search()
+```
+:::
+
+## R: Packages and environments
+
+::: nonincremental
+
+`base`
+
+:   Core R functions and utilities
+
+`stats`
+
+:   Functions for statistical modeling and analysis
+
+`utils`
+
+:   Utility functions for data manipulation and information retrieval
+
+`graphics`
+
+:   Basic functions for creating visualizations and plots
+
+`grDevices`
+
+:   Functions for handling graphical devices and output
+
+`methods`
+
+:   Support for object-oriented programming and method dispatch
+
+`datasets`
+
+:   Example datasets that can be used for testing and learning
+:::
+
+## R: Packages and environments
+
+::: nonincremental
+-   Use the `suppressPackageStartupMessages` function to suppress most messages generated during package loading
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+suppressPackageStartupMessages(library(coursekata))
+```
+:::
+
+-   Use the `search` function to list all the environments in the search list
+
+::: fragment
+```{r}
+search()
+```
+:::
+
+## R: Packages and environments
+
+-   Once loaded, the objects (functions and data) contained in the package are accessible from the homonymous environment in the current session
+
+-   R searches for objects by name across all environments in the current session, in the order they appear on the search list
+
+-   The global environment (`.GlobalEnv`) is always searched first, followed by the package environments in the reverse order of their loading
+
+-   The `base` environment is always searched last, as it is the first package loaded when a session starts
+
+::: fragment
+```{r}
+search()
+```
+:::
+
+## R: Packages and environments
+
+::: nonincremental
+-   Use the `conflicts` function to check for name conflicts across all environments
+:::
+
+::: fragment
+```{r}
+conflicts()
+```
+:::
+
+## R: Packages and environments
+
+::: nonincremental
+-   You can explicitly specify the environment using the `::` operator to access an object by name without ambiguity
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+age <- c(25, 33, 35, 38, 48, 55, 55, 55, 56, 64) # input data
+```
+:::
+
+::: fragment
+```{r}
+mean(age)
+```
+:::
+
+::: fragment
+```{r}
+mean(~ age)
+```
+:::
+
+::: fragment
+```{r}
+environment(mean) # to find out which environment the `mean` function belongs to
+```
+:::
+
+::: fragment
+```{r}
+mosaic::mean(~ age)
+```
+:::
+
+::: fragment
+```{r}
+base::mean(~ age)
+```
+:::
+
+::: fragment
+```{r}
+base::mean(age)
+```
+:::
+
+::: fragment
+```{r}
+find("mean") # to find out which environments have a `mean` object and their lookup order
+```
+:::
+
+## R: Help
+
+-   Use the `?` operator or the `help` function to get the documentation of an object
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+# help for the `mean` function
+?mean
+
+# same as
+help(mean)
+
+# same as
+help("mean")
+
+# help for the `mean` function in the `mosaic` package
+help("mean", package = "mosaic")
+
+# help for all objects (data and functions) in the `mosaic` package
+help(package = "mosaic") 
+
+# all vignettes in the `mosaic` package
+browseVignettes(package = "mosaic") 
+```
+:::
+
+-   For help on how to get help go to <https://www.r-project.org/help.html>
+
+-   See also:
+
+::::: columns
+::: column
+-   [RDocumentation](https://www.rdocumentation.org)
+-   [rdrr.io](https://rdrr.io/)
+:::
+
+::: column
+-   [Rseek](https://rseek.org/)
+-   [Search R project](https://search.r-project.org/)
+:::
+:::::
+
+## R: Vectors
+
+-   So far we have been working with objects containing a single value, but R is designed to make it easy to work with collections of values
+
+-   **Vectors** are the most basic data objects in R; they store (ordered) collections of values
+
+-   Vectors come in two flavors: **atomic vectors** and **lists**
+
+-   They differ in terms of their elements’ types: for atomic vectors, all elements must have the same type; for lists, elements can have different types
+
+-   While technically not a vector, `NULL` often serves the role of a generic zero-length vector
+
+::: {.fragment style="text-align: center"}
+![](images/mermaid-diagram-2024-01-08-213557.svg){height="200"}
+:::
+
+## R: Vectors
+
+-   Use the `c` function (short for "*combine*") to create a longer vector from shorter ones
+
+::: fragment
+```{r}
+numeric_vector <- c(42, 18, 5, 5) # NOT the same as `c(18, 5, 42, 5)`
+
+numeric_vector
+```
+:::
+
+-   Use the `typeof` and `length` function to determine the type and length of a vector, respectively
+
+::: fragment
+```{r}
+typeof(numeric_vector)
+```
+:::
+
+::: fragment
+```{r}
+length(numeric_vector)
+```
+:::
+
+::: fragment
+```{r}
+x <- 13
+
+typeof(x)
+```
+:::
+
+::: fragment
+```{r}
+length(x)
+```
+:::
+
+::: fragment
+```{r}
+identical(13, c(13))
+```
+:::
+
+## R: Vectors
+
+::: fragment
+```{r}
+numeric_vector <- c(42, 18, 5, 5)
+
+typeof(numeric_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.numeric(numeric_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.double(numeric_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.integer(numeric_vector)
+```
+:::
+
+ 
+
+::: fragment
+```{r}
+character_vector <- c("apple", "banana", "orange")
+
+typeof(character_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.character(character_vector)
+```
+:::
+
+## R: Vectors
+
+::: fragment
+```{r}
+logical_vector <- c(TRUE, FALSE, TRUE, TRUE)
+
+typeof(logical_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.logical(logical_vector)
+```
+:::
+
+ 
+
+::: fragment
+```{r}
+empty_vector <- NULL
+
+typeof(empty_vector)
+```
+:::
+
+::: fragment
+```{r}
+length(empty_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.null(empty_vector)
+```
+:::
+
+::: fragment
+```{r}
+is.null(NA)
+```
+:::
+
+::: fragment
+```{r}
+is.na(NA)
+```
+:::
+
+## R: Type coercion
+
+-   **Type coercion** refers to the automatic or manual conversion of values from one type to another
+
+-   When you combine elements of different types into an atomic vector, they are automatically coerced in this order: `character` → `double` → `integer` → `logical`
+
+::: fragment
+```{r}
+c("ABC", 17.2, 5L, TRUE)
+```
+:::
+
+::: fragment
+```{r}
+c(17.2, 5L, TRUE)
+```
+:::
+
+::: fragment
+```{r}
+c(5L, TRUE)
+```
+:::
+
+## R: Type coercion
+
+-   Most mathematical operators and functions (`+`, `-`, `*`, `sum`, `mean`, etc.) will automatically coerce logical values to numeric values: `TRUE` becomes `1` and `FALSE` becomes `0`
+
+::: fragment
+```{r}
+logical_vector
+```
+:::
+
+::: fragment
+```{r}
+as.integer(logical_vector)
+```
+:::
+
+::: fragment
+```{r}
+sum(logical_vector) # count of true elements
+```
+:::
+
+::: fragment
+```{r}
+mean(logical_vector) # proportion of true elements
+```
+:::
+
+ 
+
+::: fragment
+| Logic   | Arithmetic      | Probability                                   |
+|---------|-----------------|-----------------------------------------------|
+| `!A`    | `1 - A`         | $P(\lnot A) = 1 - P(A)$                       |
+| `A & B` | `A * B`         | $P(A \land B) = P(A) \cdot P(B)$              |
+| `A | B` | `A + B - A * B` | $P(A \lor B) = P(A) + P(B) - P(A) \cdot P(B)$ |
+:::
+
+::: notes
+$A \Rightarrow B \quad$ is logically equivalent to $\quad \neg A \lor B$
+
+$A \Rightarrow B \quad$ is arithmetically equivalent to `1 - A + A * B`
+
+$A \Leftrightarrow B$ is logically equivalent to $(A \land B) \lor (\neg A \land \neg B)$
+
+$A \Leftrightarrow B$ is arithmetically equivalent to `1 - (A - B)^2 = A * B + (1 - A) * (1 - B)`
+:::
+
+## R: Type coercion
+
+-   Use the `as.character`, `as.numeric`, `as.double`, `as.integer`, `as.logical`, and `as.null` functions for manual coercion
+
+-   The use of these functions is preferable to relying on automatic coercion, but beware of manual coercion behavior!
+
+-   Everything can be coerced to character or null:
+
+::: fragment
+```{r}
+as.null(17.2)
+```
+:::
+
+::: fragment
+```{r}
+as.character(17.2)
+```
+:::
+
+::: fragment
+```{r}
+as.character(TRUE)
+```
+:::
+
+::: fragment
+```{r}
+as.character(NULL)
+```
+:::
+
+::: fragment
+```{r}
+character() # or `character(0)` also returns an empty character vector
+```
+:::
+
+::: fragment
+```{r}
+character(10) # returns a character vector with 10 empty strings
+```
+:::
+
+## R: Type coercion
+
+-   Not everything can be coerced to numeric:
+
+::: fragment
+```{r}
+as.numeric("17.2") # unless a string represents a valid numeric value, it is coerced to `NA`
+```
+:::
+
+::: fragment
+```{r}
+as.double("17.2")
+```
+:::
+
+::: fragment
+```{r}
+as.integer("17.2")
+```
+:::
+
+::: fragment
+```{r}
+as.numeric("100,000,000") # same as `as.numeric("ABC")`
+```
+:::
+
+::: fragment
+```{r}
+#| warning: true
+as.numeric("TRUE") # same as `as.numeric("ABC")`
+```
+:::
+
+::: fragment
+```{r}
+as.numeric("")
+```
+:::
+
+::: fragment
+```{r}
+as.numeric(NULL)
+```
+:::
+
+::: fragment
+```{r}
+numeric() # or `numeric(0)` also returns an empty numeric vector
+```
+:::
+
+::: fragment
+```{r}
+numeric(10) # returns a numeric vector with 10 zeros
+```
+:::
+
+## R: Type coercion
+
+-   Not everything can be coerced to logical:
+
+::: fragment
+```{r}
+as.logical(17.2) # any non-zero numeric value is coerced to `TRUE`; zero is coerced to `FALSE`
+```
+:::
+
+::: fragment
+```{r}
+as.logical(-17.2)
+```
+:::
+
+::: fragment
+```{r}
+as.logical(0)
+```
+:::
+
+::: fragment
+```{r}
+as.logical("0") # any string other than "TRUE" or "FALSE" is coerced to `NA`
+```
+:::
+
+::: fragment
+```{r}
+as.logical("ABC")
+```
+:::
+
+::: fragment
+```{r}
+as.logical("TRUE")
+```
+:::
+
+::: fragment
+```{r}
+as.logical(NULL)
+```
+:::
+
+::: fragment
+```{r}
+logical() # or `logical(0)` also returns an empty logical vector
+```
+:::
+
+::: fragment
+```{r}
+logical(10) # returns a logical vector with 10 `FALSE` values
+```
+:::
+
+## R: Vectorized operations
+
+-   If you ask R to perform an operation on an atomic vector, it will perform it element-wise and return an atomic vector of the same length (but not necessarily the same type) with the output of that operation for each element, in the original order
+
+::: fragment
+```{r}
+numeric_vector <- c(42, 18, 5, 5)
+
+numeric_vector
+```
+:::
+
+::: fragment
+```{r}
+numeric_vector + 10
+```
+:::
+
+::: fragment
+```{r}
+numeric_vector > 5
+```
+:::
+
+::: fragment
+```{r}
+(numeric_vector > 5) & (numeric_vector != 42)
+```
+:::
+
+-   The `purrr` package enhances R by providing a complete and consistent set of tools for applying functions to vectors
+
+-   To learn more go to <https://purrr.tidyverse.org/>
+
+## R: Subset and pull operators
+
+-   The **subset operator** `[]` selects any number of elements from the input vector and returns an output vector of the same type containing those elements
+-   The **pull operators** `[[]]` and `$` selects a single element from the input vector and returns that element, possibly of a different type than the input vector
+-   Subsetting and pull operators can be combined with assignment to modify selected elements of an input vector
+
+::: notes
+Subsetting can be combined with assignment to modify elements of a vector. For example, `x[1] <- 2` will replace the first element of `x` with `2`. You can also use subsetting to remove elements of a vector by assigning to `NULL`. For example, `x[1] <- NULL` will remove the first element of `x`.
+
+All subsetting operators can be combined with assignment to modify selected values of an input vector: this is called subassignment. The basic form is `x[i] <- value`.
+
+Subsetting is a natural complement to `str()`. While `str()` shows you all the pieces of any object (its structure), subsetting allows you to pull out the pieces that you’re interested in.
+
+There are two additional subsetting operators, which are needed for S4 objects: `@` (equivalent to `$`), and `slot()` (equivalent to `[[`). `@` is more restrictive than `$` in that it will return an error if the slot does not exist.
+:::
+
+## R: Subset and pull operators
+
+:::::::::::::::::::: columns
+::::::::::: {.column width="45%"}
+```{r}
+x <- c(2.1, 4.2, 3.3, 5.4)
+
+x
+```
+
+::: fragment
+```{r}
+x[1]
+```
+:::
+
+::: fragment
+```{r}
+x[3]
+```
+:::
+
+::: fragment
+```{r}
+x[0]
+```
+:::
+
+::: fragment
+```{r}
+x[5]
+```
+:::
+
+::: fragment
+```{r}
+x[]
+```
+:::
+
+::: fragment
+```{r}
+x[c(3, 1)]
+```
+:::
+
+::: fragment
+```{r}
+x[c(2, 2, 4)]
+```
+:::
+
+::: fragment
+```{r}
+x[-c(3, 1)]
+```
+:::
+:::::::::::
+
+:::::::::: {.column width="55%"}
+::: fragment
+```{r}
+x[c(TRUE, TRUE, FALSE, FALSE)]
+```
+:::
+
+::: fragment
+```{r}
+x > 4
+```
+:::
+
+::: fragment
+```{r}
+x[x > 4]
+```
+:::
+
+::: fragment
+```{r}
+names(x) <- c("A", "B", "C", "D")
+
+x
+```
+:::
+
+::: fragment
+```{r}
+x <- c(A = 2.1, B = 4.2, C = 3.3, D = 5.4)
+
+x
+```
+:::
+
+::: fragment
+```{r}
+names(x)
+```
+:::
+
+::: fragment
+```{r}
+x[c("C", "A", "A")]
+```
+:::
+::::::::::
+::::::::::::::::::::
+
+## R: Lists
+
+-   Lists are vectors that can contain values of different types
+-   Use the `list` function to create a list
+
+::: fragment
+```{r}
+#| output-location: default
+l <- list(A = "Hello world!", B = 5L, C = c(TRUE, FALSE, TRUE), D = c(2.3, 5.9))
+```
+:::
+
+-   Use the `str` function (short for "*structure*") to look at the structure of any object, including lists
+
+::: fragment
+```{r}
+str(l)
+```
+:::
+
+::: fragment
+```{r}
+typeof(l)
+```
+:::
+
+::: fragment
+```{r}
+length(l)
+```
+:::
+
+::: fragment
+```{r}
+is.list(l)
+```
+:::
+
+::: fragment
+```{r}
+names(l)
+```
+:::
+
+## R: Lists
+
+-   Subset and pull operators work with lists the same way they work with atomic vectors
+-   `[]` subsets and returns a list; `[[]]` and `$` pulls and returns an element from the list
+
+::::::::::::: columns
+:::::: {.column width="50%"}
+::: fragment
+```{r}
+l
+```
+:::
+
+::: fragment
+```{r}
+l[c(3, 1)]
+```
+:::
+
+::: fragment
+```{r}
+l[c(FALSE, TRUE, FALSE, TRUE)]
+```
+:::
+::::::
+
+:::::::: {.column width="50%"}
+::: fragment
+```{r}
+l[c("B", "D")]
+```
+:::
+
+ 
+
+::: fragment
+```{r}
+l[[4]]
+```
+:::
+
+::: fragment
+```{r}
+l[["D"]]
+```
+:::
+
+::: fragment
+```{r}
+l$D # same as `l[["D"]]`
+```
+:::
+
+::: fragment
+```{r}
+l$D[2]
+```
+:::
+::::::::
+:::::::::::::
+
+## R: Data frames
+
+-   A data frame is essentially a list where each element is a vector of equal length, allowing for the storage of heterogeneous data types in a tabular format
+-   This structure enables each column to contain different types of data (e.g., numeric, character, logical, factor, date, etc.), while ensuring that all columns have the same number of rows
+-   Each element of a data frame (usually an atomic vector, but it can also be a list) represents a **variable** (column)
+-   Use the `data.frame` or `tibble::tibble` functions to create a data frame or tibble, respectively
+
+::: fragment
+```{r}
+df <- tibble(name = c("Mary", "John", "Robert"), height = c(165, 180, 195), weight = c(60, 90, 70), sex = c("F", "M", "M"))
+
+df
+```
+:::
+
+## R: Data frames
+
+```{r}
+#| echo: false
+df
+```
+
+-   This data frame is "*tidy*":
+
+    -   Each row represents a **observation** (*person*); it's generally good practice to use one data frame for each *type* of observation unit!
+    -   Each column represents a **variable** (`name`, `height`, `weight`, `sex`)
+    -   Each value represents a **measurement** (`"Mary"`, `165`, `60`, `"F"`)
+
+-   It's generally good practice to "*keep things tidy*":
+
+    -   Use this long format for better data manipulation, visualization, and modeling
+
+    -   Tidy data frames are easier to work with when using tools from the [`tidyverse`](https://www.tidyverse.org/)
+
+::: notes
+-   Metadata/codebook/samplesheet (details re: unit of observation, description of columns, units of numerical variables, levels of categorical variables, data source, etc.) `?mtcars`
+
+-   Sample vs census
+
+-   The statistical thinker seeks to identify patterns in data, i.e., relationships between variables. But it is not easy to do this by direct examination of a data frame.
+:::
+
+## R: Data frames
+
+::: fragment
+```{r}
+dim(df)
+```
+:::
+
+::: fragment
+```{r}
+nrow(df)
+```
+:::
+
+::: fragment
+```{r}
+ncol(df)
+```
+:::
+
+::: fragment
+```{r}
+names(df)
+```
+:::
+
+::: fragment
+```{r}
+length(df)
+```
+:::
+
+::: fragment
+```{r}
+head(df) # see also `tail(df)`
+```
+:::
+
+## R: Data frames
+
+```{r}
+#| echo: false
+df
+```
+
+-   Use the `str`, `dplyr::glimpse`, `skimr::skim`, or other functions to look at the structure of a data frame
+
+::: fragment
+```{r}
+str(df)
+```
+:::
+
+::: fragment
+```{r}
+glimpse(df)
+```
+:::
+
+## R: Data frames
+
+```{r}
+#| echo: false
+df
+```
+
+::: fragment
+```{r}
+df[1] # select 1st column
+```
+:::
+
+::: fragment
+```{r}
+df["name"] # select `name` column
+```
+:::
+
+## R: Data frames
+
+```{r}
+#| echo: false
+df
+```
+
+::: fragment
+```{r}
+df[-1] # select all but 1st column
+```
+:::
+
+::: fragment
+```{r}
+df[c(FALSE, TRUE, TRUE, TRUE)] # select all but 1st column
+```
+:::
+
+## R: Data frames {.scrollable}
+
+```{r}
+#| echo: false
+df
+```
+
+::: fragment
+```{r}
+df[["height"]] # pull `height` column  
+```
+:::
+
+::: fragment
+```{r}
+df$height      # pull `height` column
+```
+:::
+
+::: fragment
+```{r}
+df$height[2]   # select second value of `height` column 
+```
+:::
+
+::: fragment
+```{r}
+df$height > 170
+```
+:::
+
+## R: Data frames {.scrollable}
+
+```{r}
+#| echo: false
+df
+```
+
+::: fragment
+```{r}
+df[3, 1] # select 3rd row and 1st column
+```
+:::
+
+::: fragment
+```{r}
+df[3, ] # select 3rd row and keep all columns
+```
+:::
+
+::: fragment
+```{r}
+df[, 1] # select 1st column and keep all rows
+```
+:::
+
+## R: Data frames {.scrollable}
+
+```{r}
+#| echo: false
+df
+```
+
+::: fragment
+```{r}
+df[c(2, 1), ] # select 2nd and 1st row and keep all columns
+```
+:::
+
+::: fragment
+```{r}
+df[, c("sex", "name")] # select `sex` and `name` column and keep all rows
+```
+:::
+
+## R: Data frames {.scrollable}
+
+```{r}
+#| echo: false
+df
+```
+
+::: fragment
+```{r}
+df[c(FALSE, TRUE, TRUE), ] # select 2nd and 3rd row and keep all columns
+```
+:::
+
+::: fragment
+```{r}
+df$height > 170
+```
+:::
+
+::: fragment
+```{r}
+df[df$height > 170, ] # select rows where `height > 170`, keep all columns
+```
+:::
+
+## R: Data frames {.scrollable}
+
+```{r}
+#| echo: false
+df
+```
+
+::: fragment
+```{r}
+df$nationality <- c("British", "American", "Australian") # add a new column
+
+df
+```
+:::
+
+::: fragment
+```{r}
+df$bmi <- (df$weight / (df$height / 100)^2) # add a new column with values calculated from other columns
+
+df
+```
+:::
+
+## R: Data frames (the `dplyr` way)
+
+-   `dplyr` is a package with functions (a.k.a. "*verbs*") that form a consistent grammar of data transformation
+
+    -   the `select` function selects columns/variables based on their names
+    -   the `pull` function pulls a column/variable based on its name
+    -   the `filter` function selects rows/observations based on their values
+    -   the `mutate` function adds new columns/variables that are functions of existing columns/variables
+    -   the `arrange` function changes the ordering of the rows/observations
+    -   the `summarize` function reduces multiple values down to a single value
+
+-   Use the `rowwise` or `group_by` function in combination with the `mutate` or `summarize` function to perform operations "*by row*" or "*by group*"
+
+-   Use the `ungroup` function to remove these groupings
+
+-   To learn more go to <https://dplyr.tidyverse.org/>
+
+## R: Data frames (the `dplyr` way) {.scrollable}
+
+```{r}
+#| echo: false
+#| output-location: default
+df <- df %>% select(name, height, weight, sex)
+df
+```
+
+::: fragment
+```{r}
+df %>% select(weight, name) # select columns by name, same as `select(df, weight, name)`
+```
+:::
+
+::: fragment
+```{r}
+df %>% pull(height) # pull out the `height` column
+```
+:::
+
+::: fragment
+```{r}
+df %>% filter(height > 170) # select rows where `weight > 80`, keep all columns
+```
+:::
+
+## R: Data frames (the `dplyr` way) {.scrollable}
+
+```{r}
+#| echo: false
+df
+```
+
+::: fragment
+```{r}
+df <- df %>% mutate(
+  nationality = c("British", "American", "Australian"),  # add a new column
+  bmi = weight / (height / 100)^2 # add a new column with values calculated from other columns
+)
+
+df
+```
+:::
+
+::: fragment
+```{r}
+df %>% arrange(bmi) # sort by `bmi`; use `df %>% arrange(desc(bmi))` to sort in descending order
+```
+:::
+
+## R: Data frames (the `dplyr` way) {.scrollable}
+
+-   `dplyr` verbs can be combined using the pipe operator to perform complex data transformations
+
+::: fragment
+```{r}
+#| echo: false
+#| output-location: default
+df <- df %>% select(name, height, weight, sex)
+df
+```
+:::
+
+::: fragment
+```{r}
+df %>%
+  mutate(
+    nationality = c("American", "British", "Australian"),
+    bmi = weight / (height / 100)^2
+  ) %>%
+  filter(nationality != "British") %>%
+  select(name, nationality, bmi) %>%
+  arrange(desc(bmi))
+```
+:::
+
+## R: Names of vector elements {visibility="hidden"}
+
+-   The functions that create atomic vectors and lists (including data frames and tibbles) use the special "*dot-dot-dot*" argument:
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+c(...)
+```
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+list(...)
+```
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+data.frame(..., check.names = TRUE, check.rows = FALSE, fix.empty.names = TRUE, row.names = NULL, stringsAsFactors = FALSE)
+```
+:::
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+tibble(..., .name_repair = c("check_unique", "unique", "universal", "minimal"))
+```
+:::
+
+## Variables and functions in statistics {visibility="hidden"}
+
+-   A function $f$ from a set $X$ to a set $Y$ is an assignment of an element of $Y$ to each element of $X$
+
+::::: columns
+::: {.column .fragment width="50%"}
+![](images/function_sets.png){width="240"}
+:::
+
+::: {.column .fragment width="50%"}
+![](images/function_blackbox.svg){width="240"}
+:::
+:::::
+
+-   A variable is a function from the sample space to the real numbers
+    -   $f : \Omega \rightarrow \mathbb{R}$
+    -   It represents a measurable property of each element of the sample space
+
+## Variable types and measurement levels
+
+-   **Qualitative** vs **quantitative** (discrete and continuous)
+-   **Categorical** (nominal and ordinal) vs **numeric** (interval and ratio)
+    -   **Nominal**: the data can only be categorized
+    -   **Ordinal**: the data can be categorized and ranked
+    -   **Interval**: the data can be categorized and ranked, equal spacing
+    -   **Ratio**: the data can be categorized and ranked, equal spacing, true zero
+-   CourseKata uses the terms **categorical** and **quantitative** variables
+    -   Values assigned to categorical variables represent categories
+    -   Values assigned to quantitative variables represent quantities
+
+## Variable types and measurement levels
+
+|                     | Nominal | Ordinal | Interval | Ratio |
+|---------------------|---------|---------|----------|-------|
+| **Equality**        | X       | X       | X        | X     |
+| **Order**           |         | X       | X        | X     |
+| **Add/subtract**    |         |         | X        | X     |
+| **Multiply/divide** |         |         |          | X     |
+| Mode                | X       | X       | X        | X     |
+| Median              |         | X       | X        | X     |
+| Mean                |         |         | X        | X     |
+| IQR                 |         | X       | X        | X     |
+| Variance/SD         |         |         | X        | X     |
+
+::: notes
+<https://matthewrenze.com/articles/the-four-subtypes-of-data-in-data-science/>
+:::
+
+## Variable types and measurement levels
+
+-   Most categorical variables in R contains `Character` or `factor` values
+
+-   Most quantitative variables in R contains `Numeric` (`Integer` or `Double`) values
+
+::: fragment
+```{r}
+#| echo: false
+df <- df %>% mutate(
+  nationality = c("British", "American", "Australian"),  # add a new column
+  bmi = weight / (height / 100)^2 # add a new column with values calculated from other columns
+)
+
+df
+```
+:::
+
+::: fragment
+```{r}
+df$nationality <- factor(df$nationality)
+
+# or
+
+df <- df %>% mutate(nationality = factor(nationality))
+
+df
+```
+:::
+
+## R: Factors and levels
+
+-   `factor` is a special data type for categorical variables
+
+-   A `factor` variable is stored as a vector of `Integer` values
+
+-   Each `Integer` value corresponds to a level, a `Character` value that represents a category and it is used when displaying a categorical variable
+
+-   The levels are ordered alphabetically by default, but they can be ordered in any way
+
+::: fragment
+```{r}
+treatment <- factor(c("placebo", "placebo", "drug1", "placebo", "drug1", "drug2"))
+
+str(treatment)
+```
+:::
+
+::: fragment
+```{r}
+levels(treatment)
+```
+:::
+
+::: fragment
+```{r}
+as.integer(treatment) # coercing a factor to integer returns the vector of `Integer` values used to store the factor
+```
+:::
+
+-   The `forcats` package enhances R by providing a complete and consistent set of tools for working with categorical variables/factors
+
+-   To learn more go to <https://forcats.tidyverse.org/>
+
+## R: Data structures
+
+![](images/mermaid-diagram-2024-01-09-105427.png){style="text-align: center"}
+
+## R: Missing data
+
+-   Handling missing data is an essential step in data analysis
+
+-   R represents missing data with the value `NA` (not available or unknown)
+
+-   If a dataset code missing values in some other way (e.g., -999), recode them as `NA`
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+df <- read_csv("penguins.csv") # read dataset from a file
+
+# replace -999 with `NA` in the `body_mass_kg` variable/column
+
+df$body_mass_kg[df$body_mass_kg == -999] <- NA # dollar sign syntax
+
+# or
+
+df <- df %>% mutate(body_mass_kg = na_if(body_mass_kg, -999)) # tidyverse syntax
+
+# or read dataset from a file specifying the code for missing values; `na` argument defaults to `c("", "NA")`
+
+df <- read_csv("penguins.csv", na = c(-999))
+```
+:::
+
+-   The `readr` and `readxl` packages enhance R by providing functions for working with with delimited text files (e.g., CSV, TSV) and Excel spreadsheets (XLSX, XLS), respectively
+
+-   See also the `read.*` functions of the `base` package
+
+-   To learn more go to <https://readr.tidyverse.org/> and <https://readxl.tidyverse.org/>
+
+## R: Missing data
+
+-   You must be careful when removing observations with missing values
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+# remove rows/observations that have `NA` in any column/variable
+
+df <- na.omit(df)      # dollar sign syntax
+
+# or
+
+df <- df %>% drop_na() # tidyverse
+
+# remove rows/observations that have `NA` in the `sex` and `body_mass_kg` column/variable
+
+df <- df %>% drop_na(sex, body_mass_kg) # tidyverse
+```
+:::
+
+-   Sometimes removing observations with missing values introduces bias
+-   In that case, you should use imputation methods to replace missing values with plausible values
+
+::: fragment
+```{r}
+#| eval: false
+#| output-location: default
+# replace `NA` with `0` in the `body_mass_kg` variable/column
+
+df <- df %>% mutate(body_mass_kg = replace_na(body_mass_kg, 0))
+```
+:::
+
+##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
+
+## Data distributions
+
+-   One of the most important concepts in statistics is the concept of **distribution**
+
+-   A distribution is the pattern of variation in a variable (the "shape" of a variable)
+
+::: {.fragment style="text-align: center"}
+![](images/world_data_distribution.png){width="400"}
+:::
+
+-   The pattern of variation in a variable made of many data points is often not obvious until you visualize or summarize all the data points together as a whole
+
+::: {.fragment style="text-align: center"}
+![](images/birds.jpg){width="300"}
+:::
+
+## Data distributions
+
+-   Several tools can be used for exploring data distributions; many of these tools are visual, e.g., histograms, boxplots, scatterplots, bar graphs, etc.
+
+-   Being skilled at using these tools to look at distributions is an important part of the statistician’s toolbox—and R can help you do it!
+
+::: {.fragment style="text-align: center"}
+![](images/r_graphs_gallery.jpg){width="280"}
+:::
+
+## R: Formula syntax
+
+![](images/clipboard-3890767592.png)
+
+```{r}
+#| eval: false
+#| output-location: default
+goal(~ x, data = mydata)
+
+goal(x ~ 1, data = mydata)
+
+goal(y ~ x, data = mydata)
+
+goal(y ~ x | z, data = mydata)
+```
+
+## R: Visualizing and summarizing quantitative variables
+
+-   The most common way to visualize a quantitative variable is with a histogram
+
+::: fragment
+```{r, fig.width=6, fig.height=4}
+gf_histogram(~ body_mass_kg, data = penguins)
+```
+:::
+
+## R: Visualizing and summarizing quantitative variables
+
+-   In a histogram, the columns or bars represent the number of data values that fall within specified intervals of the variable of interest
+-   These intervals are called `bins`, and the width of the intervals is called the `binwidth`
+
+::: fragment
+```{r, fig.width=6, fig.height=4}
+gf_histogram(~ body_mass_kg, bins = 100, data = penguins)
+```
+:::
+
+## R: Visualizing and summarizing quantitative variables
+
+-   Use the `favstats` function to calculate the "five-number summary" of a quantitative variable
+
+::: fragment
+```{r}
+favstats(~ body_mass_kg, data = penguins)
+```
+:::
+
+## R: Visualizing and summarizing quantitative variables
+
+::: fragment
+```{r, fig.width=6, fig.height=4}
+gf_histogram(~ body_mass_kg, data = penguins) %>% gf_boxplot(width = 2)
+```
+:::
+
+## R: Visualizing and summarizing categorical variables
+
+-   The most common way to visualize the distribution of categorical variable is with a **bar graph** (or bar plot/chart)
+-   A bar graph looks like a histogram, but it’s not; there is no such thing as bins in a bar graph
+-   The number of bars in a bar graph is always equal the number of categories/levels in the categorical variable/factor
+
+## R: Visualizing and summarizing categorical variables
+
+::: fragment
+```{r}
+levels(penguins$species)
+```
+:::
+
+::: fragment
+```{r, fig.width=6, fig.height=4}
+gf_bar(~ species, data = penguins)
+```
+:::
+
+## R: Visualizing and summarizing categorical variables
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+#| fragment: false
+gf_bar(~ species, data = penguins)
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.eight=4}
+#| fragment: false
+gf_props(~ species, data = penguins)
+```
+:::
+:::::
+
+## R: Visualizing and summarizing categorical variables
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+#| fragment: false
+gf_bar(~ species, data = penguins)
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.eight=4}
+#| fragment: false
+gf_percents(~ species, data = penguins)
+```
+:::
+:::::
+
+## Quantities of interest (QOI) in empirical quantitative research {visibility="hidden"}
+
+-   Data summaries
+-   Inference
+    -   Descriptive inference
+    -   Counterfactual inference
+        -   Prediction
+        -   What-If
+        -   Causal inference (two perspectives):
+            -   Causal prediction: Prediction of intervention/knowing a cause means being able to predict the consequences of an intervention "What if I do this?"
+            -   Causal imputation: Imputation of missing data/knowing a cause means being able to impute unobserved counterfactual outcomes "What if I had done something else?"

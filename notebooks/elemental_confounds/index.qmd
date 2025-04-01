@@ -1,0 +1,266 @@
+---
+title: "Elemental confounds examples using R"
+date: 2024-03-05
+author: Edoardo \"Dado\" Marcora
+execute:
+  warning: false
+format:
+  html:
+    toc: true
+    df-print: paged
+---
+
+## Introduction
+
+This notebook shows the R version of some of the code used during the lecture of week 10 (2024-03-05, **Chapter 8: Multivariate models and causal inference**) by [Angela Radulescu](https://www.angelaradulescu.com/).
+
+## Setup environment
+
+Load required packages:
+
+```{r}
+#| output: false
+library(coursekata)
+library(modelsummary)
+library(patchwork)
+```
+
+Define the `rbern` function to generate random samples from a Bernoulli distribution (R only provides the related `rbinom` function):
+
+```{r}
+rbern <- function(n, prob = 0.5) rbinom(n, size = 1, prob)
+```
+
+Define the `inv_logit` function to apply the inverse logit transformation:
+
+```{r}
+inv_logit <- function(x) {
+    p <- 1 / (1 + exp(-x))
+    p <- ifelse(x == Inf, 1, p)
+    p
+}
+```
+
+Set the seed of the random number generator:
+
+```{r}
+# set the random seed
+set.seed(1)
+```
+
+Set the default number of samples to generate in the following Monte Carlo simulations:
+
+```{r}
+# number of samples to generate in the Monte Carlo simulations
+n <- 1000
+```
+
+## The Fork
+
+-   $Z$ is a **common cause** of $X$ and $Y$
+
+-   This elemental causal structure induces a statistical association between $X$ and $Y$:
+
+    -   $Y \not \mathrel{\unicode{x2AEB}} X$
+
+-   No statistical association between $X$ and $Y$ when conditioning/stratifying by $Z$:
+
+    -   $Y \mathrel{\unicode{x2AEB}} X \mid Z$
+
+```{mermaid}
+graph TD;
+    Z-->X;
+    Z-->Y;
+```
+
+See [daggity](https://www.dagitty.net/) causal diagram at <https://dagitty.net/mYFQcF5hd>
+
+Monte Carlo simulation of observations from a DGP with the elemental causal structure shown above:
+
+```{r}
+Z <- rbern(n)
+X <- rnorm(n, mean = 2*Z-1)
+Y <- rnorm(n, mean = 2*Z-1)
+```
+
+Group the simulated data together in a tibble/dataframe for subsequent regression analysis and plotting:
+
+```{r}
+d <- tibble(X, Y, Z)
+```
+
+Fit two regression models to the simulated data:
+
+-   `m1` to estimate the unconditional statistical association between $X$ and $Y$:
+
+    -   $Y \sim X$
+
+-   `m2` to estimate the statistical association between $X$ and $Y$ conditional on $Z$:
+
+    -   $Y \sim X + Z$
+
+```{r}
+m1 <- lm(Y ~ X, data = d)
+
+m2 <- lm(Y ~ X + Z, data = d)
+```
+
+and print the estimate ($b_1$) and p-value of the statistical association (i.e., slope/regression coefficient $\beta_1$) between $X$ and $Y$, unconditional as well as conditional on $Z$:
+
+```{r}
+modelsummary(list("Y ~ X" = m1, "Y ~ X + Z" = m2),
+             coef_map = "X", stars = TRUE, statistic = NULL, gof_map = NA)
+```
+
+Same as the above but in a graphical display:
+
+```{r}
+gf_point(Y ~ X, title = "Y ~ X", color = "darkgray", data = d) %>%
+  gf_lm(color = "orangered") +
+  gf_point(Y ~ X, title = "Y ~ X + Z", color = ~ factor(Z), data = d) %>%
+  gf_lm()
+```
+
+## The Pipe
+
+-   $Z$ is a **mediator** of the effect of $X$ on $Y$
+
+-   This elemental causal structure induces a statistical association between $X$ and $Y$:
+
+    -   $Y \not \mathrel{\unicode{x2AEB}} X$
+
+-   No statistical association between $X$ and $Y$ when conditioning/stratifying by $Z$:
+
+    -   $Y \mathrel{\unicode{x2AEB}} X \mid Z$
+
+```{mermaid}
+graph LR;
+    X-->Z;
+    Z-->Y;
+```
+
+See [daggity](https://www.dagitty.net/) causal diagram at <https://dagitty.net/mUXESSQ8P>
+
+Monte Carlo simulation of observations from a DGP with the elemental causal structure shown above:
+
+```{r}
+X <- rnorm(n)
+Z <- rbern(n, prob = inv_logit(X))
+Y <- rnorm(n, mean = 2*Z-1)
+```
+
+Group the simulated data together in a tibble/dataframe for subsequent regression analysis and plotting:
+
+```{r}
+d <- tibble(X, Y, Z)
+```
+
+Fit two regression models to the simulated data:
+
+-   `m1` to estimate the unconditional statistical association between $X$ and $Y$:
+
+    -   $Y \sim X$
+
+-   `m2` to estimate the statistical association between $X$ and $Y$ conditional on $Z$:
+
+    -   $Y \sim X + Z$
+
+```{r}
+m1 <- lm(Y ~ X, data = d)
+
+m2 <- lm(Y ~ X + Z, data = d)
+```
+
+and print the estimate ($b_1$) and p-value of the statistical association (i.e., slope/regression coefficient $\beta_1$) between $X$ and $Y$, unconditional as well as conditional on $Z$:
+
+```{r}
+modelsummary(list("Y ~ X" = m1, "Y ~ X + Z" = m2),
+             coef_map = "X", stars = TRUE, statistic = NULL, gof_map = NA)
+```
+
+Same as the above but in a graphical display:
+
+```{r}
+gf_point(Y ~ X, title = "Y ~ X", color = "darkgray", data = d) %>%
+  gf_lm(color = "orangered") +
+  gf_point(Y ~ X, title = "Y ~ X + Z", color = ~ factor(Z), data = d) %>%
+  gf_lm()
+```
+
+## The Collider
+
+-   $Z$ is a **common effect** of $X$ and $Y$
+
+-   This elemental causal structure does NOT induce a statistical association between $X$ and $Y$:
+
+    -   $Y \mathrel{\unicode{x2AEB}} X$
+
+-   But it does when conditioning/stratifying by $Z$:
+
+    -   $Y \not \mathrel{\unicode{x2AEB}} X \mid Z$
+
+```{mermaid}
+graph TD;
+    X-->Z;
+    Y-->Z;
+```
+
+See [daggity](https://www.dagitty.net/) causal diagram at <https://dagitty.net/mA5oHsPKq>
+
+Monte Carlo simulation of observations from a DGP with the elemental causal structure shown above:
+
+```{r}
+X <- rnorm(n)
+Y <- rnorm(n)
+Z <- rbern(n, prob = inv_logit(2*X+2*Y-2))
+```
+
+Group the simulated data together in a tibble/dataframe for subsequent regression analysis and plotting:
+
+```{r}
+d <- tibble(X, Y, Z)
+```
+
+Fit two regression models to the simulated data:
+
+-   `m1` to estimate the unconditional statistical association between $X$ and $Y$:
+
+    -   $Y \sim X$
+
+-   `m2` to estimate the statistical association between $X$ and $Y$ conditional on $Z$:
+
+    -   $Y \sim X + Z$
+
+```{r}
+m1 <- lm(Y ~ X, data = d)
+
+m2 <- lm(Y ~ X + Z, data = d)
+```
+
+and print the estimate ($b_1$) and p-value of the statistical association (i.e., slope/regression coefficient $\beta_1$) between $X$ and $Y$, unconditional as well as conditional on $Z$:
+
+```{r}
+modelsummary(list("Y ~ X" = m1, "Y ~ X + Z" = m2),
+             coef_map = "X", stars = TRUE, statistic = NULL, gof_map = NA)
+```
+
+Same as the above but in a graphical display:
+
+```{r}
+gf_point(Y ~ X, title = "Y ~ X", color = "darkgray", data = d) %>%
+  gf_lm(color = "orangered") +
+  gf_point(Y ~ X, title = "Y ~ X + Z", color = ~ factor(Z), data = d) %>%
+  gf_lm()
+```
+
+## References
+
+-   [Statistical Rethinking 2023 - 05 - Elemental Confounds](https://youtu.be/mBEA7PKDmiY)
+-   [A Crash Course in Good and Bad Controls](https://doi.org/10.1177/00491241221099552)
+-   [Learn about DAGs and DAGitty](https://www.dagitty.net/learn/index.html)
+
+## Print environment
+
+```{r}
+sessioninfo::session_info()
+```

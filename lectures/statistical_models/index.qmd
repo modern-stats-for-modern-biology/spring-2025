@@ -1,0 +1,2362 @@
+---
+title: "Statistical models" 
+subtitle: "Statistical inference"
+date: 2025-02-18
+author: "Edoardo \"Dado\" Marcora"
+format:
+  revealjs:
+    smaller: true
+    incremental: true
+    theme: [default, styles.scss]
+    execute:
+      echo: true
+      eval: true
+      warning: false
+      fragment: true
+    output-location: fragment
+df-print: kable
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+library(ggformula)
+theme_set(theme_minimal())
+
+#| output-location: default
+# def conditional operator
+`%=>%` <- function(A, B) {
+  !A | B
+}
+
+# def biconditional operator 
+`%<=>%` <- function(A, B) {
+  (A %=>% B) & (B %=>% A)
+}
+```
+
+```{r}
+#| include: false
+library(rlang)
+```
+
+```{r}
+#| include: false
+P <- function(..., H) {
+  # capture premises as a list of quosures
+  premises <- enquos(...)
+
+  # capture conclusion (H) as a quosure
+  H <- enquo(H)
+
+  if (length(premises) == 0) {
+    # if no premises are provided, set evidence (E) to TRUE (tautology)
+    E <- expr(TRUE)
+  } else {
+    # else set evidence (E) to conjunction of all premises
+    E <- reduce(premises, ~ expr((!! .x) & (!! .y)))
+  }
+    
+  # extract atomic variables from E and H
+  vars <- unique(c(all.vars(E), all.vars(H)))
+  
+  # build truth table and calculate proportion of rows where E is true, in which H is also true
+  expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars)) %>%
+    mutate(E = !!E, H = !!H) %>%
+    filter(E) %>%
+    pull(H) %>%
+    mean()
+}
+```
+
+```{r}
+#| include: false
+library(flextable)
+
+P.flex <- function(..., H, table = TRUE, flex = TRUE) {
+  # capture premises as a list of quosures
+  premises <- enquos(...)
+  
+  # capture conclusion (H) as a quosure
+  H <- enquo(H)
+  
+  # extract atomic variables from premises and H
+  vars <- unique(c(unlist(lapply(premises, all.vars)), all.vars(H)))
+  
+  # create data frame with all possible combinations of atomic variables/worlds (universe)
+  tt <- expand_grid(!!!set_names(rep(list(c(TRUE, FALSE)), length(vars)), vars))
+
+  # add columns for premises
+  for (i in seq_along(premises)) {
+    tt[[paste0("P", i)]] <- eval_tidy(premises[[i]], data = tt)
+  }
+  
+  # add columns for conjunction of all premises (E) and H
+  tt <- tt %>%
+    mutate(
+      E = if_all(starts_with("P"), identity),
+      H = eval_tidy(H, data = tt)
+    )
+  
+  # calculate P(H | E) by checking whether in every possible world/row where E is true, H is also true
+  P <- tt %>%
+    filter(E) %>%
+    pull(H) %>%
+    mean()
+  
+  # return P(H | E) if truth table output is not requested
+  if (!table) {
+    return(P)
+  }
+  
+  # return truth table if formatted truth table output is not requested
+  if (!flex) {
+    return(tt)
+  }
+  
+  # define colors
+  highlight_color <- "beige"  # Standard HTML color name
+  true_color <- "darkgreen"
+  false_color <- "darkred"
+  
+  # convert the truth table into a flextable
+  tt.formatted <- flextable(tt) %>%
+    bold(part = "header") %>%  # Bold the header
+    bold(part = "footer") %>%  # Bold the footer
+    bg(i = which(tt$E == TRUE), bg = highlight_color, part = "body")  # Highlight E = TRUE rows
+  
+  # apply text colors
+  for (col in colnames(tt)) {
+    tt.formatted <- tt.formatted %>%
+      color(i = which(tt[[col]] == TRUE), j = col, color = true_color) %>%
+      color(i = which(tt[[col]] == FALSE), j = col, color = false_color)
+  }
+  
+  # add footer with the calculated P(C | K) value
+  tt.formatted <- tt.formatted %>%
+    add_footer_row(
+      values = paste("P(H | E) =", round(P, 3)),
+      colwidths = ncol(tt)
+    ) %>%
+    align(align = "right", part = "footer")
+
+  # return formatted truth table
+  return(tt.formatted)
+}
+```
+
+##  {background-image="images/last_week_tonight.jpg" background-size="contain"}
+
+## What the &#%! is probability?
+
+![](images/clipboard-452697347.png){height="200"}
+
+## What the &#%! is probability?
+
+-   **Ontological interpretations** (probability as an objective feature of reality)
+
+    -   **Limiting relative frequency** (*frequentist*): The proportion of times an event occurs in an infinite sequence of trials (a.k.a. “long-run” relative frequency)
+
+    -   **Physical chance/propensity**: The inherent tendency or disposition of a physical system to produce a particular outcome
+
+-   **Epistemological interpretations** (probability as a subjective measure of uncertainty)
+
+    -   **Rational degree of belief** in the truth of a proposition (*subjective Bayesian*): A personal but coherent assignment of probabilities to possible worlds, updated via Bayes' rule
+
+    -   **Rational degree of evidential support**/the strength of an inductive argument (*objective Bayesian*): The proportion of possible worlds where both the hypothesis and the evidence are true, relative to the possible worlds where the evidence is true
+
+::: notes
+In this series of lectures, we focus on the **objective Bayesian** interpretation of probability, because it incorporates all the others–except when probability measures fundamental randomness (quantum mechanics)
+:::
+
+## What the &#%! is probability?
+
+::: nonincremental
+-   **Ontological interpretations** (probability as an objective feature of reality)
+
+    -   **Limiting relative frequency**: [Probability as a feature of infinite sequences of trials]{.orange}
+
+    -   **Physical chance/propensity**: [Probability as a feature of physical systems]{.orange}
+
+-   **Epistemological interpretations** (probability as a subjective measure of uncertainty)
+
+    -   **Rational degree of belief**: [Probability as a feature of propositions]{.orange}
+
+    -   **Rational degree of evidential support**: [Probability as a feature of arguments]{.orange}
+:::
+
+## Take homes from last week
+
+-   **Probability theory** is a mathematical language that we use to:
+
+    -   **represent knowledge** with propositions (logical variables), and
+
+    -   **reason** about the plausibility of propositions, given a knowledge base, i.e.,
+
+    -   **inductive reasoning**: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain
+
+::: fragment
+> *All of the things we say in science, all of the conclusions, are uncertain.*
+>
+> *And it is of paramount importance, in order to make progress, that we recognize this ignorance and this doubt.*
+>
+> — [Richard Feynman](https://en.wikipedia.org/wiki/Richard_Feynman) (1918 – 1988, Nobel-prize winning theoretical physicist)
+:::
+
+## Take homes from last week
+
+::: nonincremental
+-   **Probability theory** is a mathematical language that we use to:
+
+    -   **represent knowledge** with propositions (logical variables), and
+
+    -   **reason** about the plausibility of propositions, given a knowledge base, i.e.,
+
+    -   **inductive reasoning**: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain
+
+-   **Inductive reasoning is scientific reasoning**, including statistical inference
+:::
+
+## Take homes from last week
+
+::: nonincremental
+-   **Probability theory** is a mathematical language that we use to:
+
+    -   **represent knowledge** with propositions (logical variables), and
+
+    -   **reason** about the plausibility of propositions, given a knowledge base, i.e.,
+
+    -   **inductive reasoning**: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain
+
+-   **Inductive reasoning is scientific reasoning**, including statistical inference
+
+    -   **Probability theory is the logic of science**, including data science
+:::
+
+## Take homes from last week
+
+::: nonincremental
+-   **Probability theory** is a mathematical language that we use to:
+
+    -   **represent knowledge** with propositions (logical variables), and
+
+    -   **reason** about the plausibility of propositions, given a knowledge base, i.e.,
+
+    -   **inductive reasoning**: from premises known or assumed to be true to a conclusion that is likely to be true/uncertain
+
+-   **Inductive reasoning is scientific reasoning**, including statistical inference
+
+    -   **Probability theory is the logic of science**, including data science
+
+    -   Probability theory is just counting!
+:::
+
+-   **Probability** is a mathematical function that takes an argument and returns a real number between 0 and 1, which **measures** the **inductive strength** of the argument
+
+    -   0 for a maximally weak argument = certainly false conclusion (contradiction)
+    -   1 for a maximally strong argument = certainly true conclusion (tautology)
+    -   any number in between = uncertain conclusion (contingent proposition)
+
+::: notes
+Plausible reasoning/Reasoning under uncertainty
+:::
+
+## Take homes from last week
+
+::: nonincremental
+-   The numeric value returned by the **probability** function **is a proportion**:
+:::
+
+::: fragment
+$$
+\frac{\text{# of possible worlds where the conclusion is true, in the universe where all premises are true}}{\text{# of possible worlds in the universe where all premises are true}}
+$$
+:::
+
+-   **Probability is conditional** (on the premises and conclusion)
+
+    -   The choice of premises and conclusion is subjective, but **probability is objective**
+
+-   Probability theory is a very simple language
+
+    -   One type of variables: `Logical` ([TRUE]{.green} or [FALSE]{.red})
+    -   The five functions/operators/rules of propositional logic:
+        -   `NOT` ($\lnot A$), `AND` ($A \land B$), `OR` ($A \lor B$), `IMPLIES` ($A \implies B$), `IFF` ($A \iff B$)
+    -   The $P(H \mid E)$ function + three functions/operators/rules of probability theory:
+        -   `NOT` (complement rule), `AND` (**Bayes' theorem** a.k.a. product rule), `OR` (sum rule)
+
+## Probability theory: Rules of probability calculus
+
+-   **Negation rule (NOT)**
+
+::: fragment
+$$
+P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
+$$
+:::
+
+-   **Conjuction rule (AND)**: Product rule
+
+    -   $P(A \land B) = P(A) \cdot P(B \mid A)$
+
+    -   Iff $A$ and $B$ are independent, i.e., $P(B \mid A) = P(B)$:
+
+    -   $P(A \land B) = P(A) \cdot P(B)$
+
+-   Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
+
+:::::: fragment
+::::: columns
+::: column
+$$P(A \mid B) = P(A)$$
+:::
+
+::: column
+$$P(B \mid A) = P(B)$$
+:::
+:::::
+::::::
+
+-   If $A$ and $B$ are **dependent**, then $A$ is said to be **associated** with $B$, and viceversa
+
+## Probability theory: Rules of probability calculus
+
+::: nonincremental
+-   **Negation rule (NOT)**
+:::
+
+$$
+P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
+$$
+
+::: nonincremental
+-   **Conjuction rule (AND)**: Product rule
+
+    -   $P(A \land B) = P(A) \cdot P(B \mid A)$
+
+    -   Iff $A$ and $B$ are independent, i.e., $P(B \mid A) = P(B)$:
+
+    -   $P(A \land B) = P(A) \cdot P(B)$
+
+-   Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
+:::
+
+::::: columns
+::: column
+$$P(A \mid B) = P(A)$$
+:::
+
+::: column
+$$P(B \mid A) = P(B)$$
+:::
+:::::
+
+::: nonincremental
+-   Statistical **association** is this **bidirectional dependence** between logical variables
+:::
+
+## Probability theory: Rules of probability calculus
+
+::: nonincremental
+-   **Negation rule (NOT)**
+:::
+
+$$
+P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
+$$
+
+::: nonincremental
+-   **Conjuction rule (AND)**: Product rule
+
+    -   $P(A \land B) = P(A) \cdot P(B \mid A)$
+
+    -   Iff $A$ and $B$ are independent, i.e., $P(B \mid A) = P(B)$:
+
+    -   $P(A \land B) = P(A) \cdot P(B)$
+
+-   Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
+:::
+
+::::: columns
+::: column
+$$P(A \mid B) = P(A)$$
+:::
+
+::: column
+$$P(B \mid A) = P(B)$$
+:::
+:::::
+
+::: nonincremental
+-   **Association is not causation!** (unidirectional dependence) $\quad A \leftrightarrow B \; \ne \; A \rightarrow B$
+:::
+
+## Association is not causation!
+
+![](images/Slide114.png){fig-align="center"}
+
+## Association is not causation!
+
+![](images/Slide115.png){fig-align="center"}
+
+## Association is not causation!
+
+![](images/Slide116.png){fig-align="center"}
+
+## Association is not causation!
+
+![](images/Slide117.png){fig-align="center"}
+
+## Association is not causation!
+
+![](images/Slide118.png){fig-align="center"}
+
+## Probability theory: Rules of probability calculus
+
+::: nonincremental
+-   **Negation rule (NOT)**
+:::
+
+$$
+P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
+$$
+
+::: nonincremental
+-   **Conjuction rule (AND)**: Product rule
+
+    -   $P(A \land B) = P(A) \cdot P(B \mid A)$
+
+    -   Iff $A$ and $B$ are independent, i.e., $P(B \mid A) = P(B)$:
+
+    -   $P(A \land B) = P(A) \cdot P(B)$
+
+-   Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
+:::
+
+::::: columns
+::: column
+$$P(A \mid B) = P(A)$$
+:::
+
+::: column
+$$P(B \mid A) = P(B)$$
+:::
+:::::
+
+::: nonincremental
+-   **Association is not causation!** (unidirectional dependence) $\quad A \leftrightarrow B \; \ne \; A \rightarrow B$
+:::
+
+## Probability theory: Rules of probability calculus
+
+::: nonincremental
+-   **Negation rule (NOT)**
+:::
+
+$$
+P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
+$$
+
+::: nonincremental
+-   **Conjuction rule (AND)**: Product rule
+
+    -   $P(A \land B) = P(A) \cdot P(B \mid A)$
+
+    -   Iff $A$ and $B$ are independent, i.e., $P(B \mid A) = P(B)$:
+
+    -   $P(A \land B) = P(A) \cdot P(B)$
+
+-   Two events (or propositions) $A$ and $B$ are **independent** iff the probability of one remains unchanged knowing that the other has occurred (or is true)
+:::
+
+::::: columns
+::: column
+$$P(A \mid B) = P(A)$$
+:::
+
+::: column
+$$P(B \mid A) = P(B)$$
+:::
+:::::
+
+::: nonincremental
+-   Causal inference = statistical inference + causal model — **no causes in, no causes out!**
+:::
+
+## Probability theory: Rules of probability calculus
+
+::: nonincremental
+-   **Negation rule (NOT)**
+:::
+
+$$
+P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
+$$
+
+::: nonincremental
+-   **Conjuction rule (AND)**: Bayes' theorem
+:::
+
+$$
+P(B \mid A) = \frac{P(B) \cdot P(A \mid B)}{P(A)}
+$$
+
+## Probability theory: Rules of probability calculus
+
+::: nonincremental
+-   **Negation rule (NOT)**
+:::
+
+$$
+P(\lnot A) = 1 - P(A) \quad \quad P(\lnot B) = 1 - P(B) \\
+$$
+
+::: nonincremental
+-   **Conjuction rule (AND)**: Conditional probability
+:::
+
+$$
+P(A \mid B) = \frac{P(A \land B)}{P(B)} \quad \quad P(B \mid A) = \frac{P(A \land B)}{P(A)}
+$$
+
+-   **Disjunction rule (OR)**: Sum rule
+
+    -   $P(A \lor B) = P(A) + P(B) - P(A \land B)$
+
+    -   Iff A and B are disjoint/mutually exclusive, i.e., $P(A \land B) = 0$:
+
+    -   $P(A \lor B) = P(A) + P(B)$
+
+## Logical probability textbooks
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/probability_and_inductive_logic.jpg){height="550"}
+
+<https://doi.org/10.1017/CBO9780511801297>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/probability_theory-logic_of_science.jpg){height="550"}
+
+<https://doi.org/10.1017/CBO9780511790423>
+:::
+::::
+:::::::
+
+## Probability theory textbooks and online courses
+
+::::::: columns
+:::: {.column width="50%"}
+::: text-align-center
+![](images/tsitsiklis_intro_to_prob.jpg){height="500"}
+
+<https://youtube.com/playlist?list=PLUl4u3cNGP60hI9ATjSFgLZpbNJ7myAg6>
+:::
+::::
+
+:::: {.column width="50%"}
+::: text-align-center
+![](images/blitzstein_intro_to_prob.jpg){height="500"}
+
+<https://projects.iq.harvard.edu/stat110>
+:::
+::::
+:::::::
+
+## Bayes' theorem in action: Bayesian inference
+
+::::: columns
+::: {.column .fragment width="40%"}
+$H \:$ "*The woman has breast cancer.*"
+:::
+
+::: {.column .fragment width="60%"}
+$E \:$ "*The diagnostic test for breast cancer is positive.*"
+:::
+:::::
+
+-   Given:
+
+    -   **Prevalence:** $\; P(H) = 0.001$\
+        (i.e., 0.1% chance the woman has breast cancer)
+
+    -   **Sensitivity:** $\; P(E \mid H) = 0.90$\
+        (i.e., 90% chance the test is positive if the woman has breast cancer)
+
+    -   **Specificity:** $\; P(\lnot E \mid \lnot H) = 0.90$\
+        (i.e., 90% chance the test is negative if the woman does not have breast cancer)
+
+-   Wanted:
+
+    -   **Positive predictive value:** $\; P(H \mid E)$\
+        (i.e., chance the woman has breast cancer if the test is positive)
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+::: fragment
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(E)}
+$$
+:::
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$P(H \mid E, K) = \frac{P(H \mid K) \cdot P(E \mid H, K)}{P(E \mid K)}$$  
+
+[Don't forget the background information ($K$) and that all probabilities are conditional!]{.red}
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(E)}
+$$
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide48.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide49.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide52.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide53.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide56.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide57.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide58.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide61.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide62.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide63.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide64.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide65.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide66.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide67.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide68.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide69.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide70.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide71.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide72.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide73.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide74.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide75.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide76.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide77.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide78.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide79.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide80.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide81.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide82.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide83.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide84.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide85.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide86.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide87.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide88.png){fig-align="center"}
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(E)}
+$$
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H \land E) + P(\lnot H \land E)}
+$$
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H) \cdot P(E \mid H) + P(\lnot H) \cdot P(E \mid \lnot H)}
+$$
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide89.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide90.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide91.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide92.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide93.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide94.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide95.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide96.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide97.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide98.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide99.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide100.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide101.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide102.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide103.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide104.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide105.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide106.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide107.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide108.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide109.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide110.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide111.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide112.png){fig-align="center"}
+
+## Visual proof of Bayes' theorem
+
+![](images/Slide113.png){fig-align="center"}
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(E)}
+$$
+
+-   $P(H \mid E)$ is the probability of hypothesis $H$ given evidence $E$ (a.k.a. the **posterior**)
+
+-   The numerator is the joint probability of hypothesis $H$ and evidence $E$
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H \land E)}{P(E)}
+$$
+
+::: nonincremental
+-   $P(H \mid E)$ is the probability of hypothesis $H$ given evidence $E$ (a.k.a. the **posterior**)
+
+-   The numerator is the joint probability of hypothesis $H$ and evidence $E$
+:::
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(E)}
+$$
+
+::: nonincremental
+-   $P(H \mid E)$ is the probability of hypothesis $H$ given evidence $E$ (a.k.a. the **posterior**)
+
+-   The numerator is the joint probability of hypothesis $H$ and evidence $E$
+:::
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(E)}
+$$
+
+::: nonincremental
+-   $P(H \mid E)$ is the probability of hypothesis $H$ given evidence $E$ (a.k.a. the **posterior**)
+
+-   The numerator is the joint probability of hypothesis $H$ and evidence $E$
+
+    -   $P(H)$ is the probability of hypothesis $H$ (a.k.a. the **prior**)
+:::
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(E)}
+$$
+
+::: nonincremental
+-   $P(H \mid E)$ is the probability of hypothesis $H$ given evidence $E$ (a.k.a. the **posterior**)
+
+-   The numerator is the joint probability of hypothesis $H$ and evidence $E$
+
+    -   $P(H)$ is the probability of hypothesis $H$ (a.k.a. the **prior**)
+
+    -   $P(E \mid H)$ is the probability of evidence $E$ given hypothesis $H$ (a.k.a. the **likelihood**)
+:::
+
+-   The denominator $P(E)$ is the probability of evidence $E$ (a.k.a. the **evidence**)
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H \land E) + P(\lnot H \land E)}
+$$
+
+::: nonincremental
+-   $P(H \mid E)$ is the probability of hypothesis $H$ given evidence $E$ (a.k.a. the **posterior**)
+
+-   The numerator is the joint probability of hypothesis $H$ and evidence $E$
+
+    -   $P(H)$ is the probability of hypothesis $H$ (a.k.a. the **prior**)
+
+    -   $P(E \mid H)$ is the probability of evidence $E$ given hypothesis $H$ (a.k.a. the **likelihood**)
+:::
+
+::: nonincremental
+-   The denominator $P(E)$ is the probability of evidence $E$ (a.k.a. the **total probability of the evidence**)
+:::
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H) \cdot P(E \mid H) + P(\lnot H) \cdot P(E \mid \lnot H)}
+$$
+
+::: nonincremental
+-   $P(H \mid E)$ is the probability of hypothesis $H$ given evidence $E$ (a.k.a. the **posterior**)
+
+-   The numerator is the joint probability of hypothesis $H$ and evidence $E$
+
+    -   $P(H)$ is the probability of hypothesis $H$ (a.k.a. the **prior**)
+
+    -   $P(E \mid H)$ is the probability of evidence $E$ given hypothesis $H$ (a.k.a. the **likelihood**)
+:::
+
+::: nonincremental
+-   The denominator $P(E)$ is the probability of evidence $E$ (a.k.a the **marginal likelihood**)
+:::
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{\sum_{i=1}^n P(H_i) \cdot P(E \mid H_i)}
+$$
+
+::: nonincremental
+-   $P(H \mid E)$ is the probability of hypothesis $H$ given evidence $E$ (a.k.a. the **posterior**)
+
+-   The numerator is the joint probability of hypothesis $H$ and evidence $E$
+
+    -   $P(H)$ is the probability of hypothesis $H$ (a.k.a. the **prior**)
+
+    -   $P(E \mid H)$ is the probability of evidence $E$ given hypothesis $H$ (a.k.a. the **likelihood**)
+:::
+
+::: nonincremental
+-   The denominator $P(E)$ is the probability of evidence $E$ (a.k.a the **marginal likelihood**)
+:::
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{\int P(H) \cdot P(E \mid H) \,dH }
+$$
+
+::: nonincremental
+-   $P(H \mid E)$ is the probability of hypothesis $H$ given evidence $E$ (a.k.a. the **posterior**)
+
+-   The numerator is the joint probability of hypothesis $H$ and evidence $E$
+
+    -   $P(H)$ is the probability of hypothesis $H$ (a.k.a. the **prior**)
+
+    -   $P(E \mid H)$ is the probability of evidence $E$ given hypothesis $H$ (a.k.a. the **likelihood**)
+:::
+
+::: nonincremental
+-   The denominator $P(E)$ is the probability of evidence $E$ (a.k.a the **marginal likelihood**)
+:::
+
+-   In most cases, this integral is intractable, which historically restricted Bayesian inference to simple cases where an exact solution was possible
+
+-   The advent of modern computers and [MCMC](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo) methods enabled efficient and accurate numerical approximations of this integral, making Bayesian inference widely applicable
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H) \cdot P(E \mid H) + P(\lnot H) \cdot P(E \mid \lnot H)}
+$$
+
+-   $P(H) = 0.001 \;$ **prior**/prevalence
+
+-   $P(E \mid H) = 0.90 \;$ **likelihood**/sensitivity
+
+-   $P(\lnot E \mid \lnot H) = 0.90 \;$ specificity
+
+-   $P(E \mid \lnot H) = 0.10 \;$ false positive rate = (1 - specificity)
+
+-   $P(\lnot H) = 0.999\;$ (1 - prevalence)
+
+-   $P(H \mid E) =\ ? \;$ **posterior**
+
+-   The main goal of **Bayesian inference** is to estimate the **posterior** $\; P(H \mid E)$
+
+-   The main goal of **frequentist inference** is to control the **false positive rate** $\; P(E \mid \lnot H)$ at $\alpha = 0.05$ in the "*long run*"
+
+## Most published research findings are false!
+
+[![](images/why-most-published-research-findings-are-false.png){fig-align="center" width="455"}](https://doi.org/10.1371/journal.pmed.1004085)
+
+## Bayes' theorem in action: Bayesian inference
+
+::: nonincremental
+-   According to Bayes' theorem:
+:::
+
+$$
+P(H \mid E) = \frac{P(H) \cdot P(E \mid H)}{P(H) \cdot P(E \mid H) + P(\lnot H) \cdot P(E \mid \lnot H)}
+$$
+
+-   Substituting the given values:
+
+::: fragment
+$$
+P(H \mid E) = \frac{0.001 \times 0.90}{(0.001 \times 0.90) + (0.999 \times 0.10)} = \frac{0.0009}{0.0009 + 0.0999} \approx \frac{0.0009}{0.1008} \approx 0.00893
+$$
+:::
+
+-   Thus, even with a positive test, the probability that the woman actually has breast cancer is only about 0.9%
+
+-   Failure to take prevalence (a.k.a. the base rate) into account is known in medicine as the **base rate fallacy**
+
+-   This example highlights the critical role of the prior probability when evaluating and testing hypothesis
+
+## Base rate fallacy
+
+![](images/Base_rate_fallacy_with_vaccines.svg){height="400"}
+
+## Prosecutor's fallacy
+
+[![](images/sally_clark.avif){.fragment height="250"}](https://www.theguardian.com/world/2021/apr/18/obscure-maths-bayes-theorem-reliability-covid-lateral-flow-tests-probability)
+
+-   Sally Clark was found guilty of the murder of her two infant sons
+
+-   The defense argued that both children had died of sudden infant death syndrome
+
+-   The prosecution relied on flawed statistical evidence presented by a paediatrician who testified that the probability of two infants dying of SIDS in the same family is 1 in 73M
+
+-   The jury mistakenly interpreted this probability (of the evidence given the presumption of innocence) with the probability of Sally Clark's innocence given the evidence
+
+::: notes
+-   Sally Clark's first son died within a few weeks of his birth, and her second son died in similar circumstances two years later
+-   Soon after, Sally Clark was arrested and tried for both deaths
+-   The defense argued that the children had died of sudden infant death syndrome (SIDS)
+-   The prosecution relied on flawed statistical evidence presented by a paediatrician who testified that the probability of two infants dying of SIDS in the same family was 1 in 73 million
+-   Sally Clark was convicted and spent three years in prison before being released on second appeal (not because of the flawed stats but because it emerged that the prosecution forensic pathologist had failed to disclose microbiological reports that suggested the second of Sally Clark's sons had died of natural causes)
+-   Soon after she was convicted, the Royal Statistical Society issued a statement arguing that there was no statistical basis for the paediatrician's claim
+-   Sally Clark's experience caused her to develop severe psychiatric problems and she died four years later of alcohol poisoning
+:::
+
+## A typical study in the social/biomedical sciences
+
+-   A group of 62 subjects was randomly split into two groups of 31 and 31 subjects
+-   Each subject in the first group looked at a picture of Rodin's *The Thinker* for 30 seconds (*treatment group*)
+-   Each subject in the second group looked at a picture of the *Discobulus of Myron* for 30 seconds (*control group*)
+
+::: fragment
+![](images/Slide118.png){fig-align="center" height="400"}
+:::
+
+## A typical study in the social/biomedical sciences
+
+::: nonincremental
+-   A group of 62 subjects was randomly split into two groups of 31 and 31 subjects
+-   Each subject in the first group looked at a picture of Rodin's *The Thinker* for 30 seconds (*treatment group*)
+-   Each subject in the second group looked at a picture of the *Discobulus of Myron* for 30 seconds (*control group*)
+-   All subjects then rated their belief in the existence of God on a scale from 0 to 100
+:::
+
+-   The mean belief in the existence of God was 41.5 for the treatment group and 61.5 for the control group
+-   **Is there an effect of the treatment on the belief in the existence of God?**
+-   If there were no effect (*null hypothesis*), then the probability of observing a difference this large or larger is 3% \[**P = 0.03**, t(55) = 2.24, Cohen’s d = 0.60\]
+-   Therefore, looking at the picture of *The Thinker* for 30 seconds significantly promotes religious disbelief!
+
+## The fallacy of the transposed conditional
+
+::: fragment
+All three examples (base-rate fallacy, prosecutor's fallacy, and the scientific study) commit the **fallacy of the transposed conditional**, i.e., confuse the probability of the evidence given the hypothesis ("*sampling probability*") with the probability of the hypothesis given the evidence ("*inferential probability*")
+:::
+
+::: fragment
+[P(]{.orange}[evidence]{.green} [\|]{.orange} [hypothesis]{.blue}[)]{.orange} = [P(]{.orange}[hypothesis]{.blue} [\|]{.orange} [evidence]{.green}[)]{.orange}
+:::
+
+ 
+
+::: fragment
+**Base-rate fallacy**<br/> [P(]{.orange}[vaccinated]{.green} [\|]{.orange} [hospitalized]{.blue}[)]{.orange} = [P(]{.orange}[hospitalized]{.blue} [\|]{.orange} [vaccinated]{.green}[)]{.orange}
+:::
+
+ 
+
+::: fragment
+**Prosecutor's fallacy**<br/> [P(]{.orange}[two deaths]{.green} [\|]{.orange} [innocent]{.blue}[)]{.orange} = [P(]{.orange}[innocent]{.blue} [\|]{.orange} [two deaths]{.green}[)]{.orange}
+:::
+
+ 
+
+::: fragment
+**Scientific study**<br/> [P(]{.orange}[same or larger effect]{.green} [\|]{.orange} [null hypothesis]{.blue}[)]{.orange} = [P(]{.orange}[null hypothesis]{.blue} [\|]{.orange} [same or larger effect]{.green}[)]{.orange}
+:::
+
+## The fallacy of the transposed conditional
+
+::: text-align-center
+![](images/the_thinker_science_article.png){height="550"}
+
+<https://doi.org/10.1126/science.1215647>
+:::
+
+## The fallacy of the transposed conditional
+
+::: text-align-center
+![](images/bernoullis_fallacy.jpg){height="550"}
+
+<https://cup.columbia.edu/book/bernoullis-fallacy/9780231199957>
+:::
+
+## Modern science: statistical (+ causal) inference
+
+![](images/Slide1.png){fig-align="center" width="979"}
+
+[Shmueli (2010)](https://doi.org/10.1214/10-STS330) To Explain or to Predict?
+
+## Statistical inference
+
+$$
+\begin{array}{ll}
+1. & \text{data (measurements of observables)} \\
+2. & \text{model of the DGP} \\
+\hline
+\therefore & \text{unknown quantities} \\
+\end{array}
+$$
+
+##  {background-image="images/cover-model-september-2004.webp" background-size="cover"}
+
+::: notes
+Fasten your seatblets because we are about to enter the world of statistical models!
+:::
+
+## Models vs. the real world
+
+Models are simplified, idealized representations/abstractions of reality!
+
+![](images/amazing-comparison-before-after-photoshop-celebrities-stars-4.jpg){fig-align="center" height="500"}
+
+## Models vs. the real world
+
+Don't fall in love with your models!
+
+![](images/elon_musk_in_love_with_robot.jpg){fig-align="center" height="500"}
+
+## Models vs. the real world
+
+Don't fall for the sin of reification!
+
+![](images/elon_musk_in_love_with_robot.jpg){fig-align="center" height="500"}
+
+## Models vs. the real world
+
+Don't confuse the map with the territory!
+
+![](images/Slide120.png){fig-align="center"}
+
+## All models are wrong, some are useful!
+
+![](images/Slide121.png){fig-align="center"}
+
+## Statistical models
+
+Statistical models = **probability distributions** of **random variables**
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
+:::
+::::
+::::::
+
+## Statistical models
+
+Statistical models = **probability distributions** of **random variables**
+
+> It turns out that empirical research questions come down entirely to describing the probability distributions of random variables. That’s, well, that’s really all that quantitative empirical research is. Sorry!
+>
+> — Nick Huntington-Klein [The Effect](https://theeffectbook.net/) \[free online book\]
+
+## Statistical models
+
+::: notes
+-   A statistical model is a simplified, idealized representation of the data generating process (DGP), focusing on essential features while omitting irrelevant complexity
+:::
+
+-   A statistical model is a **probability distribution** of one or more **random variables** chosen to represent the data generating process (DGP)
+
+-   If one of the [standard probability distributions](https://distribution-explorer.github.io/) (e.g., uniform, binomial, normal) is a useful abstraction of the real data generating process you need to model, then it can be used as the statistical model for your inferential data analysis (if not, you can always [build your own](https://prob.bayesfusion.com/))
+
+-   Standard probability distributions serve as ready-made "*data stories*", i.e., different sets of premises/assumptions about the DGP
+
+::: notes
+-   The choice of probability distribution is guided by the research question and an understanding of the DGP
+:::
+
+## Statistical models
+
+Statistical models = **probability distributions** of **random variables**
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
+:::
+::::
+::::::
+
+## What is a probability distribution?
+
+-   Given a universe/sample space ($\Omega$)
+
+::: fragment
+```{r}
+#| output-location: default
+ss <-
+  expand_grid(A = c(TRUE, FALSE), B = c(TRUE, FALSE)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss
+```
+:::
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+::: fragment
+$$
+p: \Omega \to [0, 1]
+$$
+:::
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.2, 0.3, 0.4, 0.1))
+```
+
+-   Since outcomes are partitions of the sample space, their probabilities must sum\* to 1
+
+::: fragment
+$$\sum_{\omega \in \Omega} p(\omega) = 1$$
+:::
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = 1 / n()) # uniform probability distribution
+```
+
+::: nonincremental
+-   Since outcomes are partitions of the sample space, their probabilities must sum\* to 1
+:::
+
+$$\sum_{\omega \in \Omega} p(\omega) = 1$$
+
+## From probability distribution to probability
+
+-   An **event** is a subset of the sample space, including the empty set ($\emptyset$) and the sample space itself ($\Omega$)
+
+-   Event $X$: the subset of the sample space where proposition $X$ is true
+
+-   The terms **proposition** and **event** are often used interchangeably
+
+-   Probability applies to propositions/events
+
+    -   $P(X)$ = probability that proposition $X$ is true
+
+    -   $P(X)$ = probability that event $X$ occurs
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Proposition $X$: $\: A \lor B$
+:::
+
+::: fragment
+```{r}
+#| output-location: default
+ss
+```
+:::
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Proposition $X$: $\: A \lor B$
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(X = A | B)
+```
+
+-   Event $X$: the subset of $\Omega$ where $X$ is true
+
+::: fragment
+```{r}
+ss %>% mutate(X = A | B) %>% filter(X)
+```
+:::
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
+
+::: fragment
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+:::
+
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+
+::: fragment
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n())
+```
+:::
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B)
+```
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  filter(X)
+```
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  filter(X) %>% 
+  summarize(P = sum(p)) %>% 
+  pull(P)
+```
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  filter(X) %>% 
+  summarize(P = sum(p)) %>% 
+  pull(P)
+```
+
+ 
+
+```{r}
+P(H = A | B)
+```
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  filter(X) %>% 
+  summarize(P = sum(p)) %>% 
+  pull(P)
+```
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+  mutate(X = A | B) %>%
+  
+  summarize(P = sum(p[X])) %>% 
+  pull(P)
+```
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = 1 / n()) %>%
+
+  
+  summarize(P = sum(p[A | B])) %>% 
+  pull(P)
+```
+
+## From probability distribution to probability
+
+::: nonincremental
+-   Given a probability distribution $p$, the probability of proposition/event $X$ is:
+:::
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+::: nonincremental
+-   For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+:::
+
+```{r}
+#| output-location: default
+ss %>%
+  mutate(p = c(0.2, 0.3, 0.4, 0.1)) %>% 
+
+  
+  summarize(P = sum(p[A | B])) %>% 
+  pull(P)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.2, 0.3, 0.4, 0.1))
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(NA, NA, NA, NA))
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(NA, NA, NA, NA))
+```
+
+```{r}
+P(H = A & B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, NA, NA, NA))
+```
+
+```{r}
+#| output-location: default
+P(H = A & B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, NA, NA, NA))
+```
+
+```{r}
+P(H = A & !B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, 0.25, NA, NA))
+```
+
+```{r}
+#| output-location: default
+P(H = A & !B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, 0.25, NA, NA))
+```
+
+```{r}
+P(H = !A & B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, 0.25, 0.25, NA))
+```
+
+```{r}
+#| output-location: default
+P(H = !A & B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, 0.25, 0.25, NA))
+```
+
+```{r}
+P(H = !A & !B)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0.25, 0.25, 0.25, 0.25))
+```
+
+```{r}
+#| output-location: default
+P(H = !A & !B)
+```
+
+-   In the absence of additional information, outcomes in the sample space are equally likely (Laplace's [principle of indifference](https://en.wikipedia.org/wiki/Principle_of_indifference))
+
+-   The principle of indifference is a special case of Jayne's [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy)
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(NA, NA, NA, NA))
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(NA, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+P(H = A & B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+#| output-location: default
+P(H = A & B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, NA, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+P(H = A & !B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+#| output-location: default
+P(H = A & !B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, NA, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+P(H = !A & B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+#| output-location: default
+P(H = !A & B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, 0.5, NA)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+P(H = !A & !B, E = !A)
+```
+
+## What is a probability distribution?
+
+::: nonincremental
+-   Given a universe/sample space ($\Omega$)
+
+-   A probability distribution is a function ($p$) that assigns a probability\* to each possible world/outcome ($\omega$)
+:::
+
+```{r}
+#| output-location: default
+ss %>% mutate(p = c(0, 0, 0.5, 0.5)) %>% mutate(E = !A) # A is known or assumed to be `FALSE`
+```
+
+```{r}
+#| output-location: default
+P(H = !A & !B, E = !A)
+```
+
+## What is a probability distribution?
+
+-   $p$ is a model that encodes our premises/assumptions/evidence/knowledge about the world in general
+
+-   In the context of statistical inference, $p$ is a statistical model that encodes our knowledge about the DGP
+
+-   Rather than enumerating each probability or specifying each premise/assumption, $p$ provides a compact and elegant representation of our knowledge about the DGP
+
+-   In the absence of additional information, the **principle of indifference** (or maximum entropy) dictates that all outcomes are equally likely, resulting in a **uniform distribution**
+
+::: fragment
+$$p(w) = \frac{1}{|\Omega|} = \frac{1}{n}$$
+:::
+
+-   Several other mathematical functions (e.g., the binomial and normal distributions) have been developed to capture different sets of premises/assumptions about the DGP
+
+## Statistical models
+
+Statistical models = **probability distributions** of **random variables**
+
+:::::: columns
+::: {.column width="30%"}
+![](images/models_80s90s.webp)
+:::
+
+:::: {.column width="70%"}
+::: text-align-center
+![](images/probability_distributions.jpg)
+
+<https://distribution-explorer.github.io/>
+
+<https://prob.bayesfusion.com/>
+:::
+::::
+::::::
+
+## What is a random variable?
+
+::: fragment
+![](images/random_variable_tweet.png){height="200"}
+:::
+
+-   A random variable ($X$) is a function that assigns a real number ($x$) to each possible world/outcome ($\omega$) in the universe/sample space ($\Omega$)
+
+::: fragment
+$$
+X: \Omega \to \mathbb{R}
+$$
+:::
+
+-   Think of a random variable ($X$) as a way to **measure** or **observe** something ($x$) in each possible world ($\omega$)
+
+::: fragment
+$$X(\omega) = x$$
+:::
+
+## What is a random variable?
+
+::: nonincremental
+![](images/random_variable_tweet.png){height="200"}
+
+-   A random variable ($X$) is a function that assigns a real number ($x$) to each possible world/outcome ($\omega$) in the universe/sample space ($\Omega$)
+
+$$
+X: \Omega \to \mathbb{R}
+$$
+
+-   Alternatively, think of a random variable ($X$) as a **question** about each possible world ($\omega$), where the **answer is a real number** ($x$)
+
+$$X(\omega) = x$$
+:::
+
+## What is a random variable?
+
+![](images/Slide122.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide123.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide124.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide125.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide126.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide127.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide128.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide129.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide130.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide131.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide132.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide133.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide134.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide135.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide136.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide137.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide138.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide139.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide140.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide141.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide142.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide143.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide144.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide145.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide146.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide147.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide148.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide149.png){height="550"}
+
+## What is a random variable?
+
+![](images/Slide150.png){height="550"}
+
+## What is a random variable?
+
+::: nonincremental
+-   Another way of thinking about a random variable is simply as a `Logical`, `Numeric`, or `Character`/`Factor` variable (data object) in R that can take one of multiple values
+:::
+
+::: fragment
+```{r}
+ss <- expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE)) %>%
+
+  
+  
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss
+```
+:::
+
+## What is a random variable?
+
+::: nonincremental
+-   Another way of thinking about a random variable is simply as a `Logical`, `Numeric`, or `Character`/`Factor` variable (data object) in R that can take one of multiple values
+:::
+
+```{r}
+#| eval: false
+#| output-location: default
+ss <- expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE),
+  S = factor(c("♂", "♀", "⚥")),
+  H = c(10, 20, 30),
+  W = c(20, 40, 60)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss
+```
+
+## What is a random variable?
+
+```{r}
+#| echo: false
+#| output: asis
+#| output-location: default
+ss <- expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE),
+  S = factor(c("♂", "♀", "⚥")),
+  H = c(10, 20, 30),
+  W = c(20, 40, 60)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss %>% DT::datatable(options = list(pageLength = 8), rownames = FALSE)
+```
+
+## What is a random variable?
+
+::: nonincremental
+-   Another way of thinking about a random variable is simply as a `Logical`, `Numeric`, or `Character`/`Factor` variable (data object) in R that can take one of multiple values
+:::
+
+```{r}
+#| eval: false
+#| output-location: default
+ss <- expand_grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE),
+  S = factor(c("♂", "♀", "⚥")),
+  H = c(10, 20, 30),
+  W = c(20, 40, 60)) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything())
+
+ss
+```
+
+-   This data frame represents the universe/sample space ($\Omega$), where each column corresponds to a random variable (`A`, `B`, `S`, `H`, `W`) and each row represents a possible world/outcome ($\omega$)
+
+-   This is analogous to our earlier, simpler example with only logical variables `A` and `B`
+
+-   The same principles and operations apply (including the calculation of probabilities and application of probability distributions), regardless of whether the random variables are logical, numeric, or categorical, since they all evaluate to propositions
+
+##  {background-image="images/thats_all_folks.jpg" background-size="50%"}
+
+## Law of total probability
+
+ 
+
+$\{ P_1, P_2, \ldots, P_n \} = \text{set of disjoint and exhaustive events (i.e., partitions of the sample space)}$
+
+ 
+
+$P(E) = \sum_{i=1}^n P(P_i \land E)$
+
+ 
+
+$P(E) = \sum_{i=1}^n P(P_i) \cdot P(E \mid P_i)$
+
+ 
+
+$P(E) = \int P(H) P(E \mid H) \, dH$
+
+## Gambler's fallacy
+
+![](images/gamblers-fallacy.png){height="280"}
+
+## Association does not imply causation
+
+A statistical association is a logical relationship between two propositions/events and does not imply a causal relationship between them
+
+![](images/17009_masters-degrees-awarded-in-biological-and-biomedical-sciences_correlates-with_inflation-in-the-us.svg){height="240"}
+
+[Spurious Correlations - Tyler Vigen](https://tylervigen.com/spurious-correlations)
+
+## The "ladder of causation"
+
+From Pearl and Mackenzie (2018) [The Book of Why](https://bayes.cs.ucla.edu/WHY/)
+
+::: text-align-center
+![](images/ladder_of_causation2.jpg)
+:::
+
+## From probability distribution to probability
+
+Given a probability distribution $p$, the probability of proposition/event $X$ is:
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+
+```{r}
+#| output-location: default
+P(H = A | B)
+```
+
+## From probability distribution to probability
+
+Given a probability distribution $p$, the probability of proposition/event $X$ is:
+
+$$P(X) = \sum_{\omega \in X} p(\omega)$$
+
+For example, given the uniform probability distribution $p$, $P(X)$ for $X = A \lor B$ is:
+
+```{r}
+#| echo: false
+#| output-location: default
+P.flex(H = A | B)
+```
+
+## Robot random variables
+
+```{r}
+H = (10 + 10 * c(0, 1, 2))
+
+W = H * 2
+
+expand.grid(
+  A = c(TRUE, FALSE),
+  B = c(TRUE, FALSE),
+  S = factor(c("M", "F", "N")),
+  H = H,
+  W = W
+  ) %>%
+  mutate(Ω = paste0("⍵", 1:n())) %>% 
+  select(Ω, everything()) %>% 
+  mutate(p = 1 / n()) %>% 
+  rowwise() %>% 
+  mutate(
+    P1 = H == (10 + 10 * as.integer(S)),
+    P2 = W == H * 2,
+    E = P1 & P2) %>%
+  ungroup() %>% 
+  mutate(p = ifelse(E, p / sum(p[E]), 0))
+```
