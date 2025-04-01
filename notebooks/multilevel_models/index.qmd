@@ -72,7 +72,9 @@ tidy(complete.pooling.fit, conf.int = TRUE)
 #| fig-height: 10
 check_model(complete.pooling.fit)
 ```
-
+```{r}
+resid(complete.pooling.fit) %>% acf(main = "Autocorrelation of residuals")
+```
 
 ```{r}
 ggplot(data = sleepstudy, aes(x = Days, y = Reaction)) +
@@ -81,6 +83,7 @@ ggplot(data = sleepstudy, aes(x = Days, y = Reaction)) +
 ```
 
 ```{r}
+#| fig-height: 10
 sleepstudy$complete.pooling.fit = fitted(complete.pooling.fit)
 
 # plot the model results
@@ -155,8 +158,12 @@ tidy(no.pooling.fit, conf.int = TRUE)
 check_model(no.pooling.fit)
 ```
 
+```{r}
+resid(no.pooling.fit) %>% acf(main = "Autocorrelation of residuals")
+```
 
 ```{r}
+#| fig-height: 10
 sleepstudy$no.pooling.fit = fitted(no.pooling.fit)
 
 # plot the model results
@@ -246,8 +253,12 @@ coef(partial.pooling.fit)$Subject
 check_model(partial.pooling.fit)
 ```
 
+```{r}
+resid(partial.pooling.fit) %>% acf(main = "Autocorrelation of residuals")
+```
 
 ```{r}
+#| fig-height: 10
 sleepstudy$partial.pooling.fit = fitted(partial.pooling.fit)
 
 # plot the model results
@@ -337,8 +348,12 @@ coef(partial.pooling.fit.fixed_slope)$Subject
 check_model(partial.pooling.fit.fixed_slope)
 ```
 
+```{r}
+resid(partial.pooling.fit.fixed_slope) %>% acf(main = "Autocorrelation of residuals")
+```
 
 ```{r}
+#| fig-height: 10
 sleepstudy$partial.pooling.fit.fixed_slope = fitted(partial.pooling.fit.fixed_slope)
 
 # plot the model results
@@ -418,12 +433,17 @@ tidy(partial.pooling.fit.fixed_intercept, conf.int = TRUE)
 coef(partial.pooling.fit.fixed_intercept)$Subject
 ```
 
-
 ```{r}
-check_autocorrelation(partial.pooling.fit.fixed_intercept)
+#| fig-height: 10
+check_model(partial.pooling.fit.fixed_intercept)
 ```
 
 ```{r}
+resid(partial.pooling.fit.fixed_intercept) %>% acf(main = "Autocorrelation of residuals")
+```
+
+```{r}
+#| fig-height: 10
 sleepstudy$partial.pooling.fit.fixed_intercept = fitted(partial.pooling.fit.fixed_intercept)
 
 # plot the model results
