@@ -30,6 +30,7 @@ This notebook illustrates an additional example of how to use fixed and mixed ef
 
 ```{r}
 library(tidyverse)
+library(easystats)
 library(lme4)
 library(broom.mixed)
 library(rethinking) # https://github.com/rmcelreath/rethinking
@@ -68,6 +69,12 @@ tidy(complete.pooling.fit, conf.int = TRUE)
 ```
 
 ```{r}
+#| fig-height: 10
+check_model(complete.pooling.fit)
+```
+
+
+```{r}
 ggplot(data = sleepstudy, aes(x = Days, y = Reaction)) +
   geom_point(size = 2, alpha = 0.2) +
   geom_smooth(method = "lm", se = FALSE, color = "darkgray")
@@ -101,6 +108,7 @@ $$
 -   $\alpha$ and $\beta$ are shared across all subjects, meaning there is **no individual variation** in intercepts or slopes
 
 ```{r}
+#| output: false
 complete.pooling.fit <- ulam(
   alist(
     Reaction ~ dnorm(mu, sigma),
@@ -118,6 +126,7 @@ precis(complete.pooling.fit, depth = 2)
 Instead of using the `ulam()` function from the `rethinking` package, you can the `stan_glm()` function from the `rstanarm` package to fit the Bayesian model using the `lm` syntax.
 
 ```{r}
+#| output: false
 complete.pooling.fit <- stan_glm(Reaction ~ 1 + Days, data = sleepstudy)
 ```
 
@@ -140,6 +149,12 @@ no.pooling.fit = lm(Reaction ~ 1 + Days + Subject + Days:Subject, data = sleepst
 
 tidy(no.pooling.fit, conf.int = TRUE)
 ```
+
+```{r}
+#| fig-height: 10
+check_model(no.pooling.fit)
+```
+
 
 ```{r}
 sleepstudy$no.pooling.fit = fitted(no.pooling.fit)
@@ -180,6 +195,7 @@ $$
 -   Each subject has **completely independent** intercepts and slopes, meaning there is **no sharing of information** between subjects
 
 ```{r}
+#| output: false
 no.pooling.fit <- ulam(
   alist(
     Reaction ~ dnorm(mu, sigma),
@@ -197,6 +213,7 @@ precis(no.pooling.fit, depth = 2)
 Instead of using the `ulam()` function from the `rethinking` package, you can the `stan_glm()` function from the `rstanarm` package to fit the Bayesian model using the `lm` syntax.
 
 ```{r}
+#| output: false
 no.pooling.fit <- rstanarm::stan_glm(Reaction ~ 1 + Days + Subject + Days:Subject, data = sleepstudy)
 ```
 
@@ -223,6 +240,12 @@ tidy(partial.pooling.fit, conf.int = TRUE)
 ```{r}
 coef(partial.pooling.fit)$Subject
 ```
+
+```{r}
+#| fig-height: 10
+check_model(partial.pooling.fit)
+```
+
 
 ```{r}
 sleepstudy$partial.pooling.fit = fitted(partial.pooling.fit)
@@ -261,6 +284,7 @@ $$
 -   Subjects **partially share** information, meaning individual parameters are regularized toward the global estimates
 
 ```{r}
+#| output: false
 partial.pooling.fit <- ulam(
   alist(
     Reaction ~ dnorm(mu, sigma),
@@ -282,6 +306,7 @@ precis(partial.pooling.fit, depth = 2)
 Instead of using the `ulam()` function from the `rethinking` package, you can the `stan_glmer()` function from the `rstanarm` package to fit the Bayesian model using the `lmer` syntax.
 
 ```{r}
+#| output: false
 partial.pooling.fit <- stan_glmer(Reaction ~ 1 + Days + (1 + Days | Subject), data = sleepstudy)
 ```
 
@@ -306,6 +331,12 @@ tidy(partial.pooling.fit.fixed_slope, conf.int = TRUE)
 ```{r}
 coef(partial.pooling.fit.fixed_slope)$Subject
 ```
+
+```{r}
+#| fig-height: 10
+check_model(partial.pooling.fit.fixed_slope)
+```
+
 
 ```{r}
 sleepstudy$partial.pooling.fit.fixed_slope = fitted(partial.pooling.fit.fixed_slope)
@@ -341,6 +372,7 @@ $$
 -   Subjects **share the same slope** but have **varying intercepts**
 
 ```{r}
+#| output: false
 partial.pooling.fit.fixed_slope <- ulam(
   alist(
     Reaction ~ dnorm(mu, sigma),
@@ -360,6 +392,7 @@ precis(partial.pooling.fit.fixed_slope, depth = 2)
 Instead of using the `ulam()` function from the `rethinking` package, you can the `stan_glmer()` function from the `rstanarm` package to fit the Bayesian model using the `lmer` syntax.
 
 ```{r}
+#| output: false
 partial.pooling.fit.fixed_slope <- stan_glmer(Reaction ~ 1 + Days + (1 | Subject), data = sleepstudy)
 ```
 
@@ -383,6 +416,11 @@ tidy(partial.pooling.fit.fixed_intercept, conf.int = TRUE)
 
 ```{r}
 coef(partial.pooling.fit.fixed_intercept)$Subject
+```
+
+
+```{r}
+check_autocorrelation(partial.pooling.fit.fixed_intercept)
 ```
 
 ```{r}
@@ -419,6 +457,7 @@ $$
 -   Subjects **share the same intercept** but have **varying slopes**
 
 ```{r}
+#| output: false
 partial.pooling.fit.fixed_intercept <- ulam(
   alist(
     Reaction ~ dnorm(mu, sigma),
@@ -438,6 +477,7 @@ precis(partial.pooling.fit.fixed_intercept, depth = 2)
 Instead of using the `ulam()` function from the `rethinking` package, you can the `stan_glmer()` function from the `rstanarm` package to fit the Bayesian model using the `lmer` syntax.
 
 ```{r}
+#| output: false
 partial.pooling.fit.fixed_intercept <- stan_glmer(Reaction ~ 1 + Days + (0 + Days | Subject), data = sleepstudy, )
 ```
 
@@ -447,6 +487,12 @@ tidy(partial.pooling.fit.fixed_intercept)
 
 ```{r}
 mcmc_areas(partial.pooling.fit.fixed_intercept, pars = vars(-starts_with("Sigma")))
+```
+
+## Compare models
+
+```{r}
+compare_performance(complete.pooling.fit, no.pooling.fit, partial.pooling.fit, partial.pooling.fit.fixed_slope, partial.pooling.fit.fixed_intercept)
 ```
 
 ## Print environment
