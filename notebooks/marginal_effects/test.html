@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.42">
+<meta name="generator" content="quarto-1.6.43">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>test</title>
+<title>From model to meaning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -63,7 +63,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="test_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="test_files/libs/quarto-html/anchor.min.js"></script>
 <link href="test_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="test_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="test_files/libs/quarto-html/quarto-syntax-highlighting-d4d76bf8491c20bad77d141916dc28e1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="test_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="test_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="test_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">test</h1>
+<h1 class="title">From model to meaning</h1>
 </div>
 
 
@@ -98,307 +98,765 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p><a href="https://youtu.be/_okuMw4JFfU" class="uri">https://youtu.be/_okuMw4JFfU</a></p>
+<section id="setup-environment" class="level2">
+<h2 class="anchored" data-anchor-id="setup-environment">Setup environment</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelbased)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelbased)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sjPlot)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_test</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="read-and-prep-data" class="level2">
+<h2 class="anchored" data-anchor-id="read-and-prep-data">Read and prep data</h2>
+<p>A data frame with 32 observations on 11 (numeric) variables.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>mpg</code></td>
+<td style="text-align: left;">Miles/(US) gallon</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cyl</code></td>
+<td style="text-align: left;">Number of cylinders</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>disp</code></td>
+<td style="text-align: left;">Displacement (cu.in.)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>hp</code></td>
+<td style="text-align: left;">Gross horsepower</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>drat</code></td>
+<td style="text-align: left;">Rear axle ratio</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>wt</code></td>
+<td style="text-align: left;">Weight (1000 lbs)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>qsec</code></td>
+<td style="text-align: left;">1/4 mile time</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>vs</code></td>
+<td style="text-align: left;">Engine (0 = V-shaped, 1 = straight)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>am</code></td>
+<td style="text-align: left;">Transmission (0 = automatic, 1 = manual)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>gear</code></td>
+<td style="text-align: left;">Number of forward gears</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>carb</code></td>
+<td style="text-align: left;">Number of carburetors</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> mtcars <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cyl =</span> <span class="fu">factor</span>(cyl),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">vs =</span> <span class="fu">factor</span>(vs),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">am =</span> <span class="fu">factor</span>(am),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">gear =</span> <span class="fu">factor</span>(gear),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">carb =</span> <span class="fu">factor</span>(carb)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"car"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["car"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mpg"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["cyl"],"name":[3],"type":["fct"],"align":["left"]},{"label":["disp"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["hp"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["drat"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["wt"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["qsec"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["vs"],"name":[9],"type":["fct"],"align":["left"]},{"label":["am"],"name":[10],"type":["fct"],"align":["left"]},{"label":["gear"],"name":[11],"type":["fct"],"align":["left"]},{"label":["carb"],"name":[12],"type":["fct"],"align":["left"]}],"data":[{"1":"Mazda RX4","2":"21.0","3":"6","4":"160.0","5":"110","6":"3.90","7":"2.620","8":"16.46","9":"0","10":"1","11":"4","12":"4"},{"1":"Mazda RX4 Wag","2":"21.0","3":"6","4":"160.0","5":"110","6":"3.90","7":"2.875","8":"17.02","9":"0","10":"1","11":"4","12":"4"},{"1":"Datsun 710","2":"22.8","3":"4","4":"108.0","5":"93","6":"3.85","7":"2.320","8":"18.61","9":"1","10":"1","11":"4","12":"1"},{"1":"Hornet 4 Drive","2":"21.4","3":"6","4":"258.0","5":"110","6":"3.08","7":"3.215","8":"19.44","9":"1","10":"0","11":"3","12":"1"},{"1":"Hornet Sportabout","2":"18.7","3":"8","4":"360.0","5":"175","6":"3.15","7":"3.440","8":"17.02","9":"0","10":"0","11":"3","12":"2"},{"1":"Valiant","2":"18.1","3":"6","4":"225.0","5":"105","6":"2.76","7":"3.460","8":"20.22","9":"1","10":"0","11":"3","12":"1"},{"1":"Duster 360","2":"14.3","3":"8","4":"360.0","5":"245","6":"3.21","7":"3.570","8":"15.84","9":"0","10":"0","11":"3","12":"4"},{"1":"Merc 240D","2":"24.4","3":"4","4":"146.7","5":"62","6":"3.69","7":"3.190","8":"20.00","9":"1","10":"0","11":"4","12":"2"},{"1":"Merc 230","2":"22.8","3":"4","4":"140.8","5":"95","6":"3.92","7":"3.150","8":"22.90","9":"1","10":"0","11":"4","12":"2"},{"1":"Merc 280","2":"19.2","3":"6","4":"167.6","5":"123","6":"3.92","7":"3.440","8":"18.30","9":"1","10":"0","11":"4","12":"4"},{"1":"Merc 280C","2":"17.8","3":"6","4":"167.6","5":"123","6":"3.92","7":"3.440","8":"18.90","9":"1","10":"0","11":"4","12":"4"},{"1":"Merc 450SE","2":"16.4","3":"8","4":"275.8","5":"180","6":"3.07","7":"4.070","8":"17.40","9":"0","10":"0","11":"3","12":"3"},{"1":"Merc 450SL","2":"17.3","3":"8","4":"275.8","5":"180","6":"3.07","7":"3.730","8":"17.60","9":"0","10":"0","11":"3","12":"3"},{"1":"Merc 450SLC","2":"15.2","3":"8","4":"275.8","5":"180","6":"3.07","7":"3.780","8":"18.00","9":"0","10":"0","11":"3","12":"3"},{"1":"Cadillac Fleetwood","2":"10.4","3":"8","4":"472.0","5":"205","6":"2.93","7":"5.250","8":"17.98","9":"0","10":"0","11":"3","12":"4"},{"1":"Lincoln Continental","2":"10.4","3":"8","4":"460.0","5":"215","6":"3.00","7":"5.424","8":"17.82","9":"0","10":"0","11":"3","12":"4"},{"1":"Chrysler Imperial","2":"14.7","3":"8","4":"440.0","5":"230","6":"3.23","7":"5.345","8":"17.42","9":"0","10":"0","11":"3","12":"4"},{"1":"Fiat 128","2":"32.4","3":"4","4":"78.7","5":"66","6":"4.08","7":"2.200","8":"19.47","9":"1","10":"1","11":"4","12":"1"},{"1":"Honda Civic","2":"30.4","3":"4","4":"75.7","5":"52","6":"4.93","7":"1.615","8":"18.52","9":"1","10":"1","11":"4","12":"2"},{"1":"Toyota Corolla","2":"33.9","3":"4","4":"71.1","5":"65","6":"4.22","7":"1.835","8":"19.90","9":"1","10":"1","11":"4","12":"1"},{"1":"Toyota Corona","2":"21.5","3":"4","4":"120.1","5":"97","6":"3.70","7":"2.465","8":"20.01","9":"1","10":"0","11":"3","12":"1"},{"1":"Dodge Challenger","2":"15.5","3":"8","4":"318.0","5":"150","6":"2.76","7":"3.520","8":"16.87","9":"0","10":"0","11":"3","12":"2"},{"1":"AMC Javelin","2":"15.2","3":"8","4":"304.0","5":"150","6":"3.15","7":"3.435","8":"17.30","9":"0","10":"0","11":"3","12":"2"},{"1":"Camaro Z28","2":"13.3","3":"8","4":"350.0","5":"245","6":"3.73","7":"3.840","8":"15.41","9":"0","10":"0","11":"3","12":"4"},{"1":"Pontiac Firebird","2":"19.2","3":"8","4":"400.0","5":"175","6":"3.08","7":"3.845","8":"17.05","9":"0","10":"0","11":"3","12":"2"},{"1":"Fiat X1-9","2":"27.3","3":"4","4":"79.0","5":"66","6":"4.08","7":"1.935","8":"18.90","9":"1","10":"1","11":"4","12":"1"},{"1":"Porsche 914-2","2":"26.0","3":"4","4":"120.3","5":"91","6":"4.43","7":"2.140","8":"16.70","9":"0","10":"1","11":"5","12":"2"},{"1":"Lotus Europa","2":"30.4","3":"4","4":"95.1","5":"113","6":"3.77","7":"1.513","8":"16.90","9":"1","10":"1","11":"5","12":"2"},{"1":"Ford Pantera L","2":"15.8","3":"8","4":"351.0","5":"264","6":"4.22","7":"3.170","8":"14.50","9":"0","10":"1","11":"5","12":"4"},{"1":"Ferrari Dino","2":"19.7","3":"6","4":"145.0","5":"175","6":"3.62","7":"2.770","8":"15.50","9":"0","10":"1","11":"5","12":"6"},{"1":"Maserati Bora","2":"15.0","3":"8","4":"301.0","5":"335","6":"3.54","7":"3.570","8":"14.60","9":"0","10":"1","11":"5","12":"8"},{"1":"Volvo 142E","2":"21.4","3":"4","4":"121.0","5":"109","6":"4.11","7":"2.780","8":"18.60","9":"1","10":"1","11":"4","12":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="better-summaries" class="level2">
+<h2 class="anchored" data-anchor-id="better-summaries">Better summaries</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> cyl, d)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>supernova<span class="sc">::</span><span class="fu">supernova</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Analysis of Variance Table (Type III SS)
+ Model: mpg ~ cyl
+
+                               SS df      MS      F   PRE     p
+ ----- --------------- | -------- -- ------- ------ ----- -----
+ Model (error reduced) |  824.785  2 412.392 39.698 .7325 .0000
+ Error (from model)    |  301.263 29  10.388                   
+ ----- --------------- | -------- -- ------- ------ ----- -----
+ Total (empty model)   | 1126.047 31  36.324                   </code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## use the mtcars data, set up am as a factor</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mc <span class="ot">&lt;-</span> mtcars <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">am =</span> <span class="fu">factor</span>(am))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## fit a linear model to mpg with wt x am interaction</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> wt <span class="sc">*</span> am, <span class="at">data =</span> mc)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = mpg ~ wt * am, data = mc)
+lm(formula = mpg ~ cyl, data = d)
 
 Residuals:
    Min     1Q Median     3Q    Max 
--3.600 -1.545 -0.533  0.901  6.091 
+-5.264 -1.836  0.029  1.389  7.236 
 
 Coefficients:
-            Estimate Std. Error t value      Pr(&gt;|t|)    
-(Intercept)   31.416      3.020   10.40 0.00000000004 ***
-wt            -3.786      0.786   -4.82 0.00004551182 ***
-am1           14.878      4.264    3.49        0.0016 ** 
-wt:am1        -5.298      1.445   -3.67        0.0010 ** 
+            Estimate Std. Error t value             Pr(&gt;|t|)    
+(Intercept)   26.664      0.972   27.44 &lt; 0.0000000000000002 ***
+cyl6          -6.921      1.558   -4.44              0.00012 ***
+cyl8         -11.564      1.299   -8.90        0.00000000086 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 2.59 on 28 degrees of freedom
-Multiple R-squared:  0.833, Adjusted R-squared:  0.815 
-F-statistic: 46.6 on 3 and 28 DF,  p-value: 0.0000000000521</code></pre>
+Residual standard error: 3.22 on 29 degrees of freedom
+Multiple R-squared:  0.732, Adjusted R-squared:  0.714 
+F-statistic: 39.7 on 2 and 29 DF,  p-value: 0.00000000498</code></pre>
 </div>
 </div>
-<section id="meanscounterfactuals-for-each-level-of-am-at-mean-wt" class="level2">
-<h2 class="anchored" data-anchor-id="meanscounterfactuals-for-each-level-of-am-at-mean-wt">1. means/counterfactuals for each level of am at mean wt</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="at">specs =</span> <span class="st">'am'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_model</span>(m, <span class="at">type =</span> <span class="st">"pred"</span>, <span class="at">terms =</span> <span class="st">"cyl"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_model</span>(m, <span class="at">type =</span> <span class="st">"pred"</span>, <span class="at">terms =</span> <span class="st">"cyl"</span>, <span class="at">show.data =</span> <span class="cn">TRUE</span>, <span class="at">jitter =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="fu">expand_limits</span>(<span class="at">y =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="emmeans" class="level3">
+<h3 class="anchored" data-anchor-id="emmeans"><code>emmeans</code></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(m, <span class="at">specs =</span> <span class="st">"cyl"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>emm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> am emmean    SE df lower.CL upper.CL
- 0    19.2 0.736 28     17.7     20.7
- 1    17.1 1.210 28     14.6     19.6
+<pre><code> cyl emmean    SE df lower.CL upper.CL
+ 4     26.7 0.972 29     24.7     28.7
+ 6     19.7 1.220 29     17.3     22.2
+ 8     15.1 0.861 29     13.3     16.9
 
 Confidence level used: 0.95 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m, <span class="at">by =</span> <span class="st">'am'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["am"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Mean"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["CI_low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["CI_high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["t"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["df"],"name":[7],"type":["int"],"align":["right"]}],"data":[{"1":"0","2":"19.24","3":"0.7357","4":"17.73","5":"20.74","6":"26.15","7":"28","_rn_":"1"},{"1":"1","2":"17.07","3":"1.2133","4":"14.58","5":"19.55","6":"14.07","7":"28","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(emm, <span class="at">method =</span> <span class="st">"pairwise"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> contrast    estimate   SE df t.ratio p.value
+ cyl4 - cyl6     6.92 1.56 29   4.441  0.0003
+ cyl4 - cyl8    11.56 1.30 29   8.905  &lt;.0001
+ cyl6 - cyl8     4.64 1.49 29   3.112  0.0112
+
+P value adjustment: tukey method for comparing a family of 3 estimates </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_predictions</span>(m, <span class="at">variables =</span> <span class="st">'am'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(emm, <span class="at">method =</span> <span class="st">"pairwise"</span>) <span class="sc">|&gt;</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="marginaleffects" class="level3">
+<h3 class="anchored" data-anchor-id="marginaleffects"><code>marginaleffects</code></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_predictions</span>(m, <span class="at">variables =</span> <span class="st">"cyl"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
- am Estimate Std. Error    z Pr(&gt;|z|)     S 2.5 % 97.5 %
-  0     19.2      0.736 26.1   &lt;0.001 498.2  17.8   20.7
-  1     17.1      1.213 14.1   &lt;0.001 146.9  14.7   19.4
+ cyl Estimate Std. Error    z Pr(&gt;|z|)     S 2.5 % 97.5 %
+   4     26.7      0.972 27.4   &lt;0.001 548.1  24.8   28.6
+   6     19.7      1.218 16.2   &lt;0.001 193.8  17.4   22.1
+   8     15.1      0.861 17.5   &lt;0.001 226.1  13.4   16.8
 
 Type:  response </code></pre>
 </div>
 </div>
 </section>
-<section id="meanscounterfactuals-for-each-level-of-am-at-wt-2.5-3-3.5" class="level2">
-<h2 class="anchored" data-anchor-id="meanscounterfactuals-for-each-level-of-am-at-wt-2.5-3-3.5">2. means/counterfactuals for each level of am at wt = 2.5, 3, 3.5</h2>
+<section id="modelbased" class="level3">
+<h3 class="anchored" data-anchor-id="modelbased"><code>modelbased</code></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="at">specs =</span> <span class="fu">c</span>(<span class="st">'am'</span>, <span class="st">'wt'</span>), <span class="at">at =</span> <span class="fu">list</span>(<span class="at">wt =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">3.5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m, <span class="at">by =</span> <span class="st">"cyl"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["cyl"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Mean"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["CI_low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["CI_high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["t"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["df"],"name":[7],"type":["int"],"align":["right"]}],"data":[{"1":"4","2":"26.66","3":"0.9718","4":"24.68","5":"28.65","6":"27.44","7":"29","_rn_":"1"},{"1":"6","2":"19.74","3":"1.2182","4":"17.25","5":"22.23","6":"16.21","7":"29","_rn_":"2"},{"1":"8","2":"15.10","3":"0.8614","4":"13.34","5":"16.86","6":"17.53","7":"29","_rn_":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_contrasts</span>(m, <span class="at">contrast =</span> <span class="st">"cyl"</span>, <span class="at">comparison =</span> <span class="st">"revpairwise"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Level1"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Level2"],"name":[2],"type":["fct"],"align":["left"]},{"label":["Difference"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["CI_low"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["CI_high"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["t"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["df"],"name":[8],"type":["int"],"align":["right"]},{"label":["p"],"name":[9],"type":["dbl"],"align":["right"]}],"data":[{"1":"4","2":"6","3":"6.921","4":"1.558","5":"3.734","6":"10.108","7":"4.441","8":"29","9":"0.0001194696159","_rn_":"1"},{"1":"4","2":"8","3":"11.564","4":"1.299","5":"8.908","6":"14.220","7":"8.905","8":"29","9":"0.0000000008568","_rn_":"2"},{"1":"6","2":"8","3":"4.643","4":"1.492","5":"1.591","6":"7.694","7":"3.112","8":"29","9":"0.0041522086147","_rn_":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="means-in-estimated-marginal-means-does-not-mean-average" class="level2">
+<h2 class="anchored" data-anchor-id="means-in-estimated-marginal-means-does-not-mean-average">Means in estimated marginal means does not mean average</h2>
+<p>It could be medians, probabilities/proportions, etc.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">glm</span>(am <span class="sc">~</span> cyl, d, <span class="at">family =</span> binomial)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>supernova<span class="sc">::</span><span class="fu">supernova</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> am  wt emmean    SE df lower.CL upper.CL
- 0  2.5   22.0 1.160 28     19.6     24.3
- 1  2.5   23.6 0.727 28     22.1     25.1
- 0  3.0   20.1 0.848 28     18.3     21.8
- 1  3.0   19.0 1.010 28     17.0     21.1
- 0  3.5   18.2 0.631 28     16.9     19.5
- 1  3.5   14.5 1.500 28     11.4     17.6
+<pre><code> Analysis of Variance Table (Type III SS)
+ Model: am ~ cyl
+
+                              SS df    MS     F   PRE     p
+ ----- --------------- | ------- -- ----- ----- ----- -----
+ Model (error reduced) |   2.108  2 1.054 0.154 .0105 .8579
+ Error (from model)    | 198.375 29 6.841                  
+ ----- --------------- | ------- -- ----- ----- ----- -----
+ Total (empty model)   | 132.664 31 4.279                  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = am ~ cyl, family = binomial, data = d)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept)    0.981      0.677    1.45   0.1474   
+cyl6          -1.269      1.021   -1.24   0.2139   
+cyl8          -2.773      1.021   -2.72   0.0066 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 43.230  on 31  degrees of freedom
+Residual deviance: 33.935  on 29  degrees of freedom
+AIC: 39.93
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<section id="emmeans-1" class="level3">
+<h3 class="anchored" data-anchor-id="emmeans-1"><code>emmeans</code></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(m, <span class="at">specs =</span> <span class="st">"cyl"</span>, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>emm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> cyl  prob     SE  df asymp.LCL asymp.UCL
+ 4   0.727 0.1340 Inf     0.414     0.909
+ 6   0.429 0.1870 Inf     0.144     0.770
+ 8   0.143 0.0935 Inf     0.036     0.427
+
+Confidence level used: 0.95 
+Intervals are back-transformed from the logit scale </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="reference-grid" class="level2">
+<h2 class="anchored" data-anchor-id="reference-grid">Reference grid</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> gear <span class="sc">+</span> am <span class="sc">+</span> hp, d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ref_grid</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'emmGrid' object with variables:
+    gear = 3, 4, 5
+    am = 0, 1
+    hp = 146.69</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(d<span class="sc">$</span>hp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 146.7</code></pre>
+</div>
+</div>
+</section>
+<section id="single-categorical-predictor" class="level2">
+<h2 class="anchored" data-anchor-id="single-categorical-predictor">Single categorical predictor</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> cyl, d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ref_grid</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'emmGrid' object with variables:
+    cyl = 4, 6, 8</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, pairwise <span class="sc">~</span> cyl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$emmeans
+ cyl emmean    SE df lower.CL upper.CL
+ 4     26.7 0.972 29     24.7     28.7
+ 6     19.7 1.220 29     17.3     22.2
+ 8     15.1 0.861 29     13.3     16.9
+
+Confidence level used: 0.95 
+
+$contrasts
+ contrast    estimate   SE df t.ratio p.value
+ cyl4 - cyl6     6.92 1.56 29   4.441  0.0003
+ cyl4 - cyl8    11.56 1.30 29   8.905  &lt;.0001
+ cyl6 - cyl8     4.64 1.49 29   3.112  0.0112
+
+P value adjustment: tukey method for comparing a family of 3 estimates </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, pairwise <span class="sc">~</span> cyl, <span class="at">infer =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$emmeans
+ cyl emmean    SE df lower.CL upper.CL t.ratio p.value
+ 4     26.7 0.972 29     24.7     28.7  27.437  &lt;.0001
+ 6     19.7 1.220 29     17.3     22.2  16.206  &lt;.0001
+ 8     15.1 0.861 29     13.3     16.9  17.529  &lt;.0001
+
+Confidence level used: 0.95 
+
+$contrasts
+ contrast    estimate   SE df lower.CL upper.CL t.ratio p.value
+ cyl4 - cyl6     6.92 1.56 29    3.072    10.77   4.441  0.0003
+ cyl4 - cyl8    11.56 1.30 29    8.356    14.77   8.905  &lt;.0001
+ cyl6 - cyl8     4.64 1.49 29    0.958     8.33   3.112  0.0112
+
+Confidence level used: 0.95 
+Conf-level adjustment: tukey method for comparing a family of 3 estimates 
+P value adjustment: tukey method for comparing a family of 3 estimates </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> cyl) <span class="sc">|&gt;</span> <span class="fu">pwpm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       4      6      8
+4 [26.7] 0.0003 &lt;.0001
+6   6.92 [19.7] 0.0112
+8  11.56   4.64 [15.1]
+
+Row and column labels: cyl
+Upper triangle: P values   adjust = "tukey"
+Diagonal: [Estimates] (emmean) 
+Lower triangle: Comparisons (estimate)   earlier vs. later</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> cyl) <span class="sc">|&gt;</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="single-numeric-predictor" class="level2">
+<h2 class="anchored" data-anchor-id="single-numeric-predictor">Single numeric predictor</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> hp, d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ref_grid</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'emmGrid' object with variables:
+    hp = 146.69</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> hp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  hp emmean    SE df lower.CL upper.CL
+ 147   20.1 0.683 30     18.7     21.5
 
 Confidence level used: 0.95 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'am'</span>, <span class="st">'wt = [2.5, 3, 3.5]'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> hp, <span class="at">cov.reduce =</span> range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  hp emmean   SE df lower.CL upper.CL
+  52  26.55 1.18 30    24.15     29.0
+ 335   7.24 2.02 30     3.11     11.4
+
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> hp, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">hp =</span> <span class="fu">range</span>(d<span class="sc">$</span>hp)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  hp emmean   SE df lower.CL upper.CL
+  52  26.55 1.18 30    24.15     29.0
+ 335   7.24 2.02 30     3.11     11.4
+
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> <span class="fu">poly</span>(hp, <span class="dv">2</span>), d)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_model</span>(m, <span class="at">type =</span> <span class="st">"pred"</span>, <span class="at">show.data =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Data points may overlap. Use the `jitter` argument to add some amount of
+  random variation to the location of data points and avoid overplotting.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> hp, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">hp =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">300</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  hp emmean    SE df lower.CL upper.CL
+ 100   23.3 0.662 29     21.9     24.6
+ 200   14.6 0.820 29     12.9     16.3
+ 300   14.3 1.740 29     10.7     17.8
+
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> hp, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">hp =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">300</span>))) <span class="sc">|&gt;</span> <span class="fu">plot</span>(<span class="at">comparisons =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, pairwise <span class="sc">~</span> hp, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">hp =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">300</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$emmeans
+  hp emmean    SE df lower.CL upper.CL
+ 100   23.3 0.662 29     21.9     24.6
+ 200   14.6 0.820 29     12.9     16.3
+ 300   14.3 1.740 29     10.7     17.8
+
+Confidence level used: 0.95 
+
+$contrasts
+ contrast      estimate    SE df t.ratio p.value
+ hp100 - hp200     8.71 0.919 29   9.477  &lt;.0001
+ hp100 - hp300     9.00 1.940 29   4.626  0.0002
+ hp200 - hp300     0.29 1.730 29   0.168  0.9846
+
+P value adjustment: tukey method for comparing a family of 3 estimates </code></pre>
+</div>
+</div>
+</section>
+<section id="one-categorical-and-one-numeric-predictor" class="level2">
+<h2 class="anchored" data-anchor-id="one-categorical-and-one-numeric-predictor">One categorical and one numeric predictor</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10</span>)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"Wage"</span>, <span class="at">package =</span> <span class="st">"ISLR"</span>)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>salary <span class="ot">&lt;-</span> ISLR<span class="sc">::</span>Wage <span class="sc">|&gt;</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">age_cat =</span> <span class="fu">case_when</span>(</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>    age <span class="sc">&lt;</span> <span class="dv">40</span> <span class="sc">~</span> <span class="st">"1. young"</span>,</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span>     <span class="sc">~</span> <span class="st">"2. old"</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">|&gt;</span> </span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">50</span>, <span class="at">by =</span> jobclass)</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>salary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["am"],"name":[1],"type":["fct"],"align":["left"]},{"label":["wt"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Mean"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["CI_low"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["CI_high"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["t"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["df"],"name":[8],"type":["int"],"align":["right"]}],"data":[{"1":"0","2":"2.5","3":"21.95","4":"1.1607","5":"19.57","6":"24.33","7":"18.912","8":"28","_rn_":"1"},{"1":"0","2":"3.0","3":"20.06","4":"0.8475","5":"18.32","6":"21.79","7":"23.667","8":"28","_rn_":"2"},{"1":"0","2":"3.5","3":"18.17","4":"0.6309","5":"16.87","6":"19.46","7":"28.793","8":"28","_rn_":"3"},{"1":"1","2":"2.5","3":"23.58","4":"0.7267","5":"22.10","6":"25.07","7":"32.452","8":"28","_rn_":"4"},{"1":"1","2":"3.0","3":"19.04","4":"1.0131","5":"16.97","6":"21.12","7":"18.795","8":"28","_rn_":"5"},{"1":"1","2":"3.5","3":"14.50","4":"1.5032","5":"11.42","6":"17.58","7":"9.646","8":"28","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["year"],"name":[1],"type":["int"],"align":["right"]},{"label":["age"],"name":[2],"type":["int"],"align":["right"]},{"label":["maritl"],"name":[3],"type":["fct"],"align":["left"]},{"label":["race"],"name":[4],"type":["fct"],"align":["left"]},{"label":["education"],"name":[5],"type":["fct"],"align":["left"]},{"label":["region"],"name":[6],"type":["fct"],"align":["left"]},{"label":["jobclass"],"name":[7],"type":["fct"],"align":["left"]},{"label":["health"],"name":[8],"type":["fct"],"align":["left"]},{"label":["health_ins"],"name":[9],"type":["fct"],"align":["left"]},{"label":["logwage"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["wage"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["age_cat"],"name":[12],"type":["chr"],"align":["left"]}],"data":[{"1":"2005","2":"49","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.710","11":"111.01","12":"2. old"},{"1":"2007","2":"27","3":"1. Never Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.415","11":"82.68","12":"1. young"},{"1":"2005","2":"50","3":"2. Married","4":"1. White","5":"5. Advanced Degree","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.954","11":"141.78","12":"2. old"},{"1":"2004","2":"29","3":"2. Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.380","11":"79.85","12":"1. young"},{"1":"2004","2":"22","3":"1. Never Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"2. No","10":"4.387","11":"80.43","12":"1. young"},{"1":"2009","2":"52","3":"2. Married","4":"2. Black","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.114","11":"61.19","12":"2. old"},{"1":"2005","2":"39","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.362","11":"78.39","12":"1. young"},{"1":"2007","2":"30","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.542","11":"93.88","12":"1. young"},{"1":"2005","2":"59","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"1. Yes","10":"4.778","11":"118.88","12":"2. old"},{"1":"2008","2":"50","3":"2. Married","4":"1. White","5":"1. < HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"3.845","11":"46.76","12":"2. old"},{"1":"2006","2":"45","3":"2. Married","4":"2. Black","5":"4. College Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.602","11":"99.69","12":"2. old"},{"1":"2005","2":"21","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.954","11":"141.78","12":"1. young"},{"1":"2008","2":"34","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.681","11":"107.90","12":"1. young"},{"1":"2005","2":"27","3":"1. Never Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.477","11":"87.98","12":"1. young"},{"1":"2004","2":"41","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.301","11":"73.78","12":"2. old"},{"1":"2003","2":"52","3":"4. Divorced","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"1. Yes","10":"4.301","11":"73.78","12":"2. old"},{"1":"2004","2":"43","3":"1. Never Married","4":"2. Black","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.415","11":"82.68","12":"2. old"},{"1":"2008","2":"45","3":"2. Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"5.000","11":"148.41","12":"2. old"},{"1":"2006","2":"47","3":"2. Married","4":"2. Black","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"3.301","11":"27.14","12":"2. old"},{"1":"2003","2":"38","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"1. Yes","10":"4.881","11":"131.74","12":"1. young"},{"1":"2005","2":"33","3":"1. Never Married","4":"2. Black","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"2. No","10":"4.301","11":"73.78","12":"1. young"},{"1":"2003","2":"38","3":"1. Never Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.255","11":"70.48","12":"1. young"},{"1":"2009","2":"27","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.519","11":"91.70","12":"1. young"},{"1":"2005","2":"49","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"5.176","11":"176.99","12":"2. old"},{"1":"2005","2":"48","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"1. Yes","10":"4.929","11":"138.30","12":"2. old"},{"1":"2005","2":"22","3":"1. Never Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.398","11":"81.28","12":"1. young"},{"1":"2005","2":"59","3":"2. Married","4":"2. Black","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.653","11":"104.92","12":"2. old"},{"1":"2006","2":"54","3":"2. Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.763","11":"117.15","12":"2. old"},{"1":"2007","2":"25","3":"1. Never Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.477","11":"87.98","12":"1. young"},{"1":"2006","2":"44","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.632","11":"102.77","12":"2. old"},{"1":"2003","2":"48","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.699","11":"109.83","12":"2. old"},{"1":"2008","2":"28","3":"4. Divorced","4":"4. Other","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.342","11":"76.89","12":"1. young"},{"1":"2005","2":"46","3":"2. Married","4":"2. Black","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.892","11":"133.23","12":"2. old"},{"1":"2008","2":"36","3":"1. Never Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.778","11":"118.88","12":"1. young"},{"1":"2003","2":"46","3":"2. Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.875","11":"130.98","12":"2. old"},{"1":"2008","2":"29","3":"2. Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"2. No","10":"4.623","11":"101.82","12":"1. young"},{"1":"2004","2":"33","3":"4. Divorced","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"2. No","10":"4.398","11":"81.28","12":"1. young"},{"1":"2007","2":"34","3":"2. Married","4":"1. White","5":"1. < HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.613","11":"100.76","12":"1. young"},{"1":"2003","2":"52","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.524","11":"92.16","12":"2. old"},{"1":"2008","2":"44","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.176","11":"65.11","12":"2. old"},{"1":"2006","2":"52","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"1. Yes","10":"4.531","11":"92.90","12":"2. old"},{"1":"2008","2":"58","3":"2. Married","4":"1. White","5":"5. Advanced Degree","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"2. No","10":"4.910","11":"135.60","12":"2. old"},{"1":"2006","2":"23","3":"1. Never Married","4":"1. White","5":"1. < HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"1. Yes","10":"4.398","11":"81.28","12":"1. young"},{"1":"2005","2":"40","3":"2. Married","4":"3. Asian","5":"5. Advanced Degree","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"5.097","11":"163.52","12":"2. old"},{"1":"2004","2":"34","3":"2. Married","4":"4. Other","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"1. Yes","10":"4.176","11":"65.11","12":"1. young"},{"1":"2006","2":"47","3":"4. Divorced","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.602","11":"99.69","12":"2. old"},{"1":"2009","2":"44","3":"2. Married","4":"1. White","5":"1. < HS Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"2. No","10":"4.477","11":"87.98","12":"2. old"},{"1":"2003","2":"25","3":"1. Never Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"2. >=Very Good","9":"1. Yes","10":"4.602","11":"99.69","12":"1. young"},{"1":"2004","2":"56","3":"3. Widowed","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"1. Yes","10":"4.477","11":"87.98","12":"2. old"},{"1":"2003","2":"58","3":"2. Married","4":"2. Black","5":"3. Some College","6":"2. Middle Atlantic","7":"1. Industrial","8":"1. <=Good","9":"1. Yes","10":"4.813","11":"123.09","12":"2. old"},{"1":"2009","2":"27","3":"1. Never Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.653","11":"104.92","12":"1. young"},{"1":"2004","2":"22","3":"1. Never Married","4":"2. Black","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.398","11":"81.28","12":"1. young"},{"1":"2005","2":"26","3":"1. Never Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.653","11":"104.92","12":"1. young"},{"1":"2005","2":"39","3":"2. Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"2. Information","8":"1. <=Good","9":"2. No","10":"4.431","11":"84.05","12":"1. young"},{"1":"2005","2":"22","3":"1. Never Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"2. No","10":"3.990","11":"54.03","12":"1. young"},{"1":"2005","2":"45","3":"4. Divorced","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.544","11":"94.07","12":"2. old"},{"1":"2008","2":"41","3":"2. Married","4":"3. Asian","5":"5. Advanced Degree","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"5.623","11":"276.78","12":"2. old"},{"1":"2005","2":"43","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.699","11":"109.83","12":"2. old"},{"1":"2007","2":"23","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.380","11":"79.85","12":"1. young"},{"1":"2009","2":"27","3":"1. Never Married","4":"3. Asian","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.602","11":"99.69","12":"1. young"},{"1":"2005","2":"35","3":"2. Married","4":"2. Black","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.602","11":"99.69","12":"1. young"},{"1":"2005","2":"43","3":"2. Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"2. Information","8":"1. <=Good","9":"2. No","10":"3.000","11":"20.09","12":"2. old"},{"1":"2003","2":"31","3":"2. Married","4":"2. Black","5":"3. Some College","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"2. No","10":"4.940","11":"139.70","12":"1. young"},{"1":"2005","2":"52","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"1. <=Good","9":"2. No","10":"4.613","11":"100.76","12":"2. old"},{"1":"2006","2":"50","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.813","11":"123.09","12":"2. old"},{"1":"2005","2":"30","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.663","11":"105.93","12":"1. young"},{"1":"2004","2":"35","3":"2. Married","4":"1. White","5":"5. Advanced Degree","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.924","11":"137.59","12":"1. young"},{"1":"2009","2":"44","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"5.176","11":"176.99","12":"2. old"},{"1":"2007","2":"49","3":"2. Married","4":"2. Black","5":"3. Some College","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.653","11":"104.92","12":"2. old"},{"1":"2005","2":"40","3":"2. Married","4":"3. Asian","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"2. No","10":"4.813","11":"123.09","12":"2. old"},{"1":"2009","2":"55","3":"2. Married","4":"1. White","5":"5. Advanced Degree","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"2. No","10":"4.190","11":"66.04","12":"2. old"},{"1":"2005","2":"31","3":"1. Never Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"2. No","10":"4.544","11":"94.07","12":"1. young"},{"1":"2006","2":"37","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.470","11":"87.39","12":"1. young"},{"1":"2003","2":"22","3":"1. Never Married","4":"3. Asian","5":"3. Some College","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"2. No","10":"3.806","11":"44.98","12":"1. young"},{"1":"2006","2":"56","3":"2. Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.602","11":"99.69","12":"2. old"},{"1":"2008","2":"30","3":"5. Separated","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"1. <=Good","9":"1. Yes","10":"4.380","11":"79.85","12":"1. young"},{"1":"2009","2":"36","3":"2. Married","4":"1. White","5":"5. Advanced Degree","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.929","11":"138.30","12":"1. young"},{"1":"2008","2":"41","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"5.176","11":"176.99","12":"2. old"},{"1":"2009","2":"41","3":"2. Married","4":"3. Asian","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"2. No","10":"4.544","11":"94.07","12":"2. old"},{"1":"2005","2":"51","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"5.243","11":"189.24","12":"2. old"},{"1":"2009","2":"46","3":"4. Divorced","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"1. <=Good","9":"1. Yes","10":"4.968","11":"143.70","12":"2. old"},{"1":"2007","2":"40","3":"2. Married","4":"1. White","5":"5. Advanced Degree","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.944","11":"140.40","12":"2. old"},{"1":"2005","2":"42","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.903","11":"134.71","12":"2. old"},{"1":"2003","2":"55","3":"2. Married","4":"1. White","5":"5. Advanced Degree","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"2. No","10":"5.592","11":"268.27","12":"2. old"},{"1":"2004","2":"24","3":"1. Never Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"1. <=Good","9":"1. Yes","10":"3.778","11":"43.74","12":"1. young"},{"1":"2007","2":"50","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.653","11":"104.92","12":"2. old"},{"1":"2004","2":"56","3":"2. Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.778","11":"118.88","12":"2. old"},{"1":"2004","2":"62","3":"2. Married","4":"2. Black","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.477","11":"87.98","12":"2. old"},{"1":"2007","2":"32","3":"2. Married","4":"1. White","5":"3. Some College","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.623","11":"101.82","12":"1. young"},{"1":"2008","2":"60","3":"4. Divorced","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.991","11":"147.12","12":"2. old"},{"1":"2008","2":"60","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.813","11":"123.09","12":"2. old"},{"1":"2008","2":"55","3":"2. Married","4":"1. White","5":"5. Advanced Degree","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"5.114","11":"166.32","12":"2. old"},{"1":"2007","2":"61","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.978","11":"145.14","12":"2. old"},{"1":"2006","2":"66","3":"2. Married","4":"2. Black","5":"3. Some College","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.778","11":"118.88","12":"2. old"},{"1":"2007","2":"48","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"2. No","10":"4.813","11":"123.09","12":"2. old"},{"1":"2005","2":"35","3":"1. Never Married","4":"2. Black","5":"3. Some College","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.830","11":"125.20","12":"1. young"},{"1":"2004","2":"41","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.699","11":"109.83","12":"2. old"},{"1":"2004","2":"55","3":"2. Married","4":"1. White","5":"4. College Grad","6":"2. Middle Atlantic","7":"2. Information","8":"1. <=Good","9":"2. No","10":"4.903","11":"134.71","12":"2. old"},{"1":"2008","2":"64","3":"4. Divorced","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"1. <=Good","9":"1. Yes","10":"4.556","11":"95.23","12":"2. old"},{"1":"2004","2":"31","3":"2. Married","4":"1. White","5":"2. HS Grad","6":"2. Middle Atlantic","7":"2. Information","8":"2. >=Very Good","9":"1. Yes","10":"4.845","11":"127.12","12":"1. young"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_predictions</span>(m, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">am =</span> unique, <span class="at">wt =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">3.5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(wage <span class="sc">~</span> jobclass <span class="sc">+</span> age, salary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ref_grid</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
- am  wt Estimate Std. Error     z Pr(&gt;|z|)     S 2.5 % 97.5 %
-  0 2.5     22.0      1.161 18.91   &lt;0.001 262.6  19.7   24.2
-  0 3.0     20.1      0.848 23.67   &lt;0.001 408.9  18.4   21.7
-  0 3.5     18.2      0.631 28.79   &lt;0.001 603.2  16.9   19.4
-  1 2.5     23.6      0.727 32.45   &lt;0.001 765.0  22.2   25.0
-  1 3.0     19.0      1.013 18.79   &lt;0.001 259.4  17.1   21.0
-  1 3.5     14.5      1.503  9.65   &lt;0.001  70.7  11.6   17.4
+<pre><code>'emmGrid' object with variables:
+    jobclass = 1. Industrial, 2. Information
+    age = 41.39</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> jobclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> jobclass       emmean   SE df lower.CL upper.CL
+ 1. Industrial    99.9 5.33 97     89.4      111
+ 2. Information  116.4 5.33 97    105.8      127
 
-Type:  response </code></pre>
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> age <span class="sc">|</span> jobclass, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">45</span>, <span class="dv">65</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>jobclass = 1. Industrial:
+ age emmean   SE df lower.CL upper.CL
+  25     85 7.33 97     70.5     99.5
+  45    103 5.51 97     92.3    114.2
+  65    121 9.49 97    102.6    140.3
+
+jobclass = 2. Information:
+ age emmean   SE df lower.CL upper.CL
+  25    101 7.67 97     86.2    116.6
+  45    120 5.40 97    108.9    130.4
+  65    138 9.09 97    119.8    155.9
+
+Confidence level used: 0.95 </code></pre>
 </div>
 </div>
 </section>
-<section id="meanscounterfactuals-for-wt-2.5-3-3.5-averaged-over-levels-of-am" class="level2">
-<h2 class="anchored" data-anchor-id="meanscounterfactuals-for-wt-2.5-3-3.5-averaged-over-levels-of-am">3. means/counterfactuals for wt = 2.5, 3, 3.5, averaged over levels of am</h2>
+<section id="two-categorical-predictors" class="level2">
+<h2 class="anchored" data-anchor-id="two-categorical-predictors">Two categorical predictors</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="st">'wt'</span>, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">wt =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">3.5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>NOTE: Results may be misleading due to involvement in interactions</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> am <span class="sc">+</span> cyl, d)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ref_grid</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  wt emmean    SE df lower.CL upper.CL
- 2.5   22.8 0.685 28     21.4     24.2
- 3.0   19.6 0.660 28     18.2     20.9
- 3.5   16.3 0.815 28     14.7     18.0
+<pre><code>'emmGrid' object with variables:
+    am = 0, 1
+    cyl = 4, 6, 8</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> cyl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> cyl emmean    SE df lower.CL upper.CL
+ 4     26.1 0.972 28     24.1     28.1
+ 6     19.9 1.170 28     17.5     22.3
+ 8     16.0 0.943 28     14.1     17.9
 
 Results are averaged over the levels of: am 
 Confidence level used: 0.95 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'wt = [2.5, 3, 3.5]'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["wt"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Mean"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["CI_low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["CI_high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["t"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["df"],"name":[7],"type":["int"],"align":["right"]}],"data":[{"1":"2.5","2":"22.77","3":"0.6847","4":"21.36","5":"24.17","6":"33.25","7":"28","_rn_":"1"},{"1":"3.0","2":"19.55","3":"0.6604","4":"18.20","5":"20.90","6":"29.60","7":"28","_rn_":"2"},{"1":"3.5","2":"16.33","3":"0.8151","4":"14.66","5":"18.00","6":"20.04","7":"28","_rn_":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_predictions</span>(m, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">wt =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">3.5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> cyl <span class="sc">|</span> am)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-  wt Estimate Std. Error    z Pr(&gt;|z|)     S 2.5 % 97.5 %
- 2.5     22.6      0.750 30.2   &lt;0.001 661.5  21.1   24.1
- 3.0     19.6      0.650 30.2   &lt;0.001 664.0  18.4   20.9
- 3.5     16.7      0.716 23.3   &lt;0.001 395.7  15.3   18.1
+<pre><code>am = 0:
+ cyl emmean    SE df lower.CL upper.CL
+ 4     24.8 1.320 28     22.1     27.5
+ 6     18.6 1.290 28     16.0     21.3
+ 8     14.7 0.842 28     13.0     16.5
 
-Type:  response </code></pre>
+am = 1:
+ cyl emmean    SE df lower.CL upper.CL
+ 4     27.4 0.992 28     25.3     29.4
+ 6     21.2 1.380 28     18.4     24.0
+ 8     17.3 1.380 28     14.5     20.1
+
+Confidence level used: 0.95 </code></pre>
 </div>
 </div>
 </section>
-<section id="graphical-version-of-2" class="level2">
-<h2 class="anchored" data-anchor-id="graphical-version-of-2">4. graphical version of 2</h2>
+<section id="two-numeric-predictors" class="level2">
+<h2 class="anchored" data-anchor-id="two-numeric-predictors">Two numeric predictors</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmip</span>(m, am <span class="sc">~</span> wt, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">wt =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">3.5</span>)), <span class="at">CIs =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="test_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_means</span>(m, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'wt'</span>, <span class="st">'am'</span>)) <span class="sc">%&gt;%</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="test_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_predictions</span>(m, <span class="at">condition =</span> <span class="fu">c</span>(<span class="st">'wt'</span>, <span class="st">'am'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="test_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="compare-levels-of-am-at-specific-values-of-wt" class="level2">
-<h2 class="anchored" data-anchor-id="compare-levels-of-am-at-specific-values-of-wt">5. compare levels of am at specific values of wt</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(<span class="fu">emmeans</span>(m, <span class="st">'am'</span>, <span class="at">by =</span> <span class="st">'wt'</span>, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">wt =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">3.5</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> hp <span class="sc">+</span> wt, d)</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ref_grid</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>wt = 2.5:
- contrast  estimate   SE df t.ratio p.value
- am0 - am1    -1.63 1.37 28  -1.192  0.2432
-
-wt = 3.0:
- contrast  estimate   SE df t.ratio p.value
- am0 - am1     1.02 1.32 28   0.770  0.4479
-
-wt = 3.5:
- contrast  estimate   SE df t.ratio p.value
- am0 - am1     3.67 1.63 28   2.249  0.0326</code></pre>
+<pre><code>'emmGrid' object with variables:
+    hp = 146.69
+    wt = 3.2172</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_contrasts</span>(m, <span class="at">contrast =</span> <span class="st">'am'</span>, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'wt = [2.5, 3, 3.5]'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Level1"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Level2"],"name":[2],"type":["fct"],"align":["left"]},{"label":["wt"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Difference"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["CI_low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["CI_high"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["t"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["df"],"name":[9],"type":["int"],"align":["right"]},{"label":["p"],"name":[10],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"0","3":"2.5","4":"1.633","5":"1.369","6":"-1.173","7":"4.4377","8":"1.1921","9":"28","10":"0.24322","_rn_":"1"},{"1":"1","2":"0","3":"3.0","4":"-1.017","5":"1.321","6":"-3.722","7":"1.6891","8":"-0.7697","9":"28","10":"0.44794","_rn_":"2"},{"1":"1","2":"0","3":"3.5","4":"-3.666","5":"1.630","6":"-7.005","7":"-0.3264","8":"-2.2486","9":"28","10":"0.03259","_rn_":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(m, <span class="at">variables =</span> <span class="st">"am"</span>, <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">wt =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">3.5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> hp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-  wt Estimate Std. Error     z Pr(&gt;|z|)   S 2.5 % 97.5 %
- 2.5     1.63       1.37  1.19   0.2332 2.1 -1.05  4.317
- 3.0    -1.02       1.32 -0.77   0.4415 1.2 -3.61  1.572
- 3.5    -3.67       1.63 -2.25   0.0245 5.3 -6.86 -0.471
-
-Term: am
-Type:  response 
-Comparison: 1 - 0</code></pre>
-</div>
-</div>
-</section>
-<section id="plot-of-pairswise-comparisons" class="level2">
-<h2 class="anchored" data-anchor-id="plot-of-pairswise-comparisons">6. plot of pairswise comparisons</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">pairs</span>(<span class="fu">emmeans</span>(m, <span class="at">specs =</span> <span class="st">'am'</span>, <span class="at">by =</span> <span class="st">'wt'</span>, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">wt =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">3.5</span>)))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="test_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_contrasts</span>(m, <span class="at">contrast =</span> <span class="st">'am'</span>, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'wt = [2.5, 3, 3.5]'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Level1"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Level2"],"name":[2],"type":["fct"],"align":["left"]},{"label":["wt"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Difference"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["CI_low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["CI_high"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["t"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["df"],"name":[9],"type":["int"],"align":["right"]},{"label":["p"],"name":[10],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"0","3":"2.5","4":"1.633","5":"1.369","6":"-1.173","7":"4.4377","8":"1.1921","9":"28","10":"0.24322","_rn_":"1"},{"1":"1","2":"0","3":"3.0","4":"-1.017","5":"1.321","6":"-3.722","7":"1.6891","8":"-0.7697","9":"28","10":"0.44794","_rn_":"2"},{"1":"1","2":"0","3":"3.5","4":"-3.666","5":"1.630","6":"-7.005","7":"-0.3264","8":"-2.2486","9":"28","10":"0.03259","_rn_":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_comparisons</span>(m, <span class="at">variables =</span> <span class="st">'am'</span>, <span class="at">condition =</span> <span class="fu">list</span>(<span class="at">wt =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">3.5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="test_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="slope-of-wt-for-each-level-of-am" class="level2">
-<h2 class="anchored" data-anchor-id="slope-of-wt-for-each-level-of-am">7. slope of wt for each level of am</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emtrends</span>(m, <span class="at">specs =</span> <span class="st">'am'</span>, <span class="at">var =</span> <span class="st">'wt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> am wt.trend    SE df lower.CL upper.CL
- 0     -3.79 0.786 28     -5.4    -2.18
- 1     -9.08 1.210 28    -11.6    -6.60
+<pre><code>  hp emmean    SE df lower.CL upper.CL
+ 147   20.1 0.458 29     19.2       21
 
 Confidence level used: 0.95 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">estimate_slopes</span>(m, <span class="at">trend =</span> <span class="st">'wt'</span>, <span class="at">by =</span> <span class="st">'am'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> wt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   wt emmean    SE df lower.CL upper.CL
+ 3.22   20.1 0.458 29     19.2       21
+
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> wt <span class="sc">|</span> hp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>hp = 147:
+   wt emmean    SE df lower.CL upper.CL
+ 3.22   20.1 0.458 29     19.2       21
+
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ref_grid</span>(m, <span class="at">cov.reduce =</span> range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'emmGrid' object with variables:
+    hp =  52, 335
+    wt = 1.513, 5.424</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> hp, <span class="at">cov.reduce =</span> range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  hp emmean   SE df lower.CL upper.CL
+  52   22.1 1.07 29    19.94     24.3
+ 335   13.1 1.66 29     9.73     16.5
+
+Results are averaged over the levels of: wt 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> wt, <span class="at">cov.reduce =</span> range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   wt emmean   SE df lower.CL upper.CL
+ 1.51   25.2 1.47 29    22.21     28.2
+ 5.42   10.0 1.25 29     7.49     12.6
+
+Results are averaged over the levels of: hp 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(m, <span class="sc">~</span> wt <span class="sc">|</span> hp, <span class="at">cov.reduce =</span> range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>hp =  52:
+   wt emmean    SE df lower.CL upper.CL
+ 1.51  29.71 0.943 29    27.78    31.64
+ 5.42  14.54 2.110 29    10.22    18.86
+
+hp = 335:
+   wt emmean    SE df lower.CL upper.CL
+ 1.51  20.72 2.580 29    15.43    26.00
+ 5.42   5.55 1.390 29     2.71     8.39
+
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<section id="without-interaction" class="level3">
+<h3 class="anchored" data-anchor-id="without-interaction">without interaction</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(mpg <span class="sc">~</span> hp <span class="sc">+</span> wt, d) <span class="sc">|&gt;</span></span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">type =</span> <span class="st">"pred"</span>, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"wt"</span>, <span class="st">"hp[52, 335]"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["am"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Slope"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["CI_low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["CI_high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["t"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["p"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"0","2":"-3.786","3":"0.7856","4":"-5.326","5":"-2.246","6":"-4.819","7":"0.00000144188862239","_rn_":"1"},{"1":"1","2":"-9.084","3":"1.2121","4":"-11.460","5":"-6.709","6":"-7.495","7":"0.00000000000006649","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
+<div>
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">slopes</span>(m, <span class="at">variables =</span> <span class="st">'wt'</span>, <span class="at">by =</span> <span class="st">'am'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(mpg <span class="sc">~</span> hp <span class="sc">+</span> wt, d) <span class="sc">|&gt;</span> </span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">emmeans</span>(pairwise <span class="sc">~</span> wt <span class="sc">|</span> hp, <span class="at">cov.reduce =</span> range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
- am Estimate Std. Error     z Pr(&gt;|z|)    S  2.5 % 97.5 %
-  0    -3.79      0.786 -4.82   &lt;0.001 19.4  -5.33  -2.25
-  1    -9.08      1.212 -7.49   &lt;0.001 43.8 -11.46  -6.71
+<pre><code>$emmeans
+hp =  52:
+   wt emmean    SE df lower.CL upper.CL
+ 1.51  29.71 0.943 29    27.78    31.64
+ 5.42  14.54 2.110 29    10.22    18.86
 
-Term: wt
-Type:  response 
-Comparison: dY/dX</code></pre>
+hp = 335:
+   wt emmean    SE df lower.CL upper.CL
+ 1.51  20.72 2.580 29    15.43    26.00
+ 5.42   5.55 1.390 29     2.71     8.39
+
+Confidence level used: 0.95 
+
+$contrasts
+hp =  52:
+ contrast          estimate   SE df t.ratio p.value
+ wt1.513 - wt5.424     15.2 2.47 29   6.129  &lt;.0001
+
+hp = 335:
+ contrast          estimate   SE df t.ratio p.value
+ wt1.513 - wt5.424     15.2 2.47 29   6.129  &lt;.0001</code></pre>
 </div>
 </div>
+</section>
+<section id="with-interaction" class="level3">
+<h3 class="anchored" data-anchor-id="with-interaction">with interaction</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(mpg <span class="sc">~</span> hp <span class="sc">*</span> wt, d) <span class="sc">|&gt;</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model</span>(<span class="at">type =</span> <span class="st">"pred"</span>, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"wt"</span>, <span class="st">"hp[52, 335]"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(mpg <span class="sc">~</span> hp <span class="sc">*</span> wt, d) <span class="sc">|&gt;</span> </span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">emmeans</span>(pairwise <span class="sc">~</span> wt <span class="sc">|</span> hp, <span class="at">cov.reduce =</span> range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$emmeans
+hp =  52:
+   wt emmean   SE df lower.CL upper.CL
+ 1.51  33.32 1.24 28    30.78     35.9
+ 5.42   6.85 2.70 28     1.33     12.4
+
+hp = 335:
+   wt emmean   SE df lower.CL upper.CL
+ 1.51  11.26 3.31 28     4.48     18.0
+ 5.42  15.61 2.92 28     9.63     21.6
+
+Confidence level used: 0.95 
+
+$contrasts
+hp =  52:
+ contrast          estimate   SE df t.ratio p.value
+ wt1.513 - wt5.424    26.47 3.65 28   7.261  &lt;.0001
+
+hp = 335:
+ contrast          estimate   SE df t.ratio p.value
+ wt1.513 - wt5.424    -4.35 5.59 28  -0.778  0.4430</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="dont-ignore-interactions" class="level2">
+<h2 class="anchored" data-anchor-id="dont-ignore-interactions">Don’t ignore interactions</h2>
+<p><a href="https://youtu.be/cqmMNR6x73g" class="uri">https://youtu.be/cqmMNR6x73g</a></p>
 </section>
 
 </main>

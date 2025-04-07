@@ -1,9 +1,13 @@
 ---
-title: 'test'
+title: 'From model to meaning'
 format:
   html:
     df-print: paged
 ---
+
+<https://youtu.be/_okuMw4JFfU>
+
+## Setup environment
 
 ```{r}
 #| output: false
@@ -11,114 +15,304 @@ library(tidyverse)
 library(emmeans)
 library(marginaleffects)
 library(modelbased)
+library(sjPlot)
+
+theme_set(theme_test())
+```
+
+## Read and prep data
+
+A data frame with 32 observations on 11 (numeric) variables.
+
+|        |                                          |
+|:-------|:-----------------------------------------|
+| `mpg`  | Miles/(US) gallon                        |
+| `cyl`  | Number of cylinders                      |
+| `disp` | Displacement (cu.in.)                    |
+| `hp`   | Gross horsepower                         |
+| `drat` | Rear axle ratio                          |
+| `wt`   | Weight (1000 lbs)                        |
+| `qsec` | 1/4 mile time                            |
+| `vs`   | Engine (0 = V-shaped, 1 = straight)      |
+| `am`   | Transmission (0 = automatic, 1 = manual) |
+| `gear` | Number of forward gears                  |
+| `carb` | Number of carburetors                    |
+
+```{r}
+d <- mtcars |>
+  mutate(cyl = factor(cyl),
+         vs = factor(vs),
+         am = factor(am),
+         gear = factor(gear),
+         carb = factor(carb)) |> 
+  rownames_to_column("car")
+
+d
+```
+
+## Better summaries
+
+```{r}
+m <- lm(mpg ~ cyl, d)
+
+supernova::supernova(m)
 ```
 
 ```{r}
-## use the mtcars data, set up am as a factor
-mc <- mtcars |> mutate(am = factor(am))
-```
-
-```{r}
-## fit a linear model to mpg with wt x am interaction
-m <- lm(mpg ~ wt * am, data = mc)
-
 summary(m)
 ```
 
-## 1. means/counterfactuals for each level of am at mean wt
-
 ```{r}
-emmeans(m, specs = 'am')
+plot_model(m, type = "pred", terms = "cyl")
 ```
 
 ```{r}
-estimate_means(m, by = 'am')
+plot_model(m, type = "pred", terms = "cyl", show.data = TRUE, jitter = TRUE) + expand_limits(y = 0)
+```
+
+### `emmeans`
+
+```{r}
+emm <- emmeans(m, specs = "cyl")
+
+emm
 ```
 
 ```{r}
-avg_predictions(m, variables = 'am')
-```
-
-## 2. means/counterfactuals for each level of am at wt = 2.5, 3, 3.5
-
-```{r}
-emmeans(m, specs = c('am', 'wt'), at = list(wt = c(2.5, 3, 3.5)))
+contrast(emm, method = "pairwise")
 ```
 
 ```{r}
-estimate_means(m, by = c('am', 'wt = [2.5, 3, 3.5]'))
+contrast(emm, method = "pairwise") |> plot()
+```
+
+### `marginaleffects`
+
+```{r}
+avg_predictions(m, variables = "cyl")
+```
+
+### `modelbased`
+
+```{r}
+estimate_means(m, by = "cyl")
 ```
 
 ```{r}
-avg_predictions(m, variables = list(am = unique, wt = c(2.5, 3, 3.5)))
+estimate_contrasts(m, contrast = "cyl", comparison = "revpairwise")
 ```
 
-## 3. means/counterfactuals for wt = 2.5, 3, 3.5, averaged over levels of am
+## Means in estimated marginal means does not mean average
+
+It could be medians, probabilities/proportions, etc.
 
 ```{r}
-emmeans(m, 'wt', at = list(wt = c(2.5, 3, 3.5)))
-```
+m <- glm(am ~ cyl, d, family = binomial)
 
-```{r}
-estimate_means(m, by = c('wt = [2.5, 3, 3.5]'))
-```
-
-```{r}
-avg_predictions(m, variables = list(wt = c(2.5, 3, 3.5)))
-```
-
-## 4. graphical version of 2
-
-```{r}
-emmip(m, am ~ wt, at = list(wt = c(2.5, 3, 3.5)), CIs = TRUE)
+supernova::supernova(m)
 ```
 
 ```{r}
-estimate_means(m, by = c('wt', 'am')) %>% plot()
+summary(m)
+```
+
+### `emmeans`
+
+```{r}
+emm <- emmeans(m, specs = "cyl", type = "response")
+
+emm
+```
+
+## Reference grid
+
+```{r}
+m <- lm(mpg ~ gear + am + hp, d)
 ```
 
 ```{r}
-plot_predictions(m, condition = c('wt', 'am'))
-```
-
-## 5. compare levels of am at specific values of wt
-
-```{r}
-pairs(emmeans(m, 'am', by = 'wt', at = list(wt = c(2.5, 3, 3.5))))
+ref_grid(m)
 ```
 
 ```{r}
-estimate_contrasts(m, contrast = 'am', by = c('wt = [2.5, 3, 3.5]'))
+mean(d$hp)
+```
+
+## Single categorical predictor
+
+```{r}
+m <- lm(mpg ~ cyl, d)
 ```
 
 ```{r}
-comparisons(m, variables = "am", newdata = datagrid(wt = c(2.5, 3, 3.5)))
-```
-
-## 6. plot of pairswise comparisons
-
-```{r}
-plot(pairs(emmeans(m, specs = 'am', by = 'wt', at = list(wt = c(2.5, 3, 3.5)))))
+ref_grid(m)
 ```
 
 ```{r}
-estimate_contrasts(m, contrast = 'am', by = c('wt = [2.5, 3, 3.5]'))
+emmeans(m, pairwise ~ cyl)
 ```
 
 ```{r}
-plot_comparisons(m, variables = 'am', condition = list(wt = c(2.5, 3, 3.5)))
-```
-
-## 7. slope of wt for each level of am
-
-```{r}
-emtrends(m, specs = 'am', var = 'wt')
+emmeans(m, pairwise ~ cyl, infer = TRUE)
 ```
 
 ```{r}
-estimate_slopes(m, trend = 'wt', by = 'am')
+emmeans(m, ~ cyl) |> pwpm()
 ```
 
 ```{r}
-slopes(m, variables = 'wt', by = 'am')
+emmeans(m, ~ cyl) |> plot()
 ```
+
+## Single numeric predictor
+
+```{r}
+m <- lm(mpg ~ hp, d)
+```
+
+```{r}
+ref_grid(m)
+```
+
+```{r}
+emmeans(m, ~ hp)
+```
+
+```{r}
+emmeans(m, ~ hp, cov.reduce = range)
+```
+
+```{r}
+emmeans(m, ~ hp, at = list(hp = range(d$hp)))
+```
+
+```{r}
+m <- lm(mpg ~ poly(hp, 2), d)
+
+plot_model(m, type = "pred", show.data = TRUE)
+```
+
+```{r}
+emmeans(m, ~ hp, at = list(hp = c(100, 200, 300)))
+```
+
+```{r}
+emmeans(m, ~ hp, at = list(hp = c(100, 200, 300))) |> plot(comparisons = TRUE)
+```
+
+```{r}
+emmeans(m, pairwise ~ hp, at = list(hp = c(100, 200, 300)))
+```
+
+## One categorical and one numeric predictor
+
+```{r}
+set.seed(10)
+
+data("Wage", package = "ISLR")
+
+salary <- ISLR::Wage |>
+    mutate(age_cat = case_when(
+    age < 40 ~ "1. young",
+    TRUE     ~ "2. old"
+  )) |> 
+  slice_sample(n = 50, by = jobclass)
+
+salary
+```
+
+```{r}
+m <- lm(wage ~ jobclass + age, salary)
+```
+
+```{r}
+ref_grid(m)
+```
+
+```{r}
+emmeans(m, ~ jobclass)
+```
+
+```{r}
+emmeans(m, ~ age | jobclass, at = list(age = c(25, 45, 65)))
+```
+
+## Two categorical predictors
+
+```{r}
+m <- lm(mpg ~ am + cyl, d)
+
+ref_grid(m)
+```
+
+```{r}
+emmeans(m, ~ cyl)
+```
+
+```{r}
+emmeans(m, ~ cyl | am)
+```
+
+## Two numeric predictors
+
+```{r}
+m <- lm(mpg ~ hp + wt, d)
+
+ref_grid(m)
+```
+
+```{r}
+emmeans(m, ~ hp)
+```
+
+```{r}
+emmeans(m, ~ wt)
+```
+
+```{r}
+emmeans(m, ~ wt | hp)
+```
+
+```{r}
+ref_grid(m, cov.reduce = range)
+```
+
+```{r}
+emmeans(m, ~ hp, cov.reduce = range)
+```
+
+```{r}
+emmeans(m, ~ wt, cov.reduce = range)
+```
+
+```{r}
+emmeans(m, ~ wt | hp, cov.reduce = range)
+```
+
+### without interaction
+
+```{r}
+lm(mpg ~ hp + wt, d) |>
+  plot_model(type = "pred", terms = c("wt", "hp[52, 335]"))
+```
+
+```{r}
+lm(mpg ~ hp + wt, d) |> 
+  emmeans(pairwise ~ wt | hp, cov.reduce = range)
+```
+
+### with interaction
+
+```{r}
+lm(mpg ~ hp * wt, d) |>
+  plot_model(type = "pred", terms = c("wt", "hp[52, 335]"))
+```
+
+```{r}
+lm(mpg ~ hp * wt, d) |> 
+  emmeans(pairwise ~ wt | hp, cov.reduce = range)
+```
+
+## Don't ignore interactions
+
+<https://youtu.be/cqmMNR6x73g>
