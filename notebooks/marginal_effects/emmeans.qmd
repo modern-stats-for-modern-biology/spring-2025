@@ -5,7 +5,13 @@ format:
     df-print: paged
 ---
 
-<https://youtu.be/_okuMw4JFfU>
+## Additional resources
+
+-   <https://rvlenth.github.io/emmeans/>
+
+-   <https://youtu.be/_okuMw4JFfU>
+
+-   <https://youtu.be/cqmMNR6x73g>
 
 ## Setup environment
 
@@ -13,14 +19,14 @@ format:
 #| output: false
 library(tidyverse)
 library(emmeans)
-library(marginaleffects)
-library(modelbased)
 library(sjPlot)
 
 theme_set(theme_test())
 ```
 
 ## Read and prep data
+
+### `cars` dataset
 
 A data frame with 32 observations on 11 (numeric) variables.
 
@@ -39,7 +45,7 @@ A data frame with 32 observations on 11 (numeric) variables.
 | `carb` | Number of carburetors                    |
 
 ```{r}
-d <- mtcars |>
+cars <- mtcars |>
   mutate(cyl = factor(cyl),
          vs = factor(vs),
          am = factor(am),
@@ -47,13 +53,28 @@ d <- mtcars |>
          carb = factor(carb)) |> 
   rownames_to_column("car")
 
-d
+cars
+```
+
+### `wages` dataset
+
+```{r}
+set.seed(10)
+
+wages <- ISLR::Wage |>
+    mutate(age_cat = case_when(
+    age < 40 ~ "1. Young",
+    TRUE     ~ "2. Old"
+  )) |> 
+  slice_sample(n = 50, by = jobclass)
+
+wages
 ```
 
 ## Better summaries
 
 ```{r}
-m <- lm(mpg ~ cyl, d)
+m <- lm(mpg ~ cyl, data = cars)
 
 supernova::supernova(m)
 ```
@@ -63,43 +84,25 @@ summary(m)
 ```
 
 ```{r}
-plot_model(m, type = "pred", terms = "cyl")
-```
-
-```{r}
 plot_model(m, type = "pred", terms = "cyl", show.data = TRUE, jitter = TRUE) + expand_limits(y = 0)
 ```
 
-### `emmeans`
-
 ```{r}
-emm <- emmeans(m, specs = "cyl")
+emm <- emmeans(m, "cyl") # or emmeans(model, ~ cyl)
 
 emm
 ```
 
 ```{r}
-contrast(emm, method = "pairwise")
+contrast(emm, "pairwise") # or pairs(emm)
 ```
 
 ```{r}
-contrast(emm, method = "pairwise") |> plot()
-```
-
-### `marginaleffects`
-
-```{r}
-avg_predictions(m, variables = "cyl")
-```
-
-### `modelbased`
-
-```{r}
-estimate_means(m, by = "cyl")
+pairs(emm) |> plot()
 ```
 
 ```{r}
-estimate_contrasts(m, contrast = "cyl", comparison = "revpairwise")
+emmeans(m, pairwise ~ cyl)
 ```
 
 ## Means in estimated marginal means does not mean average
@@ -107,7 +110,7 @@ estimate_contrasts(m, contrast = "cyl", comparison = "revpairwise")
 It could be medians, probabilities/proportions, etc.
 
 ```{r}
-m <- glm(am ~ cyl, d, family = binomial)
+m <- glm(am ~ cyl, data = cars, family = binomial)
 
 supernova::supernova(m)
 ```
@@ -116,10 +119,8 @@ supernova::supernova(m)
 summary(m)
 ```
 
-### `emmeans`
-
 ```{r}
-emm <- emmeans(m, specs = "cyl", type = "response")
+emm <- emmeans(m, "cyl", type = "response")
 
 emm
 ```
@@ -127,7 +128,7 @@ emm
 ## Reference grid
 
 ```{r}
-m <- lm(mpg ~ gear + am + hp, d)
+m <- lm(mpg ~ gear + am + hp, data = cars)
 ```
 
 ```{r}
@@ -135,17 +136,33 @@ ref_grid(m)
 ```
 
 ```{r}
-mean(d$hp)
+mean(cars$hp)
 ```
 
-## Single categorical predictor
+```{r}
+ref_grid(m) |> as_tibble()
+```
+
+## One categorical predictor
 
 ```{r}
-m <- lm(mpg ~ cyl, d)
+m <- lm(mpg ~ cyl, data = cars)
 ```
 
 ```{r}
 ref_grid(m)
+```
+
+```{r}
+ref_grid(m) |> as_tibble()
+```
+
+```{r}
+emmeans(m, "cyl")
+```
+
+```{r}
+emmeans(m, "cyl") |> contrast("pairwise")
 ```
 
 ```{r}
@@ -157,17 +174,17 @@ emmeans(m, pairwise ~ cyl, infer = TRUE)
 ```
 
 ```{r}
-emmeans(m, ~ cyl) |> pwpm()
+emmeans(m, "cyl") |> pwpm()
 ```
 
 ```{r}
-emmeans(m, ~ cyl) |> plot()
+emmeans(m, "cyl") |> contrast("pairwise") |> plot(comparisons = TRUE)
 ```
 
-## Single numeric predictor
+## One numeric predictor
 
 ```{r}
-m <- lm(mpg ~ hp, d)
+m <- lm(mpg ~ hp, data = cars)
 ```
 
 ```{r}
@@ -175,54 +192,47 @@ ref_grid(m)
 ```
 
 ```{r}
-emmeans(m, ~ hp)
+ref_grid(m) |> as_tibble()
 ```
 
 ```{r}
-emmeans(m, ~ hp, cov.reduce = range)
+emmeans(m, "hp")
 ```
 
 ```{r}
-emmeans(m, ~ hp, at = list(hp = range(d$hp)))
+emmeans(m, "hp", cov.reduce = fivenum)
 ```
 
 ```{r}
-m <- lm(mpg ~ poly(hp, 2), d)
+emmeans(m, "hp", at = list(hp = fivenum(cars$hp)))
+```
+
+```{r}
+ref_grid(m, cov.reduce = fivenum) |> as_tibble()
+```
+
+```{r}
+m <- lm(mpg ~ poly(hp, 2), data = cars)
 
 plot_model(m, type = "pred", show.data = TRUE)
 ```
 
 ```{r}
-emmeans(m, ~ hp, at = list(hp = c(100, 200, 300)))
-```
-
-```{r}
-emmeans(m, ~ hp, at = list(hp = c(100, 200, 300))) |> plot(comparisons = TRUE)
+emmeans(m, "hp", at = list(hp = c(100, 200, 300)))
 ```
 
 ```{r}
 emmeans(m, pairwise ~ hp, at = list(hp = c(100, 200, 300)))
 ```
 
+```{r}
+emmeans(m, "hp", at = list(hp = c(100, 200, 300))) |> contrast("pairwise") |> plot(comparisons = TRUE)
+```
+
 ## One categorical and one numeric predictor
 
 ```{r}
-set.seed(10)
-
-data("Wage", package = "ISLR")
-
-salary <- ISLR::Wage |>
-    mutate(age_cat = case_when(
-    age < 40 ~ "1. young",
-    TRUE     ~ "2. old"
-  )) |> 
-  slice_sample(n = 50, by = jobclass)
-
-salary
-```
-
-```{r}
-m <- lm(wage ~ jobclass + age, salary)
+m <- lm(wage ~ jobclass + age, data = wages)
 ```
 
 ```{r}
@@ -230,7 +240,15 @@ ref_grid(m)
 ```
 
 ```{r}
-emmeans(m, ~ jobclass)
+ref_grid(m) |> as_tibble()
+```
+
+```{r}
+emmeans(m, "jobclass")
+```
+
+```{r}
+emmeans(m, "age", by = "jobclass", at = list(age = c(25, 45, 65)))
 ```
 
 ```{r}
@@ -240,13 +258,19 @@ emmeans(m, ~ age | jobclass, at = list(age = c(25, 45, 65)))
 ## Two categorical predictors
 
 ```{r}
-m <- lm(mpg ~ am + cyl, d)
+m <- lm(mpg ~ am + cyl, data = cars)
+```
 
+```{r}
 ref_grid(m)
 ```
 
 ```{r}
-emmeans(m, ~ cyl)
+ref_grid(m) |> as_tibble()
+```
+
+```{r}
+emmeans(m, "cyl")
 ```
 
 ```{r}
@@ -256,21 +280,27 @@ emmeans(m, ~ cyl | am)
 ## Two numeric predictors
 
 ```{r}
-m <- lm(mpg ~ hp + wt, d)
+m <- lm(mpg ~ hp + wt, data = cars)
+```
 
+```{r}
 ref_grid(m)
 ```
 
 ```{r}
-emmeans(m, ~ hp)
+ref_grid(m) |> as_tibble()
 ```
 
 ```{r}
-emmeans(m, ~ wt)
+emmeans(m, "hp")
 ```
 
 ```{r}
-emmeans(m, ~ wt | hp)
+emmeans(m, "wt")
+```
+
+```{r}
+emmeans(m, "wt", by = "hp")
 ```
 
 ```{r}
@@ -278,41 +308,39 @@ ref_grid(m, cov.reduce = range)
 ```
 
 ```{r}
-emmeans(m, ~ hp, cov.reduce = range)
+emmeans(m, "hp", cov.reduce = range)
 ```
 
 ```{r}
-emmeans(m, ~ wt, cov.reduce = range)
+emmeans(m, "wt", cov.reduce = range)
 ```
 
 ```{r}
-emmeans(m, ~ wt | hp, cov.reduce = range)
+emmeans(m, "wt", by = "hp", cov.reduce = range)
 ```
 
 ### without interaction
 
 ```{r}
-lm(mpg ~ hp + wt, d) |>
+lm(mpg ~ hp + wt, data = cars) |>
   plot_model(type = "pred", terms = c("wt", "hp[52, 335]"))
 ```
 
 ```{r}
-lm(mpg ~ hp + wt, d) |> 
+lm(mpg ~ hp + wt, data = cars) |> 
   emmeans(pairwise ~ wt | hp, cov.reduce = range)
 ```
 
 ### with interaction
 
 ```{r}
-lm(mpg ~ hp * wt, d) |>
+lm(mpg ~ hp * wt, data = cars) |>
   plot_model(type = "pred", terms = c("wt", "hp[52, 335]"))
 ```
 
 ```{r}
-lm(mpg ~ hp * wt, d) |> 
+lm(mpg ~ hp * wt, data = cars) |> 
   emmeans(pairwise ~ wt | hp, cov.reduce = range)
 ```
 
 ## Don't ignore interactions
-
-<https://youtu.be/cqmMNR6x73g>
